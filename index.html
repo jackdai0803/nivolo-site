@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nivolo — Build habits that stick</title>
+  <meta name="description" content="Nivolo is the cozy habit app. Set goals, keep your streak alive with Nivo, earn Pecks, and collect gems for every milestone." />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900;1000&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <nav>
+    <div class="nav-pill">
+      <a class="logo" href="index.html"><img src="assets/nivo.png" alt="" />nivolo</a>
+      <div class="nav-links">
+        <a class="nav-plain" href="#features">Features</a>
+        <a class="nav-plain" href="support.html">Support</a>
+        <!-- TODO: replace href with the real App Store link -->
+        <a class="nav-cta" href="https://apps.apple.com/app/nivolo">Get the app</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <span class="decor bob" style="left: 12%; top: 24%;"><span class="coin"></span></span>
+    <span class="decor bob-slow" style="right: 13%; top: 18%;"><span class="decor-gem"></span></span>
+    <span class="decor bob-slow" style="left: 20%; top: 68%;"><span class="decor-flake"></span></span>
+    <span class="decor bob" style="right: 22%; top: 62%;"><span class="decor-flake"></span></span>
+
+    <p class="kicker">The cozy habit app</p>
+    <h1>Build habits that <span class="inline-nivo"><img src="assets/nivo.png" alt="Nivo" /></span> actually stick.</h1>
+    <p class="hero-sub">One small action a day. Streaks, Pecks, and a penguin who's extremely proud of you.</p>
+    <!-- TODO: replace href with the real App Store link -->
+    <a class="btn-moonlit" href="https://apps.apple.com/app/nivolo">
+      <svg viewBox="0 0 384 512" fill="currentColor" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+      Download on the App Store
+    </a>
+    <p class="hero-note">Free to download · iPhone</p>
+
+    <div class="stage">
+      <div class="stage-toast" id="toast"></div>
+      <div class="pecks-pill" id="pecks-pill"><span class="coin"></span><span id="pecks-count">0</span></div>
+      <button id="nivo-hit" aria-label="Tap Nivo">
+        <img id="nivo-img" src="assets/nivo.png" alt="Nivo the penguin" draggable="false" />
+      </button>
+      <p class="tap-hint" id="tap-hint">tap Nivo ↑</p>
+    </div>
+  </header>
+
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track" id="marquee-track">
+      <span>Build streaks ✦ Earn Pecks ✦ Collect gems ✦ Rest days ✦ Dress up Nivo ✦&nbsp;</span>
+    </div>
+  </div>
+
+  <section class="features" id="features">
+    <div class="wrap">
+      <h2 class="section-title">Small steps, every day</h2>
+      <p class="section-sub">Everything in Nivolo is built to make consistency feel good.</p>
+      <div class="feature-grid">
+        <div class="feature-card fc-streak">
+          <div class="feature-icon icon-streak">🔥</div>
+          <h3>Streaks with a safety net</h3>
+          <p>Keep your streak alive day by day — and if life happens, a free weekly streak freeze and streak repair have your back.</p>
+        </div>
+        <div class="feature-card fc-pecks">
+          <div class="feature-icon icon-pecks"><span class="coin"></span></div>
+          <h3>Earn Pecks</h3>
+          <p>Every action you log earns Pecks. Spend them in the shop on outfits and goodies to make Nivo your own.</p>
+        </div>
+        <div class="feature-card fc-gems">
+          <div class="feature-icon icon-gems">💎</div>
+          <h3>Collect gems</h3>
+          <p>Finish a goal and a one-of-a-kind gem joins your Trophy Shelf — a season-by-season record of what you've achieved.</p>
+        </div>
+        <div class="feature-card fc-rest">
+          <div class="feature-icon icon-rest">😌</div>
+          <h3>Rest days included</h3>
+          <p>Consistency isn't perfection. Schedule rest days, get gentle reminders, and see your week at a glance with weekly insights.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bottom-cta">
+    <h2>That's the whole website. The good stuff is in the app.</h2>
+    <p class="section-sub">Your first goal takes about 30 seconds to set up.</p>
+    <!-- TODO: replace href with the real App Store link -->
+    <a class="btn-moonlit" href="https://apps.apple.com/app/nivolo">
+      <svg viewBox="0 0 384 512" fill="currentColor" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+      Download on the App Store
+    </a>
+    <div class="lineup">
+      <img src="assets/sleepy.png" alt="" draggable="false" />
+      <img src="assets/nivo.png" alt="" draggable="false" />
+      <img src="assets/jump.png" alt="" draggable="false" />
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap footer-inner">
+      <span>© 2026 Nivolo</span>
+      <div class="footer-links">
+        <a href="support.html">Support</a>
+        <a href="privacy.html">Privacy Policy</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ── Ambient snow ──
+    for (let i = 0; i < 14; i++) {
+      const f = document.createElement("span");
+      f.className = "flake";
+      const size = 3 + Math.random() * 4;
+      f.style.width = f.style.height = size + "px";
+      f.style.left = Math.random() * 100 + "%";
+      f.style.setProperty("--drift", (Math.random() * 80 - 40) + "px");
+      f.style.animationDuration = 8 + Math.random() * 9 + "s";
+      f.style.animationDelay = -Math.random() * 14 + "s";
+      document.body.appendChild(f);
+    }
+
+    // ── Seamless marquee: duplicate the strip once ──
+    const track = document.getElementById("marquee-track");
+    track.innerHTML += track.innerHTML;
+
+    // ── Gentle mouse parallax on hero decor ──
+    const decors = document.querySelectorAll(".decor");
+    if (matchMedia("(pointer: fine)").matches) {
+      addEventListener("mousemove", (e) => {
+        const dx = (e.clientX / innerWidth - 0.5), dy = (e.clientY / innerHeight - 0.5);
+        decors.forEach((d, i) => {
+          const depth = (i % 3 + 1) * 8;
+          d.style.translate = `${-dx * depth}px ${-dy * depth}px`;
+        });
+      }, { passive: true });
+    }
+
+    // ── Tap-Nivo mini game ──
+    const hit = document.getElementById("nivo-hit");
+    const img = document.getElementById("nivo-img");
+    const pill = document.getElementById("pecks-pill");
+    const count = document.getElementById("pecks-count");
+    const hint = document.getElementById("tap-hint");
+    const toast = document.getElementById("toast");
+    const stage = hit.parentElement;
+    let pecks = Number(localStorage.getItem("nivoloSitePecks")) || 0;
+    let toastTimer;
+    if (pecks > 0) { count.textContent = pecks; pill.classList.add("show"); }
+
+    const MILESTONES = {
+      10: "Nivo likes you.",
+      25: "Okay, you get the idea. 🐧",
+      50: "Imagine these were real goals…",
+      100: "That's dedication. The app is calling.",
+    };
+
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove("show"), 2200);
+    }
+
+    hit.addEventListener("click", () => {
+      // jump (restart animation)
+      img.classList.remove("nivo-jump");
+      void img.offsetWidth;
+      img.classList.add("nivo-jump");
+
+      // sparkle burst
+      for (let i = 0; i < 7; i++) {
+        const s = document.createElement("span");
+        s.className = "spark";
+        s.style.setProperty("--a", (i * 51 + Math.random() * 20 - 10) + "deg");
+        stage.appendChild(s);
+        setTimeout(() => s.remove(), 700);
+      }
+
+      // coin flies from Nivo to the counter pill
+      const c = document.createElement("span");
+      c.className = "coin fly-coin";
+      const from = img.getBoundingClientRect(), to = pill.getBoundingClientRect();
+      c.style.left = (from.left + from.width / 2 - 11) + "px";
+      c.style.top = (from.top + from.height * 0.3) + "px";
+      document.body.appendChild(c);
+      requestAnimationFrame(() => {
+        c.style.transform = `translate(${to.left + 14 - (from.left + from.width / 2 - 11)}px, ${to.top + 3 - (from.top + from.height * 0.3)}px) scale(0.8)`;
+        c.style.opacity = "0.15";
+      });
+      setTimeout(() => c.remove(), 650);
+
+      // counter
+      pecks += 1;
+      localStorage.setItem("nivoloSitePecks", pecks);
+      pill.classList.add("show");
+      setTimeout(() => {
+        count.textContent = pecks;
+        pill.classList.remove("bump");
+        void pill.offsetWidth;
+        pill.classList.add("bump");
+      }, 500);
+
+      hint.style.opacity = "0";
+      if (MILESTONES[pecks]) showToast(MILESTONES[pecks]);
+    });
+  </script>
+</body>
+</html>
