@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nivolo — Build habits that stick</title>
+  <title>Nivolo — Habits that actually stick</title>
   <meta name="description" content="Nivolo is the cozy habit app. Set goals, keep your streak alive with Nivo, earn Pecks, and collect gems for every milestone." />
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900;1000&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -26,78 +26,241 @@
   </nav>
 
   <header class="hero">
-    <span class="decor bob" style="left: 12%; top: 24%;"><span class="coin"></span></span>
-    <span class="decor bob-slow" style="right: 13%; top: 18%;"><span class="decor-gem"></span></span>
-    <span class="decor bob-slow" style="left: 20%; top: 68%;"><span class="decor-flake"></span></span>
-    <span class="decor bob" style="right: 22%; top: 62%;"><span class="decor-flake"></span></span>
+    <span class="kicker-chip"><span class="dot"></span>Meet Nivo — the cozy habit app</span>
+    <h1>Small habits,<br /><em>kept for good.</em></h1>
+    <p class="hero-sub">One small action a day. Streaks with a safety net, Pecks to spend, and a penguin who's extremely proud of you.</p>
+    <div class="hero-actions">
+      <!-- TODO: replace href with the real App Store link -->
+      <a class="btn-dark" href="https://apps.apple.com/app/nivolo">
+        <svg viewBox="0 0 384 512" fill="currentColor" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+        Download on the App Store
+      </a>
+      <a class="btn-ghost" href="#features">See what's inside</a>
+    </div>
+    <p class="hero-note">Free to download · iPhone · English &amp; 中文</p>
 
-    <p class="kicker">The cozy habit app</p>
-    <h1>Build habits that <span class="inline-nivo"><img src="assets/nivo.png" alt="Nivo" /></span> actually stick.</h1>
-    <p class="hero-sub">One small action a day. Streaks, Pecks, and a penguin who's extremely proud of you.</p>
-    <!-- TODO: replace href with the real App Store link -->
-    <a class="btn-moonlit" href="https://apps.apple.com/app/nivolo">
-      <svg viewBox="0 0 384 512" fill="currentColor" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
-      Download on the App Store
-    </a>
-    <p class="hero-note">Free to download · iPhone</p>
+    <div class="trio">
+      <div class="phone phone--left" aria-hidden="true">
+        <div class="phone-screen">
+          <div class="scr-status"><span>9:41</span><span class="scr-batt"></span></div>
+          <div class="scr-body">
+            <div class="scr-title">Trophy Shelf</div>
+            <p class="scr-sub">Season 3 · Winter</p>
+            <div class="gem-grid">
+              <div class="gem-slot"><span class="gem gem--blue"></span></div>
+              <div class="gem-slot"><span class="gem gem--gold"></span></div>
+              <div class="gem-slot"><span class="gem gem--purple"></span></div>
+              <div class="gem-slot"><span class="gem gem--green"></span></div>
+              <div class="gem-slot gem-slot--empty"><span>?</span></div>
+              <div class="gem-slot gem-slot--empty"><span>?</span></div>
+            </div>
+            <div class="stat-line"><span>Goals finished</span><b>4 of 6</b></div>
+          </div>
+        </div>
+      </div>
 
-    <div class="stage">
-      <div class="stage-toast" id="toast"></div>
-      <div class="pecks-pill" id="pecks-pill"><span class="coin"></span><span id="pecks-count">0</span></div>
-      <button id="nivo-hit" aria-label="Tap Nivo">
-        <img id="nivo-img" src="assets/nivo.png" alt="Nivo the penguin" draggable="false" />
-      </button>
-      <p class="tap-hint" id="tap-hint">tap Nivo ↑</p>
+      <div class="phone phone--center" aria-hidden="true">
+        <div class="phone-screen">
+          <div class="scr-status"><span>9:41</span><span class="scr-batt"></span></div>
+          <div class="scr-body">
+            <div class="chip-row">
+              <span class="app-chip app-chip--streak">🔥 12</span>
+              <span class="app-chip app-chip--pecks"><span class="coin"></span>240</span>
+            </div>
+            <div class="mascot-stage"><img src="assets/nivo.png" alt="" /></div>
+            <div class="scr-title" style="font-size:17px;">Today</div>
+            <div class="goal-card">
+              <span class="goal-ring"></span>
+              <span class="grow"><h4>Read 20 minutes</h4><small>12 day streak</small></span>
+              <span class="goal-check"></span>
+            </div>
+            <div class="goal-card goal-card--done">
+              <span class="goal-ring"></span>
+              <span class="grow"><h4>Morning stretch</h4><small>Done · +10 Pecks</small></span>
+              <span class="goal-check">✓</span>
+            </div>
+          </div>
+          <div class="scr-tabs">
+            <span class="scr-tab scr-tab--on"><i></i>Home</span>
+            <span class="scr-tab"><i></i>Shop</span>
+            <span class="scr-tab"><i></i>Shelf</span>
+            <span class="scr-tab"><i></i>More</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="phone phone--right" aria-hidden="true">
+        <div class="phone-screen">
+          <div class="scr-status"><span>9:41</span><span class="scr-batt"></span></div>
+          <div class="scr-body">
+            <div class="scr-title">This week</div>
+            <p class="scr-sub">5 of 7 days · nice and steady</p>
+            <div class="bars-card">
+              <div class="bars">
+                <i class="bar bar--on" style="height:52%"></i>
+                <i class="bar bar--best" style="height:88%"></i>
+                <i class="bar bar--on" style="height:64%"></i>
+                <i class="bar" style="height:18%"></i>
+                <i class="bar bar--on" style="height:72%"></i>
+                <i class="bar bar--on" style="height:58%"></i>
+                <i class="bar" style="height:26%"></i>
+              </div>
+              <div class="bar-labels"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
+            </div>
+            <div class="stat-line"><span>Best streak</span><b>12 days</b></div>
+            <div class="stat-line"><span>Rest day</span><b>Sunday</b></div>
+          </div>
+        </div>
+      </div>
     </div>
   </header>
 
-  <div class="marquee" aria-hidden="true">
-    <div class="marquee-track" id="marquee-track">
-      <span>Build streaks ✦ Earn Pecks ✦ Collect gems ✦ Rest days ✦ Dress up Nivo ✦&nbsp;</span>
+  <div class="strip" aria-hidden="true">
+    <div class="strip-inner">
+      <span class="strip-chip"><span class="dot" style="background:#F5A301"></span>Streak safety net</span>
+      <span class="strip-chip"><span class="dot" style="background:#FFD60A"></span>Earn Pecks</span>
+      <span class="strip-chip"><span class="dot" style="background:#8B5CF6"></span>Collect gems</span>
+      <span class="strip-chip"><span class="dot" style="background:#1FA55A"></span>Rest days</span>
+      <span class="strip-chip"><span class="dot" style="background:#1F8FE5"></span>No accounts, no ads</span>
     </div>
   </div>
 
-  <section class="features" id="features">
+  <section class="section" id="features">
     <div class="wrap">
-      <h2 class="section-title">Small steps, every day</h2>
-      <p class="section-sub">Everything in Nivolo is built to make consistency feel good.</p>
-      <div class="feature-grid">
-        <div class="feature-card fc-streak">
-          <div class="feature-icon icon-streak">🔥</div>
-          <h3>Streaks with a safety net</h3>
-          <p>Keep your streak alive day by day — and if life happens, a free weekly streak freeze and streak repair have your back.</p>
+      <div class="section-head reveal">
+        <p class="section-kicker">Why it works</p>
+        <h2 class="section-title">Consistency, made comfortable</h2>
+        <p class="section-sub">Everything in Nivolo is designed so that showing up daily feels good — and missing a day doesn't ruin everything.</p>
+      </div>
+
+      <div class="split reveal">
+        <div class="split-copy">
+          <p class="section-kicker">Streaks</p>
+          <h3>Miss a day, not your momentum.</h3>
+          <p>Streaks in Nivolo are forgiving by design. Life happens — your progress shouldn't vanish because of one busy Tuesday.</p>
+          <ul>
+            <li>A free streak freeze every week, applied automatically</li>
+            <li>Broke anyway? Repair it right from the home screen</li>
+            <li>Gentle reminders, never guilt trips</li>
+          </ul>
         </div>
-        <div class="feature-card fc-pecks">
-          <div class="feature-icon icon-pecks"><span class="coin"></span></div>
-          <h3>Earn Pecks</h3>
-          <p>Every action you log earns Pecks. Spend them in the shop on outfits and goodies to make Nivo your own.</p>
+        <div class="split-visual">
+          <div class="panel panel--blue">
+            <div class="ui-card ui-card--tilt-l">
+              <div class="ui-flame-row">
+                <span class="ui-flame">🔥</span>
+                <span><b>12 day streak</b><small>Your longest yet</small></span>
+              </div>
+              <div class="week-row">
+                <span class="week-day"><span class="week-dot week-dot--done">✓</span>M</span>
+                <span class="week-day"><span class="week-dot week-dot--done">✓</span>T</span>
+                <span class="week-day"><span class="week-dot week-dot--ice">❄</span>W</span>
+                <span class="week-day"><span class="week-dot week-dot--done">✓</span>T</span>
+                <span class="week-day"><span class="week-dot week-dot--done">✓</span>F</span>
+                <span class="week-day"><span class="week-dot week-dot--today"></span>S</span>
+                <span class="week-day"><span class="week-dot"></span>S</span>
+              </div>
+            </div>
+            <div class="ui-banner ui-card--tilt-r">❄️&nbsp; Streak freeze used — your streak is safe.</div>
+          </div>
         </div>
-        <div class="feature-card fc-gems">
-          <div class="feature-icon icon-gems">💎</div>
+      </div>
+
+      <div class="split split--flip reveal">
+        <div class="split-visual">
+          <div class="panel panel--gold">
+            <span class="float-chip"><span class="coin"></span>+10</span>
+            <div class="shop-row">
+              <div class="shop-card ui-card--tilt-l">
+                <div class="shop-thumb">🧣</div>
+                <h4>Cozy scarf</h4>
+                <span class="shop-price"><span class="coin"></span>120</span>
+              </div>
+              <div class="shop-card ui-card--tilt-r">
+                <div class="shop-thumb">🎩</div>
+                <h4>Top hat</h4>
+                <span class="shop-price shop-price--owned">Owned ✓</span>
+              </div>
+            </div>
+            <img class="panel-mascot" src="assets/jump.png" alt="" />
+          </div>
+        </div>
+        <div class="split-copy">
+          <p class="section-kicker">Pecks &amp; the shop</p>
+          <h3>Every check-in pays.</h3>
+          <p>Each action you log earns Pecks. Spend them on outfits and goodies for Nivo — your progress, wearing a tiny hat.</p>
+          <ul>
+            <li>Earn Pecks for every completed action</li>
+            <li>Dress up Nivo with outfits from the shop</li>
+            <li>Bonus Pecks for milestones and perfect weeks</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bento reveal">
+        <div class="bento-card">
+          <div class="bento-visual bv--purple">
+            <div class="mini-dark mini-gems">
+              <span class="gem gem--blue"></span>
+              <span class="gem gem--gold"></span>
+              <span class="gem gem--purple"></span>
+            </div>
+          </div>
           <h3>Collect gems</h3>
           <p>Finish a goal and a one-of-a-kind gem joins your Trophy Shelf — a season-by-season record of what you've achieved.</p>
         </div>
-        <div class="feature-card fc-rest">
-          <div class="feature-icon icon-rest">😌</div>
+        <div class="bento-card">
+          <div class="bento-visual bv--green">
+            <div class="mini-dark mini-cal">
+              <span class="on">M</span><span class="on">T</span><span class="on">W</span><span class="on">T</span><span class="on">F</span><span class="on">S</span><span class="rest">☾</span>
+            </div>
+          </div>
           <h3>Rest days included</h3>
-          <p>Consistency isn't perfection. Schedule rest days, get gentle reminders, and see your week at a glance with weekly insights.</p>
+          <p>Consistency isn't perfection. Schedule rest days that protect your streak while you recharge.</p>
+        </div>
+        <div class="bento-card">
+          <div class="bento-visual bv--blue">
+            <div class="mini-dark">
+              <div class="mini-bars">
+                <i style="height:45%"></i><i class="on" style="height:70%"></i><i class="best" style="height:95%"></i><i class="on" style="height:55%"></i><i style="height:30%"></i><i class="on" style="height:80%"></i><i class="on" style="height:60%"></i>
+              </div>
+            </div>
+          </div>
+          <h3>Weekly insights</h3>
+          <p>A gentle Sunday recap: what stuck, what slipped, and one small suggestion for next week.</p>
+        </div>
+        <div class="bento-card">
+          <div class="bento-visual bv--gold">
+            <div style="display:flex; flex-direction:column; align-items:center; gap:14px;">
+              <div class="mini-dark mini-widget">
+                <img src="assets/nivo.png" alt="" />
+                <span><b>🔥 12 days</b><small>Keep it going!</small></span>
+              </div>
+              <div class="icon-swatches"><i></i><i></i><i></i></div>
+            </div>
+          </div>
+          <h3>On your home screen</h3>
+          <p>A widget that keeps your streak in sight, plus unlockable app icons to match your vibe.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="bottom-cta">
-    <h2>That's the whole website. The good stuff is in the app.</h2>
-    <p class="section-sub">Your first goal takes about 30 seconds to set up.</p>
-    <!-- TODO: replace href with the real App Store link -->
-    <a class="btn-moonlit" href="https://apps.apple.com/app/nivolo">
-      <svg viewBox="0 0 384 512" fill="currentColor" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
-      Download on the App Store
-    </a>
-    <div class="lineup">
-      <img src="assets/sleepy.png" alt="" draggable="false" />
-      <img src="assets/nivo.png" alt="" draggable="false" />
-      <img src="assets/jump.png" alt="" draggable="false" />
+  <section class="cta">
+    <div class="cta-panel reveal">
+      <h2>Your first goal takes 30&nbsp;seconds.</h2>
+      <p class="cta-sub">The rest is one small action a day. Nivo will be waiting.</p>
+      <!-- TODO: replace href with the real App Store link -->
+      <a class="btn-light" href="https://apps.apple.com/app/nivolo">
+        <svg viewBox="0 0 384 512" fill="currentColor" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+        Download on the App Store
+      </a>
+      <p class="cta-note">Free to download · No account needed</p>
+      <div class="lineup">
+        <img src="assets/sleepy.png" alt="" draggable="false" />
+        <button id="nivo-hit" aria-label="Tap Nivo"><img id="nivo-img" src="assets/nivo.png" alt="Nivo the penguin" draggable="false" /></button>
+        <img src="assets/jump.png" alt="" draggable="false" />
+      </div>
     </div>
   </section>
 
@@ -112,102 +275,19 @@
   </footer>
 
   <script>
-    // ── Ambient snow ──
-    for (let i = 0; i < 14; i++) {
-      const f = document.createElement("span");
-      f.className = "flake";
-      const size = 3 + Math.random() * 4;
-      f.style.width = f.style.height = size + "px";
-      f.style.left = Math.random() * 100 + "%";
-      f.style.setProperty("--drift", (Math.random() * 80 - 40) + "px");
-      f.style.animationDuration = 8 + Math.random() * 9 + "s";
-      f.style.animationDelay = -Math.random() * 14 + "s";
-      document.body.appendChild(f);
-    }
+    // Reveal sections on scroll
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+    }, { threshold: 0.12 });
+    document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
 
-    // ── Seamless marquee: duplicate the strip once ──
-    const track = document.getElementById("marquee-track");
-    track.innerHTML += track.innerHTML;
-
-    // ── Gentle mouse parallax on hero decor ──
-    const decors = document.querySelectorAll(".decor");
-    if (matchMedia("(pointer: fine)").matches) {
-      addEventListener("mousemove", (e) => {
-        const dx = (e.clientX / innerWidth - 0.5), dy = (e.clientY / innerHeight - 0.5);
-        decors.forEach((d, i) => {
-          const depth = (i % 3 + 1) * 8;
-          d.style.translate = `${-dx * depth}px ${-dy * depth}px`;
-        });
-      }, { passive: true });
-    }
-
-    // ── Tap-Nivo mini game ──
+    // Easter egg: Nivo jumps when tapped
     const hit = document.getElementById("nivo-hit");
     const img = document.getElementById("nivo-img");
-    const pill = document.getElementById("pecks-pill");
-    const count = document.getElementById("pecks-count");
-    const hint = document.getElementById("tap-hint");
-    const toast = document.getElementById("toast");
-    const stage = hit.parentElement;
-    let pecks = Number(localStorage.getItem("nivoloSitePecks")) || 0;
-    let toastTimer;
-    if (pecks > 0) { count.textContent = pecks; pill.classList.add("show"); }
-
-    const MILESTONES = {
-      10: "Nivo likes you.",
-      25: "Okay, you get the idea. 🐧",
-      50: "Imagine these were real goals…",
-      100: "That's dedication. The app is calling.",
-    };
-
-    function showToast(msg) {
-      toast.textContent = msg;
-      toast.classList.add("show");
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => toast.classList.remove("show"), 2200);
-    }
-
     hit.addEventListener("click", () => {
-      // jump (restart animation)
       img.classList.remove("nivo-jump");
       void img.offsetWidth;
       img.classList.add("nivo-jump");
-
-      // sparkle burst
-      for (let i = 0; i < 7; i++) {
-        const s = document.createElement("span");
-        s.className = "spark";
-        s.style.setProperty("--a", (i * 51 + Math.random() * 20 - 10) + "deg");
-        stage.appendChild(s);
-        setTimeout(() => s.remove(), 700);
-      }
-
-      // coin flies from Nivo to the counter pill
-      const c = document.createElement("span");
-      c.className = "coin fly-coin";
-      const from = img.getBoundingClientRect(), to = pill.getBoundingClientRect();
-      c.style.left = (from.left + from.width / 2 - 11) + "px";
-      c.style.top = (from.top + from.height * 0.3) + "px";
-      document.body.appendChild(c);
-      requestAnimationFrame(() => {
-        c.style.transform = `translate(${to.left + 14 - (from.left + from.width / 2 - 11)}px, ${to.top + 3 - (from.top + from.height * 0.3)}px) scale(0.8)`;
-        c.style.opacity = "0.15";
-      });
-      setTimeout(() => c.remove(), 650);
-
-      // counter
-      pecks += 1;
-      localStorage.setItem("nivoloSitePecks", pecks);
-      pill.classList.add("show");
-      setTimeout(() => {
-        count.textContent = pecks;
-        pill.classList.remove("bump");
-        void pill.offsetWidth;
-        pill.classList.add("bump");
-      }, 500);
-
-      hint.style.opacity = "0";
-      if (MILESTONES[pecks]) showToast(MILESTONES[pecks]);
     });
   </script>
 </body>
