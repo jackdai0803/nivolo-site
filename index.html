@@ -9,13 +9,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=4" />
 </head>
 <body>
 
   <nav>
     <div class="nav-pill">
-      <a class="logo" href="index.html"><img src="assets/nivo.png" alt="" />nivolo</a>
+      <a class="logo" href="index.html"><span class="logo-mark"></span>nivolo</a>
       <div class="nav-links">
         <a class="nav-plain" href="#features">Features</a>
         <a class="nav-plain" href="support.html">Support</a>
@@ -67,8 +67,8 @@
               <span class="app-chip app-chip--streak">🔥 12</span>
               <span class="app-chip app-chip--pecks"><span class="coin"></span>240</span>
             </div>
-            <div class="mascot-stage"><img src="assets/nivo.png" alt="" /></div>
-            <div class="scr-title" style="font-size:17px;">Today</div>
+            <div class="scr-title">Today</div>
+            <p class="scr-sub">3 goals · 1 done</p>
             <div class="goal-card">
               <span class="goal-ring"></span>
               <span class="grow"><h4>Read 20 minutes</h4><small>12 day streak</small></span>
@@ -79,6 +79,12 @@
               <span class="grow"><h4>Morning stretch</h4><small>Done · +10 Pecks</small></span>
               <span class="goal-check">✓</span>
             </div>
+            <div class="goal-card">
+              <span class="goal-ring" style="background: conic-gradient(#64D2FF 0 30%, #232B3C 30% 100%);"></span>
+              <span class="grow"><h4>Journal one line</h4><small>4 day streak</small></span>
+              <span class="goal-check"></span>
+            </div>
+            <div class="stat-line"><span>This week</span><b>5 of 7 days</b></div>
           </div>
           <div class="scr-tabs">
             <span class="scr-tab scr-tab--on"><i></i>Home</span>
@@ -115,25 +121,24 @@
     </div>
   </header>
 
-  <div class="strip" aria-hidden="true">
-    <div class="strip-inner">
-      <span class="strip-chip"><span class="dot" style="background:#F5A301"></span>Streak safety net</span>
-      <span class="strip-chip"><span class="dot" style="background:#FFD60A"></span>Earn Pecks</span>
-      <span class="strip-chip"><span class="dot" style="background:#8B5CF6"></span>Collect gems</span>
-      <span class="strip-chip"><span class="dot" style="background:#1FA55A"></span>Rest days</span>
-      <span class="strip-chip"><span class="dot" style="background:#1F8FE5"></span>No accounts, no ads</span>
-    </div>
-  </div>
-
   <section class="section" id="features">
     <div class="wrap">
       <div class="section-head reveal">
-        <p class="section-kicker">Why it works</p>
+        <p class="section-kicker">What's inside</p>
         <h2 class="section-title">Consistency, made comfortable</h2>
         <p class="section-sub">Everything in Nivolo is designed so that showing up daily feels good — and missing a day doesn't ruin everything.</p>
       </div>
 
-      <div class="split reveal">
+      <div class="tabs reveal" role="tablist" aria-label="Nivolo features">
+        <button class="tab-btn active" data-tab="tab-streaks" role="tab" aria-selected="true">Streaks</button>
+        <button class="tab-btn" data-tab="tab-pecks" role="tab" aria-selected="false">Pecks &amp; Shop</button>
+        <button class="tab-btn" data-tab="tab-gems" role="tab" aria-selected="false">Gems</button>
+        <button class="tab-btn" data-tab="tab-rest" role="tab" aria-selected="false">Rest days</button>
+        <button class="tab-btn" data-tab="tab-insights" role="tab" aria-selected="false">Insights</button>
+        <button class="tab-btn" data-tab="tab-widget" role="tab" aria-selected="false">Widget</button>
+      </div>
+
+      <div class="tab-panel split active" id="tab-streaks" role="tabpanel">
         <div class="split-copy">
           <p class="section-kicker">Streaks</p>
           <h3>Miss a day, not your momentum.</h3>
@@ -166,7 +171,17 @@
         </div>
       </div>
 
-      <div class="split split--flip reveal">
+      <div class="tab-panel split" id="tab-pecks" role="tabpanel">
+        <div class="split-copy">
+          <p class="section-kicker">Pecks &amp; the shop</p>
+          <h3>Every check-in pays.</h3>
+          <p>Each action you log earns Pecks. Spend them on outfits and goodies for Nivo — your progress, wearing a tiny hat.</p>
+          <ul>
+            <li>Earn Pecks for every completed action</li>
+            <li>Dress up Nivo with outfits from the shop</li>
+            <li>Bonus Pecks for milestones and perfect weeks</li>
+          </ul>
+        </div>
         <div class="split-visual">
           <div class="panel panel--gold">
             <span class="float-chip"><span class="coin"></span>+10</span>
@@ -182,65 +197,121 @@
                 <span class="shop-price shop-price--owned">Owned ✓</span>
               </div>
             </div>
-            <img class="panel-mascot" src="assets/jump.png" alt="" />
+            <div class="stat-line"><span>Your balance</span><b>240 Pecks</b></div>
           </div>
-        </div>
-        <div class="split-copy">
-          <p class="section-kicker">Pecks &amp; the shop</p>
-          <h3>Every check-in pays.</h3>
-          <p>Each action you log earns Pecks. Spend them on outfits and goodies for Nivo — your progress, wearing a tiny hat.</p>
-          <ul>
-            <li>Earn Pecks for every completed action</li>
-            <li>Dress up Nivo with outfits from the shop</li>
-            <li>Bonus Pecks for milestones and perfect weeks</li>
-          </ul>
         </div>
       </div>
 
-      <div class="bento reveal">
-        <div class="bento-card">
-          <div class="bento-visual bv--purple">
-            <div class="mini-dark mini-gems">
-              <span class="gem gem--blue"></span>
-              <span class="gem gem--gold"></span>
-              <span class="gem gem--purple"></span>
-            </div>
-          </div>
-          <h3>Collect gems</h3>
+      <div class="tab-panel split" id="tab-gems" role="tabpanel">
+        <div class="split-copy">
+          <p class="section-kicker">Gems</p>
+          <h3>A shelf full of finished goals.</h3>
           <p>Finish a goal and a one-of-a-kind gem joins your Trophy Shelf — a season-by-season record of what you've achieved.</p>
+          <ul>
+            <li>A unique gem for every goal you complete</li>
+            <li>Seasonal shelves archive your progress</li>
+            <li>A little reveal moment every time you finish</li>
+          </ul>
         </div>
-        <div class="bento-card">
-          <div class="bento-visual bv--green">
-            <div class="mini-dark mini-cal">
-              <span class="on">M</span><span class="on">T</span><span class="on">W</span><span class="on">T</span><span class="on">F</span><span class="on">S</span><span class="rest">☾</span>
+        <div class="split-visual">
+          <div class="panel panel--purple">
+            <div class="gem-grid gem-grid--lg">
+              <div class="gem-slot"><span class="gem gem--blue"></span></div>
+              <div class="gem-slot"><span class="gem gem--gold"></span></div>
+              <div class="gem-slot"><span class="gem gem--purple"></span></div>
+              <div class="gem-slot"><span class="gem gem--green"></span></div>
+              <div class="gem-slot gem-slot--empty"><span>?</span></div>
+              <div class="gem-slot gem-slot--empty"><span>?</span></div>
             </div>
+            <div class="stat-line"><span>Season 3</span><b>4 of 6 goals</b></div>
           </div>
-          <h3>Rest days included</h3>
-          <p>Consistency isn't perfection. Schedule rest days that protect your streak while you recharge.</p>
         </div>
-        <div class="bento-card">
-          <div class="bento-visual bv--blue">
-            <div class="mini-dark">
-              <div class="mini-bars">
-                <i style="height:45%"></i><i class="on" style="height:70%"></i><i class="best" style="height:95%"></i><i class="on" style="height:55%"></i><i style="height:30%"></i><i class="on" style="height:80%"></i><i class="on" style="height:60%"></i>
+      </div>
+
+      <div class="tab-panel split" id="tab-rest" role="tabpanel">
+        <div class="split-copy">
+          <p class="section-kicker">Rest days</p>
+          <h3>Recharge without breaking anything.</h3>
+          <p>Consistency isn't perfection. Schedule rest days ahead of time and your streak stays protected while you take a breather.</p>
+          <ul>
+            <li>Plan rest days around your real life</li>
+            <li>Your streak is safe while you're off</li>
+            <li>Gentle pace — no guilt, no pressure</li>
+          </ul>
+        </div>
+        <div class="split-visual">
+          <div class="panel panel--green">
+            <div class="ui-card ui-card--tilt-l">
+              <div class="ui-flame-row">
+                <span class="ui-flame ui-flame--green">☾</span>
+                <span><b>Rest day</b><small>Every Sunday</small></span>
+              </div>
+              <div class="week-row">
+                <span class="week-day"><span class="week-dot week-dot--done">✓</span>M</span>
+                <span class="week-day"><span class="week-dot week-dot--done">✓</span>T</span>
+                <span class="week-day"><span class="week-dot week-dot--done">✓</span>W</span>
+                <span class="week-day"><span class="week-dot week-dot--done">✓</span>T</span>
+                <span class="week-day"><span class="week-dot week-dot--done">✓</span>F</span>
+                <span class="week-day"><span class="week-dot week-dot--done">✓</span>S</span>
+                <span class="week-day"><span class="week-dot week-dot--rest">☾</span>S</span>
               </div>
             </div>
+            <div class="ui-banner ui-banner--green ui-card--tilt-r">☾&nbsp; Rest day — your streak is protected.</div>
           </div>
-          <h3>Weekly insights</h3>
-          <p>A gentle Sunday recap: what stuck, what slipped, and one small suggestion for next week.</p>
         </div>
-        <div class="bento-card">
-          <div class="bento-visual bv--gold">
-            <div style="display:flex; flex-direction:column; align-items:center; gap:14px;">
-              <div class="mini-dark mini-widget">
-                <img src="assets/nivo.png" alt="" />
-                <span><b>🔥 12 days</b><small>Keep it going!</small></span>
+      </div>
+
+      <div class="tab-panel split" id="tab-insights" role="tabpanel">
+        <div class="split-copy">
+          <p class="section-kicker">Weekly insights</p>
+          <h3>See the week, not just the day.</h3>
+          <p>Every Sunday, a gentle recap: what stuck, what slipped, and one small suggestion for the week ahead.</p>
+          <ul>
+            <li>A calm Sunday summary of your week</li>
+            <li>Spot your best days at a glance</li>
+            <li>One small, doable suggestion each week</li>
+          </ul>
+        </div>
+        <div class="split-visual">
+          <div class="panel panel--blue">
+            <div class="bars-card ui-card">
+              <div class="bars">
+                <i class="bar bar--on" style="height:52%"></i>
+                <i class="bar bar--best" style="height:88%"></i>
+                <i class="bar bar--on" style="height:64%"></i>
+                <i class="bar" style="height:18%"></i>
+                <i class="bar bar--on" style="height:72%"></i>
+                <i class="bar bar--on" style="height:58%"></i>
+                <i class="bar" style="height:26%"></i>
               </div>
-              <div class="icon-swatches"><i></i><i></i><i></i></div>
+              <div class="bar-labels"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
             </div>
+            <div class="stat-line"><span>Best day</span><b>Tuesday</b></div>
+            <div class="stat-line"><span>Days showed up</span><b>5 of 7</b></div>
           </div>
-          <h3>On your home screen</h3>
-          <p>A widget that keeps your streak in sight, plus unlockable app icons to match your vibe.</p>
+        </div>
+      </div>
+
+      <div class="tab-panel split" id="tab-widget" role="tabpanel">
+        <div class="split-copy">
+          <p class="section-kicker">Home screen</p>
+          <h3>Your streak, always in sight.</h3>
+          <p>A home-screen widget keeps today's progress one glance away, and unlockable app icons let Nivolo match your vibe.</p>
+          <ul>
+            <li>Widget with your streak and today's goals</li>
+            <li>Unlockable app icons in the shop</li>
+            <li>Seasonal looks throughout the year</li>
+          </ul>
+        </div>
+        <div class="split-visual">
+          <div class="panel panel--gold">
+            <div class="widget-card">
+              <span class="widget-flame">🔥</span>
+              <span><b>12 day streak</b><small>2 of 3 goals done today</small></span>
+            </div>
+            <div class="icon-swatches"><i></i><i></i><i></i><i></i></div>
+            <div class="stat-line"><span>App icons unlocked</span><b>4 of 10</b></div>
+          </div>
         </div>
       </div>
     </div>
@@ -248,6 +319,9 @@
 
   <section class="cta">
     <div class="cta-panel reveal">
+      <span class="cta-gem gem gem--blue" style="left: 11%; top: 26%;" aria-hidden="true"></span>
+      <span class="cta-gem gem gem--gold" style="right: 13%; top: 34%;" aria-hidden="true"></span>
+      <span class="cta-gem gem gem--purple" style="left: 19%; bottom: 20%;" aria-hidden="true"></span>
       <h2>Your first goal takes 30&nbsp;seconds.</h2>
       <p class="cta-sub">The rest is one small action a day. Nivo will be waiting.</p>
       <!-- TODO: replace href with the real App Store link -->
@@ -256,11 +330,6 @@
         Download on the App Store
       </a>
       <p class="cta-note">Free to download · No account needed</p>
-      <div class="lineup">
-        <img src="assets/sleepy.png" alt="" draggable="false" />
-        <button id="nivo-hit" aria-label="Tap Nivo"><img id="nivo-img" src="assets/nivo.png" alt="Nivo the penguin" draggable="false" /></button>
-        <img src="assets/jump.png" alt="" draggable="false" />
-      </div>
     </div>
   </section>
 
@@ -281,13 +350,16 @@
     }, { threshold: 0.12 });
     document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
 
-    // Easter egg: Nivo jumps when tapped
-    const hit = document.getElementById("nivo-hit");
-    const img = document.getElementById("nivo-img");
-    hit.addEventListener("click", () => {
-      img.classList.remove("nivo-jump");
-      void img.offsetWidth;
-      img.classList.add("nivo-jump");
+    // Feature tabs
+    document.querySelectorAll(".tab-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelector(".tab-btn.active").classList.remove("active");
+        document.querySelector(".tab-panel.active").classList.remove("active");
+        document.querySelectorAll(".tab-btn").forEach((b) => b.setAttribute("aria-selected", "false"));
+        btn.classList.add("active");
+        btn.setAttribute("aria-selected", "true");
+        document.getElementById(btn.dataset.tab).classList.add("active");
+      });
     });
   </script>
 </body>
