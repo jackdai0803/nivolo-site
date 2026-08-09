@@ -82,7 +82,16 @@
 
   var walls = [];
   var icons = []; // { body, el, key, label }
-  var rimYCurrent = 0; // top of the bowl, set by buildWalls
+  var rimYCurrent = 0;   // top of the bowl, set by buildWalls
+  var bowlHalfCurrent = 0; // bowl half-width, set by buildWalls
+  var skyTop = 0;        // stage-relative y of the PAGE top (negative)
+
+  /* Stage-relative y of the top of the page — icons spawn above it so
+     they enter falling from the real top of the viewport. */
+  function measureSky() {
+    var r = stage.getBoundingClientRect();
+    skyTop = -(r.top + window.scrollY);
+  }
 
   function stageSize() {
     return { w: stage.clientWidth, h: stage.clientHeight };
@@ -103,11 +112,13 @@
     walls = [];
     var s = stageSize();
     var bowlW = Math.min(760, s.w * 0.92);
-    var bowlH = s.w < 640 ? 200 : 250;
+    var bowlH = s.w < 640 ? 200 : 285;
     var rimY = s.h - 12 - bowlH;
     rimYCurrent = rimY;
     var cx = s.w / 2;
     var a = bowlW / 2, b = bowlH;
+    bowlHalfCurrent = a;
+    measureSky();
 
     var pts = [];
     var SEGS = 26;
@@ -124,13 +135,36 @@
         isStatic: true, angle: ang, friction: 0.4, restitution: 0.1,
       }));
     }
-    // Rim guards angled slightly outward, and hard stage bounds.
-    walls.push(Bodies.rectangle(cx - a - 16, rimY - 210, 28, 520, { isStatic: true, angle: -0.08 }));
-    walls.push(Bodies.rectangle(cx + a + 16, rimY - 210, 28, 520, { isStatic: true, angle: 0.08 }));
-    walls.push(Bodies.rectangle(-40, s.h / 2 - 300, 80, s.h + 1200, { isStatic: true }));
-    walls.push(Bodies.rectangle(s.w + 40, s.h / 2 - 300, 80, s.h + 1200, { isStatic: true }));
-    walls.push(Bodies.rectangle(cx, -640, s.w + 400, 80, { isStatic: true }));
+    // Funnel flares instead of near-vertical guards: their lower ends sit
+    // at the rim endpoints and they lean 20° outward, so the rim corner is
+    // obtuse — edge landings slide into the bowl, and columns can't stack
+    // against them the way they could against a vertical wall.
+    var skyH = -skyTop + 600;
+    var FLARE = 0.35, glen = 560, ghalf = glen / 2;
+    var gdx = Math.sin(FLARE) * ghalf, gdy = Math.cos(FLARE) * ghalf;
+    walls.push(Bodies.rectangle(cx - a - 4 - gdx, rimY + 10 - gdy, 28, glen, { isStatic: true, angle: -FLARE }));
+    walls.push(Bodies.rectangle(cx + a + 4 + gdx, rimY + 10 - gdy, 28, glen, { isStatic: true, angle: FLARE }));
+    walls.push(Bodies.rectangle(-40, rimY - skyH / 2, 80, skyH + s.h, { isStatic: true }));
+    walls.push(Bodies.rectangle(s.w + 40, rimY - skyH / 2, 80, skyH + s.h, { isStatic: true }));
+    walls.push(Bodies.rectangle(cx, skyTop - 460, s.w + 400, 80, { isStatic: true }));
     walls.push(Bodies.rectangle(cx, s.h + 220, s.w + 400, 80, { isStatic: true })); // last-resort net
+
+    // The hero buttons are terrain: falling icons bounce off them on the
+    // way down. Tiny opposite tilts make them roofs, not resting ledges.
+    var stageRect = stage.getBoundingClientRect();
+    var btns = document.querySelectorAll(".hero-actions a");
+    Array.prototype.forEach.call(btns, function (btn, bi) {
+      var r = btn.getBoundingClientRect();
+      if (!r.width) return;
+      walls.push(Bodies.rectangle(
+        r.left - stageRect.left + r.width / 2,
+        r.top - stageRect.top + r.height / 2,
+        r.width, r.height,
+        // Frictionless: Matter uses the pair's MIN friction, so nothing
+        // can rest on these tilted roofs — icons always slide off.
+        { isStatic: true, chamfer: { radius: Math.min(16, r.height / 2 - 1) }, angle: bi === 0 ? -0.09 : 0.09, friction: 0, frictionStatic: 0 }
+      ));
+    });
     walls.forEach(function (wb) { Composite.add(engine.world, wb); });
   }
 
@@ -152,7 +186,7 @@
 
       var body = Bodies.rectangle(
         cx + halfBowl * (offsets[i % offsets.length] || 0),
-        -70 - (i % 3) * 60,
+        skyTop - size / 2 - Math.random() * 140,
         size, size,
         {
           chamfer: { radius: size * 0.225 },
@@ -306,29 +340,42 @@
     else if (stage.getBoundingClientRect().bottom > 0) setRunning(true);
   });
 
-  /* Escape hatch: anything that clips through geometry gets re-dropped.
-     Arch breaker: icons at rest ABOVE the rim are wedged mid-air (bridged
-     across the mouth) — a gentle nudge toward center collapses the arch. */
-  setInterval(function () {
+  /* Maintenance pass on the ENGINE TICK (not wall clock — must advance
+     with sim time, and pause with it). Escape hatch: anything that clips
+     through geometry gets re-dropped. Arch breaker: icons at rest above
+     the rim are perched or wedged — shear them loose. */
+  var maintTick = 0;
+  Matter.Events.on(engine, "afterUpdate", function () {
+    if (++maintTick % 100 !== 0) return;
     var s = stageSize();
     icons.forEach(function (it) {
       var b = it.body, p = b.position;
-      if (p.y > s.h + 160 || p.x < -160 || p.x > s.w + 160) {
-        Body.setPosition(b, { x: s.w / 2 + (Math.random() * 120 - 60), y: -80 });
+      // Clipped through geometry, or settled in the dead channel between
+      // the bowl and the stage edge → drop it back in from the sky.
+      var inSideChannel = p.y > rimYCurrent && b.speed < 0.3 &&
+        Math.abs(p.x - s.w / 2) > bowlHalfCurrent + 4;
+      if (p.y > s.h + 160 || p.x < -160 || p.x > s.w + 160 || inSideChannel) {
+        Body.setPosition(b, { x: s.w / 2 + (Math.random() * 240 - 120), y: skyTop - 120 });
         Body.setVelocity(b, { x: 0, y: 0 });
         Matter.Sleeping.set(b, false);
         return;
       }
       if (!dragConstraint && p.y < rimYCurrent && b.speed < 0.3) {
-        // Lateral shear topples a stack; pressing down only compacts it.
+        // At rest above the rim = perched or wedged. Shear direction
+        // depends on altitude: up at button level push OUTWARD (sheds
+        // off the button ends; inward herds a mound at the center seam
+        // between the buttons). Down near the mouth push INWARD (topples
+        // corner piles into the bowl; outward jams them into the guards).
+        var outward = p.y < -60;
+        var dir = (p.x < s.w / 2 ? 1 : -1) * (outward ? -1 : 1);
         Matter.Sleeping.set(b, false);
         Body.applyForce(b, p, {
-          x: (p.x < s.w / 2 ? 1 : -1) * 0.006 * b.mass,
+          x: dir * 0.006 * b.mass,
           y: 0.002 * b.mass,
         });
       }
     });
-  }, 2500);
+  });
 
   /* Rebuild walls on resize; nudge icons back over the bowl. */
   var resizeTimer = null;
@@ -350,4 +397,14 @@
   buildWalls();
   spawnIcons();
   setRunning(true);
+  // Button rects shift once the webfont lands — remeasure the terrain.
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(function () { buildWalls(); });
+  }
+
+  // Console/debug handle: lets tooling step the sim deterministically
+  // (rAF never fires in hidden tabs, so screenshots freeze mid-pour).
+  window.__nivolo = { engine: engine, icons: icons, step: function (n) {
+    for (var i = 0; i < n; i++) Engine.update(engine, 16.7);
+  } };
 })();
