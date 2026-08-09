@@ -47,7 +47,7 @@
   /* Static fallback: icons resting in the bowl, no physics. */
   function staticFallback() {
     var w = stage.clientWidth, h = stage.clientHeight;
-    var size = w < 640 ? 52 : 68;
+    var size = iconSize();
     var cx = w / 2;
     var bowlW = Math.min(760, w * 0.92);
     ICONS.forEach(function (icon, i) {
@@ -82,13 +82,18 @@
 
   var walls = [];
   var icons = []; // { body, el, key, label }
+  var rimYCurrent = 0; // top of the bowl, set by buildWalls
 
   function stageSize() {
     return { w: stage.clientWidth, h: stage.clientHeight };
   }
 
   function iconSize() {
-    return stageSize().w < 640 ? 50 : 64;
+    // Scale with the bowl so the icons read big on desktop (~88px)
+    // without overflowing the mobile bowl (~52px). Capped at 88: much
+    // bigger and 8-9 icons span the bowl mouth, wedging into an arch.
+    var bw = Math.min(760, stageSize().w * 0.92);
+    return Math.round(Math.max(52, Math.min(88, bw * 0.115)));
   }
 
   /* Build the bowl from static segments tracing a U-shaped ellipse arc
@@ -100,6 +105,7 @@
     var bowlW = Math.min(760, s.w * 0.92);
     var bowlH = s.w < 640 ? 200 : 250;
     var rimY = s.h - 12 - bowlH;
+    rimYCurrent = rimY;
     var cx = s.w / 2;
     var a = bowlW / 2, b = bowlH;
 
@@ -136,7 +142,7 @@
     // Drop points stay well inside the bowl mouth (alternating sides) so
     // icons slide down the curve — spreading to the rim lets them wedge
     // into a stable arch across the mouth; stacking one column is worse.
-    var offsets = [-0.5, 0.4, -0.3, 0.5, -0.1, 0.2, -0.4, 0, 0.3, -0.2];
+    var offsets = [-0.42, 0.34, -0.22, 0.42, -0.08, 0.16, -0.34, 0, 0.26, -0.14];
     ICONS.forEach(function (icon, i) {
       var el = document.createElement("div");
       el.className = "pit-icon";
@@ -162,7 +168,7 @@
       setTimeout(function () {
         Composite.add(engine.world, body);
         if (i === ICONS.length - 1) pit.classList.add("ready");
-      }, 260 + i * 220);
+      }, 260 + i * 340);
     });
   }
 
@@ -300,15 +306,26 @@
     else if (stage.getBoundingClientRect().bottom > 0) setRunning(true);
   });
 
-  /* Escape hatch: anything that clips through geometry gets re-dropped. */
+  /* Escape hatch: anything that clips through geometry gets re-dropped.
+     Arch breaker: icons at rest ABOVE the rim are wedged mid-air (bridged
+     across the mouth) — a gentle nudge toward center collapses the arch. */
   setInterval(function () {
     var s = stageSize();
     icons.forEach(function (it) {
-      var p = it.body.position;
+      var b = it.body, p = b.position;
       if (p.y > s.h + 160 || p.x < -160 || p.x > s.w + 160) {
-        Body.setPosition(it.body, { x: s.w / 2 + (Math.random() * 120 - 60), y: -80 });
-        Body.setVelocity(it.body, { x: 0, y: 0 });
-        Matter.Sleeping.set(it.body, false);
+        Body.setPosition(b, { x: s.w / 2 + (Math.random() * 120 - 60), y: -80 });
+        Body.setVelocity(b, { x: 0, y: 0 });
+        Matter.Sleeping.set(b, false);
+        return;
+      }
+      if (!dragConstraint && p.y < rimYCurrent && b.speed < 0.3) {
+        // Lateral shear topples a stack; pressing down only compacts it.
+        Matter.Sleeping.set(b, false);
+        Body.applyForce(b, p, {
+          x: (p.x < s.w / 2 ? 1 : -1) * 0.006 * b.mass,
+          y: 0.002 * b.mass,
+        });
       }
     });
   }, 2500);
