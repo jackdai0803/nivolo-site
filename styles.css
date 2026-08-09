@@ -1,4 +1,4 @@
-/* ── Nivolo site v4 — light ice, premium & clean, tabbed features, no mascot art ── */
+/* ── Nivolo site v5 — light ice, premium, app UI + Nivo mascot moments ── */
 :root {
   --bg: #F6F8FB;
   --card: #FFFFFF;
@@ -65,10 +65,12 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
   color: var(--ink);
 }
 .logo-mark {
-  width: 22px; height: 22px; border-radius: 7px; flex-shrink: 0;
-  background: linear-gradient(135deg, #64B9F0, #1F8FE5);
-  box-shadow: 0 2px 8px rgba(31, 143, 229, 0.35);
+  width: 28px; height: 28px; border-radius: 9px; flex-shrink: 0;
+  display: grid; place-items: center; overflow: hidden;
+  background: #0B0B0F;
+  box-shadow: 0 2px 8px rgba(11, 28, 44, 0.25);
 }
+.logo-mark img { width: 100%; height: 100%; object-fit: cover; }
 .logo:hover { text-decoration: none; }
 .nav-links { display: flex; align-items: center; gap: 22px; font-size: 14px; font-weight: 600; }
 .nav-links a { color: var(--ink-2); }
@@ -129,6 +131,16 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
   pointer-events: none;
   z-index: -1;
 }
+.hero::after {
+  content: "";
+  position: absolute; left: 50%; top: 470px; width: min(920px, 90vw); height: 360px;
+  transform: translateX(-50%);
+  background-image: radial-gradient(rgba(31, 143, 229, 0.16) 1px, transparent 1px);
+  background-size: 22px 22px;
+  mask-image: radial-gradient(ellipse, #000 12%, transparent 72%);
+  -webkit-mask-image: radial-gradient(ellipse, #000 12%, transparent 72%);
+  pointer-events: none; z-index: -1;
+}
 .kicker-chip {
   display: inline-flex; align-items: center; gap: 8px;
   background: #fff; border: 1px solid var(--line);
@@ -173,6 +185,45 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
   margin: 64px auto 0;
   max-width: 1000px;
   padding-bottom: 48px;
+}
+.hero-nivo {
+  position: absolute; left: 50%; top: 324px; z-index: 7;
+  width: 208px; height: 214px;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.hero-nivo > img {
+  position: absolute; inset: 0 auto auto 50%;
+  width: 188px; height: auto; transform: translateX(-50%);
+  filter: drop-shadow(0 18px 18px rgba(6, 21, 35, 0.24));
+  animation: nivoBounce 4.8s ease-in-out infinite;
+}
+.nivo-shadow {
+  position: absolute; left: 50%; bottom: 0; width: 112px; height: 18px;
+  transform: translateX(-50%); border-radius: 50%;
+  background: rgba(7, 22, 35, 0.20); filter: blur(5px);
+  animation: nivoShadow 4.8s ease-in-out infinite;
+}
+.nivo-orbit {
+  position: absolute; z-index: 2;
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 12px; border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 999px; background: rgba(20, 26, 40, 0.94); color: #EAF1F8;
+  box-shadow: 0 12px 28px rgba(11, 28, 44, 0.24);
+  font-size: 11px; font-weight: 600; white-space: nowrap;
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+}
+.nivo-orbit b { color: #fff; font-weight: 800; }
+.nivo-orbit .coin { width: 13px; height: 13px; }
+.nivo-orbit--streak { left: -42px; top: 56px; transform: rotate(-5deg); }
+.nivo-orbit--pecks { right: -52px; top: 22px; transform: rotate(5deg); }
+@keyframes nivoBounce {
+  0%, 100% { translate: 0 0; rotate: -1deg; }
+  50% { translate: 0 -10px; rotate: 1deg; }
+}
+@keyframes nivoShadow {
+  0%, 100% { scale: 1; opacity: 0.8; }
+  50% { scale: 0.82; opacity: 0.45; }
 }
 .phone {
   position: relative;
@@ -358,6 +409,7 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
   grid-template-columns: 1fr 1fr;
   gap: 72px; align-items: center;
 }
+.split > * { min-width: 0; }
 .split-copy .section-kicker { margin-bottom: 10px; }
 .split-copy h3 {
   font-family: var(--font-display);
@@ -385,6 +437,13 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
   gap: 14px; padding: 44px 36px;
   overflow: hidden;
 }
+.panel-nivo {
+  position: absolute; left: 20px; bottom: -12px;
+  width: 126px; height: auto;
+  opacity: 0.22; transform: rotate(-5deg);
+  filter: saturate(0.9);
+}
+.panel--gold .shop-row, .panel--gold .stat-line, .panel--gold .float-chip { position: relative; z-index: 1; }
 .panel--blue   { background: linear-gradient(160deg, #EAF4FD, #DCEDFA); }
 .panel--gold   { background: linear-gradient(160deg, #FFF6DF, #FDEEC6); }
 .panel--purple { background: linear-gradient(160deg, #F3EDFE, #E9DFFC); }
@@ -506,6 +565,64 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
 .icon-swatches i:nth-child(3) { background: linear-gradient(160deg, #9BDCFF, #2FA8E8); }
 .icon-swatches i:nth-child(4) { background: linear-gradient(160deg, #E3B8FF, #8B5CF6); }
 
+/* ── Nivo personality strip ── */
+.buddy-section { padding: 104px 0 0; }
+.buddy-shell {
+  position: relative; overflow: hidden;
+  display: grid; grid-template-columns: 0.82fr 1.38fr; gap: 56px; align-items: center;
+  padding: 64px 60px;
+  border: 1px solid var(--line); border-radius: 40px;
+  background:
+    radial-gradient(320px 220px at 8% 8%, rgba(100, 210, 255, 0.18), transparent 72%),
+    linear-gradient(150deg, #FFFFFF, #EEF6FC);
+  box-shadow: var(--shadow-md);
+}
+.buddy-shell::before {
+  content: ""; position: absolute; right: -80px; bottom: -120px;
+  width: 400px; height: 400px; border-radius: 50%;
+  border: 80px solid rgba(31, 143, 229, 0.045);
+}
+.buddy-copy { position: relative; z-index: 2; }
+.buddy-copy h2 {
+  font-family: var(--font-display); font-size: clamp(30px, 4vw, 46px);
+  font-weight: 800; letter-spacing: -0.035em; line-height: 1.06;
+  margin-bottom: 16px;
+}
+.buddy-copy > p:not(.section-kicker) { color: var(--ink-2); font-size: 16px; max-width: 390px; }
+.buddy-proof { display: flex; flex-direction: column; gap: 10px; margin-top: 24px; }
+.buddy-proof span { display: flex; align-items: center; gap: 9px; font-size: 14px; font-weight: 700; }
+.buddy-proof-icon {
+  display: grid; place-items: center; width: 23px; height: 23px; border-radius: 50%;
+  background: var(--blue-soft); color: var(--blue); font-size: 11px; font-style: normal;
+}
+.buddy-scenes { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; align-items: end; }
+.buddy-card {
+  position: relative; min-width: 0; height: 326px; overflow: hidden;
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+  padding: 18px 14px; border-radius: 28px; border: 1px solid rgba(11, 28, 44, 0.07);
+  box-shadow: 0 14px 34px rgba(11, 28, 44, 0.11);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.buddy-card:hover { transform: translateY(-6px); box-shadow: 0 20px 42px rgba(11, 28, 44, 0.16); }
+.buddy-card--steady { background: linear-gradient(165deg, #EAF6FD, #CFEAF9); transform: rotate(-2deg); }
+.buddy-card--celebrate { background: linear-gradient(165deg, #FFF7DF, #FDE8AE); z-index: 2; }
+.buddy-card--rest { background: linear-gradient(165deg, #EDF8F1, #D8F0E1); transform: rotate(2deg); }
+.buddy-label {
+  position: absolute; left: 14px; top: 14px; z-index: 3;
+  padding: 6px 10px; border-radius: 999px; background: rgba(255, 255, 255, 0.76);
+  color: var(--ink-2); font-size: 10px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase;
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+}
+.buddy-card img { display: block; position: absolute; object-fit: contain; }
+.buddy-card--steady img { width: 156px; bottom: 54px; }
+.buddy-card--celebrate img { width: 214px; bottom: 47px; }
+.buddy-card--rest img { width: 198px; bottom: 42px; }
+.buddy-message {
+  position: relative; z-index: 3; width: 100%; padding: 10px 8px 0;
+  border-top: 1px solid rgba(11, 28, 44, 0.08);
+  color: var(--ink); font-size: 11px; font-weight: 800; text-align: center;
+}
+
 /* ── CTA panel ── */
 .cta { padding: 104px 24px 24px; }
 .cta-panel {
@@ -524,6 +641,12 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
     radial-gradient(420px 260px at 20% 0%, rgba(100, 210, 255, 0.14), transparent 70%),
     radial-gradient(420px 260px at 85% 20%, rgba(255, 214, 10, 0.08), transparent 70%);
   pointer-events: none;
+}
+.cta-nivo {
+  position: absolute; right: clamp(18px, 6vw, 84px); bottom: -48px;
+  width: clamp(130px, 18vw, 214px); height: auto;
+  filter: drop-shadow(0 18px 26px rgba(0, 0, 0, 0.28));
+  transform: rotate(-4deg);
 }
 .cta-panel h2 {
   position: relative;
@@ -582,8 +705,14 @@ footer { padding: 40px 0 48px; }
 /* ── Responsive ── */
 @media (max-width: 960px) {
   .phone--left, .phone--right { display: none; }
+  .hero-nivo { left: calc(50% + 170px); top: 300px; }
+  .nivo-orbit--streak { display: none; }
   .split { grid-template-columns: 1fr; gap: 36px; }
   .panel { min-height: 340px; }
+  .buddy-shell { grid-template-columns: 1fr; gap: 42px; padding: 52px 44px; }
+  .buddy-copy { text-align: center; }
+  .buddy-copy > p:not(.section-kicker) { margin-inline: auto; }
+  .buddy-proof { align-items: center; }
 }
 @media (max-width: 640px) {
   nav { top: 8px; }
@@ -593,17 +722,32 @@ footer { padding: 40px 0 48px; }
   .trio { margin-top: 48px; }
   .phone--center { width: 272px; }
   .phone--center .phone-screen { height: 556px; }
+  .hero-nivo { left: calc(50% + 96px); top: 360px; width: 130px; height: 152px; }
+  .hero-nivo > img { width: 126px; }
+  .nivo-orbit--pecks { right: -22px; top: 4px; }
+  .nivo-shadow { width: 76px; }
   .section { padding-top: 80px; }
+  .panel { width: 100%; padding-inline: 18px; }
   .tabs { gap: 6px; }
   .tab-btn { font-size: 13px; padding: 8px 15px; }
   .cta { padding-top: 80px; }
   .cta-panel { padding: 72px 24px 80px; border-radius: 32px; }
+  .cta-gem { display: none; }
+  .cta-nivo { right: -22px; bottom: -28px; width: 112px; opacity: 0.84; }
   .float-chip { top: 22px; right: 22px; }
+  .buddy-section { padding-top: 80px; }
+  .buddy-shell { padding: 42px 18px 24px; border-radius: 32px; }
+  .buddy-scenes { grid-template-columns: repeat(3, minmax(118px, 1fr)); gap: 10px; overflow-x: auto; padding: 10px 4px 20px; scroll-snap-type: x mandatory; }
+  .buddy-card { height: 278px; border-radius: 24px; scroll-snap-align: center; }
+  .buddy-card--steady img { width: 132px; }
+  .buddy-card--celebrate img { width: 174px; }
+  .buddy-card--rest img { width: 168px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1; transform: none; transition: none; }
   .tab-panel.active { animation: none; }
   .cta-gem { animation: none; }
+  .hero-nivo > img, .nivo-shadow { animation: none; }
   html { scroll-behavior: auto; }
 }
