@@ -148,23 +148,6 @@
     walls.push(Bodies.rectangle(s.w + 40, rimY - skyH / 2, 80, skyH + s.h, { isStatic: true }));
     walls.push(Bodies.rectangle(cx, skyTop - 460, s.w + 400, 80, { isStatic: true }));
     walls.push(Bodies.rectangle(cx, s.h + 220, s.w + 400, 80, { isStatic: true })); // last-resort net
-
-    // The hero buttons are terrain: falling icons bounce off them on the
-    // way down. Tiny opposite tilts make them roofs, not resting ledges.
-    var stageRect = stage.getBoundingClientRect();
-    var btns = document.querySelectorAll(".hero-actions a");
-    Array.prototype.forEach.call(btns, function (btn, bi) {
-      var r = btn.getBoundingClientRect();
-      if (!r.width) return;
-      walls.push(Bodies.rectangle(
-        r.left - stageRect.left + r.width / 2,
-        r.top - stageRect.top + r.height / 2,
-        r.width, r.height,
-        // Frictionless: Matter uses the pair's MIN friction, so nothing
-        // can rest on these tilted roofs — icons always slide off.
-        { isStatic: true, chamfer: { radius: Math.min(16, r.height / 2 - 1) }, angle: bi === 0 ? -0.09 : 0.09, friction: 0, frictionStatic: 0 }
-      ));
-    });
     walls.forEach(function (wb) { Composite.add(engine.world, wb); });
   }
 
@@ -361,16 +344,11 @@
         return;
       }
       if (!dragConstraint && p.y < rimYCurrent && b.speed < 0.3) {
-        // At rest above the rim = perched or wedged. Shear direction
-        // depends on altitude: up at button level push OUTWARD (sheds
-        // off the button ends; inward herds a mound at the center seam
-        // between the buttons). Down near the mouth push INWARD (topples
-        // corner piles into the bowl; outward jams them into the guards).
-        var outward = p.y < -60;
-        var dir = (p.x < s.w / 2 ? 1 : -1) * (outward ? -1 : 1);
+        // At rest above the rim = wedged near the mouth. Push INWARD —
+        // topples piles into the bowl; outward jams them into the flares.
         Matter.Sleeping.set(b, false);
         Body.applyForce(b, p, {
-          x: dir * 0.006 * b.mass,
+          x: (p.x < s.w / 2 ? 1 : -1) * 0.006 * b.mass,
           y: 0.002 * b.mass,
         });
       }
