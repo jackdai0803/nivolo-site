@@ -385,4 +385,9 @@
   window.__nivolo = { engine: engine, icons: icons, step: function (n) {
     for (var i = 0; i < n; i++) Engine.update(engine, 16.7);
   } };
+  // ?settle fast-forwards past the pour once all icons have spawned —
+  // for screenshot tooling that can't wait out the animation.
+  if (/[?&]settle\b/.test(location.search)) {
+    setTimeout(function () { window.__nivolo.step(2600); }, 4200);
+  }
 })();
