@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=6" />
+  <link rel="stylesheet" href="styles.css?v=7" />
 </head>
 <body>
 
@@ -40,93 +40,16 @@
     </div>
     <p class="hero-note">Free to download · iPhone · English &amp; 中文</p>
 
-    <div class="trio">
-      <div class="hero-nivo" aria-hidden="true">
-        <span class="nivo-orbit nivo-orbit--streak">🔥 <b>12</b> days</span>
-        <span class="nivo-orbit nivo-orbit--pecks"><span class="coin"></span><b>+10</b> Pecks</span>
-        <img src="assets/jump-v2.png" alt="" />
-        <span class="nivo-shadow"></span>
+    <div class="icon-pit reveal in" id="iconPit">
+      <div class="pit-stage" id="pitStage" aria-label="A glass bowl of Nivolo's ten unlockable app icons — grab and toss them">
+        <span class="pit-hint">Go on — grab one.</span>
+        <div class="bowl-visual"></div>
       </div>
-      <div class="phone phone--left" aria-hidden="true">
-        <div class="phone-screen">
-          <div class="scr-status"><span>9:41</span><span class="scr-batt"></span></div>
-          <div class="scr-body">
-            <div class="scr-title">Trophy Shelf</div>
-            <p class="scr-sub">Season 3 · Winter</p>
-            <div class="gem-grid">
-              <div class="gem-slot"><span class="gem gem--blue"></span></div>
-              <div class="gem-slot"><span class="gem gem--gold"></span></div>
-              <div class="gem-slot"><span class="gem gem--purple"></span></div>
-              <div class="gem-slot"><span class="gem gem--green"></span></div>
-              <div class="gem-slot gem-slot--empty"><span>?</span></div>
-              <div class="gem-slot gem-slot--empty"><span>?</span></div>
-            </div>
-            <div class="stat-line"><span>Goals finished</span><b>4 of 6</b></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="phone phone--center" aria-hidden="true">
-        <div class="phone-screen">
-          <div class="scr-status"><span>9:41</span><span class="scr-batt"></span></div>
-          <div class="scr-body">
-            <div class="chip-row">
-              <span class="app-chip app-chip--streak">🔥 12</span>
-              <span class="app-chip app-chip--pecks"><span class="coin"></span>240</span>
-            </div>
-            <div class="scr-title">Today</div>
-            <p class="scr-sub">3 goals · 1 done</p>
-            <div class="goal-card">
-              <span class="goal-ring"></span>
-              <span class="grow"><h4>Read 20 minutes</h4><small>12 day streak</small></span>
-              <span class="goal-check"></span>
-            </div>
-            <div class="goal-card goal-card--done">
-              <span class="goal-ring"></span>
-              <span class="grow"><h4>Morning stretch</h4><small>Done · +10 Pecks</small></span>
-              <span class="goal-check">✓</span>
-            </div>
-            <div class="goal-card">
-              <span class="goal-ring" style="background: conic-gradient(#64D2FF 0 30%, #232B3C 30% 100%);"></span>
-              <span class="grow"><h4>Journal one line</h4><small>4 day streak</small></span>
-              <span class="goal-check"></span>
-            </div>
-            <div class="stat-line"><span>This week</span><b>5 of 7 days</b></div>
-          </div>
-          <div class="scr-tabs">
-            <span class="scr-tab scr-tab--on"><i></i>Home</span>
-            <span class="scr-tab"><i></i>Shop</span>
-            <span class="scr-tab"><i></i>Shelf</span>
-            <span class="scr-tab"><i></i>More</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="phone phone--right" aria-hidden="true">
-        <div class="phone-screen">
-          <div class="scr-status"><span>9:41</span><span class="scr-batt"></span></div>
-          <div class="scr-body">
-            <div class="scr-title">This week</div>
-            <p class="scr-sub">5 of 7 days · nice and steady</p>
-            <div class="bars-card">
-              <div class="bars">
-                <i class="bar bar--on" style="height:52%"></i>
-                <i class="bar bar--best" style="height:88%"></i>
-                <i class="bar bar--on" style="height:64%"></i>
-                <i class="bar" style="height:18%"></i>
-                <i class="bar bar--on" style="height:72%"></i>
-                <i class="bar bar--on" style="height:58%"></i>
-                <i class="bar" style="height:26%"></i>
-              </div>
-              <div class="bar-labels"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
-            </div>
-            <div class="stat-line"><span>Best streak</span><b>12 days</b></div>
-            <div class="stat-line"><span>Rest day</span><b>Sunday</b></div>
-          </div>
-        </div>
-      </div>
+      <p class="pit-caption"><b>10 unlockable app icons.</b> Earn them in the app by actually showing up.</p>
     </div>
   </header>
+
+  
 
   <section class="section" id="features">
     <div class="wrap">
@@ -191,7 +114,6 @@
         </div>
         <div class="split-visual">
           <div class="panel panel--gold">
-            <img class="panel-nivo" src="assets/nivo-v2.png" alt="Nivo, Nivolo's penguin mascot" />
             <span class="float-chip"><span class="coin"></span>+10</span>
             <div class="shop-row">
               <div class="shop-card ui-card--tilt-l">
@@ -325,45 +247,11 @@
     </div>
   </section>
 
-  <section class="buddy-section">
-    <div class="wrap">
-      <div class="buddy-shell reveal">
-        <div class="buddy-copy">
-          <p class="section-kicker">Meet your tiny teammate</p>
-          <h2>Nivo shows up for every kind of day.</h2>
-          <p>Big win, slow morning, or well-earned rest day—Nivo keeps your progress warm and your next step small.</p>
-          <div class="buddy-proof">
-            <span><i class="buddy-proof-icon">✓</i>No guilt trips</span>
-            <span><i class="buddy-proof-icon">♥</i>Gentle encouragement</span>
-          </div>
-        </div>
-        <div class="buddy-scenes" aria-label="Nivo mascot moments">
-          <article class="buddy-card buddy-card--steady">
-            <span class="buddy-label">Showing up</span>
-            <img src="assets/nivo-v2.png" alt="Nivo standing proudly" />
-            <span class="buddy-message">One step is enough.</span>
-          </article>
-          <article class="buddy-card buddy-card--celebrate">
-            <span class="buddy-label">Goal complete</span>
-            <img src="assets/jump-v2.png" alt="Nivo jumping in celebration" />
-            <span class="buddy-message">You did the thing!</span>
-          </article>
-          <article class="buddy-card buddy-card--rest">
-            <span class="buddy-label">Rest day</span>
-            <img src="assets/sleepy-v2.png" alt="Nivo resting peacefully" />
-            <span class="buddy-message">Rest keeps streaks healthy.</span>
-          </article>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <section class="cta">
     <div class="cta-panel reveal">
       <span class="cta-gem gem gem--blue" style="left: 11%; top: 26%;" aria-hidden="true"></span>
       <span class="cta-gem gem gem--gold" style="right: 13%; top: 34%;" aria-hidden="true"></span>
       <span class="cta-gem gem gem--purple" style="left: 19%; bottom: 20%;" aria-hidden="true"></span>
-      <img class="cta-nivo" src="assets/nivo-v2.png" alt="Nivo waiting to cheer you on" />
       <h2>Your first goal takes 30&nbsp;seconds.</h2>
       <p class="cta-sub">The rest is one small action a day. Nivo will be waiting.</p>
       <!-- TODO: replace href with the real App Store link -->
@@ -404,5 +292,7 @@
       });
     });
   </script>
+  <script src="https://cdn.jsdelivr.net/npm/matter-js@0.20.0/build/matter.min.js" defer></script>
+  <script src="assets/night.js?v=1" defer></script>
 </body>
 </html>
