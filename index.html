@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=8" />
+  <link rel="stylesheet" href="styles.css?v=9" />
 </head>
 <body>
 
@@ -44,6 +44,15 @@
       <div class="pit-stage" id="pitStage" aria-label="A glass bowl of Nivolo's unlockable app icons, with more on the way — grab and toss them">
         <span class="pit-hint">Go on — grab one.</span>
         <div class="bowl-visual"></div>
+        <button class="pit-sound" id="pitSound" type="button" aria-label="Toggle bowl sound effects" hidden>
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M11 5 6.5 9H3v6h3.5L11 19z" fill="currentColor" stroke="none"/>
+          <path class="snd-waves" d="M15.5 9.5a4 4 0 0 1 0 5"/>
+          <path class="snd-waves" d="M18 7a8 8 0 0 1 0 10"/>
+          <line class="snd-slash" x1="15" y1="9.5" x2="20.5" y2="14.5"/>
+          <line class="snd-slash" x1="20.5" y1="9.5" x2="15" y2="14.5"/>
+        </svg>
+      </button>
       </div>
       <p class="pit-caption"><b>10 unlockable app icons</b> — and more on the way. Earn them in the app by actually showing up.</p>
     </div>
@@ -293,6 +302,6 @@
     });
   </script>
   <script src="https://cdn.jsdelivr.net/npm/matter-js@0.20.0/build/matter.min.js" defer></script>
-  <script src="assets/night.js?v=5" defer></script>
+  <script src="assets/night.js?v=6" defer></script>
 </body>
 </html>

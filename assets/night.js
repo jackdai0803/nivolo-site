@@ -190,6 +190,75 @@
     });
   }
 
+  /* ── Bowl SFX: tiny synthesized clacks + pops (Web Audio, no assets).
+     Arms on the first real pointer gesture (autoplay policy blocks
+     anything earlier), so the initial pour is silent by design. ── */
+  var sfx = (function () {
+    var ctx = null, master = null, armed = false, lastAt = 0, played = 0;
+    var muted = false;
+    try { muted = localStorage.getItem("nivolo-sfx") === "off"; } catch (e) {}
+    function ensure() {
+      if (ctx) return ctx;
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      ctx = new AC();
+      master = ctx.createGain();
+      master.gain.value = 0.5;
+      master.connect(ctx.destination);
+      return ctx;
+    }
+    function arm() {
+      armed = true;
+      var c = ensure();
+      if (c && c.state === "suspended") c.resume();
+    }
+    /* Oscillator scheduled while the context is still resuming plays the
+       moment it comes alive — no need to await resume(). */
+    function tone(type, f0, f1, vol, dur) {
+      var t = ctx.currentTime;
+      var o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = type;
+      o.frequency.setValueAtTime(f0, t);
+      o.frequency.exponentialRampToValueAtTime(Math.max(1, f1), t + dur);
+      g.gain.setValueAtTime(vol, t);
+      g.gain.exponentialRampToValueAtTime(0.0004, t + dur);
+      o.connect(g); g.connect(master);
+      o.start(t); o.stop(t + dur + 0.02);
+    }
+    function clack(strength) {
+      if (!armed || muted || !ctx) return;
+      var t = ctx.currentTime;
+      if (t - lastAt < 0.03) return; // a pile settling is one clack, not ten
+      lastAt = t;
+      played++;
+      var v = 0.05 + 0.3 * strength;
+      var f = 1500 + Math.random() * 800;
+      tone("sine", f, f * 0.55, v * 0.5, 0.075); // glassy tick
+      tone("sine", 170 + Math.random() * 50, 90, v, 0.06); // low knock
+    }
+    function pop() {
+      if (muted || !ensure()) return;
+      played++;
+      tone("sine", 330, 640, 0.14, 0.07);
+    }
+    function setMuted(m) {
+      muted = m;
+      try { localStorage.setItem("nivolo-sfx", m ? "off" : "on"); } catch (e) {}
+    }
+    return { arm: arm, clack: clack, pop: pop, setMuted: setMuted,
+             isMuted: function () { return muted; },
+             stats: function () { return { armed: armed, state: ctx ? ctx.state : null, played: played }; } };
+  })();
+
+  Matter.Events.on(engine, "collisionStart", function (e) {
+    for (var i = 0; i < e.pairs.length; i++) {
+      var pa = e.pairs[i];
+      var rel = Math.hypot(pa.bodyA.velocity.x - pa.bodyB.velocity.x,
+                           pa.bodyA.velocity.y - pa.bodyB.velocity.y);
+      if (rel > 2.2) sfx.clack(Math.min(1, rel / 16));
+    }
+  });
+
   /* ── Drag interaction (custom constraint; keeps page scroll usable) ── */
   var dragConstraint = null;
   var dragMeta = null; // { startX, startY, t, item }
@@ -221,6 +290,7 @@
     dragMeta = { startX: pt.x, startY: pt.y, t: Date.now(), body: body };
     stage.classList.add("dragging");
     pit.classList.add("touched");
+    sfx.pop();
     if (clientEvent && clientEvent.cancelable) clientEvent.preventDefault();
     return true;
   }
@@ -259,6 +329,7 @@
 
   stage.addEventListener("mousedown", function (e) {
     e.preventDefault(); // play area — never start a text selection here
+    sfx.arm();
     if (startDrag(stagePoint(e.clientX, e.clientY), e)) {
       var onMove = function (ev) { moveDrag(stagePoint(ev.clientX, ev.clientY)); };
       var onUp = function (ev) {
@@ -273,6 +344,7 @@
 
   stage.addEventListener("touchstart", function (e) {
     var t = e.touches[0];
+    sfx.arm();
     startDrag(stagePoint(t.clientX, t.clientY), e);
   }, { passive: false });
   stage.addEventListener("touchmove", function (e) {
@@ -373,6 +445,24 @@
     }, 220);
   });
 
+  /* Mute toggle — only shown on the physics path (the reduced-motion
+     fallback returns before this and stays silent). */
+  var soundBtn = document.getElementById("pitSound");
+  if (soundBtn) {
+    soundBtn.hidden = false;
+    var syncSound = function () {
+      soundBtn.classList.toggle("muted", sfx.isMuted());
+      soundBtn.setAttribute("aria-pressed", String(!sfx.isMuted()));
+    };
+    soundBtn.addEventListener("click", function () {
+      sfx.setMuted(!sfx.isMuted());
+      sfx.arm();
+      if (!sfx.isMuted()) sfx.pop(); // audible confirmation
+      syncSound();
+    });
+    syncSound();
+  }
+
   buildWalls();
   spawnIcons();
   setRunning(true);
@@ -383,7 +473,7 @@
 
   // Console/debug handle: lets tooling step the sim deterministically
   // (rAF never fires in hidden tabs, so screenshots freeze mid-pour).
-  window.__nivolo = { engine: engine, icons: icons, step: function (n) {
+  window.__nivolo = { engine: engine, icons: icons, sfx: sfx, step: function (n) {
     for (var i = 0; i < n; i++) Engine.update(engine, 16.7);
   } };
   // ?settle fast-forwards past the pour once all icons have spawned —
