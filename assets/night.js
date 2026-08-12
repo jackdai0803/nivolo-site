@@ -225,16 +225,17 @@
       o.connect(g); g.connect(master);
       o.start(t); o.stop(t + dur + 0.02);
     }
-    function clack(strength) {
+    function hit(strength) {
       if (!armed || muted || !ctx) return;
       var t = ctx.currentTime;
-      if (t - lastAt < 0.03) return; // a pile settling is one clack, not ten
+      if (t - lastAt < 0.03) return; // a pile settling is one pop, not ten
       lastAt = t;
       played++;
-      var v = 0.05 + 0.3 * strength;
-      var f = 1500 + Math.random() * 800;
-      tone("sine", f, f * 0.55, v * 0.5, 0.075); // glassy tick
-      tone("sine", 170 + Math.random() * 50, 90, v, 0.06); // low knock
+      // Same rising "bloop" family as the grab pop — pitch and volume
+      // scale with impact so landings pop and nudges blip.
+      var v = 0.06 + 0.22 * strength;
+      var f = 420 + Math.random() * 140 + 260 * strength;
+      tone("sine", f * 0.52, f, v, 0.07);
     }
     function pop() {
       if (muted || !ensure()) return;
@@ -245,7 +246,7 @@
       muted = m;
       try { localStorage.setItem("nivolo-sfx", m ? "off" : "on"); } catch (e) {}
     }
-    return { arm: arm, clack: clack, pop: pop, setMuted: setMuted,
+    return { arm: arm, hit: hit, pop: pop, setMuted: setMuted,
              isMuted: function () { return muted; },
              stats: function () { return { armed: armed, state: ctx ? ctx.state : null, played: played }; } };
   })();
@@ -255,8 +256,16 @@
       var pa = e.pairs[i];
       var rel = Math.hypot(pa.bodyA.velocity.x - pa.bodyB.velocity.x,
                            pa.bodyA.velocity.y - pa.bodyB.velocity.y);
-      if (rel > 2.2) sfx.clack(Math.min(1, rel / 16));
+      if (rel > 2.2) sfx.hit(Math.min(1, rel / 16));
     }
+  });
+
+  /* Any first gesture on the page unlocks audio (browser autoplay rule),
+     so icons landing after that first click pop even if the visitor
+     hasn't touched the bowl yet. Kept permanent: re-resumes if the
+     browser ever re-suspends the context. */
+  ["pointerdown", "pointerup", "keydown"].forEach(function (type) {
+    document.addEventListener(type, function () { sfx.arm(); }, { capture: true, passive: true });
   });
 
   /* ── Drag interaction (custom constraint; keeps page scroll usable) ── */
