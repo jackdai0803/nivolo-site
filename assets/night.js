@@ -40,6 +40,7 @@
     ["melting", "Melty"],
     ["sick", "Sick Day"],
     ["snowy", "Snowy"],
+    ["mystery", "More coming soon…"],
   ];
 
   function iconSrc(name) { return "assets/icons/" + name + ".png"; }
@@ -55,7 +56,7 @@
       el.className = "pit-icon";
       el.style.width = el.style.height = size + "px";
       var row = i < 6 ? 0 : 1;
-      var inRow = row === 0 ? 6 : 4;
+      var inRow = row === 0 ? 6 : ICONS.length - 6;
       var idx = row === 0 ? i : i - 6;
       var spread = bowlW * (row === 0 ? 0.62 : 0.42);
       var x = cx - spread / 2 + (spread / (inRow - 1)) * idx - size / 2;
