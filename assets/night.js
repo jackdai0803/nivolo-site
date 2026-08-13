@@ -155,10 +155,10 @@
     var bh = s.w < 640 ? 200 : 285;
     var area = Math.PI * (bw / 2) * bh / 2;
     var size = Math.sqrt(area * 0.55 / ICONS.length);
-    // The floe is open-air — no rim to jam — so it carries a taller,
-    // chunkier mound than the bowl did (high friction holds the heap).
-    if (VARIANT === "iceberg") size *= 1.05;
-    return Math.round(Math.max(28, Math.min(88, size)));
+    // The floe doesn't have to hold the whole roster — overflow swims —
+    // so icons run big and the colony spills into the water.
+    if (VARIANT === "iceberg") size *= 1.3;
+    return Math.round(Math.max(30, Math.min(88, size)));
   }
 
   /* Build the bowl from static segments tracing a U-shaped ellipse arc
@@ -610,8 +610,33 @@
      with sim time, and pause with it). Escape hatch: anything that clips
      through geometry gets re-dropped. Arch breaker: icons at rest above
      the rim are perched or wedged — shear them loose. */
+  /* Buoyancy (iceberg, every tick): swimmers settle half-submerged at
+     the waterline. Counter-force equals gravity when the icon's center
+     sits at the waterline, so that's the float equilibrium; damping
+     kills the splash bounce. Floaters never sleep — they bob. */
+  function buoyancyPass() {
+    for (var i = 0; i < icons.length; i++) {
+      var it = icons[i], b = it.body, p = b.position;
+      var half = (b.bounds.max.y - b.bounds.min.y) / 2;
+      var depth = p.y - waterYCurrent;
+      if (it.inWater && depth < -half) it.inWater = false;
+      if (depth > -half) {
+        if (!it.inWater) {
+          if (b.velocity.y > 2.5) sfx.plop();
+          it.inWater = true;
+        }
+        var f = Math.min(1.7, (depth + half) / half);
+        Body.applyForce(b, p, { x: 0, y: -b.mass * engine.gravity.y * 0.001 * f });
+        Body.setVelocity(b, { x: b.velocity.x * 0.985, y: b.velocity.y * 0.96 });
+        Body.setAngularVelocity(b, b.angularVelocity * 0.97);
+        Matter.Sleeping.set(b, false);
+      }
+    }
+  }
+
   var maintTick = 0;
   Matter.Events.on(engine, "afterUpdate", function () {
+    if (VARIANT === "iceberg") buoyancyPass();
     if (++maintTick % 100 !== 0) return;
     var s = stageSize();
     if (VARIANT === "zerog") {
@@ -635,10 +660,9 @@
     if (VARIANT === "iceberg") {
       icons.forEach(function (it) {
         var b = it.body, p = b.position;
-        // Overboard: resting in the water (or gone entirely) → back in
-        // from the sky, aimed at the floe.
-        if (p.y > s.h + 160 || p.x < -160 || p.x > s.w + 160 ||
-            (p.y > waterYCurrent + 24 && b.speed < 0.35)) {
+        // Swimmers stay in the water — only the truly lost (clipped
+        // through geometry, out past the stage) come back from the sky.
+        if (p.y > s.h + 160 || p.x < -160 || p.x > s.w + 160) {
           Body.setPosition(b, {
             x: s.w / 2 + (Math.random() * 2 - 1) * bowlHalfCurrent * 0.6,
             y: skyTop - 120,
