@@ -40,7 +40,7 @@
     ["melting", "Melty"],
     ["sick", "Sick Day"],
     ["snowy", "Snowy"],
-    ["mystery", "More coming soon…"],
+    ["coming_soon", "More coming soon…"],
   ];
 
   function iconSrc(name) { return "assets/icons/" + name + ".png"; }
