@@ -29,9 +29,9 @@
   var stage = document.getElementById("pitStage");
   if (!pit || !stage) return;
 
-  /* Prototype container variants, selected by ?variant=iceberg|zerog.
-     Default stays the shipped glass bowl. */
-  var VARIANT = (location.search.match(/[?&]variant=([a-z]+)/) || [])[1] || "bowl";
+  /* Container variants: iceberg is the shipped default (Jack's pick,
+     2026-08-13); ?variant=bowl|zerog keep the alternatives reachable. */
+  var VARIANT = (location.search.match(/[?&]variant=([a-z]+)/) || [])[1] || "iceberg";
   if (VARIANT !== "bowl") pit.classList.add("pit--" + VARIANT);
 
   var ICONS = [
@@ -73,7 +73,13 @@
     var w = stage.clientWidth, h = stage.clientHeight;
     var size = iconSize();
     var cx = w / 2;
-    var bowlW = Math.min(760, w * 0.92);
+    var mobile = w < 640;
+    // Rows rest on the container floor: berg surface or bowl belly.
+    var iceberg = VARIANT === "iceberg";
+    var bowlW = iceberg ? Math.min(680, w * 0.78) : Math.min(760, w * 0.92);
+    var baseY = iceberg
+      ? h - (mobile ? 90 : 120) - (mobile ? 24 : 34) + 4
+      : h - 12 - 60;
     var PER_ROW = 7;
     ICONS.forEach(function (icon, i) {
       var el = document.createElement("div");
@@ -83,10 +89,10 @@
       var inRow = Math.min(PER_ROW, ICONS.length - row * PER_ROW);
       var idx = i % PER_ROW;
       // Rows narrow as the mound rises so it reads as a pile, not a wall.
-      var spread = bowlW * Math.max(0.3, 0.62 - row * 0.09);
+      var spread = bowlW * Math.max(0.3, (iceberg ? 0.78 : 0.62) - row * 0.09);
       var x = inRow === 1 ? cx - size / 2
         : cx - spread / 2 + (spread / (inRow - 1)) * idx - size / 2;
-      var y = h - 12 - 60 - row * (size + 6) - size / 2;
+      var y = baseY - row * (size + 6) - size / 2;
       var rot = (Math.random() * 24 - 12).toFixed(1);
       el.style.transform = "translate(" + x + "px," + y + "px) rotate(" + rot + "deg)";
       el.innerHTML = '<img src="' + iconSrc(icon[0]) + '" alt="' + icon[1] + ' app icon" />';
@@ -99,6 +105,15 @@
     staticFallback();
     return;
   }
+
+  /* Berg and pile bob as one unit over still water (visual only — the
+     physics stays in unbobbed coordinates; the few px of drift is well
+     inside every tap target). Inert outside the iceberg variant. */
+  var bobWrap = document.createElement("div");
+  bobWrap.className = "pit-bob";
+  var bergVisual = stage.querySelector(".bowl-visual");
+  if (bergVisual) bobWrap.appendChild(bergVisual);
+  stage.insertBefore(bobWrap, stage.firstChild);
 
   var Engine = Matter.Engine, Bodies = Matter.Bodies, Body = Matter.Body,
       Composite = Matter.Composite, Constraint = Matter.Constraint,
@@ -246,7 +261,7 @@
         el.className = "pit-icon";
         el.style.width = el.style.height = size + "px";
         el.innerHTML = '<img src="' + iconSrc(icon[0]) + '" alt="' + icon[1] + ' app icon" draggable="false" />';
-        stage.appendChild(el);
+        bobWrap.appendChild(el);
         var gx = i % cols, gy = Math.floor(i / cols);
         var body = Bodies.rectangle(
           (s.w / (cols + 1)) * (gx + 1) + Math.random() * 36 - 18,
@@ -283,7 +298,7 @@
       el.className = "pit-icon";
       el.style.width = el.style.height = size + "px";
       el.innerHTML = '<img src="' + iconSrc(icon[0]) + '" alt="' + icon[1] + ' app icon" draggable="false" />';
-      stage.appendChild(el);
+      bobWrap.appendChild(el);
 
       var body = Bodies.rectangle(
         cx + halfBowl * (offsets[i % offsets.length] || 0),
