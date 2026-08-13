@@ -76,7 +76,7 @@
     var mobile = w < 640;
     // Rows rest on the container floor: berg surface or bowl belly.
     var iceberg = VARIANT === "iceberg";
-    var bowlW = iceberg ? Math.min(680, w * 0.78) : Math.min(760, w * 0.92);
+    var bowlW = iceberg ? Math.min(740, w * 0.82) : Math.min(760, w * 0.92);
     var baseY = iceberg
       ? h - (mobile ? 90 : 120) - (mobile ? 24 : 34) + 4
       : h - 12 - 60;
@@ -127,6 +127,7 @@
   var rimYCurrent = 0;   // top of the container, set by buildWalls
   var bowlHalfCurrent = 0; // container half-width, set by buildWalls
   var waterYCurrent = 0; // iceberg only: the waterline, set by buildWalls
+  var waterFloor = null; // iceberg only: splash-detection body
   var skyTop = 0;        // stage-relative y of the PAGE top (negative)
 
   /* Stage-relative y of the top of the page — icons spawn above it so
@@ -154,8 +155,10 @@
     var bh = s.w < 640 ? 200 : 285;
     var area = Math.PI * (bw / 2) * bh / 2;
     var size = Math.sqrt(area * 0.55 / ICONS.length);
-    if (VARIANT === "iceberg") size *= 0.8; // open mound holds less than a bowl
-    return Math.round(Math.max(26, Math.min(88, size)));
+    // The floe is open-air — no rim to jam — so it carries a taller,
+    // chunkier mound than the bowl did (high friction holds the heap).
+    if (VARIANT === "iceberg") size *= 1.05;
+    return Math.round(Math.max(28, Math.min(88, size)));
   }
 
   /* Build the bowl from static segments tracing a U-shaped ellipse arc
@@ -185,7 +188,7 @@
       // the water, and anything that sinks gets re-dropped from the sky.
       var mobile = s.w < 640;
       var waterY = s.h - (mobile ? 90 : 120);
-      var bergW = Math.min(680, s.w * 0.78);
+      var bergW = Math.min(740, s.w * 0.82);
       var topEnd = waterY - (mobile ? 24 : 34);
       var dip = 13, half = bergW / 2, quarter = bergW / 4;
       waterYCurrent = waterY;
@@ -193,14 +196,15 @@
       bowlHalfCurrent = half;
       var slope = Math.atan(dip / half);
       var segLen = Math.sqrt(half * half + dip * dip) + 6;
-      walls.push(Bodies.rectangle(cx - quarter, topEnd + dip / 2 + 14, segLen, 30, { isStatic: true, angle: slope, friction: 0.35, restitution: 0.1 }));
-      walls.push(Bodies.rectangle(cx + quarter, topEnd + dip / 2 + 14, segLen, 30, { isStatic: true, angle: -slope, friction: 0.35, restitution: 0.1 }));
+      walls.push(Bodies.rectangle(cx - quarter, topEnd + dip / 2 + 14, segLen, 30, { isStatic: true, angle: slope, friction: 0.6, restitution: 0.1 }));
+      walls.push(Bodies.rectangle(cx + quarter, topEnd + dip / 2 + 14, segLen, 30, { isStatic: true, angle: -slope, friction: 0.6, restitution: 0.1 }));
       // Underwater flanks lean outward so edge landings slide off, not perch.
       walls.push(Bodies.rectangle(cx - half - 35, topEnd + 79, 30, 150, { isStatic: true, angle: 0.5 }));
       walls.push(Bodies.rectangle(cx + half + 35, topEnd + 79, 30, 150, { isStatic: true, angle: -0.5 }));
       // Water floor inside the stage: sunk icons rest hidden in the water
       // band until the maintenance pass re-drops them.
-      walls.push(Bodies.rectangle(cx, s.h + 8, s.w + 240, 40, { isStatic: true }));
+      waterFloor = Bodies.rectangle(cx, s.h + 8, s.w + 240, 40, { isStatic: true });
+      walls.push(waterFloor);
       var skyHb = -skyTop + 600;
       walls.push(Bodies.rectangle(-40, topEnd - skyHb / 2, 80, skyHb + s.h, { isStatic: true }));
       walls.push(Bodies.rectangle(s.w + 40, topEnd - skyHb / 2, 80, skyHb + s.h, { isStatic: true }));
@@ -287,7 +291,7 @@
     }
 
     var halfBowl = VARIANT === "iceberg"
-      ? Math.min(680, s.w * 0.78) / 2 * 0.75
+      ? Math.min(740, s.w * 0.82) / 2 * 0.6
       : Math.min(760, s.w * 0.92) / 2;
     // Drop points stay well inside the bowl mouth (alternating sides) so
     // icons slide down the curve — spreading to the rim lets them wedge
@@ -306,8 +310,10 @@
         size, size,
         {
           chamfer: { radius: size * 0.225 },
-          restitution: 0.35,
-          friction: 0.08,
+          restitution: VARIANT === "iceberg" ? 0.25 : 0.35,
+          // Grippy on ice so the open mound piles steep instead of
+          // shedding its edges into the water.
+          friction: VARIANT === "iceberg" ? 0.45 : 0.08,
           frictionAir: 0.015,
           angle: Math.random() * 0.8 - 0.4,
         }
@@ -326,7 +332,7 @@
      Arms on the first real pointer gesture (autoplay policy blocks
      anything earlier), so the initial pour is silent by design. ── */
   var sfx = (function () {
-    var ctx = null, master = null, armed = false, lastAt = 0, played = 0;
+    var ctx = null, master = null, armed = false, lastAt = -1, played = 0;
     var muted = false;
     try { muted = localStorage.getItem("nivolo-sfx") === "off"; } catch (e) {}
     function ensure() {
@@ -374,11 +380,19 @@
       played++;
       tone("sine", 330, 640, 0.14, 0.07);
     }
+    function plop() { // going under: same family, pitched down the well
+      if (!armed || muted || !ctx) return;
+      var t = ctx.currentTime;
+      if (t - lastAt < 0.03) return;
+      lastAt = t;
+      played++;
+      tone("sine", 300 + Math.random() * 60, 130, 0.13, 0.1);
+    }
     function setMuted(m) {
       muted = m;
       try { localStorage.setItem("nivolo-sfx", m ? "off" : "on"); } catch (e) {}
     }
-    return { arm: arm, hit: hit, pop: pop, setMuted: setMuted,
+    return { arm: arm, hit: hit, pop: pop, plop: plop, setMuted: setMuted,
              isMuted: function () { return muted; },
              stats: function () { return { armed: armed, state: ctx ? ctx.state : null, played: played }; } };
   })();
@@ -388,16 +402,37 @@
       var pa = e.pairs[i];
       var rel = Math.hypot(pa.bodyA.velocity.x - pa.bodyB.velocity.x,
                            pa.bodyA.velocity.y - pa.bodyB.velocity.y);
-      if (rel > 2.2) sfx.hit(Math.min(1, rel / 16));
+      if (rel <= 2.2) continue;
+      if (waterFloor && (pa.bodyA === waterFloor || pa.bodyB === waterFloor)) sfx.plop();
+      else sfx.hit(Math.min(1, rel / 16));
     }
   });
 
   /* Any first gesture on the page unlocks audio (browser autoplay rule),
      so icons landing after that first click pop even if the visitor
      hasn't touched the bowl yet. Kept permanent: re-resumes if the
-     browser ever re-suspends the context. */
+     browser ever re-suspends the context. A fresh load's pour is always
+     silent (the policy allows nothing earlier), so if the colony has
+     already settled, the first gesture makes it do a startled hop —
+     the visitor still gets the landing sounds. */
+  var hopped = false;
   ["pointerdown", "pointerup", "keydown"].forEach(function (type) {
-    document.addEventListener(type, function () { sfx.arm(); }, { capture: true, passive: true });
+    document.addEventListener(type, function () {
+      sfx.arm();
+      if (hopped || VARIANT === "zerog") return;
+      hopped = true;
+      if (!running || !pit.classList.contains("ready")) return;
+      icons.forEach(function (it) {
+        if (waterYCurrent && it.body.position.y > waterYCurrent) return; // swimmers sit out
+        Matter.Sleeping.set(it.body, false);
+        // Wide variance on purpose: a uniform hop lands in unison with
+        // near-zero relative speed and stays under the sound threshold.
+        Body.setVelocity(it.body, {
+          x: it.body.velocity.x + Math.random() * 2.4 - 1.2,
+          y: -(1 + Math.random() * 4.5),
+        });
+      });
+    }, { capture: true, passive: true });
   });
 
   /* ── Drag interaction (custom constraint; keeps page scroll usable) ── */

@@ -612,7 +612,7 @@ footer { border-top: 1px solid var(--line); padding: 34px 0; }
 }
 .pit--iceberg .bowl-visual {
   left: 50%; bottom: 40px;
-  width: min(680px, 78%);
+  width: min(740px, 82%);
   height: 115px;
   border-radius: 0; border: none; box-shadow: none;
   background:
