@@ -227,6 +227,7 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
 }
 .pit-icon {
   position: absolute; top: 0; left: 0;
+  z-index: 3;
   will-change: transform;
   pointer-events: none;
   filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.5));
@@ -603,7 +604,7 @@ footer { border-top: 1px solid var(--line); padding: 34px 0; }
 }
 
 /* ── Container variants: iceberg default; ?variant=bowl|zerog ── */
-.pit-bob { position: absolute; inset: 0; }
+.pit-bob { position: absolute; inset: 0; z-index: 2; }
 .pit--iceberg .pit-bob { animation: berg-bob 7.5s ease-in-out infinite; }
 @keyframes berg-bob {
   0%, 100% { transform: translateY(0) rotate(0deg); }
@@ -611,32 +612,66 @@ footer { border-top: 1px solid var(--line); padding: 34px 0; }
   65% { transform: translateY(3px) rotate(-0.2deg); }
 }
 .pit--iceberg .bowl-visual {
-  left: 50%; bottom: 40px;
-  width: min(740px, 82%);
-  height: 115px;
-  border-radius: 0; border: none; box-shadow: none;
+  left: 50%; bottom: 5px;
+  z-index: 1;
+  width: min(820px, 88%);
+  height: 150px;
+  border: none;
+  border-radius: 0;
   background:
-    radial-gradient(120% 90% at 50% 0%, rgba(255, 255, 255, 0.55), transparent 46%),
-    linear-gradient(180deg, rgba(240, 250, 255, 0.94), rgba(196, 228, 255, 0.6) 28%, rgba(130, 190, 240, 0.24) 60%, rgba(90, 150, 215, 0.07));
-  clip-path: polygon(0% 4%, 5% 2%, 13% 6%, 22% 3%, 31% 8%, 40% 10%, 50% 12%, 61% 9%, 71% 4%, 80% 7%, 89% 3%, 96% 6%, 100% 4%, 98% 42%, 100% 74%, 91% 97%, 77% 89%, 61% 99%, 46% 93%, 31% 100%, 17% 95%, 6% 86%, 0% 56%);
-  filter: drop-shadow(0 0 26px rgba(180, 225, 255, 0.28));
+    linear-gradient(115deg, transparent 0 29%, rgba(82, 172, 226, 0.22) 30% 49%, transparent 50%),
+    linear-gradient(245deg, transparent 0 42%, rgba(10, 68, 119, 0.26) 43% 64%, transparent 65%),
+    linear-gradient(180deg, rgba(45, 135, 196, 0.72), rgba(15, 66, 118, 0.92));
+  box-shadow: none;
+  clip-path: polygon(2% 0, 98% 0, 96% 49%, 88% 63%, 73% 70%, 63% 100%, 48% 78%, 34% 96%, 24% 72%, 10% 62%, 4% 48%);
+  filter: drop-shadow(0 26px 34px rgba(0, 40, 86, 0.42));
+  overflow: hidden;
+}
+.pit--iceberg .bowl-visual::before {
+  content: "";
+  position: absolute;
+  left: 3%; right: 3%; top: 35px;
+  height: 70px;
+  border: 1px solid rgba(188, 235, 255, 0.28);
+  border-radius: 15px 15px 34px 34px;
+  background:
+    linear-gradient(105deg, transparent 0 14%, rgba(255,255,255,.25) 14.5% 15%, transparent 15.5% 34%, rgba(255,255,255,.18) 34.5% 35%, transparent 35.5% 62%, rgba(255,255,255,.15) 62.5% 63%, transparent 63.5%),
+    linear-gradient(180deg, rgba(167, 225, 250, 0.96), rgba(69, 160, 215, 0.72));
+  box-shadow: inset 0 13px 22px rgba(255, 255, 255, 0.12);
+  clip-path: polygon(0 0, 100% 0, 96% 79%, 85% 93%, 72% 83%, 59% 100%, 44% 89%, 29% 96%, 14% 84%, 4% 69%);
+}
+.pit--iceberg .bowl-visual::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; top: 0;
+  height: 66px;
+  border-radius: 52% 48% 46% 54% / 56% 52% 48% 44%;
+  background:
+    radial-gradient(230px 42px at 29% 17%, rgba(255, 255, 255, 0.94), transparent 70%),
+    linear-gradient(180deg, #fff 0%, #e8f8ff 54%, #bce8fb 100%);
+  box-shadow: inset 0 -12px 20px rgba(46, 153, 212, 0.13), 0 0 0 1px rgba(216, 246, 255, 0.55);
+  clip-path: polygon(0 30%, 5% 18%, 13% 23%, 21% 11%, 31% 18%, 42% 7%, 53% 16%, 63% 8%, 73% 18%, 82% 10%, 91% 22%, 98% 17%, 100% 31%, 97% 58%, 88% 72%, 74% 76%, 61% 71%, 50% 81%, 38% 73%, 24% 77%, 12% 69%, 3% 55%);
 }
 .pit--iceberg .pit-stage::after {
   content: "";
-  position: absolute; left: -2%; right: -2%; bottom: 0;
-  height: 120px;
-  background: linear-gradient(180deg, rgba(100, 210, 255, 0.16), rgba(40, 90, 160, 0.18) 45%, rgba(10, 25, 55, 0.28));
-  border-top: 1.5px solid rgba(160, 220, 255, 0.45);
-  box-shadow: 0 -8px 30px rgba(100, 210, 255, 0.18), inset 0 6px 18px rgba(120, 200, 255, 0.12);
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent);
+  position: absolute;
+  left: 50%; bottom: 7px;
+  z-index: 0;
+  width: min(980px, 100%); height: 86px;
+  transform: translateX(-50%);
+  border: 1px solid rgba(93, 195, 240, 0.22);
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(67, 172, 226, 0.10), transparent 64%);
+  box-shadow: 0 0 38px rgba(47, 157, 220, 0.12), inset 0 0 38px rgba(47, 157, 220, 0.08), inset 0 0 0 22px rgba(5, 8, 19, 0.18), inset 0 0 0 23px rgba(92, 190, 236, 0.10);
   pointer-events: none;
 }
 .pit--zerog .bowl-visual { display: none; }
 .pit-lines { position: absolute; inset: 0; pointer-events: none; }
 @media (max-width: 640px) {
-  .pit--iceberg .bowl-visual { height: 90px; bottom: 25px; }
-  .pit--iceberg .pit-stage::after { height: 90px; }
+  .pit--iceberg .bowl-visual { width: 94%; height: 120px; bottom: -5px; }
+  .pit--iceberg .bowl-visual::before { top: 28px; height: 56px; }
+  .pit--iceberg .bowl-visual::after { height: 52px; }
+  .pit--iceberg .pit-stage::after { width: 108%; height: 62px; bottom: 2px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .pit--iceberg .pit-bob { animation: none; }

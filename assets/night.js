@@ -29,7 +29,7 @@
   var stage = document.getElementById("pitStage");
   if (!pit || !stage) return;
 
-  /* Container variants: iceberg is the shipped default (Jack's pick,
+  /* Container variants: the floating ice shelf is the shipped default,
      2026-08-13); ?variant=bowl|zerog keep the alternatives reachable. */
   var VARIANT = (location.search.match(/[?&]variant=([a-z]+)/) || [])[1] || "iceberg";
   if (VARIANT !== "bowl") pit.classList.add("pit--" + VARIANT);
