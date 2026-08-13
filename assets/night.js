@@ -29,6 +29,11 @@
   var stage = document.getElementById("pitStage");
   if (!pit || !stage) return;
 
+  /* Prototype container variants, selected by ?variant=iceberg|zerog.
+     Default stays the shipped glass bowl. */
+  var VARIANT = (location.search.match(/[?&]variant=([a-z]+)/) || [])[1] || "bowl";
+  if (VARIANT !== "bowl") pit.classList.add("pit--" + VARIANT);
+
   var ICONS = [
     ["classic", "Classic"],
     ["blaze", "Blaze"],
@@ -100,12 +105,13 @@
       Query = Matter.Query, Vector = Matter.Vector;
 
   var engine = Engine.create({ enableSleeping: true });
-  engine.gravity.y = 1;
+  engine.gravity.y = VARIANT === "zerog" ? 0 : 1;
 
   var walls = [];
   var icons = []; // { body, el, key, label }
-  var rimYCurrent = 0;   // top of the bowl, set by buildWalls
-  var bowlHalfCurrent = 0; // bowl half-width, set by buildWalls
+  var rimYCurrent = 0;   // top of the container, set by buildWalls
+  var bowlHalfCurrent = 0; // container half-width, set by buildWalls
+  var waterYCurrent = 0; // iceberg only: the waterline, set by buildWalls
   var skyTop = 0;        // stage-relative y of the PAGE top (negative)
 
   /* Stage-relative y of the top of the page — icons spawn above it so
@@ -120,15 +126,21 @@
   }
 
   function iconSize() {
-    // Size from bowl area vs roster count: fill ~55% of the half-ellipse
-    // so the pile settles below the rim (resting above it trips the
-    // arch-breaker and the pile never sleeps). Cap at 88: bigger and a
-    // few icons wedge into a stable arch across the mouth.
+    // Size from container area vs roster count: fill ~55% of the bowl's
+    // half-ellipse so the pile settles below the rim (resting above it
+    // trips the arch-breaker and the pile never sleeps). Cap at 88:
+    // bigger and a few icons wedge into a stable arch across the mouth.
     var s = stageSize();
+    if (VARIANT === "zerog") {
+      // Free-floating: fill ~28% of the whole stage.
+      return Math.round(Math.max(36, Math.min(84, Math.sqrt(s.w * s.h * 0.28 / ICONS.length))));
+    }
     var bw = Math.min(760, s.w * 0.92);
     var bh = s.w < 640 ? 200 : 285;
     var area = Math.PI * (bw / 2) * bh / 2;
-    return Math.round(Math.max(30, Math.min(88, Math.sqrt(area * 0.55 / ICONS.length))));
+    var size = Math.sqrt(area * 0.55 / ICONS.length);
+    if (VARIANT === "iceberg") size *= 0.8; // open mound holds less than a bowl
+    return Math.round(Math.max(26, Math.min(88, size)));
   }
 
   /* Build the bowl from static segments tracing a U-shaped ellipse arc
@@ -137,14 +149,57 @@
     walls.forEach(function (wb) { Composite.remove(engine.world, wb); });
     walls = [];
     var s = stageSize();
+    var cx = s.w / 2;
+    measureSky();
+    sizeLines();
+
+    if (VARIANT === "zerog") {
+      // Drift tank: thick borders just outside every stage edge.
+      rimYCurrent = 0; bowlHalfCurrent = s.w / 2;
+      var t = 80;
+      walls.push(Bodies.rectangle(cx, -t / 2 + 6, s.w + 240, t, { isStatic: true, restitution: 1 }));
+      walls.push(Bodies.rectangle(cx, s.h + t / 2 - 6, s.w + 240, t, { isStatic: true, restitution: 1 }));
+      walls.push(Bodies.rectangle(-t / 2 + 6, s.h / 2, t, s.h + 240, { isStatic: true, restitution: 1 }));
+      walls.push(Bodies.rectangle(s.w + t / 2 - 6, s.h / 2, t, s.h + 240, { isStatic: true, restitution: 1 }));
+      walls.forEach(function (wb) { Composite.add(engine.world, wb); });
+      return;
+    }
+
+    if (VARIANT === "iceberg") {
+      // Floe: a gently dished slab at the waterline; ends slope off into
+      // the water, and anything that sinks gets re-dropped from the sky.
+      var mobile = s.w < 640;
+      var waterY = s.h - (mobile ? 90 : 120);
+      var bergW = Math.min(680, s.w * 0.78);
+      var topEnd = waterY - (mobile ? 24 : 34);
+      var dip = 13, half = bergW / 2, quarter = bergW / 4;
+      waterYCurrent = waterY;
+      rimYCurrent = topEnd;
+      bowlHalfCurrent = half;
+      var slope = Math.atan(dip / half);
+      var segLen = Math.sqrt(half * half + dip * dip) + 6;
+      walls.push(Bodies.rectangle(cx - quarter, topEnd + dip / 2 + 14, segLen, 30, { isStatic: true, angle: slope, friction: 0.35, restitution: 0.1 }));
+      walls.push(Bodies.rectangle(cx + quarter, topEnd + dip / 2 + 14, segLen, 30, { isStatic: true, angle: -slope, friction: 0.35, restitution: 0.1 }));
+      // Underwater flanks lean outward so edge landings slide off, not perch.
+      walls.push(Bodies.rectangle(cx - half - 35, topEnd + 79, 30, 150, { isStatic: true, angle: 0.5 }));
+      walls.push(Bodies.rectangle(cx + half + 35, topEnd + 79, 30, 150, { isStatic: true, angle: -0.5 }));
+      // Water floor inside the stage: sunk icons rest hidden in the water
+      // band until the maintenance pass re-drops them.
+      walls.push(Bodies.rectangle(cx, s.h + 8, s.w + 240, 40, { isStatic: true }));
+      var skyHb = -skyTop + 600;
+      walls.push(Bodies.rectangle(-40, topEnd - skyHb / 2, 80, skyHb + s.h, { isStatic: true }));
+      walls.push(Bodies.rectangle(s.w + 40, topEnd - skyHb / 2, 80, skyHb + s.h, { isStatic: true }));
+      walls.push(Bodies.rectangle(cx, skyTop - 460, s.w + 400, 80, { isStatic: true }));
+      walls.forEach(function (wb) { Composite.add(engine.world, wb); });
+      return;
+    }
+
     var bowlW = Math.min(760, s.w * 0.92);
     var bowlH = s.w < 640 ? 200 : 285;
     var rimY = s.h - 12 - bowlH;
     rimYCurrent = rimY;
-    var cx = s.w / 2;
     var a = bowlW / 2, b = bowlH;
     bowlHalfCurrent = a;
-    measureSky();
 
     var pts = [];
     var SEGS = 26;
@@ -181,7 +236,44 @@
     var s = stageSize();
     var size = iconSize();
     var cx = s.w / 2;
-    var halfBowl = Math.min(760, s.w * 0.92) / 2;
+
+    if (VARIANT === "zerog") {
+      // Scatter on a jittered grid with a slow drift; no pour.
+      var cols = Math.ceil(Math.sqrt(ICONS.length * s.w / s.h));
+      var rows = Math.ceil(ICONS.length / cols);
+      ICONS.forEach(function (icon, i) {
+        var el = document.createElement("div");
+        el.className = "pit-icon";
+        el.style.width = el.style.height = size + "px";
+        el.innerHTML = '<img src="' + iconSrc(icon[0]) + '" alt="' + icon[1] + ' app icon" draggable="false" />';
+        stage.appendChild(el);
+        var gx = i % cols, gy = Math.floor(i / cols);
+        var body = Bodies.rectangle(
+          (s.w / (cols + 1)) * (gx + 1) + Math.random() * 36 - 18,
+          (s.h / (rows + 1)) * (gy + 1) + Math.random() * 28 - 14,
+          size, size,
+          {
+            chamfer: { radius: size * 0.225 },
+            restitution: 0.9,
+            friction: 0,
+            frictionAir: 0.002,
+            angle: Math.random() * 6.28,
+          }
+        );
+        Body.setVelocity(body, { x: Math.random() * 1.6 - 0.8, y: Math.random() * 1.6 - 0.8 });
+        Body.setAngularVelocity(body, Math.random() * 0.03 - 0.015);
+        icons.push({ body: body, el: el, key: icon[0], label: icon[1] });
+        setTimeout(function () {
+          Composite.add(engine.world, body);
+          if (i === ICONS.length - 1) pit.classList.add("ready");
+        }, 60 * i);
+      });
+      return;
+    }
+
+    var halfBowl = VARIANT === "iceberg"
+      ? Math.min(680, s.w * 0.78) / 2 * 0.75
+      : Math.min(760, s.w * 0.92) / 2;
     // Drop points stay well inside the bowl mouth (alternating sides) so
     // icons slide down the curve — spreading to the rim lets them wedge
     // into a stable arch across the mouth; stacking one column is worse.
@@ -393,8 +485,41 @@
   });
   stage.addEventListener("touchcancel", function () { endDrag(null); });
 
+  /* ── Constellation overlay (zerog only): faint lines join neighbors ── */
+  var linesCanvas = null, linesCtx = null;
+  if (VARIANT === "zerog") {
+    linesCanvas = document.createElement("canvas");
+    linesCanvas.className = "pit-lines";
+    stage.insertBefore(linesCanvas, stage.firstChild);
+    linesCtx = linesCanvas.getContext("2d");
+  }
+  function sizeLines() {
+    if (!linesCanvas) return;
+    linesCanvas.width = stage.clientWidth;
+    linesCanvas.height = stage.clientHeight;
+  }
+  function drawLines() {
+    if (!linesCtx) return;
+    var REACH = 150;
+    linesCtx.clearRect(0, 0, linesCanvas.width, linesCanvas.height);
+    linesCtx.lineWidth = 1;
+    for (var i = 0; i < icons.length; i++) {
+      for (var j = i + 1; j < icons.length; j++) {
+        var p = icons[i].body.position, q = icons[j].body.position;
+        var d = Math.hypot(p.x - q.x, p.y - q.y);
+        if (d > REACH) continue;
+        linesCtx.strokeStyle = "rgba(150, 210, 255," + ((1 - d / REACH) * 0.35).toFixed(3) + ")";
+        linesCtx.beginPath();
+        linesCtx.moveTo(p.x, p.y);
+        linesCtx.lineTo(q.x, q.y);
+        linesCtx.stroke();
+      }
+    }
+  }
+
   /* ── Render loop (DOM transforms; paused when off-screen) ────── */
   var running = false, rafId = null, lastT = 0;
+  var SPEED_CAP = VARIANT === "zerog" ? 4 : 24;
 
   function frame(t) {
     if (!running) return;
@@ -405,12 +530,13 @@
       var it = icons[i], b = it.body, half = it.el.offsetWidth / 2;
       // Keep tosses fun but sub-orbital: cap linear and angular speed.
       var sp = Math.hypot(b.velocity.x, b.velocity.y);
-      if (sp > 24) Body.setVelocity(b, { x: b.velocity.x * 24 / sp, y: b.velocity.y * 24 / sp });
+      if (sp > SPEED_CAP) Body.setVelocity(b, { x: b.velocity.x * SPEED_CAP / sp, y: b.velocity.y * SPEED_CAP / sp });
       if (Math.abs(b.angularVelocity) > 0.45) Body.setAngularVelocity(b, 0.45 * Math.sign(b.angularVelocity));
       it.el.style.transform =
         "translate(" + (b.position.x - half).toFixed(1) + "px," +
         (b.position.y - half).toFixed(1) + "px) rotate(" + b.angle.toFixed(3) + "rad)";
     }
+    drawLines();
     rafId = requestAnimationFrame(frame);
   }
 
@@ -438,6 +564,41 @@
   Matter.Events.on(engine, "afterUpdate", function () {
     if (++maintTick % 100 !== 0) return;
     var s = stageSize();
+    if (VARIANT === "zerog") {
+      icons.forEach(function (it) {
+        var b = it.body, p = b.position;
+        if (p.x < -80 || p.x > s.w + 80 || p.y < -80 || p.y > s.h + 80) {
+          Body.setPosition(b, { x: s.w * (0.2 + Math.random() * 0.6), y: s.h * (0.2 + Math.random() * 0.6) });
+          Body.setVelocity(b, { x: 0, y: 0 });
+        }
+        // Nothing truly stops in orbit: nudge the becalmed back adrift.
+        if (!dragConstraint && b.speed < 0.15) {
+          Matter.Sleeping.set(b, false);
+          Body.setVelocity(b, {
+            x: b.velocity.x + Math.random() * 0.8 - 0.4,
+            y: b.velocity.y + Math.random() * 0.8 - 0.4,
+          });
+        }
+      });
+      return;
+    }
+    if (VARIANT === "iceberg") {
+      icons.forEach(function (it) {
+        var b = it.body, p = b.position;
+        // Overboard: resting in the water (or gone entirely) → back in
+        // from the sky, aimed at the floe.
+        if (p.y > s.h + 160 || p.x < -160 || p.x > s.w + 160 ||
+            (p.y > waterYCurrent + 24 && b.speed < 0.35)) {
+          Body.setPosition(b, {
+            x: s.w / 2 + (Math.random() * 2 - 1) * bowlHalfCurrent * 0.6,
+            y: skyTop - 120,
+          });
+          Body.setVelocity(b, { x: 0, y: 0 });
+          Matter.Sleeping.set(b, false);
+        }
+      });
+      return;
+    }
     icons.forEach(function (it) {
       var b = it.body, p = b.position;
       // Clipped through geometry, or settled in the dead channel between
@@ -509,6 +670,7 @@
   // (rAF never fires in hidden tabs, so screenshots freeze mid-pour).
   window.__nivolo = { engine: engine, icons: icons, sfx: sfx, step: function (n) {
     for (var i = 0; i < n; i++) Engine.update(engine, 16.7);
+    drawLines();
   } };
   // ?settle fast-forwards past the pour once all icons have spawned —
   // for screenshot tooling that can't wait out the animation.

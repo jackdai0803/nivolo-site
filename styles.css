@@ -601,3 +601,29 @@ footer { border-top: 1px solid var(--line); padding: 34px 0; }
   .sky i, .kicker-chip .dot, .float-chip, .cta-gem { animation: none; }
   .reveal { opacity: 1; transform: none; transition: none; }
 }
+
+/* ── Prototype container variants (?variant=iceberg|zerog) ── */
+.pit--iceberg .bowl-visual {
+  left: 50%; bottom: 40px;
+  width: min(680px, 78%);
+  height: 115px;
+  border-radius: 0; border: none; box-shadow: none;
+  background: linear-gradient(180deg, rgba(240, 250, 255, 0.92), rgba(190, 225, 255, 0.55) 30%, rgba(130, 190, 240, 0.22) 62%, rgba(90, 150, 215, 0.08));
+  clip-path: polygon(0% 2%, 8% 6%, 20% 3%, 33% 9%, 50% 12%, 66% 8%, 79% 4%, 92% 7%, 100% 2%, 97% 45%, 100% 78%, 88% 100%, 70% 88%, 52% 100%, 33% 90%, 14% 100%, 3% 80%, 0% 50%);
+  filter: drop-shadow(0 0 24px rgba(180, 225, 255, 0.25));
+}
+.pit--iceberg .pit-stage::after {
+  content: "";
+  position: absolute; left: -2%; right: -2%; bottom: 0;
+  height: 120px;
+  background: linear-gradient(180deg, rgba(100, 210, 255, 0.16), rgba(40, 90, 160, 0.18) 45%, rgba(10, 25, 55, 0.28));
+  border-top: 1.5px solid rgba(160, 220, 255, 0.45);
+  box-shadow: 0 -8px 30px rgba(100, 210, 255, 0.18), inset 0 6px 18px rgba(120, 200, 255, 0.12);
+  pointer-events: none;
+}
+.pit--zerog .bowl-visual { display: none; }
+.pit-lines { position: absolute; inset: 0; pointer-events: none; }
+@media (max-width: 640px) {
+  .pit--iceberg .bowl-visual { height: 90px; bottom: 25px; }
+  .pit--iceberg .pit-stage::after { height: 90px; }
+}
