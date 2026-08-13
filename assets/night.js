@@ -40,8 +40,26 @@
     ["melting", "Melty"],
     ["sick", "Sick Day"],
     ["snowy", "Snowy"],
+    ["bored", "Bored"],
+    ["champion", "Champion"],
+    ["detective", "Detective"],
+    ["focused", "Focused"],
+    ["love", "Love"],
+    ["peekaboo", "Peekaboo"],
+    ["rainy", "Rainy"],
+    ["relieved", "Relieved"],
+    ["repair", "Repair"],
+    ["revived", "Revived"],
+    ["sleepy", "Sleepy"],
+    ["squished", "Squished"],
+    ["starstruck", "Starstruck"],
+    ["turbo", "Turbo"],
+    ["upside_down", "Upside Down"],
+    ["waiting", "Waiting"],
     ["coming_soon", "More coming soon…"],
   ];
+  // Pour cadence scales down as the roster grows so the show stays short.
+  var SPAWN_GAP = Math.max(130, Math.round(4800 / ICONS.length));
 
   function iconSrc(name) { return "assets/icons/" + name + ".png"; }
 
@@ -51,15 +69,18 @@
     var size = iconSize();
     var cx = w / 2;
     var bowlW = Math.min(760, w * 0.92);
+    var PER_ROW = 7;
     ICONS.forEach(function (icon, i) {
       var el = document.createElement("div");
       el.className = "pit-icon";
       el.style.width = el.style.height = size + "px";
-      var row = i < 6 ? 0 : 1;
-      var inRow = row === 0 ? 6 : ICONS.length - 6;
-      var idx = row === 0 ? i : i - 6;
-      var spread = bowlW * (row === 0 ? 0.62 : 0.42);
-      var x = cx - spread / 2 + (spread / (inRow - 1)) * idx - size / 2;
+      var row = Math.floor(i / PER_ROW);
+      var inRow = Math.min(PER_ROW, ICONS.length - row * PER_ROW);
+      var idx = i % PER_ROW;
+      // Rows narrow as the mound rises so it reads as a pile, not a wall.
+      var spread = bowlW * Math.max(0.3, 0.62 - row * 0.09);
+      var x = inRow === 1 ? cx - size / 2
+        : cx - spread / 2 + (spread / (inRow - 1)) * idx - size / 2;
       var y = h - 12 - 60 - row * (size + 6) - size / 2;
       var rot = (Math.random() * 24 - 12).toFixed(1);
       el.style.transform = "translate(" + x + "px," + y + "px) rotate(" + rot + "deg)";
@@ -99,11 +120,15 @@
   }
 
   function iconSize() {
-    // Scale with the bowl so the icons read big on desktop (~88px)
-    // without overflowing the mobile bowl (~52px). Capped at 88: much
-    // bigger and 8-9 icons span the bowl mouth, wedging into an arch.
-    var bw = Math.min(760, stageSize().w * 0.92);
-    return Math.round(Math.max(52, Math.min(88, bw * 0.115)));
+    // Size from bowl area vs roster count: fill ~55% of the half-ellipse
+    // so the pile settles below the rim (resting above it trips the
+    // arch-breaker and the pile never sleeps). Cap at 88: bigger and a
+    // few icons wedge into a stable arch across the mouth.
+    var s = stageSize();
+    var bw = Math.min(760, s.w * 0.92);
+    var bh = s.w < 640 ? 200 : 285;
+    var area = Math.PI * (bw / 2) * bh / 2;
+    return Math.round(Math.max(30, Math.min(88, Math.sqrt(area * 0.55 / ICONS.length))));
   }
 
   /* Build the bowl from static segments tracing a U-shaped ellipse arc
@@ -186,7 +211,7 @@
       setTimeout(function () {
         Composite.add(engine.world, body);
         if (i === ICONS.length - 1) pit.classList.add("ready");
-      }, 260 + i * 340);
+      }, 260 + i * SPAWN_GAP);
     });
   }
 
@@ -488,6 +513,7 @@
   // ?settle fast-forwards past the pour once all icons have spawned —
   // for screenshot tooling that can't wait out the animation.
   if (/[?&]settle\b/.test(location.search)) {
-    setTimeout(function () { window.__nivolo.step(2600); }, 4200);
+    setTimeout(function () { window.__nivolo.step(2600); },
+      260 + ICONS.length * SPAWN_GAP + 600);
   }
 })();
