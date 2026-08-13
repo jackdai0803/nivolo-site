@@ -159,6 +159,17 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
   text-decoration: none;
 }
 .btn-dark svg, .btn-light svg { width: 18px; height: 18px; }
+/* Hero CTA drifts like everything else in the night sky. The hover lift
+   moved to `translate` so it composes with the animated transform. */
+@keyframes btn-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
+}
+.hero .btn-dark { animation: btn-float 3.6s ease-in-out infinite; }
+.hero .btn-dark:hover { translate: 0 -2px; }
+@media (prefers-reduced-motion: reduce) {
+  .hero .btn-dark { animation: none; }
+}
 .btn-ghost {
   display: inline-flex; align-items: center;
   color: var(--ink); font-weight: 600; font-size: 16px;
