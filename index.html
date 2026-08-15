@@ -7,10 +7,8 @@
   <meta name="description" content="Nivolo is the cozy habit app. Set goals, keep your streak alive with Nivo, earn Pecks, and collect gems for every milestone." />
   <link rel="icon" href="assets/favicon.png" type="image/png" />
   <link rel="apple-touch-icon" href="assets/app-icon.png" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=27" />
+  <link rel="stylesheet" href="assets/fonts.css?v=1" />
+  <link rel="stylesheet" href="styles.css?v=28" />
 </head>
 <body>
 
@@ -256,6 +254,95 @@
     </div>
   </section>
 
+  <section class="section lore" id="collection">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="section-kicker">The collection</p>
+        <h2 class="section-title">Every icon has a story</h2>
+        <p class="section-sub">Nivo's icons aren't decoration. Each one turns up for a different kind of showing up — and you'll only meet it by earning it.</p>
+      </div>
+
+      <div class="lore-grid reveal">
+        <article class="lore-card">
+          <img class="lore-ic" src="assets/icons/classic.png" alt="" loading="lazy" />
+          <div>
+            <h4>Classic</h4>
+            <p>The first Nivo. The same face he had on day one — and the one waiting whenever you come back.</p>
+          </div>
+        </article>
+        <article class="lore-card">
+          <img class="lore-ic" src="assets/icons/grumpy.png" alt="" loading="lazy" />
+          <div>
+            <h4>Grumpy</h4>
+            <p>Some mornings the habit wins and the mood doesn't. He turns up anyway, and he'd like that noted.</p>
+          </div>
+        </article>
+        <article class="lore-card">
+          <img class="lore-ic" src="assets/icons/snowy.png" alt="" loading="lazy" />
+          <div>
+            <h4>Snowy</h4>
+            <p>Arrives after your first proper week. Nivo swears it always snows right before something starts to stick.</p>
+          </div>
+        </article>
+        <article class="lore-card">
+          <img class="lore-ic" src="assets/icons/blaze.png" alt="" loading="lazy" />
+          <div>
+            <h4>Blaze</h4>
+            <p>Carried up out of the old fire under the ice. It only ever finds the ones who don't cool off.</p>
+          </div>
+        </article>
+        <article class="lore-card">
+          <img class="lore-ic" src="assets/icons/party.png" alt="" loading="lazy" />
+          <div>
+            <h4>Party</h4>
+            <p>He's been holding that confetti since the day you set the goal. Finishing it is the only thing that opens his hands.</p>
+          </div>
+        </article>
+        <article class="lore-card">
+          <img class="lore-ic" src="assets/icons/melting.png" alt="" loading="lazy" />
+          <div>
+            <h4>Melting</h4>
+            <p>The face of a streak that nearly went. A freeze went off in the night, and he's still dripping with relief.</p>
+          </div>
+        </article>
+        <article class="lore-card">
+          <img class="lore-ic" src="assets/icons/sick.png" alt="" loading="lazy" />
+          <div>
+            <h4>Sick</h4>
+            <p>Everyone goes under sometimes. This one doesn't show up for the fall — it shows up for the getting back out.</p>
+          </div>
+        </article>
+        <article class="lore-card">
+          <img class="lore-ic" src="assets/icons/ghost.png" alt="" loading="lazy" />
+          <div>
+            <h4>Ghost</h4>
+            <p>A long stretch of quiet, faithful days leaves something behind. They say he's every one you kept with nobody watching.</p>
+          </div>
+        </article>
+        <article class="lore-card">
+          <img class="lore-ic" src="assets/icons/gold.png" alt="" loading="lazy" />
+          <div>
+            <h4>Golden</h4>
+            <p>Deep under the shelf there's a seam of gold. It's a long, long walk down, and almost nobody makes it.</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="lore-more reveal">
+        <div class="lore-shadows" aria-hidden="true">
+          <img src="assets/icons/turbo.png" alt="" loading="lazy" />
+          <img src="assets/icons/starstruck.png" alt="" loading="lazy" />
+          <img src="assets/icons/peekaboo.png" alt="" loading="lazy" />
+          <img src="assets/icons/detective.png" alt="" loading="lazy" />
+          <img src="assets/icons/champion.png" alt="" loading="lazy" />
+          <img src="assets/icons/revived.png" alt="" loading="lazy" />
+          <img src="assets/icons/glitch.png" alt="" loading="lazy" />
+        </div>
+        <p class="lore-more-note">…and plenty more still out there. <b>You'll know them when you earn them.</b></p>
+      </div>
+    </div>
+  </section>
+
   <section class="cta">
     <div class="cta-panel reveal">
       <span class="cta-gem gem gem--blue" style="left: 11%; top: 26%;" aria-hidden="true"></span>
@@ -301,7 +388,7 @@
       });
     });
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/matter-js@0.20.0/build/matter.min.js" defer></script>
+  <script src="assets/vendor/matter.min.js?v=0.20.0" defer></script>
   <script src="assets/night.js?v=23" defer></script>
 </body>
 </html>
