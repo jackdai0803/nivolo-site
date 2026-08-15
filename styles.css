@@ -299,37 +299,6 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
 }
 .icon-pit.ready .pit-hint { opacity: 1; }
 .icon-pit.touched .pit-hint { opacity: 0; transition-delay: 0s; }
-.pit-start {
-  position: absolute;
-  z-index: 7;
-  left: 50%;
-  top: 46%;
-  transform: translate(-50%, -50%);
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
-  border: 1px solid rgba(170, 224, 255, 0.3);
-  border-radius: 999px;
-  color: rgba(235, 248, 255, 0.95);
-  background: rgba(10, 27, 54, 0.72);
-  box-shadow: 0 10px 30px rgba(0, 9, 30, 0.32), inset 0 1px rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  font: inherit;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
-}
-.pit-start[hidden] { display: none; }
-.pit-start span { color: #73d8ff; font-size: 10px; }
-.pit-start:hover {
-  transform: translate(-50%, -50%) scale(1.04);
-  border-color: rgba(115, 216, 255, 0.62);
-  background: rgba(12, 38, 72, 0.86);
-}
-.pit-start:active { transform: translate(-50%, -50%) scale(0.97); }
 /* Sound toggle — bottom-right of the stage, outside the bowl */
 .pit-sound {
   position: absolute;

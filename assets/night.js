@@ -124,8 +124,6 @@
 
   var walls = [];
   var icons = []; // { body, el, key, label }
-  var pendingIcebergDrops = [];
-  var icebergDropStarted = VARIANT !== "iceberg";
   var rimYCurrent = 0;   // top of the container, set by buildWalls
   var bowlHalfCurrent = 0; // container half-width, set by buildWalls
   var waterYCurrent = 0; // iceberg only: the waterline, set by buildWalls
@@ -327,29 +325,12 @@
       );
       Body.setAngularVelocity(body, Math.random() * 0.08 - 0.04);
       icons.push({ body: body, el: el, key: icon[0], label: icon[1], groundPopPlayed: false });
-      if (VARIANT === "iceberg") {
-        pendingIcebergDrops.push({ body: body, index: i });
-      } else {
-        // Non-iceberg variants keep their automatic pour.
-        setTimeout(function () {
-          Composite.add(engine.world, body);
-          if (i === ICONS.length - 1) pit.classList.add("ready");
-        }, 260 + i * SPAWN_GAP);
-      }
-    });
-  }
-
-  function startIcebergDrop() {
-    if (icebergDropStarted || VARIANT !== "iceberg") return;
-    icebergDropStarted = true;
-    pit.classList.add("started");
-    pendingIcebergDrops.forEach(function (entry) {
+      // Stagger the automatic drop so the icons pour in rather than dump.
       setTimeout(function () {
-        Composite.add(engine.world, entry.body);
-        if (entry.index === ICONS.length - 1) pit.classList.add("ready");
-      }, 80 + entry.index * SPAWN_GAP);
+        Composite.add(engine.world, body);
+        if (i === ICONS.length - 1) pit.classList.add("ready");
+      }, 260 + i * SPAWN_GAP);
     });
-    pendingIcebergDrops = [];
   }
 
   /* ── Bowl SFX: tiny synthesized clacks + pops (Web Audio, no assets).
@@ -488,9 +469,9 @@
     }
   });
 
-  /* Keep audio resumable after any real gesture. The initial iceberg pour
-     begins only from its explicit start button, so the context is unlocked
-     before—not after—the first icons touch the ice. */
+  /* Keep audio resumable after any real gesture. Browsers block sound before
+     that gesture, but the visual icon pour begins immediately and never
+     performs a synthetic pile-wide bounce afterward. */
   ["pointerdown", "pointerup", "keydown"].forEach(function (type) {
     document.addEventListener(type, function () {
       sfx.arm();
@@ -851,16 +832,6 @@
     syncSound();
   }
 
-  var startBtn = document.getElementById("pitStart");
-  if (startBtn && VARIANT === "iceberg") {
-    startBtn.hidden = false;
-    startBtn.addEventListener("click", function () {
-      sfx.arm();
-      startIcebergDrop();
-      startBtn.hidden = true;
-    });
-  }
-
   buildWalls();
   spawnIcons();
   setRunning(true);
@@ -883,8 +854,6 @@
   // ?settle fast-forwards past the pour once all icons have spawned —
   // for screenshot tooling that can't wait out the animation.
   if (/[?&]settle\b/.test(location.search)) {
-    startIcebergDrop();
-    if (startBtn) startBtn.hidden = true;
     setTimeout(function () { window.__nivolo.step(2600); },
       260 + ICONS.length * SPAWN_GAP + 600);
   }
