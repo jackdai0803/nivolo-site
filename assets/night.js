@@ -338,7 +338,8 @@
      Arms on the first real pointer gesture (autoplay policy blocks
      anything earlier), so the initial pour is silent by design. ── */
   var sfx = (function () {
-    var ctx = null, master = null, armed = false, lastAt = -1, lastSplashAt = -1, played = 0;
+    var ctx = null, master = null, armed = false;
+    var lastAt = -1, lastLandAt = -1, lastSplashAt = -1, played = 0;
     var muted = false;
     try { muted = localStorage.getItem("nivolo-sfx") === "off"; } catch (e) {}
     function ensure() {
@@ -398,6 +399,20 @@
       tone("sine", f * 0.52, f, v, 0.07);
       return true;
     }
+    function land(strength) {
+      if (!armed || muted || !ctx) return false;
+      var t = ctx.currentTime;
+      if (t - lastLandAt < 0.025) return false;
+      lastLandAt = t;
+      strength = Math.max(0.28, Math.min(1, strength || 0.45));
+      played++;
+      // A distinct, round pop reserved for the icon's first contact with
+      // the white ice. It has its own throttle, so an icon collision just
+      // before touchdown cannot swallow the landing sound.
+      var f = 520 + 230 * strength;
+      tone("sine", f * 0.48, f, 0.11 + 0.13 * strength, 0.085);
+      return true;
+    }
     function pop() {
       if (muted || !ensure()) return;
       played++;
@@ -417,7 +432,7 @@
       muted = m;
       try { localStorage.setItem("nivolo-sfx", m ? "off" : "on"); } catch (e) {}
     }
-    return { arm: arm, hit: hit, pop: pop, plop: plop, setMuted: setMuted,
+    return { arm: arm, hit: hit, land: land, pop: pop, plop: plop, setMuted: setMuted,
              isMuted: function () { return muted; },
              stats: function () { return { armed: armed, state: ctx ? ctx.state : null, played: played }; } };
   })();
@@ -450,7 +465,7 @@
       var landedIcon = iconA || iconB;
       var otherBody = iconA ? pa.bodyB : pa.bodyA;
       if (landedIcon && otherBody.label === "nivolo-ground" && !landedIcon.groundPopPlayed) {
-        if (sfx.hit(Math.max(0.34, Math.min(1, rel / 11)))) landedIcon.groundPopPlayed = true;
+        if (sfx.land(Math.max(0.34, Math.min(1, rel / 11)))) landedIcon.groundPopPlayed = true;
       }
     }
   });
