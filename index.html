@@ -4,11 +4,47 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Nivolo — Habits that actually stick</title>
-  <meta name="description" content="Nivolo is the cozy habit app. Set goals, keep your streak alive with Nivo, earn Pecks, and collect gems for every milestone." />
+  <meta name="description" content="Nivolo is the cozy habit app. Set goals, keep your streak alive with Nivo, earn Pecks, and collect gems for every milestone. Free on iPhone, no account needed." />
+  <link rel="canonical" href="https://nivolo.app/" />
+  <meta name="theme-color" content="#04060C" />
+
+  <!-- Link previews (iMessage, Slack, Discord, X, Reddit…) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Nivolo" />
+  <meta property="og:url" content="https://nivolo.app/" />
+  <meta property="og:title" content="Nivolo — Habits that actually stick" />
+  <meta property="og:description" content="One small action a day. Streaks with a safety net, Pecks to spend, and a penguin who's extremely proud of you." />
+  <meta property="og:image" content="https://nivolo.app/assets/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Nivolo — the cozy habit app, with Nivo the penguin" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Nivolo — Habits that actually stick" />
+  <meta name="twitter:description" content="One small action a day. Streaks with a safety net, Pecks to spend, and a penguin who's extremely proud of you." />
+  <meta name="twitter:image" content="https://nivolo.app/assets/og-image.png" />
+
   <link rel="icon" href="assets/favicon.png" type="image/png" />
   <link rel="apple-touch-icon" href="assets/app-icon.png" />
-  <link rel="stylesheet" href="assets/fonts.css?v=1" />
-  <link rel="stylesheet" href="styles.css?v=28" />
+  <link rel="stylesheet" href="assets/fonts.css?v=2" />
+  <link rel="stylesheet" href="styles.css?v=29" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Nivolo",
+    "applicationCategory": "LifestyleApplication",
+    "operatingSystem": "iOS",
+    "url": "https://nivolo.app/",
+    "description": "A cozy habit app. Set goals, keep your streak alive with Nivo, earn Pecks, and collect gems for every milestone.",
+    "inLanguage": ["en", "zh-Hans"],
+    "offers": [
+      { "@type": "Offer", "price": "0", "priceCurrency": "USD", "name": "Nivolo Free" },
+      { "@type": "Offer", "price": "29.99", "priceCurrency": "USD", "name": "Nivolo Pro — yearly" },
+      { "@type": "Offer", "price": "4.99", "priceCurrency": "USD", "name": "Nivolo Pro — monthly" }
+    ]
+  }
+  </script>
 </head>
 <body>
 
@@ -17,6 +53,8 @@
       <a class="logo" href="index.html"><span class="logo-mark"><img src="assets/app-icon.png" alt="" /></span>nivolo</a>
       <div class="nav-links">
         <a class="nav-plain" href="#features">Features</a>
+        <a class="nav-plain" href="#pricing">Pricing</a>
+        <a class="nav-plain" href="#faq">FAQ</a>
         <a class="nav-plain" href="support.html">Support</a>
         <!-- TODO: replace href with the real App Store link -->
         <a class="nav-cta" href="https://apps.apple.com/app/nivolo">Get the app</a>
@@ -58,6 +96,33 @@
 
   
 
+  <section class="section steps-section" id="how">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="section-kicker">How it works</p>
+        <h2 class="section-title">Three taps to start</h2>
+        <p class="section-sub">No setup weekend, no spreadsheet. Nivolo asks for one small thing a day and keeps the rest out of your way.</p>
+      </div>
+      <ol class="steps reveal">
+        <li class="step">
+          <span class="step-num">1</span>
+          <h3>Name the goal</h3>
+          <p>Tell Nivo what you're after and why it matters. He'll break it into steps small enough to actually do.</p>
+        </li>
+        <li class="step">
+          <span class="step-num">2</span>
+          <h3>Log one action a day</h3>
+          <p>Fifteen minutes of guitar. One short run. Tap it in, earn your Pecks, watch the streak grow.</p>
+        </li>
+        <li class="step">
+          <span class="step-num">3</span>
+          <h3>Collect the gem</h3>
+          <p>Finish the goal and it becomes a one-of-a-kind gem on your shelf — proof you saw it through.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
   <section class="section" id="features">
     <div class="wrap">
       <div class="section-head reveal">
@@ -66,16 +131,7 @@
         <p class="section-sub">Everything in Nivolo is designed so that showing up daily feels good — and missing a day doesn't ruin everything.</p>
       </div>
 
-      <div class="tabs reveal" role="tablist" aria-label="Nivolo features">
-        <button class="tab-btn active" data-tab="tab-streaks" role="tab" aria-selected="true">Streaks</button>
-        <button class="tab-btn" data-tab="tab-pecks" role="tab" aria-selected="false">Pecks &amp; Shop</button>
-        <button class="tab-btn" data-tab="tab-gems" role="tab" aria-selected="false">Gems</button>
-        <button class="tab-btn" data-tab="tab-rest" role="tab" aria-selected="false">Rest days</button>
-        <button class="tab-btn" data-tab="tab-insights" role="tab" aria-selected="false">Insights</button>
-        <button class="tab-btn" data-tab="tab-widget" role="tab" aria-selected="false">Widget</button>
-      </div>
-
-      <div class="tab-panel split active" id="tab-streaks" role="tabpanel">
+      <div class="feature split reveal">
         <div class="split-copy">
           <p class="section-kicker">Streaks</p>
           <h3>Miss a day, not your momentum.</h3>
@@ -87,85 +143,19 @@
           </ul>
         </div>
         <div class="split-visual">
-          <div class="panel panel--blue">
-            <div class="ui-card ui-card--tilt-l">
-              <div class="ui-flame-row">
-                <span class="ui-flame">🔥</span>
-                <span><b>12 day streak</b><small>Your longest yet</small></span>
-              </div>
-              <div class="week-row">
-                <span class="week-day"><span class="week-dot week-dot--done">✓</span>M</span>
-                <span class="week-day"><span class="week-dot week-dot--done">✓</span>T</span>
-                <span class="week-day"><span class="week-dot week-dot--ice">❄</span>W</span>
-                <span class="week-day"><span class="week-dot week-dot--done">✓</span>T</span>
-                <span class="week-day"><span class="week-dot week-dot--done">✓</span>F</span>
-                <span class="week-day"><span class="week-dot week-dot--today"></span>S</span>
-                <span class="week-day"><span class="week-dot"></span>S</span>
-              </div>
+          <div class="panel panel--blue phone-panel">
+            <div class="phone">
+              <picture>
+                <source srcset="assets/screens/home.webp" type="image/webp" />
+                <img src="assets/screens/home.png" width="640" height="1387" loading="lazy" decoding="async"
+                     alt="Nivolo home screen showing a 12-day streak, this week's check-ins, and two goals in progress." />
+              </picture>
             </div>
-            <div class="ui-banner ui-card--tilt-r">❄️&nbsp; Streak freeze used — your streak is safe.</div>
           </div>
         </div>
       </div>
 
-      <div class="tab-panel split" id="tab-pecks" role="tabpanel">
-        <div class="split-copy">
-          <p class="section-kicker">Pecks &amp; the shop</p>
-          <h3>Every check-in pays.</h3>
-          <p>Each action you log earns Pecks. Spend them on outfits and goodies for Nivo — your progress, wearing a tiny hat.</p>
-          <ul>
-            <li>Earn Pecks for every completed action</li>
-            <li>Dress up Nivo with outfits from the shop</li>
-            <li>Bonus Pecks for milestones and perfect weeks</li>
-          </ul>
-        </div>
-        <div class="split-visual">
-          <div class="panel panel--gold">
-            <span class="float-chip"><span class="coin"></span>+10</span>
-            <div class="shop-row">
-              <div class="shop-card ui-card--tilt-l">
-                <div class="shop-thumb">🧣</div>
-                <h4>Cozy scarf</h4>
-                <span class="shop-price"><span class="coin"></span>120</span>
-              </div>
-              <div class="shop-card ui-card--tilt-r">
-                <div class="shop-thumb">🎩</div>
-                <h4>Top hat</h4>
-                <span class="shop-price shop-price--owned">Owned ✓</span>
-              </div>
-            </div>
-            <div class="stat-line"><span>Your balance</span><b>240 Pecks</b></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="tab-panel split" id="tab-gems" role="tabpanel">
-        <div class="split-copy">
-          <p class="section-kicker">Gems</p>
-          <h3>A shelf full of finished goals.</h3>
-          <p>Finish a goal and a one-of-a-kind gem joins your Trophy Shelf — a season-by-season record of what you've achieved.</p>
-          <ul>
-            <li>A unique gem for every goal you complete</li>
-            <li>Seasonal shelves archive your progress</li>
-            <li>A little reveal moment every time you finish</li>
-          </ul>
-        </div>
-        <div class="split-visual">
-          <div class="panel panel--purple">
-            <div class="gem-grid gem-grid--lg">
-              <div class="gem-slot"><span class="gem gem--blue"></span></div>
-              <div class="gem-slot"><span class="gem gem--gold"></span></div>
-              <div class="gem-slot"><span class="gem gem--purple"></span></div>
-              <div class="gem-slot"><span class="gem gem--green"></span></div>
-              <div class="gem-slot gem-slot--empty"><span>?</span></div>
-              <div class="gem-slot gem-slot--empty"><span>?</span></div>
-            </div>
-            <div class="stat-line"><span>Season 3</span><b>4 of 6 goals</b></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="tab-panel split" id="tab-rest" role="tabpanel">
+      <div class="feature split split--flip reveal">
         <div class="split-copy">
           <p class="section-kicker">Rest days</p>
           <h3>Recharge without breaking anything.</h3>
@@ -198,38 +188,80 @@
         </div>
       </div>
 
-      <div class="tab-panel split" id="tab-insights" role="tabpanel">
+      <div class="feature split reveal">
         <div class="split-copy">
-          <p class="section-kicker">Weekly insights</p>
-          <h3>See the week, not just the day.</h3>
-          <p>Every Sunday, a gentle recap: what stuck, what slipped, and one small suggestion for the week ahead.</p>
+          <p class="section-kicker">Pecks &amp; the shop</p>
+          <h3>Every check-in pays.</h3>
+          <p>Each action you log earns Pecks. Spend them on outfits and goodies for Nivo — your progress, wearing a tiny hat.</p>
           <ul>
-            <li>A calm Sunday summary of your week</li>
-            <li>Spot your best days at a glance</li>
-            <li>One small, doable suggestion each week</li>
+            <li>Earn Pecks for every completed action</li>
+            <li>Dress up Nivo with outfits from the shop</li>
+            <li>Bonus Pecks for milestones and perfect weeks</li>
           </ul>
         </div>
         <div class="split-visual">
-          <div class="panel panel--blue">
-            <div class="bars-card ui-card">
-              <div class="bars">
-                <i class="bar bar--on" style="height:52%"></i>
-                <i class="bar bar--best" style="height:88%"></i>
-                <i class="bar bar--on" style="height:64%"></i>
-                <i class="bar" style="height:18%"></i>
-                <i class="bar bar--on" style="height:72%"></i>
-                <i class="bar bar--on" style="height:58%"></i>
-                <i class="bar" style="height:26%"></i>
-              </div>
-              <div class="bar-labels"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
+          <div class="panel panel--gold phone-panel">
+            <span class="float-chip"><span class="coin"></span>+10</span>
+            <div class="phone">
+              <picture>
+                <source srcset="assets/screens/store.webp" type="image/webp" />
+                <img src="assets/screens/store.png" width="640" height="1387" loading="lazy" decoding="async"
+                     alt="The Nivolo store, with a Streak Freeze power-up and hats to buy with Pecks." />
+              </picture>
             </div>
-            <div class="stat-line"><span>Best day</span><b>Tuesday</b></div>
-            <div class="stat-line"><span>Days showed up</span><b>5 of 7</b></div>
           </div>
         </div>
       </div>
 
-      <div class="tab-panel split" id="tab-widget" role="tabpanel">
+      <div class="feature split split--flip reveal">
+        <div class="split-copy">
+          <p class="section-kicker">Gems</p>
+          <h3>A shelf full of finished goals.</h3>
+          <p>Finish a goal and a one-of-a-kind gem joins your Trophy Shelf — a season-by-season record of what you've achieved.</p>
+          <ul>
+            <li>A unique gem for every goal you complete</li>
+            <li>Seasonal shelves archive your progress</li>
+            <li>A little reveal moment every time you finish</li>
+          </ul>
+        </div>
+        <div class="split-visual">
+          <div class="panel panel--purple phone-panel">
+            <div class="phone">
+              <picture>
+                <source srcset="assets/screens/achievements.webp" type="image/webp" />
+                <img src="assets/screens/achievements.png" width="640" height="1387" loading="lazy" decoding="async"
+                     alt="The Trophy Shelf, showing four collected gems from finished goals and more in progress." />
+              </picture>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature split reveal">
+        <div class="split-copy">
+          <p class="section-kicker">Your progress</p>
+          <h3>See the week, not just the day.</h3>
+          <p>Levels, streaks and lifetime Pecks in one place — plus a gentle Sunday recap of what stuck and one small suggestion for the week ahead.</p>
+          <ul>
+            <li>Streak, Pecks and goals finished at a glance</li>
+            <li>Badges for the milestones worth noticing</li>
+            <li>A calm weekly summary, never a scoreboard</li>
+          </ul>
+        </div>
+        <div class="split-visual">
+          <div class="panel panel--blue phone-panel">
+            <div class="phone">
+              <picture>
+                <source srcset="assets/screens/profile.webp" type="image/webp" />
+                <img src="assets/screens/profile.png" width="640" height="1387" loading="lazy" decoding="async"
+                     alt="A Nivolo profile showing level 4, a 12-day streak, 240 Pecks and four goals completed." />
+              </picture>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature split split--flip reveal">
         <div class="split-copy">
           <p class="section-kicker">Home screen</p>
           <h3>Your streak, always in sight.</h3>
@@ -343,6 +375,102 @@
     </div>
   </section>
 
+  <section class="section privacy-section" id="privacy">
+    <div class="wrap">
+      <div class="privacy-panel reveal">
+        <div class="privacy-copy">
+          <p class="section-kicker">Yours alone</p>
+          <h2 class="section-title">No account. No cloud. No tracking.</h2>
+          <p>Open Nivolo and start — there's no sign-up wall, because there's nothing to sign up for. Your goals, streaks, Pecks and gems live on your iPhone, not on our server.</p>
+          <p class="privacy-fine">The exceptions are the two optional AI features: drafting a plan sends the goal text you type, and the weekly insight sends that week's totals. Both are tied to a random ID, not to you. Nothing else leaves your phone. <a href="privacy.html">Read the privacy policy</a>.</p>
+        </div>
+        <ul class="privacy-list">
+          <li><b>No account</b><span>Nothing to create, nothing to remember</span></li>
+          <li><b>On your device</b><span>Included in your normal iPhone backup</span></li>
+          <li><b>No analytics or ad trackers</b><span>We can't see how you use it</span></li>
+          <li><b>Reminders stay local</b><span>Scheduled on your phone, never via us</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="pricing">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="section-kicker">Pricing</p>
+        <h2 class="section-title">Free is the whole habit app</h2>
+        <p class="section-sub">Everything you need to build a streak costs nothing. Pro is for people who want to spoil their penguin.</p>
+      </div>
+      <div class="plans reveal">
+        <div class="plan">
+          <h3>Nivolo Free</h3>
+          <p class="plan-price">$0<span>forever</span></p>
+          <ul>
+            <li>Unlimited goals, steps and actions</li>
+            <li>Streaks, weekly freezes and rest days</li>
+            <li>Pecks, the shop and the Trophy Shelf</li>
+            <li>Home-screen widget and reminders</li>
+            <li>English and 简体中文</li>
+            <li>Two AI-drafted plans to get you going</li>
+          </ul>
+        </div>
+        <div class="plan plan--pro">
+          <span class="plan-badge">Optional</span>
+          <h3>Nivolo Pro</h3>
+          <p class="plan-price">$2.49<span>/mo, billed yearly</span></p>
+          <ul>
+            <li>Everything in Free</li>
+            <li>Exclusive outfits only Pro can equip</li>
+            <li>Bonus Pecks on every step you finish</li>
+            <li>Unlimited AI-drafted plans</li>
+            <li>Your AI weekly insight each Sunday</li>
+            <li>Early access to new features</li>
+          </ul>
+          <p class="plan-note">$29.99/year or $4.99/month · 7-day free trial · cancel anytime</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="faq">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="section-kicker">Questions</p>
+        <h2 class="section-title">Before you download</h2>
+      </div>
+      <div class="faq reveal">
+        <details>
+          <summary>Do I need an account?</summary>
+          <p>No. There's no sign-up and no password. Nivolo opens straight into the app and keeps your data on your iPhone.</p>
+        </details>
+        <details>
+          <summary>What happens if I miss a day?</summary>
+          <p>Usually nothing. You get a free streak freeze every week that's applied automatically, and you can schedule rest days in advance. If a streak does break, you can repair it from the home screen.</p>
+        </details>
+        <details>
+          <summary>Is it really free?</summary>
+          <p>Yes. Every habit feature — unlimited goals, streaks, freezes, rest days, Pecks, gems, the widget — is free. Nivolo Pro is an optional subscription for cosmetic extras, bonus Pecks and the AI weekly insight.</p>
+        </details>
+        <details>
+          <summary>Is there an Android version?</summary>
+          <p>Not yet. Nivolo is iPhone-only for now.</p>
+        </details>
+        <details>
+          <summary>What languages does it support?</summary>
+          <p>English and Simplified Chinese (简体中文). You pick during setup and can switch any time in Settings.</p>
+        </details>
+        <details>
+          <summary>Will I get nagged with notifications?</summary>
+          <p>Only if you want them. Reminders are off-by-default in tone — one gentle daily nudge at a time you choose — and every category can be switched off in Settings.</p>
+        </details>
+        <details>
+          <summary>What if I switch phones?</summary>
+          <p>Your data is included in your standard iPhone backup, so restoring a backup to a new phone brings Nivolo with it.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
   <section class="cta">
     <div class="cta-panel reveal">
       <span class="cta-gem gem gem--blue" style="left: 11%; top: 26%;" aria-hidden="true"></span>
@@ -375,20 +503,8 @@
       entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
     }, { threshold: 0.12 });
     document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
-
-    // Feature tabs
-    document.querySelectorAll(".tab-btn").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        document.querySelector(".tab-btn.active").classList.remove("active");
-        document.querySelector(".tab-panel.active").classList.remove("active");
-        document.querySelectorAll(".tab-btn").forEach((b) => b.setAttribute("aria-selected", "false"));
-        btn.classList.add("active");
-        btn.setAttribute("aria-selected", "true");
-        document.getElementById(btn.dataset.tab).classList.add("active");
-      });
-    });
   </script>
   <script src="assets/vendor/matter.min.js?v=0.20.0" defer></script>
-  <script src="assets/night.js?v=23" defer></script>
+  <script src="assets/night.js?v=24" defer></script>
 </body>
 </html>

@@ -483,7 +483,8 @@
   ["pointerdown", "pointerup", "keydown"].forEach(function (type) {
     document.addEventListener(type, function () {
       sfx.arm();
-      maybeRepour();
+      beginPour();   // the held pour is now allowed to run — and be heard
+      maybeRepour(); // (only relevant once a pour has already happened)
     }, { capture: true, passive: true });
   });
 
@@ -654,7 +655,7 @@
   new IntersectionObserver(function (entries) {
     stageOnScreen = entries[0].isIntersecting;
     setRunning(stageOnScreen && !document.hidden);
-    if (stageOnScreen) maybeRepour(); // scrolled into view → pour it out loud
+    if (stageOnScreen) { armPourGrace(); maybeRepour(); }
   }, { threshold: 0.02 }).observe(stage);
   document.addEventListener("visibilitychange", function () {
     if (document.hidden) setRunning(false);
@@ -918,8 +919,40 @@
   }
 
   buildWalls();
-  spawnIcons();
   setRunning(true);
+
+  /* ── When the pour is allowed to start ────────────────────────────────
+     Audio is locked until the visitor's first gesture, so a pour that
+     starts at load is silent no matter what we do — the icons hit the ice
+     before anyone can click. So hold it: the first gesture starts the
+     pour, and the very first touchdown is heard. The wait is bounded —
+     after POUR_GRACE the pour runs anyway (silently, and maybeRepour
+     covers it later), so the berg is never left empty.
+     Holding until the stage is on screen matters too: off screen the sim
+     is paused, and icons queued into a paused world all drop together
+     when it scrolls in — a dump, not a pour. */
+  var POUR_GRACE = 3500;
+  var pourStarted = false;
+  var pourGraceTimer = null;
+
+  function beginPour(force) {
+    if (pourStarted || (!force && !stageOnScreen)) return;
+    pourStarted = true;
+    if (pourGraceTimer) { clearTimeout(pourGraceTimer); pourGraceTimer = null; }
+    spawnIcons();
+  }
+
+  function armPourGrace() {
+    if (pourStarted || pourGraceTimer) return;
+    if (sfx.stats().armed) { beginPour(); return; } // already unlocked → pour now
+    pourGraceTimer = setTimeout(function () {
+      pourGraceTimer = null;
+      beginPour();
+    }, POUR_GRACE);
+  }
+
+  // Screenshot tooling can't gesture; it wants the pour immediately.
+  if (/[?&]settle\b/.test(location.search)) beginPour(true);
   // Button rects shift once the webfont lands — remeasure the terrain.
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(function () { buildWalls(); });
