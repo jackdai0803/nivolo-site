@@ -324,7 +324,7 @@
         }
       );
       Body.setAngularVelocity(body, Math.random() * 0.08 - 0.04);
-      icons.push({ body: body, el: el, key: icon[0], label: icon[1], groundPopPlayed: false });
+      icons.push({ body: body, el: el, key: icon[0], label: icon[1], lastGroundPopAt: -1e9 });
       // Stagger the automatic drop so the icons pour in rather than dump.
       setTimeout(function () {
         Composite.add(engine.world, body);
@@ -458,23 +458,32 @@
         continue;
       }
 
-      // The first contact with the white iceberg surface gets a clearer
-      // landing pop. If autoplay is still locked, leave this false so the
-      // first landing after the visitor interacts can still be heard.
+      // Touching the white ice gets the clearer landing pop. Throttled per
+      // icon on SIM time (not a one-shot flag) so a settling bounce is one
+      // pop, but a later landing — dropped after a drag, re-poured from the
+      // sky — pops again the way a real touchdown should.
       var landedIcon = iconA || iconB;
       var otherBody = iconA ? pa.bodyB : pa.bodyA;
-      if (landedIcon && otherBody.label === "nivolo-ground" && !landedIcon.groundPopPlayed) {
-        if (sfx.land(Math.max(0.34, Math.min(1, rel / 11)))) landedIcon.groundPopPlayed = true;
+      if (landedIcon && otherBody.label === "nivolo-ground" && rel > 0.55) {
+        var simNow = engine.timing.timestamp;
+        if (simNow - (landedIcon.lastGroundPopAt || -1e9) > 260 &&
+            sfx.land(Math.max(0.34, Math.min(1, rel / 11)))) {
+          landedIcon.lastGroundPopAt = simNow;
+          landsHeard++; // enough of these and the replay is unnecessary
+        }
       }
     }
   });
 
-  /* Keep audio resumable after any real gesture. Browsers block sound before
-     that gesture, but the visual icon pour begins immediately and never
-     performs a synthetic pile-wide bounce afterward. */
+  /* Keep audio resumable after any real gesture. The pour starts at load,
+     long before a visitor can click, so the browser's autoplay policy
+     silences every landing — the pops Jack expects are simply never heard.
+     Arming therefore also schedules a replay of the pour (see maybeRepour):
+     the colony lifts back into the sky and falls again, this time out loud. */
   ["pointerdown", "pointerup", "keydown"].forEach(function (type) {
     document.addEventListener(type, function () {
       sfx.arm();
+      maybeRepour();
     }, { capture: true, passive: true });
   });
 
@@ -641,12 +650,15 @@
     else if (rafId) cancelAnimationFrame(rafId);
   }
 
+  var stageOnScreen = false;
   new IntersectionObserver(function (entries) {
-    setRunning(entries[0].isIntersecting && !document.hidden);
+    stageOnScreen = entries[0].isIntersecting;
+    setRunning(stageOnScreen && !document.hidden);
+    if (stageOnScreen) maybeRepour(); // scrolled into view → pour it out loud
   }, { threshold: 0.02 }).observe(stage);
   document.addEventListener("visibilitychange", function () {
     if (document.hidden) setRunning(false);
-    else if (stage.getBoundingClientRect().bottom > 0) setRunning(true);
+    else if (stage.getBoundingClientRect().bottom > 0) { setRunning(true); maybeRepour(); }
   });
 
   /* Maintenance pass on the ENGINE TICK (not wall clock — must advance
@@ -664,7 +676,7 @@
   function respawnFromSky(it, s) {
     var b = it.body;
     clearSinkState(it);
-    it.groundPopPlayed = false;
+    it.lastGroundPopAt = -1e9; // a fresh fall always earns a fresh pop
     Body.setPosition(b, {
       x: s.w / 2 + (Math.random() * 2 - 1) * bowlHalfCurrent * 0.62,
       y: skyTop - 90 - Math.random() * 170,
@@ -673,6 +685,56 @@
     Body.setAngularVelocity(b, Math.random() * 0.08 - 0.04);
     Matter.Sleeping.set(b, false);
     it.respawns = (it.respawns || 0) + 1;
+  }
+
+  /* ── Audible re-pour ──────────────────────────────────────────────────
+     The load-time pour is always silent (no user gesture yet = no audio),
+     so the "icons land on the ice with a pop" moment is lost on a fresh
+     visit. Once sound is genuinely available — armed, unmuted, stage on
+     screen, nothing being dragged — lift the settled colony back over the
+     page and pour it again, staggered, so each touchdown pops. Runs at
+     most once, and is cancelled outright if a real landing was ever heard. */
+  var landsHeard = 0;      // audible ice landings so far (see collision handler)
+  var repourDone = false;
+  var repourPending = false;
+
+  // A handful of icons is always cycling — sliding off, sinking, re-dropping —
+  // so "idle" means the mound is at rest, not that literally nothing moves.
+  function colonyIdle() {
+    if (dragConstraint) return false;
+    var still = 0;
+    for (var i = 0; i < icons.length; i++) {
+      if (!icons[i].sinking && icons[i].body.speed < 0.5) still++;
+    }
+    return still >= icons.length * 0.6;
+  }
+
+  function repour() {
+    // Shuffle so the replay doesn't retrace the first pour's rhythm.
+    var order = icons.map(function (_, i) { return i; });
+    for (var i = order.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = order[i]; order[i] = order[j]; order[j] = tmp;
+    }
+    order.forEach(function (idx, n) {
+      setTimeout(function () {
+        respawnFromSky(icons[idx], stageSize());
+      }, n * SPAWN_GAP);
+    });
+  }
+
+  function maybeRepour() {
+    // Four-plus audible landings means sound came alive during the pour
+    // itself and the visitor already heard it — one stray swimmer flopping
+    // back onto the ice does not count.
+    if (repourDone || landsHeard >= 4) return;
+    if (VARIANT === "zerog") return;      // nothing pours in orbit
+    if (sfx.isMuted() || !sfx.stats().armed) return;
+    // Not the moment (scrolled away, still settling, mid-drag) — try later.
+    if (!running || !stageOnScreen || !colonyIdle()) { repourPending = true; return; }
+    repourDone = true;
+    repourPending = false;
+    repour();
   }
 
   function splashAt(x, y, strength) {
@@ -750,6 +812,7 @@
   Matter.Events.on(engine, "afterUpdate", function () {
     if (VARIANT === "iceberg") sinkingPass();
     if (++maintTick % 100 !== 0) return;
+    if (repourPending) maybeRepour(); // waiting on the colony to settle
     var s = stageSize();
     if (VARIANT === "zerog") {
       icons.forEach(function (it) {
@@ -828,6 +891,7 @@
       sfx.arm();
       if (!sfx.isMuted()) sfx.pop(); // audible confirmation
       syncSound();
+      maybeRepour(); // unmuting is the moment to hear the pour
     });
     syncSound();
   }
@@ -845,10 +909,11 @@
   window.__nivolo = { engine: engine, icons: icons, sfx: sfx, step: function (n) {
     for (var i = 0; i < n; i++) Engine.update(engine, 16.7);
     drawLines();
-  }, stats: function () {
+  }, repour: repour, stats: function () {
     return {
       sinking: icons.filter(function (it) { return it.sinking; }).length,
       respawns: icons.reduce(function (sum, it) { return sum + (it.respawns || 0); }, 0),
+      landsHeard: landsHeard, repourDone: repourDone, repourPending: repourPending,
     };
   } };
   // ?settle fast-forwards past the pour once all icons have spawned —
