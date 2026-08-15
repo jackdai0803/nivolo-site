@@ -231,6 +231,57 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
   will-change: transform;
   pointer-events: none;
   filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.5));
+  transition: opacity 0.18s linear, filter 0.35s ease;
+}
+.pit-icon.is-sinking {
+  filter: drop-shadow(0 8px 14px rgba(0, 24, 70, 0.38)) saturate(0.72) brightness(0.72) hue-rotate(7deg);
+}
+.water-splash {
+  position: absolute;
+  z-index: 5;
+  width: 78px;
+  height: 44px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.water-splash::before,
+.water-splash::after {
+  content: "";
+  position: absolute;
+  left: 50%; bottom: 1px;
+  width: 62px; height: 15px;
+  border: 2px solid rgba(174, 239, 255, 0.86);
+  border-left-color: transparent;
+  border-right-color: transparent;
+  border-radius: 50%;
+  transform: translateX(-50%) scale(0.35);
+  animation: splash-ripple 0.78s ease-out forwards;
+}
+.water-splash::after {
+  width: 42px; height: 10px;
+  opacity: 0.58;
+  animation-delay: 0.08s;
+}
+.water-splash i {
+  position: absolute;
+  left: 50%; bottom: 9px;
+  width: 5px; height: 8px;
+  border-radius: 55% 55% 62% 62%;
+  background: linear-gradient(180deg, #d8f8ff, #58c6eb);
+  box-shadow: 0 0 9px rgba(118, 221, 249, 0.38);
+  opacity: 0;
+  transform: translate(-50%, 0) scale(0.5);
+  animation: splash-drop 0.7s cubic-bezier(0.18, 0.72, 0.28, 1) var(--delay, 0s) forwards;
+}
+@keyframes splash-ripple {
+  0% { opacity: 0.92; transform: translateX(-50%) scale(0.35); }
+  65% { opacity: 0.58; }
+  100% { opacity: 0; transform: translateX(-50%) scale(1.4); }
+}
+@keyframes splash-drop {
+  0% { opacity: 0; transform: translate(-50%, 2px) scale(0.45); }
+  12% { opacity: 0.96; }
+  100% { opacity: 0; transform: translate(calc(-50% + var(--dx)), var(--dy)) scale(var(--drop-scale)); }
 }
 .pit-icon img {
   display: block; width: 100%; height: 100%;
@@ -612,72 +663,103 @@ footer { border-top: 1px solid var(--line); padding: 34px 0; }
   65% { transform: translateY(3px) rotate(-0.2deg); }
 }
 .pit--iceberg .bowl-visual {
-  left: 50%; bottom: 5px;
+  left: 50%; bottom: -13px;
   z-index: 1;
-  width: min(820px, 88%);
-  height: 150px;
+  width: min(840px, 90%);
+  height: 168px;
   border: none;
   border-radius: 0;
   background:
-    linear-gradient(115deg, transparent 0 29%, rgba(82, 172, 226, 0.22) 30% 49%, transparent 50%),
-    linear-gradient(245deg, transparent 0 42%, rgba(10, 68, 119, 0.26) 43% 64%, transparent 65%),
-    linear-gradient(180deg, rgba(45, 135, 196, 0.72), rgba(15, 66, 118, 0.92));
+    radial-gradient(ellipse at 50% 0, rgba(222, 248, 255, 0.18), transparent 62%),
+    linear-gradient(177deg,
+      #9bdcf7 0%,
+      #86cff0 32%,
+      #66b7e2 35%,
+      #4d9fd3 64%,
+      #347fba 67%,
+      #1a5b98 100%);
+  background-position: center bottom;
+  background-repeat: no-repeat;
+  background-size: 100% calc(100% - 23px);
   box-shadow: none;
-  clip-path: polygon(2% 0, 98% 0, 96% 49%, 88% 63%, 73% 70%, 63% 100%, 48% 78%, 34% 96%, 24% 72%, 10% 62%, 4% 48%);
-  filter: drop-shadow(0 26px 34px rgba(0, 40, 86, 0.42));
+  clip-path: polygon(3% 0, 97% 0, 95% 45%, 91% 57%, 82% 68%, 69% 78%, 57% 88%, 50% 100%, 42% 89%, 29% 80%, 17% 70%, 8% 58%, 5% 45%);
+  filter: drop-shadow(0 28px 38px rgba(0, 32, 75, 0.46));
   overflow: hidden;
 }
 .pit--iceberg .bowl-visual::before {
   content: "";
   position: absolute;
-  left: 3%; right: 3%; top: 35px;
-  height: 70px;
-  border: 1px solid rgba(188, 235, 255, 0.28);
-  border-radius: 15px 15px 34px 34px;
-  background:
-    linear-gradient(105deg, transparent 0 14%, rgba(255,255,255,.25) 14.5% 15%, transparent 15.5% 34%, rgba(255,255,255,.18) 34.5% 35%, transparent 35.5% 62%, rgba(255,255,255,.15) 62.5% 63%, transparent 63.5%),
-    linear-gradient(180deg, rgba(167, 225, 250, 0.96), rgba(69, 160, 215, 0.72));
-  box-shadow: inset 0 13px 22px rgba(255, 255, 255, 0.12);
-  clip-path: polygon(0 0, 100% 0, 96% 79%, 85% 93%, 72% 83%, 59% 100%, 44% 89%, 29% 96%, 14% 84%, 4% 69%);
+  left: 5%; right: 5%; top: 52px; bottom: 3px;
+  border: 0;
+  border-radius: 0;
+  background: linear-gradient(180deg, transparent 0 46%, rgba(3, 54, 111, 0.10) 100%);
+  box-shadow: none;
+  opacity: 0.78;
 }
 .pit--iceberg .bowl-visual::after {
   content: "";
   position: absolute;
   left: 0; right: 0; top: 0;
-  height: 66px;
-  border-radius: 52% 48% 46% 54% / 56% 52% 48% 44%;
+  height: 63px;
+  border-radius: 0;
   background:
-    radial-gradient(230px 42px at 29% 17%, rgba(255, 255, 255, 0.94), transparent 70%),
-    linear-gradient(180deg, #fff 0%, #e8f8ff 54%, #bce8fb 100%);
-  box-shadow: inset 0 -12px 20px rgba(46, 153, 212, 0.13), 0 0 0 1px rgba(216, 246, 255, 0.55);
-  clip-path: polygon(0 30%, 5% 18%, 13% 23%, 21% 11%, 31% 18%, 42% 7%, 53% 16%, 63% 8%, 73% 18%, 82% 10%, 91% 22%, 98% 17%, 100% 31%, 97% 58%, 88% 72%, 74% 76%, 61% 71%, 50% 81%, 38% 73%, 24% 77%, 12% 69%, 3% 55%);
+    radial-gradient(260px 38px at 28% 12%, rgba(255, 255, 255, 0.92), transparent 72%),
+    linear-gradient(180deg, #ffffff 0%, #edf9ff 54%, #c7edfc 100%);
+  box-shadow: inset 0 -10px 18px rgba(44, 148, 205, 0.12);
+  clip-path: polygon(0 29%, 7% 17%, 17% 20%, 29% 10%, 40% 15%, 52% 7%, 65% 14%, 78% 9%, 90% 18%, 100% 27%, 98% 57%, 89% 67%, 76% 71%, 63% 67%, 50% 75%, 37% 69%, 23% 72%, 10% 65%, 2% 54%);
 }
 .pit--iceberg .pit-stage::after {
   content: "";
   position: absolute;
-  left: 50%; bottom: 0;
+  left: 50%; bottom: -180px;
   z-index: 0;
-  width: 100vw; height: 120px;
+  width: 100vw; height: 300px;
   transform: translateX(-50%);
   border: 0;
-  border-top: 1px solid rgba(155, 221, 250, 0.32);
   border-radius: 0;
   background:
-    radial-gradient(420px 34px at 50% 0, rgba(168, 229, 255, 0.14), transparent 72%),
-    linear-gradient(180deg, rgba(54, 151, 207, 0.20), rgba(20, 78, 132, 0.27) 42%, rgba(7, 28, 63, 0.42));
+    radial-gradient(ellipse at 50% 0, rgba(157, 236, 255, 0.34) 0%, rgba(80, 199, 235, 0.16) 34%, transparent 70%) 0 0 / 180px 32px repeat-x,
+    radial-gradient(ellipse at 50% 0, rgba(76, 201, 235, 0.22) 0%, transparent 68%) 80px 9px / 250px 40px repeat-x,
+    linear-gradient(180deg,
+      rgba(25, 181, 216, 0.46) 0%,
+      rgba(8, 111, 185, 0.56) 30%,
+      rgba(4, 43, 112, 0.58) 52%,
+      rgba(4, 19, 57, 0.30) 70%,
+      rgba(4, 8, 20, 0) 92%,
+      rgba(4, 8, 20, 0) 100%);
   box-shadow:
-    0 -10px 34px rgba(67, 177, 229, 0.08),
-    inset 0 12px 24px rgba(132, 211, 246, 0.05);
+    0 -12px 36px rgba(75, 205, 239, 0.14),
+    inset 0 16px 30px rgba(153, 235, 255, 0.10);
+  clip-path: polygon(0 13px, 7% 2px, 15% 15px, 24% 4px, 34% 13px, 45% 2px, 56% 15px, 67% 2px, 78% 15px, 89% 4px, 100% 13px, 100% 100%, 0 100%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 56%, rgba(0,0,0,.78) 68%, rgba(0,0,0,.32) 82%, transparent 96%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 56%, rgba(0,0,0,.78) 68%, rgba(0,0,0,.32) 82%, transparent 96%);
+  animation: ocean-drift 4.8s linear infinite;
+  filter: saturate(1.12);
+  will-change: background-position, clip-path;
   pointer-events: none;
+}
+@keyframes ocean-drift {
+  0%, 100% {
+    background-position: 0 0, 80px 9px, 0 0;
+    clip-path: polygon(0 13px, 7% 2px, 15% 15px, 24% 4px, 34% 13px, 45% 2px, 56% 15px, 67% 2px, 78% 15px, 89% 4px, 100% 13px, 100% 100%, 0 100%);
+  }
+  50% {
+    background-position: 360px 0, -420px 9px, 0 0;
+    clip-path: polygon(0 2px, 8% 15px, 17% 4px, 27% 13px, 38% 2px, 49% 13px, 60% 2px, 71% 15px, 82% 4px, 92% 13px, 100% 2px, 100% 100%, 0 100%);
+  }
 }
 .pit--zerog .bowl-visual { display: none; }
 .pit-lines { position: absolute; inset: 0; pointer-events: none; }
+.pit--iceberg .pit-caption { padding-top: 34px; }
 @media (max-width: 640px) {
-  .pit--iceberg .bowl-visual { width: 94%; height: 120px; bottom: -5px; }
-  .pit--iceberg .bowl-visual::before { top: 28px; height: 56px; }
-  .pit--iceberg .bowl-visual::after { height: 52px; }
-  .pit--iceberg .pit-stage::after { width: 100vw; height: 90px; bottom: 0; }
+  .pit--iceberg .bowl-visual { width: 94%; height: 136px; bottom: -21px; background-size: 100% calc(100% - 19px); }
+  .pit--iceberg .bowl-visual::before { top: 43px; }
+  .pit--iceberg .bowl-visual::after { height: 51px; }
+  .pit--iceberg .pit-stage::after { width: 100vw; height: 240px; bottom: -150px; }
+  .pit--iceberg .pit-caption { padding-top: 36px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .pit--iceberg .pit-bob { animation: none; }
+  .pit--iceberg .pit-stage::after { animation: none; }
+  .water-splash i { display: none; }
 }

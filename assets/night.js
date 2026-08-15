@@ -127,7 +127,8 @@
   var rimYCurrent = 0;   // top of the container, set by buildWalls
   var bowlHalfCurrent = 0; // container half-width, set by buildWalls
   var waterYCurrent = 0; // iceberg only: the waterline, set by buildWalls
-  var waterFloor = null; // iceberg only: splash-detection body
+  var waterFadeStartCurrent = 0; // where submerged icons begin fading
+  var waterFadeEndCurrent = 0; // where they vanish and re-enter from the sky
   var skyTop = 0;        // stage-relative y of the PAGE top (negative)
 
   /* Stage-relative y of the top of the page — icons spawn above it so
@@ -190,21 +191,26 @@
       var waterY = s.h - (mobile ? 90 : 120);
       var bergW = Math.min(740, s.w * 0.82);
       var topEnd = waterY - (mobile ? 24 : 34);
+      var waterLayerH = mobile ? 240 : 300;
       var dip = 13, half = bergW / 2, quarter = bergW / 4;
       waterYCurrent = waterY;
+      waterFadeStartCurrent = waterY + waterLayerH * 0.56;
+      waterFadeEndCurrent = waterY + waterLayerH * 0.94;
       rimYCurrent = topEnd;
       bowlHalfCurrent = half;
       var slope = Math.atan(dip / half);
       var segLen = Math.sqrt(half * half + dip * dip) + 6;
-      walls.push(Bodies.rectangle(cx - quarter, topEnd + dip / 2 + 14, segLen, 30, { isStatic: true, angle: slope, friction: 0.6, restitution: 0.1 }));
-      walls.push(Bodies.rectangle(cx + quarter, topEnd + dip / 2 + 14, segLen, 30, { isStatic: true, angle: -slope, friction: 0.6, restitution: 0.1 }));
+      walls.push(Bodies.rectangle(cx - quarter, topEnd + dip / 2 + 14, segLen, 30, {
+        isStatic: true, angle: slope, friction: 0.6, restitution: 0.1,
+        label: "nivolo-ground",
+      }));
+      walls.push(Bodies.rectangle(cx + quarter, topEnd + dip / 2 + 14, segLen, 30, {
+        isStatic: true, angle: -slope, friction: 0.6, restitution: 0.1,
+        label: "nivolo-ground",
+      }));
       // Underwater flanks lean outward so edge landings slide off, not perch.
       walls.push(Bodies.rectangle(cx - half - 35, topEnd + 79, 30, 150, { isStatic: true, angle: 0.5 }));
       walls.push(Bodies.rectangle(cx + half + 35, topEnd + 79, 30, 150, { isStatic: true, angle: -0.5 }));
-      // Water floor inside the stage: sunk icons rest hidden in the water
-      // band until the maintenance pass re-drops them.
-      waterFloor = Bodies.rectangle(cx, s.h + 8, s.w + 240, 40, { isStatic: true });
-      walls.push(waterFloor);
       var skyHb = -skyTop + 600;
       walls.push(Bodies.rectangle(-40, topEnd - skyHb / 2, 80, skyHb + s.h, { isStatic: true }));
       walls.push(Bodies.rectangle(s.w + 40, topEnd - skyHb / 2, 80, skyHb + s.h, { isStatic: true }));
@@ -319,7 +325,7 @@
         }
       );
       Body.setAngularVelocity(body, Math.random() * 0.08 - 0.04);
-      icons.push({ body: body, el: el, key: icon[0], label: icon[1] });
+      icons.push({ body: body, el: el, key: icon[0], label: icon[1], groundPopPlayed: false });
       // Stagger the drop so they pour in rather than dump at once.
       setTimeout(function () {
         Composite.add(engine.world, body);
@@ -332,7 +338,7 @@
      Arms on the first real pointer gesture (autoplay policy blocks
      anything earlier), so the initial pour is silent by design. ── */
   var sfx = (function () {
-    var ctx = null, master = null, armed = false, lastAt = -1, played = 0;
+    var ctx = null, master = null, armed = false, lastAt = -1, lastSplashAt = -1, played = 0;
     var muted = false;
     try { muted = localStorage.getItem("nivolo-sfx") === "off"; } catch (e) {}
     function ensure() {
@@ -363,10 +369,26 @@
       o.connect(g); g.connect(master);
       o.start(t); o.stop(t + dur + 0.02);
     }
-    function hit(strength) {
-      if (!armed || muted || !ctx) return;
+    function waterNoise(vol, dur, strength) {
+      var frames = Math.max(1, Math.floor(ctx.sampleRate * dur));
+      var buffer = ctx.createBuffer(1, frames, ctx.sampleRate);
+      var data = buffer.getChannelData(0);
+      for (var i = 0; i < frames; i++) data[i] = Math.random() * 2 - 1;
+      var src = ctx.createBufferSource(), filter = ctx.createBiquadFilter(), g = ctx.createGain();
+      src.buffer = buffer;
+      filter.type = "bandpass";
+      filter.frequency.value = 720 + 520 * strength;
+      filter.Q.value = 0.7;
       var t = ctx.currentTime;
-      if (t - lastAt < 0.03) return; // a pile settling is one pop, not ten
+      g.gain.setValueAtTime(vol, t);
+      g.gain.exponentialRampToValueAtTime(0.0004, t + dur);
+      src.connect(filter); filter.connect(g); g.connect(master);
+      src.start(t); src.stop(t + dur + 0.02);
+    }
+    function hit(strength) {
+      if (!armed || muted || !ctx) return false;
+      var t = ctx.currentTime;
+      if (t - lastAt < 0.03) return false; // a pile settling is one pop, not ten
       lastAt = t;
       played++;
       // Same rising "bloop" family as the grab pop — pitch and volume
@@ -374,19 +396,22 @@
       var v = 0.06 + 0.22 * strength;
       var f = 420 + Math.random() * 140 + 260 * strength;
       tone("sine", f * 0.52, f, v, 0.07);
+      return true;
     }
     function pop() {
       if (muted || !ensure()) return;
       played++;
       tone("sine", 330, 640, 0.14, 0.07);
     }
-    function plop() { // going under: same family, pitched down the well
+    function plop(strength) {
       if (!armed || muted || !ctx) return;
       var t = ctx.currentTime;
-      if (t - lastAt < 0.03) return;
-      lastAt = t;
+      if (t - lastSplashAt < 0.08) return;
+      lastSplashAt = t;
+      strength = Math.max(0.18, Math.min(1, strength || 0.45));
       played++;
-      tone("sine", 300 + Math.random() * 60, 130, 0.13, 0.1);
+      tone("sine", 340 + 90 * strength, 120 + 35 * strength, 0.08 + 0.08 * strength, 0.12);
+      waterNoise(0.025 + 0.055 * strength, 0.11 + 0.08 * strength, strength);
     }
     function setMuted(m) {
       muted = m;
@@ -397,14 +422,36 @@
              stats: function () { return { armed: armed, state: ctx ? ctx.state : null, played: played }; } };
   })();
 
+  function iconForBody(body) {
+    for (var i = 0; i < icons.length; i++) {
+      if (icons[i].body === body) return icons[i];
+    }
+    return null;
+  }
+
   Matter.Events.on(engine, "collisionStart", function (e) {
     for (var i = 0; i < e.pairs.length; i++) {
       var pa = e.pairs[i];
+      var iconA = iconForBody(pa.bodyA);
+      var iconB = iconForBody(pa.bodyB);
       var rel = Math.hypot(pa.bodyA.velocity.x - pa.bodyB.velocity.x,
                            pa.bodyA.velocity.y - pa.bodyB.velocity.y);
-      if (rel <= 2.2) continue;
-      if (waterFloor && (pa.bodyA === waterFloor || pa.bodyB === waterFloor)) sfx.plop();
-      else sfx.hit(Math.min(1, rel / 16));
+
+      // Two icons get a light pop even from a small nudge. The global sound
+      // throttle above folds a many-body pile-up into a pleasant short run.
+      if (iconA && iconB) {
+        if (rel > 0.7) sfx.hit(Math.max(0.2, Math.min(1, rel / 12)));
+        continue;
+      }
+
+      // The first contact with the white iceberg surface gets a clearer
+      // landing pop. If autoplay is still locked, leave this false so the
+      // first landing after the visitor interacts can still be heard.
+      var landedIcon = iconA || iconB;
+      var otherBody = iconA ? pa.bodyB : pa.bodyA;
+      if (landedIcon && otherBody.label === "nivolo-ground" && !landedIcon.groundPopPlayed) {
+        if (sfx.hit(Math.max(0.34, Math.min(1, rel / 11)))) landedIcon.groundPopPlayed = true;
+      }
     }
   });
 
@@ -610,33 +657,102 @@
      with sim time, and pause with it). Escape hatch: anything that clips
      through geometry gets re-dropped. Arch breaker: icons at rest above
      the rim are perched or wedged — shear them loose. */
-  /* Buoyancy (iceberg, every tick): swimmers settle half-submerged at
-     the waterline. Counter-force equals gravity when the icon's center
-     sits at the waterline, so that's the float equilibrium; damping
-     kills the splash bounce. Floaters never sleep — they bob. */
-  function buoyancyPass() {
+  function clearSinkState(it) {
+    it.inWater = false;
+    it.sinking = false;
+    it.body.collisionFilter.mask = 0xFFFFFFFF;
+    it.el.classList.remove("is-sinking");
+    it.el.style.opacity = "1";
+  }
+
+  function respawnFromSky(it, s) {
+    var b = it.body;
+    clearSinkState(it);
+    it.groundPopPlayed = false;
+    Body.setPosition(b, {
+      x: s.w / 2 + (Math.random() * 2 - 1) * bowlHalfCurrent * 0.62,
+      y: skyTop - 90 - Math.random() * 170,
+    });
+    Body.setVelocity(b, { x: Math.random() * 0.8 - 0.4, y: 0 });
+    Body.setAngularVelocity(b, Math.random() * 0.08 - 0.04);
+    Matter.Sleeping.set(b, false);
+    it.respawns = (it.respawns || 0) + 1;
+  }
+
+  function splashAt(x, y, strength) {
+    strength = Math.max(0.18, Math.min(1, strength || 0.45));
+    var splash = document.createElement("span");
+    splash.className = "water-splash";
+    splash.setAttribute("aria-hidden", "true");
+    splash.style.left = x.toFixed(1) + "px";
+    splash.style.top = y.toFixed(1) + "px";
+    splash.style.width = (64 + strength * 34).toFixed(0) + "px";
+    for (var i = 0; i < 7; i++) {
+      var drop = document.createElement("i");
+      var spread = (i - 3) / 3;
+      drop.style.setProperty("--dx", (spread * (26 + strength * 24) + (Math.random() * 7 - 3.5)).toFixed(1) + "px");
+      drop.style.setProperty("--dy", (-22 - Math.random() * (24 + strength * 25)).toFixed(1) + "px");
+      drop.style.setProperty("--drop-scale", (0.7 + Math.random() * 0.55).toFixed(2));
+      drop.style.setProperty("--delay", (Math.random() * 0.07).toFixed(2) + "s");
+      splash.appendChild(drop);
+    }
+    stage.appendChild(splash);
+    setTimeout(function () { splash.remove(); }, 900);
+  }
+
+  /* Sinking (iceberg, every tick): an icon that misses the floe loses
+     its splash speed, drifts slowly through the ocean fade, disappears,
+     then re-enters from the real top of the page. Collision masking lets
+     swimmers pass behind the floe instead of catching on its underside. */
+  function sinkingPass() {
+    var s = stageSize();
     for (var i = 0; i < icons.length; i++) {
       var it = icons[i], b = it.body, p = b.position;
       var half = (b.bounds.max.y - b.bounds.min.y) / 2;
-      var depth = p.y - waterYCurrent;
-      if (it.inWater && depth < -half) it.inWater = false;
-      if (depth > -half) {
-        if (!it.inWater) {
-          if (b.velocity.y > 2.5) sfx.plop();
-          it.inWater = true;
-        }
-        var f = Math.min(1.7, (depth + half) / half);
-        Body.applyForce(b, p, { x: 0, y: -b.mass * engine.gravity.y * 0.001 * f });
-        Body.setVelocity(b, { x: b.velocity.x * 0.985, y: b.velocity.y * 0.96 });
-        Body.setAngularVelocity(b, b.angularVelocity * 0.97);
+      var touchesWater = p.y + half > waterYCurrent;
+
+      if (!it.sinking && touchesWater) {
+        var impact = Math.max(0.18, Math.min(1, Math.abs(b.velocity.y) / 11));
+        it.inWater = true;
+        it.sinking = true;
+        it.body.collisionFilter.mask = 0;
+        it.el.classList.add("is-sinking");
+        splashAt(p.x, waterYCurrent, impact);
+        sfx.plop(impact);
         Matter.Sleeping.set(b, false);
       }
+      if (!it.sinking) continue;
+
+      // A dragged swimmer can still be rescued and placed back on ice.
+      if (p.y + half < waterYCurrent - 4) {
+        clearSinkState(it);
+        continue;
+      }
+
+      var progress = Math.max(0, Math.min(1,
+        (p.y - waterYCurrent) / Math.max(1, waterFadeEndCurrent - waterYCurrent)));
+      var sinkSpeed = 0.34 + progress * 0.18;
+      var nextY = b.velocity.y < -0.4
+        ? b.velocity.y * 0.82
+        : Math.min(sinkSpeed + 0.16, b.velocity.y * 0.72 + sinkSpeed * 0.28);
+      Body.setVelocity(b, { x: b.velocity.x * 0.975, y: nextY });
+      Body.setAngularVelocity(b, b.angularVelocity * 0.965);
+      Matter.Sleeping.set(b, false);
+
+      var opacity = 1;
+      if (p.y > waterFadeStartCurrent) {
+        opacity = 1 - (p.y - waterFadeStartCurrent) /
+          Math.max(1, waterFadeEndCurrent - waterFadeStartCurrent);
+      }
+      it.el.style.opacity = Math.max(0, Math.min(1, opacity)).toFixed(3);
+
+      if (p.y >= waterFadeEndCurrent) respawnFromSky(it, s);
     }
   }
 
   var maintTick = 0;
   Matter.Events.on(engine, "afterUpdate", function () {
-    if (VARIANT === "iceberg") buoyancyPass();
+    if (VARIANT === "iceberg") sinkingPass();
     if (++maintTick % 100 !== 0) return;
     var s = stageSize();
     if (VARIANT === "zerog") {
@@ -660,16 +776,9 @@
     if (VARIANT === "iceberg") {
       icons.forEach(function (it) {
         var b = it.body, p = b.position;
-        // Swimmers stay in the water — only the truly lost (clipped
-        // through geometry, out past the stage) come back from the sky.
-        if (p.y > s.h + 160 || p.x < -160 || p.x > s.w + 160) {
-          Body.setPosition(b, {
-            x: s.w / 2 + (Math.random() * 2 - 1) * bowlHalfCurrent * 0.6,
-            y: skyTop - 120,
-          });
-          Body.setVelocity(b, { x: 0, y: 0 });
-          Matter.Sleeping.set(b, false);
-        }
+        // The per-tick sinking pass owns swimmers. This catches only a
+        // dry icon thrown completely outside the horizontal play area.
+        if (!it.sinking && (p.x < -160 || p.x > s.w + 160)) respawnFromSky(it, s);
       });
       return;
     }
@@ -705,6 +814,7 @@
       buildWalls();
       var s = stageSize();
       icons.forEach(function (it) {
+        clearSinkState(it);
         Body.setPosition(it.body, {
           x: s.w / 2 + (Math.random() * 160 - 80),
           y: Math.min(it.body.position.y, s.h - 160),
@@ -745,6 +855,11 @@
   window.__nivolo = { engine: engine, icons: icons, sfx: sfx, step: function (n) {
     for (var i = 0; i < n; i++) Engine.update(engine, 16.7);
     drawLines();
+  }, stats: function () {
+    return {
+      sinking: icons.filter(function (it) { return it.sinking; }).length,
+      respawns: icons.reduce(function (sum, it) { return sum + (it.respawns || 0); }, 0),
+    };
   } };
   // ?settle fast-forwards past the pour once all icons have spawned —
   // for screenshot tooling that can't wait out the animation.
