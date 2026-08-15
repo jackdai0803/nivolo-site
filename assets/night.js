@@ -328,7 +328,7 @@
       // Stagger the automatic drop so the icons pour in rather than dump.
       setTimeout(function () {
         Composite.add(engine.world, body);
-        if (i === ICONS.length - 1) pit.classList.add("ready");
+        if (i === ICONS.length - 1) { pit.classList.add("ready"); allSpawned = true; }
       }, 260 + i * SPAWN_GAP);
     });
   }
@@ -697,20 +697,30 @@
   var landsHeard = 0;      // audible ice landings so far (see collision handler)
   var repourDone = false;
   var repourPending = false;
+  var allSpawned = false;  // every icon has entered the world (set by spawnIcons)
 
-  // A handful of icons is always cycling — sliding off, sinking, re-dropping —
-  // so "idle" means the mound is at rest, not that literally nothing moves.
+  /* "At rest" counts only icons actually sitting on the berg (y > 0 — the
+     sky is negative). Counting sky-parked icons as still made a mid-pour
+     click look like a settled colony, and the few that HAD landed were
+     yanked back up: icons visibly vanishing a moment after touchdown. A
+     pour in flight must always be left alone — its own landings are the
+     sound, and they are already audible once the visitor has clicked. */
   function colonyIdle() {
-    if (dragConstraint) return false;
-    var still = 0;
+    if (dragConstraint || !allSpawned) return false;
+    var settled = 0;
     for (var i = 0; i < icons.length; i++) {
-      if (!icons[i].sinking && icons[i].body.speed < 0.5) still++;
+      var it = icons[i];
+      if (!it.sinking && it.body.position.y > 0 && it.body.speed < 0.5) settled++;
     }
-    return still >= icons.length * 0.6;
+    return settled >= icons.length * 0.6;
   }
 
+  /* Toss the settled colony back into the air rather than teleporting it
+     to the sky: every icon stays on screen the whole time, arcs up, and
+     drops back onto the ice under its own weight — which is what makes
+     the pop. Staggered on the pour's own rhythm. */
   function repour() {
-    // Shuffle so the replay doesn't retrace the first pour's rhythm.
+    var s = stageSize();
     var order = icons.map(function (_, i) { return i; });
     for (var i = order.length - 1; i > 0; i--) {
       var j = Math.floor(Math.random() * (i + 1));
@@ -718,7 +728,18 @@
     }
     order.forEach(function (idx, n) {
       setTimeout(function () {
-        respawnFromSky(icons[idx], stageSize());
+        var it = icons[idx], b = it.body;
+        if (it.sinking || (dragConstraint && dragConstraint.bodyB === b)) return;
+        Matter.Sleeping.set(b, false);
+        // Lean the toss back towards the middle so nobody is flung off the
+        // edge into the water on the way up.
+        var inward = (s.w / 2 - b.position.x) * 0.022;
+        Body.setVelocity(b, {
+          x: Math.max(-3, Math.min(3, inward)) + (Math.random() * 0.8 - 0.4),
+          y: -(8.5 + Math.random() * 2.5),
+        });
+        Body.setAngularVelocity(b, Math.random() * 0.12 - 0.06);
+        it.lastGroundPopAt = -1e9; // the landing to come is a fresh one
       }, n * SPAWN_GAP);
     });
   }
