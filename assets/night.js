@@ -211,9 +211,8 @@
       // Underwater flanks lean outward so edge landings slide off, not perch.
       walls.push(Bodies.rectangle(cx - half - 35, topEnd + 79, 30, 150, { isStatic: true, angle: 0.5 }));
       walls.push(Bodies.rectangle(cx + half + 35, topEnd + 79, 30, 150, { isStatic: true, angle: -0.5 }));
-      var skyHb = -skyTop + 600;
-      walls.push(Bodies.rectangle(-40, topEnd - skyHb / 2, 80, skyHb + s.h, { isStatic: true }));
-      walls.push(Bodies.rectangle(s.w + 40, topEnd - skyHb / 2, 80, skyHb + s.h, { isStatic: true }));
+      // No left/right stage walls: tossed icons may travel freely beyond
+      // either viewport edge before gravity carries them into the ocean.
       walls.push(Bodies.rectangle(cx, skyTop - 460, s.w + 400, 80, { isStatic: true }));
       walls.forEach(function (wb) { Composite.add(engine.world, wb); });
       return;
@@ -788,15 +787,9 @@
       });
       return;
     }
-    if (VARIANT === "iceberg") {
-      icons.forEach(function (it) {
-        var b = it.body, p = b.position;
-        // The per-tick sinking pass owns swimmers. This catches only a
-        // dry icon thrown completely outside the horizontal play area.
-        if (!it.sinking && (p.x < -160 || p.x > s.w + 160)) respawnFromSky(it, s);
-      });
-      return;
-    }
+    // Iceberg swimmers are intentionally unbounded horizontally. The
+    // per-tick sinking pass still returns them after they fade underwater.
+    if (VARIANT === "iceberg") return;
     icons.forEach(function (it) {
       var b = it.body, p = b.position;
       // Clipped through geometry, or settled in the dead channel between
