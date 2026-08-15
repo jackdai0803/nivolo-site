@@ -361,28 +361,6 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
 }
 .section-sub { font-size: 17px; color: var(--ink-2); }
 
-/* Tabs */
-.tabs {
-  display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
-  margin-bottom: 40px;
-}
-.tab-btn {
-  border: 1px solid var(--line); background: var(--card);
-  color: var(--ink-2); font-weight: 600; font-size: 14px;
-  padding: 10px 18px; border-radius: 999px; cursor: pointer;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  transition: all 0.2s ease;
-}
-.tab-btn:hover { color: var(--ink); border-color: var(--line-strong); }
-.tab-btn.active {
-  background: var(--ice); color: var(--ice-ink);
-  border-color: transparent;
-  box-shadow: 0 0 24px rgba(212, 232, 242, 0.25);
-}
-.tab-panel { display: none; }
-.tab-panel.active { display: grid; animation: panelIn 0.45s ease both; }
-@keyframes panelIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 .split {
   grid-template-columns: 1fr 1.1fr; gap: 56px; align-items: center;
 }
@@ -668,6 +646,134 @@ footer { border-top: 1px solid var(--line); padding: 34px 0; }
 }
 .page .anchor { scroll-margin-top: 90px; }
 
+/* ── Feature rows (replaced the old tab panels) ── */
+/* .split only carries the column sizes; the removed .tab-panel.active
+   rule used to supply display:grid, so the row must set it itself. */
+.feature { display: grid; margin-bottom: 96px; }
+.feature:last-child { margin-bottom: 0; }
+/* Odd rows put the art on the right; flipped rows swap it to the left. */
+.split--flip .split-copy { order: 2; }
+.split--flip .split-visual { order: 1; }
+
+/* Device frame around a real app screenshot */
+.phone-panel { padding: 38px 24px; min-height: 0; }
+.phone {
+  position: relative;
+  width: min(268px, 72vw);
+  margin: 0 auto;
+  padding: 9px;
+  border-radius: 44px;
+  background: linear-gradient(165deg, #39445A, #141B29 62%);
+  box-shadow:
+    var(--shadow-lg),
+    0 0 0 1px rgba(255, 255, 255, 0.10) inset,
+    0 0 60px rgba(100, 210, 255, 0.10);
+}
+.phone picture, .phone img {
+  display: block; width: 100%; height: auto;
+  border-radius: 36px;
+}
+
+/* ── How it works ── */
+.steps {
+  list-style: none;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+  counter-reset: step;
+}
+.step {
+  border: 1px solid var(--line); border-radius: var(--radius);
+  background: var(--card); padding: 30px 26px 28px;
+}
+.step-num {
+  display: grid; place-items: center;
+  width: 38px; height: 38px; border-radius: 12px;
+  background: var(--blue-soft); color: var(--cyan);
+  font-family: var(--font-display); font-size: 18px; font-weight: 800;
+  margin-bottom: 16px;
+}
+.step h3 {
+  font-family: var(--font-display);
+  font-size: 20px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 8px;
+}
+.step p { color: var(--ink-2); font-size: 15px; }
+
+/* ── Privacy ── */
+.privacy-panel {
+  display: grid; grid-template-columns: 1.15fr 1fr; gap: 48px; align-items: center;
+  border: 1px solid var(--line); border-radius: var(--radius);
+  background: linear-gradient(160deg, rgba(52, 211, 153, 0.10), rgba(255, 255, 255, 0.015) 60%), var(--card);
+  padding: 52px 46px;
+}
+.privacy-copy .section-title { text-align: left; margin-bottom: 16px; }
+.privacy-copy p { color: var(--ink-2); margin-bottom: 14px; }
+.privacy-fine { font-size: 14px; color: var(--ink-3); }
+.privacy-fine a { color: var(--cyan); }
+.privacy-list { list-style: none; display: grid; gap: 14px; }
+.privacy-list li {
+  display: grid; gap: 2px;
+  border-left: 2px solid var(--green); padding-left: 16px;
+}
+.privacy-list b { font-size: 15px; }
+.privacy-list span { font-size: 14px; color: var(--ink-3); }
+
+/* ── Pricing ── */
+.plans { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; max-width: 860px; margin: 0 auto; }
+.plan {
+  position: relative;
+  border: 1px solid var(--line); border-radius: var(--radius);
+  background: var(--card); padding: 34px 30px;
+}
+.plan--pro {
+  border-color: rgba(255, 214, 10, 0.30);
+  background: linear-gradient(160deg, rgba(255, 214, 10, 0.09), rgba(255, 255, 255, 0.015) 62%), var(--card);
+}
+.plan-badge {
+  position: absolute; top: 20px; right: 22px;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.10em; text-transform: uppercase;
+  color: var(--gold); background: var(--gold-soft);
+  border-radius: 999px; padding: 5px 11px;
+}
+.plan h3 { font-family: var(--font-display); font-size: 21px; font-weight: 800; margin-bottom: 10px; }
+.plan-price {
+  font-family: var(--font-display);
+  font-size: 40px; font-weight: 800; letter-spacing: -0.03em; line-height: 1;
+  margin-bottom: 22px;
+}
+.plan-price span { font-family: var(--font-body, inherit); font-size: 14px; font-weight: 500; color: var(--ink-3); margin-left: 8px; letter-spacing: 0; }
+.plan ul { list-style: none; display: grid; gap: 11px; }
+.plan li { position: relative; padding-left: 26px; font-size: 15px; color: var(--ink-2); }
+.plan li::before {
+  content: "✓"; position: absolute; left: 0; top: 1px;
+  width: 18px; height: 18px; border-radius: 6px;
+  background: var(--blue-soft); color: var(--cyan);
+  font-size: 10px; font-weight: 700; display: grid; place-items: center;
+}
+.plan--pro li::before { background: var(--gold-soft); color: var(--gold); }
+.plan-note { margin-top: 20px; font-size: 13px; color: var(--ink-3); }
+
+/* ── FAQ ── */
+.faq { max-width: 760px; margin: 0 auto; }
+.faq details {
+  border-bottom: 1px solid var(--line);
+  padding: 4px 0;
+}
+.faq summary {
+  cursor: pointer; list-style: none;
+  padding: 20px 34px 20px 0; position: relative;
+  font-size: 17px; font-weight: 600; color: var(--ink);
+}
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after {
+  content: "+";
+  position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+  font-size: 22px; font-weight: 400; color: var(--ink-3);
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+.faq details[open] summary::after { content: "−"; color: var(--cyan); }
+.faq summary:hover { color: var(--cyan); }
+.faq summary:focus-visible { outline: 2px solid var(--cyan); outline-offset: 4px; border-radius: 6px; }
+.faq details p { color: var(--ink-2); font-size: 15px; padding: 0 34px 22px 0; }
+
 /* ── Reveal on scroll ── */
 .reveal { opacity: 0; transform: translateY(22px); transition: opacity 0.7s ease, transform 0.7s ease; }
 .reveal.in { opacity: 1; transform: translateY(0); }
@@ -676,6 +782,13 @@ footer { border-top: 1px solid var(--line); padding: 34px 0; }
 @media (max-width: 900px) {
   .split { grid-template-columns: 1fr; gap: 34px; }
   .split-visual { order: -1; }
+  /* Stacked, the art always leads — cancel the desktop flip. */
+  .split--flip .split-copy { order: 0; }
+  .split--flip .split-visual { order: -1; }
+  .feature { margin-bottom: 72px; }
+  .steps { grid-template-columns: 1fr; gap: 16px; }
+  .privacy-panel { grid-template-columns: 1fr; gap: 34px; padding: 42px 30px; }
+  .plans { grid-template-columns: 1fr; }
 }
 @media (max-width: 640px) {
   .nav-links .nav-plain { display: none; }
@@ -686,6 +799,10 @@ footer { border-top: 1px solid var(--line); padding: 34px 0; }
   .cta-panel { padding: 56px 24px 50px; }
   .cta-gem { display: none; }
   .footer-inner { flex-direction: column; gap: 14px; }
+  .phone-panel { padding: 30px 18px; }
+  .privacy-panel { padding: 36px 22px; }
+  .plan { padding: 28px 22px; }
+  .faq summary { font-size: 16px; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
