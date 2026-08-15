@@ -4,12 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Privacy Policy — Nivolo</title>
+  <meta name="description" content="How Nivolo handles your data: what stays on your device, what the AI feature sends, who processes it, how long it's kept, and your rights." />
   <link rel="icon" href="assets/favicon.png" type="image/png" />
   <link rel="apple-touch-icon" href="assets/app-icon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=8" />
+  <link rel="stylesheet" href="styles.css?v=9" />
 </head>
 <body>
 
@@ -26,33 +27,223 @@
 
   <main class="page">
     <h1>Privacy Policy</h1>
-    <p class="updated">Last updated: July 28, 2026</p>
+    <p class="updated">Last updated: August 15, 2026 · Applies to the Nivolo iOS app and nivolo.app</p>
 
-    <p>Nivolo is built to be private by default. This policy explains what data the app handles and where it goes.</p>
+    <p class="lede">Nivolo is a habit and goal app built to be private by default. It has no accounts, no analytics, no advertising, and no trackers. Almost everything you create lives only on your iPhone. This policy explains the exceptions in detail — what leaves your device, when, who processes it, how long it is kept, and what you can ask us to do about it.</p>
 
-    <h2>Your data stays on your device</h2>
-    <p>Nivolo has no accounts and no sign-in. Your goals, actions, streaks, Pecks, gems, and settings are stored locally on your iPhone. We do not collect, store, or sell your personal data, and we run no analytics or advertising trackers.</p>
+    <div class="card">
+      <p><strong>The short version</strong></p>
+      <p>Your goals, actions, streaks, Pecks, gems, name, birthday and any email you enter are stored <strong>on your device only</strong> and are never sent to us.</p>
+      <p>The only data that ever leaves your phone is what you type into the <strong>AI plan</strong> feature and the <strong>aggregate weekly numbers</strong> behind the AI weekly insight — both optional, both tied to a random ID rather than to you.</p>
+      <p>We do not run analytics, ads, or trackers. We do not sell or share personal information. We have no way to identify you.</p>
+    </div>
 
-    <h2>AI-generated plans</h2>
-    <p>When you use the AI plan feature, the goal text you type is sent to our server to generate your plan and is processed by an AI provider for that purpose only. It is not linked to your identity, and it is not used to build a profile of you.</p>
+    <div class="toc" role="navigation" aria-label="Contents">
+      <div class="toc-title">Contents</div>
+      <ol>
+        <li><a href="#who">1. Who we are</a></li>
+        <li><a href="#device">2. Data that stays on your device</a></li>
+        <li><a href="#ai">3. Data sent when you use AI features</a></li>
+        <li><a href="#processors">4. Third parties we rely on</a></li>
+        <li><a href="#never">5. What we never do</a></li>
+        <li><a href="#permissions">6. Permissions the app requests</a></li>
+        <li><a href="#purchases">7. Purchases and Nivolo Pro</a></li>
+        <li><a href="#retention">8. How long data is kept</a></li>
+        <li><a href="#bases">9. Legal bases (GDPR)</a></li>
+        <li><a href="#transfers">10. International transfers</a></li>
+        <li><a href="#rights">11. Your privacy rights</a></li>
+        <li><a href="#ccpa">12. California / US state rights</a></li>
+        <li><a href="#children">13. Children</a></li>
+        <li><a href="#security">14. Security</a></li>
+        <li><a href="#labels">15. App Store privacy labels</a></li>
+        <li><a href="#website">16. This website</a></li>
+        <li><a href="#changes">17. Changes to this policy</a></li>
+        <li><a href="#contact">18. Contact</a></li>
+      </ol>
+    </div>
 
-    <h2>Notifications</h2>
-    <p>Reminders are local notifications scheduled on your device. They never pass through our servers, and we can't see them.</p>
+    <h2 id="who" class="anchor">1. Who we are</h2>
+    <p>Nivolo is an independent iOS app made by Jack Dai. For the purposes of the GDPR, the developer is the data controller for the limited data described in this policy. There is no company sign-in, no user database, and no customer record — the only way to reach us, and the only way we can reach you, is by email at <a href="mailto:jackdai259@gmail.com">jackdai259@gmail.com</a>.</p>
+    <p>This policy covers the Nivolo iOS app and the website at nivolo.app. It does not cover Apple's own services (the App Store, iCloud Backup, Apple ID), which are governed by Apple's privacy policy.</p>
 
-    <h2>Purchases</h2>
-    <p>In-app purchases are processed entirely by Apple through your Apple ID. We never see your payment details.</p>
+    <h2 id="device" class="anchor">2. Data that stays on your device</h2>
+    <p>Nivolo has no accounts and no sign-in. Everything below is written to your iPhone's app storage — the app sandbox and an App Group container shared with the Nivolo home-screen widget — and is <strong>never transmitted to us</strong>:</p>
 
-    <h2>Backups</h2>
-    <p>Because your data lives on your device, it is included in your standard iPhone backup (iCloud or computer), under Apple's backup terms.</p>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>What</th><th>Why the app has it</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Profile details</strong> — the name and birthday you enter during onboarding, and an email or handle if you choose to add one at the "save your journey" prompt</td><td>To greet you by name and to show a birthday theme on your birthday. The email field is a local reminder for your own records — it is not an account, it is not verified, and nothing is ever sent to it or to us.</td></tr>
+          <tr><td><strong>Goals and actions</strong> — goal titles, your reasons, steps, milestones, logged actions, notes and dates</td><td>The core of the app.</td></tr>
+          <tr><td><strong>Progress</strong> — streaks, streak freezes, rest days, Pecks, gems, achievements, trophy shelf, season history</td><td>Streaks, rewards and the season review.</td></tr>
+          <tr><td><strong>Collection and cosmetics</strong> — owned items, equipped outfits, worlds, chosen app icon</td><td>Nivo's look and your unlocks.</td></tr>
+          <tr><td><strong>Settings</strong> — language (English or 中文), reminder times, notification preferences, sound and haptics</td><td>To keep the app the way you set it.</td></tr>
+          <tr><td><strong>Purchase state</strong> — whether Nivolo Pro is active, as reported by Apple</td><td>To unlock Pro features offline.</td></tr>
+          <tr><td><strong>A random app ID</strong> — a UUID generated on your device the first time an AI feature is used</td><td>Used only to apply fair-use limits on our AI server. It is generated randomly, is not derived from your Apple ID, email, name, phone number, or any device identifier, and is not connected to anything else.</td></tr>
+        </tbody>
+      </table>
+    </div>
 
-    <h2>Children</h2>
-    <p>Nivolo does not knowingly collect personal information from anyone, including children.</p>
+    <p>Because this data lives on your device, it is included in your normal iPhone backup (iCloud or a computer), where it is handled under Apple's backup and encryption terms. Deleting the app deletes this data from your device; a backup you have already made may still contain a copy until that backup is deleted or overwritten.</p>
 
-    <h2>Changes to this policy</h2>
-    <p>If this policy changes, we'll update this page and the date above.</p>
+    <h2 id="ai" class="anchor">3. Data sent when you use AI features</h2>
+    <p>Nivolo has two optional AI features. Neither runs on its own — each one sends data only at the moment you tap to use it. Requests go over an encrypted HTTPS connection to our own server (a Cloudflare Worker), carrying a short-lived signed token derived from the random app ID described above.</p>
 
-    <h2>Contact</h2>
-    <p>Questions about privacy? Email <a href="mailto:jackdai259@gmail.com">jackdai259@gmail.com</a>.</p>
+    <h3>AI goal plan</h3>
+    <p>When you ask Nivolo to draft a plan for a goal, the following is sent:</p>
+    <ul>
+      <li>The <strong>goal text you typed</strong>, your <strong>"why"</strong>, and any <strong>specifics</strong> you added.</li>
+      <li>A general <strong>category label</strong> for the goal icon (for example "Fitness" or "General").</li>
+      <li>Your <strong>random app ID</strong>, a session identifier, and a flag saying whether Pro is active.</li>
+    </ul>
+    <p>This text is used once, to generate that plan, and is returned to your device. Please avoid typing anything you would not want processed by a third-party AI provider — health details, financial details, or other people's personal information — into a goal you send to the AI. Writing goals by hand instead sends nothing at all.</p>
+
+    <h3>AI weekly insight</h3>
+    <p>The weekly "Nivo's take" card sends <strong>aggregate numbers only</strong> — never your goal text or your name. Specifically: your current streak length, how many actions you logged this week and last week, your most active weekday, how many goals are active, how many goals you completed this week, your total Pecks earned, and your language setting.</p>
+
+    <h3>What our server keeps</h3>
+    <p>Our server does not store your goal text, does not log request bodies, and does not build a profile. Against your random app ID it keeps only small counters needed to stop abuse and to enforce free-plan limits: recent request timestamps for rate limiting, a one-day session marker, and a usage count. These entries expire automatically (see <a href="#retention">retention</a>).</p>
+
+    <p class="note">If a future version of the app adds a feature that transmits anything else, this policy will be updated before that version ships.</p>
+
+    <h2 id="processors" class="anchor">4. Third parties we rely on</h2>
+    <p>These are the only companies that can come into contact with data related to your use of Nivolo. We have no advertising, attribution, analytics or crash-reporting SDKs in the app.</p>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>Provider</th><th>Role</th><th>What it receives</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Apple</strong></td>
+            <td>App distribution, in-app purchases, notifications framework, backups</td>
+            <td>Your purchase and subscription details, which we never see in identifiable form. Apple gives us only aggregated sales reports and, if you have opted in to sharing with developers, aggregated crash and performance diagnostics.</td>
+          </tr>
+          <tr>
+            <td><strong>Cloudflare</strong></td>
+            <td>Hosts our AI server (Workers + KV) and provides DNS for nivolo.app</td>
+            <td>The AI request contents in transit, your IP address as an ordinary part of making a network connection, and the fair-use counters described above.</td>
+          </tr>
+          <tr>
+            <td><strong>Anthropic</strong> (Claude API)</td>
+            <td>Generates the plan text and the weekly insight text</td>
+            <td>Only the AI request contents described in section 3, forwarded by our server. Under Anthropic's commercial API terms, inputs and outputs are not used to train their models, and they are deleted from Anthropic's systems within their published retention window. Anthropic does not receive your IP address, your name, or any identifier from your device.</td>
+          </tr>
+          <tr>
+            <td><strong>GitHub</strong> (GitHub Pages)</td>
+            <td>Hosts this website</td>
+            <td>Standard web server information when you visit nivolo.app — see <a href="#website">section 16</a>.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>We do not sell, rent, trade or share your personal information with anyone else. We would disclose data only if legally compelled to do so — and in practice we hold almost nothing that could be disclosed.</p>
+
+    <h2 id="never" class="anchor">5. What we never do</h2>
+    <ul>
+      <li>No accounts, no passwords, no user database.</li>
+      <li>No analytics SDK, no attribution SDK, no advertising SDK, no ad network.</li>
+      <li>No tracking across other apps or websites, and no use of the advertising identifier (IDFA). Nivolo will never show you an App Tracking Transparency prompt because it does not track.</li>
+      <li>No sale or sharing of personal information, and no targeted advertising.</li>
+      <li>No access to your location, contacts, photos, microphone, camera, calendar, or Health data.</li>
+      <li>No profile-building, scoring, or automated decision-making that produces legal or similarly significant effects.</li>
+      <li>No email marketing. We do not have your email unless you write to us first.</li>
+    </ul>
+
+    <h2 id="permissions" class="anchor">6. Permissions the app requests</h2>
+    <p><strong>Notifications.</strong> If you allow them, Nivolo schedules <em>local</em> notifications — reminders, streak warnings, and encouragement — directly on your device using iOS. They are composed on your phone and never pass through any server, so no one but you can see them. Turn them off any time in the app's settings or in iOS Settings.</p>
+    <p><strong>Motion.</strong> Nivolo reads device motion so that falling pebbles and other on-screen elements react when you tilt your phone. Motion data is used only to animate the current screen; it is never recorded, stored, or transmitted. Declining this permission simply makes those animations static.</p>
+    <p><strong>Home-screen widget.</strong> The Nivolo widget reads your streak and progress from a shared container on your device. Widget data stays on the device.</p>
+    <p><strong>Rating prompt.</strong> The app may occasionally ask you to rate it using Apple's standard review prompt. Apple handles that entirely; we receive no information about whether or how you responded.</p>
+
+    <h2 id="purchases" class="anchor">7. Purchases and Nivolo Pro</h2>
+    <p>All in-app purchases and subscriptions are processed by Apple through your Apple ID. We never see or handle your name, card number, billing address, or any other payment detail. Apple tells the app only whether an entitlement is active, and that answer is stored on your device.</p>
+    <p>Restoring purchases uses your Apple ID through Apple's servers. Managing or cancelling a subscription happens in your Apple ID settings, not with us. Refunds are handled by Apple.</p>
+
+    <h2 id="retention" class="anchor">8. How long data is kept</h2>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>Data</th><th>Retention</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Everything stored on your device (section 2)</td><td>Until you delete it in the app, reset the app, or delete the app. We cannot delete it for you, and we cannot see it.</td></tr>
+          <tr><td>AI prompt text and weekly stats</td><td>Not stored by us. Processed in memory to produce a response, then discarded. Anthropic holds it only for the short period described in their API retention policy.</td></tr>
+          <tr><td>Rate-limit records against your random app ID</td><td>Expire automatically after about one hour.</td></tr>
+          <tr><td>Daily session marker</td><td>Expires automatically after 24 hours.</td></tr>
+          <tr><td>Weekly insight quota counter</td><td>Expires automatically after 14 days.</td></tr>
+          <tr><td>Free-plan usage count</td><td>Kept against the random app ID while it is needed to apply the free-plan limit. It contains a number and nothing else.</td></tr>
+          <tr><td>Emails you send us for support</td><td>Kept in the developer's mailbox for as long as needed to help you and to keep a record of the conversation; you can ask us to delete the thread.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="bases" class="anchor">9. Legal bases (GDPR)</h2>
+    <p>If you are in the EEA, the UK or Switzerland, we process the limited data described above on these bases:</p>
+    <ul>
+      <li><strong>Performance of a contract</strong> — sending your goal text to generate the plan you asked for, and delivering Pro features you paid for.</li>
+      <li><strong>Legitimate interests</strong> — keeping the AI server available and preventing abuse and runaway costs through rate limiting and fair-use counters, using the least identifying method we could find (a random ID with short-lived counters).</li>
+      <li><strong>Consent</strong> — notifications and motion access, each of which you grant through an iOS prompt and can withdraw at any time in iOS Settings without losing the rest of the app.</li>
+      <li><strong>Legal obligation</strong> — where we are required to retain or disclose information by law.</li>
+    </ul>
+
+    <h2 id="transfers" class="anchor">10. International transfers</h2>
+    <p>Cloudflare Workers run at edge locations worldwide, so an AI request is typically handled near you; Anthropic processes the request text on infrastructure in the United States. If you are in the EEA or the UK, this means the request text you submit to an AI feature may be transferred outside your region. These transfers rely on the providers' Standard Contractual Clauses and equivalent safeguards. All other data never leaves your device, so it is never transferred anywhere.</p>
+
+    <h2 id="rights" class="anchor">11. Your privacy rights</h2>
+    <p>Depending on where you live, you may have the right to access, correct, delete, restrict or object to the processing of your personal data, to withdraw consent, and to data portability. Here is how each one works in practice for an app with no accounts:</p>
+    <ul>
+      <li><strong>Access and portability</strong> — your data is already in your possession, on your device, visible in the app. We hold no copy to send you.</li>
+      <li><strong>Correction</strong> — you can edit or remove any goal, action, name, birthday or email directly in the app.</li>
+      <li><strong>Deletion</strong> — deleting the app removes everything it stored. Our fair-use counters are keyed to a random ID that we cannot link to you; they also expire on their own, and reinstalling the app generates a new random ID, permanently orphaning the old counters.</li>
+      <li><strong>Objection and restriction</strong> — simply do not use the AI features, and nothing at all is transmitted.</li>
+      <li><strong>Withdrawing consent</strong> — turn off notifications or motion access in iOS Settings at any time.</li>
+      <li><strong>Complaint</strong> — you may lodge a complaint with your local data protection authority. We would appreciate the chance to address it first.</li>
+    </ul>
+    <p>Email <a href="mailto:jackdai259@gmail.com">jackdai259@gmail.com</a> to exercise any of these rights and we will respond within 30 days. Because we hold no identifying information, we may not be able to locate any data that belongs to you specifically — which is, deliberately, the whole design.</p>
+
+    <h2 id="ccpa" class="anchor">12. California / US state rights</h2>
+    <p>For California residents under the CCPA/CPRA, and residents of other US states with comparable laws: in the last twelve months we have collected the categories of <em>identifiers</em> (a randomly generated app identifier only), <em>user content</em> (the goal text you choose to submit to an AI feature), and <em>commercial information</em> (whether an Apple purchase is active, which stays on your device). These are collected for the business purposes described in this policy and are not retained beyond the periods in section 8.</p>
+    <ul>
+      <li>We have <strong>not sold or shared</strong> personal information, and we do not use personal information for cross-context behavioral advertising. We do not knowingly sell the personal information of anyone under 16.</li>
+      <li>We do not collect sensitive personal information or use it to infer characteristics.</li>
+      <li>You have the right to know, delete, and correct, and to not be discriminated against for exercising those rights. We offer no financial incentives for data.</li>
+      <li>You may use an authorized agent to submit a request. Email us at the address below.</li>
+    </ul>
+
+    <h2 id="children" class="anchor">13. Children</h2>
+    <p>Nivolo is a general-audience app and is not directed to children under 13 (or under 16 in the EEA and UK). We do not knowingly collect personal information from children — in fact we collect virtually no personal information from anyone. The birthday entered during onboarding is stored on the device solely to show a birthday theme and is never transmitted. If you believe a child has entered something into an AI feature that should be removed, email us and we will do what we can.</p>
+
+    <h2 id="security" class="anchor">14. Security</h2>
+    <ul>
+      <li>Your content lives inside the iOS app sandbox, protected by your device passcode and iOS file encryption.</li>
+      <li>AI requests travel over TLS and are authenticated with a short-lived, cryptographically signed token, so our server cannot be used as an open endpoint.</li>
+      <li>API keys and signing secrets are held server-side and are never shipped inside the app.</li>
+      <li>There is no user database and no password store — the most common causes of a data breach do not exist here.</li>
+    </ul>
+    <p>No method of transmission or storage is completely secure, and we cannot guarantee absolute security. If a breach ever affected data covered by this policy, we would post a notice on this page.</p>
+
+    <h2 id="labels" class="anchor">15. App Store privacy labels</h2>
+    <p>Nivolo's App Store privacy label reports that data is <strong>not collected</strong>, or in the case of the optional AI features, that user content is <strong>not linked to your identity</strong> and is <strong>not used for tracking</strong>. This policy describes the same practices in full; if you ever spot a discrepancy between the two, please tell us and we will correct it.</p>
+
+    <h2 id="website" class="anchor">16. This website</h2>
+    <p>nivolo.app is a static site hosted on GitHub Pages with DNS provided by Cloudflare. It sets <strong>no cookies</strong>, runs <strong>no analytics</strong>, has no sign-up form, and does not attempt to identify you.</p>
+    <p>As with any website, the hosting provider automatically processes technical connection data — your IP address, browser type and requested page — in order to serve the page and defend against abuse, and retains it briefly under its own policies. This site also loads web fonts from Google Fonts and one animation library from the jsDelivr CDN; requesting those files reveals your IP address and browser type to those providers, as it does on any site that uses them. We receive none of this information.</p>
+
+    <h2 id="changes" class="anchor">17. Changes to this policy</h2>
+    <p>We will update this page whenever our practices change, and always <em>before</em> shipping an app version that handles data differently. The "last updated" date at the top always reflects the current version. For material changes — anything that would newly send data off your device — we will also note the change inside the app.</p>
+
+    <h2 id="contact" class="anchor">18. Contact</h2>
+    <div class="card">
+      <p>Questions about privacy, a rights request, or something in this policy that reads wrong to you?</p>
+      <p style="margin-top: 10px;"><strong><a href="mailto:jackdai259@gmail.com">jackdai259@gmail.com</a></strong></p>
+      <p style="margin-top: 10px;">We aim to reply within a couple of days, and within 30 days for formal requests.</p>
+    </div>
   </main>
 
   <footer>
