@@ -847,11 +847,16 @@ footer { border-top: 1px solid var(--line); padding: 34px 0; }
 }
 .lore-shadows img {
   width: 46px; height: 46px; border-radius: 12px;
-  filter: brightness(0) invert(1);
-  opacity: 0.13;
-  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(.2,.8,.3,1);
+  filter: grayscale(1) brightness(0.42) contrast(1.15);
+  opacity: 0.62;
+  box-shadow: inset 0 0 0 1px var(--line);
+  transition: filter 0.45s ease, opacity 0.45s ease, transform 0.45s cubic-bezier(.2,.8,.3,1);
 }
-.lore-shadows img:hover { opacity: 0.26; transform: translateY(-3px); }
+.lore-shadows img:hover {
+  filter: grayscale(0.55) brightness(0.72) contrast(1.05);
+  opacity: 0.9;
+  transform: translateY(-4px);
+}
 .lore-more-note {
   margin-top: 18px;
   font-size: 14px; color: var(--ink-3);
