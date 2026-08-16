@@ -1044,3 +1044,91 @@ footer { border-top: 1px solid var(--line); padding: 34px 0; }
   .lore-mini li { padding: 9px 8px; gap: 11px; }
   .lore-mini img { width: 34px; height: 34px; border-radius: 10px; }
 }
+
+/* ── Icon popup (3D tile) ── */
+.ipop-overlay {
+  position: fixed; inset: 0; z-index: 90;
+  display: grid; place-items: center;
+  background: rgba(3, 5, 11, 0.72);
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.ipop-overlay.open { opacity: 1; pointer-events: auto; }
+.ipop-lock { overflow: hidden; }
+.ipop-dialog {
+  position: relative; text-align: center;
+  padding: 30px 26px 24px;
+  transform: scale(0.86);
+  transition: transform 0.35s cubic-bezier(.2,.9,.3,1.15);
+}
+.ipop-overlay.open .ipop-dialog { transform: scale(1); }
+.ipop-close {
+  position: absolute; top: -6px; right: -6px;
+  width: 40px; height: 40px; border-radius: 50%;
+  border: 1px solid var(--line-strong);
+  background: rgba(16, 24, 40, 0.8); color: var(--ink-2);
+  font-size: 22px; line-height: 1; cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.ipop-close:hover { color: var(--ink); border-color: rgba(255,255,255,.3); }
+.ipop-stage {
+  width: 320px; max-width: 82vw; height: 300px;
+  display: grid; place-items: center;
+  perspective: 900px;
+}
+.ipop-tile {
+  position: relative; width: 220px; height: 220px;
+  transform-style: preserve-3d;
+  transition: transform 0.7s cubic-bezier(.3,.9,.3,1);
+  cursor: grab; touch-action: none;
+}
+.ipop-tile:active { cursor: grabbing; }
+.ipop-tile.dragging { transition: none; }
+.ipop-tile, .ipop-tile * {
+  user-select: none; -webkit-user-select: none; -webkit-user-drag: none;
+}
+.ipop-tile img { pointer-events: none; }
+.ipop-face {
+  position: absolute; left: 50%; top: 50%;
+  width: 220px; height: 220px; margin-left: -110px; margin-top: -110px;
+  border-radius: 49px; overflow: hidden;
+  backface-visibility: hidden;
+  display: grid; place-items: center;
+}
+.ipop-front { transform: translateZ(12px); }
+.ipop-front img { width: 100%; height: 100%; display: block; }
+.ipop-back {
+  background: linear-gradient(158deg, var(--tint-dark, #1b2334), var(--tint-deep, #0d121c));
+  border: 1px solid var(--tint-edge, rgba(255,255,255,.16));
+  padding: 26px 22px;
+  transform: rotateY(180deg) translateZ(12px);
+}
+.ipop-back h3 {
+  font-family: var(--font-display);
+  font-size: 18px; font-weight: 700; margin-bottom: 8px;
+  color: var(--tint-lite, #EAF2FA);
+}
+.ipop-back p { font-size: 13px; line-height: 1.5; color: rgba(234, 242, 250, 0.82); }
+.ipop-slice {
+  position: absolute; left: 50%; top: 50%;
+  width: 220px; height: 220px; margin-left: -110px; margin-top: -110px;
+  border-radius: 49px;
+  background: linear-gradient(178deg, var(--tint-dark, #2b3446), var(--tint-deep, #151b28));
+}
+.ipop-shadow {
+  width: 190px; height: 17px; border-radius: 50%;
+  margin: -12px auto 0;
+  background: radial-gradient(ellipse, rgba(0,0,0,.55), transparent 70%);
+  filter: blur(3px);
+}
+.ipop-hint { margin-top: 16px; font-size: 12.5px; color: var(--ink-3); }
+.ipop-source { cursor: pointer; }
+.ipop-source:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
+@media (max-width: 640px) {
+  .ipop-stage { height: 270px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ipop-overlay, .ipop-dialog, .ipop-tile { transition: none; }
+}
