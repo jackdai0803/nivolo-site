@@ -7,6 +7,15 @@
 
   var TILE = 220, RADIUS = 49, DEPTH = 24, STEP = 0.4;
 
+  /* Icons with separated background/character art render the front as two
+     plates: the background on the tile itself and Nivo floating `depth`
+     px above it. Any turn of the tile — cursor sway, drag, tap-flip —
+     then produces real parallax: the face shifts subtly against its
+     background while staying attached to the tile. depth stays ~10–18. */
+  var LAYERED = {
+    ghost: { bg: "ghost-bg", face: "ghost-face", depth: 14 },
+  };
+
   /* ── tint: sample the icon's own edge colour for the slab ── */
   var tintCache = {};
   function tintFor(id, cb) {
@@ -56,6 +65,7 @@
     '  <button class="ipop-close" type="button" aria-label="Close">&times;</button>' +
     '  <div class="ipop-stage"><div class="ipop-tile">' +
     '    <div class="ipop-face ipop-front"><img alt="" /></div>' +
+    '    <div class="ipop-face ipop-plate" hidden><img alt="" /></div>' +
     '    <div class="ipop-face ipop-back"><div><h3></h3><p></p></div></div>' +
     '  </div></div>' +
     '  <div class="ipop-shadow"></div>' +
@@ -74,18 +84,63 @@
     tile.insertBefore(s, front);
   }
 
-  /* ── rotation state ── */
-  var rx = 0, ry = 0;
-  function apply() {
-    tile.style.transform = "rotateX(" + rx + "deg) rotateY(" + ry + "deg)";
-  }
+  /* ── rotation state ──
+     base = where the tile rests (set by drags and tap-flips).
+     follow = a gentle sway toward the cursor, so Nivo watches you move.
+     Both feed one rAF loop that eases the displayed angle toward
+     base + follow — which also animates the flip, so the CSS transition
+     is switched off and every motion runs through the same spring. */
+  var base = { x: 0, y: 0 }, cur = { x: 0, y: 0 }, follow = { x: 0, y: 0 };
+  var FOLLOW_Y = 16, FOLLOW_X = 10, EASE = 0.1;
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  tile.style.transition = "none";
+
+  var plateEl = overlay.querySelector(".ipop-plate");
+  var plateDepth = 0;
 
   var down = false, moved = false, sx = 0, sy = 0, baseX = 0, baseY = 0;
+  var rafId = null;
+  function frame() {
+    if (down) {
+      cur.x = base.x; cur.y = base.y;          // drags track the hand exactly
+    } else {
+      var tx = base.x + follow.x, ty = base.y + follow.y;
+      cur.x += (tx - cur.x) * EASE;
+      cur.y += (ty - cur.y) * EASE;
+    }
+    tile.style.transform = "rotateX(" + cur.x + "deg) rotateY(" + cur.y + "deg)";
+    if (plateDepth && !plateEl.hidden) {
+      // The face's lift collapses as the tile turns away, so from the side
+      // Nivo sits flush on the slab instead of visibly hovering off it.
+      var offY = Math.abs(cur.y % 180); if (offY > 90) offY = 180 - offY;
+      var tilt = Math.min(89, Math.max(offY, Math.abs(cur.x)));
+      var f = Math.pow(Math.cos(tilt * Math.PI / 180), 2.5);
+      plateEl.style.transform =
+        "translateZ(" + (12 + Math.max(plateDepth * f, 1.2)).toFixed(2) + "px)";
+    }
+    rafId = requestAnimationFrame(frame);
+  }
+
+  var stage = overlay.querySelector(".ipop-stage");
+  window.addEventListener("mousemove", function (e) {
+    if (!overlay.classList.contains("open") || down || reduceMotion) return;
+    var r = stage.getBoundingClientRect();
+    var nx = (e.clientX - (r.left + r.width / 2)) / (window.innerWidth / 2);
+    var ny = (e.clientY - (r.top + r.height / 2)) / (window.innerHeight / 2);
+    nx = Math.max(-1, Math.min(1, nx));
+    ny = Math.max(-1, Math.min(1, ny));
+    // when the story side faces you, mirror the yaw so the sway still
+    // tracks the cursor instead of running away from it
+    var facingBack = Math.round(base.y / 180) % 2 !== 0;
+    follow.y = nx * FOLLOW_Y * (facingBack ? -1 : 1);
+    follow.x = -ny * FOLLOW_X;
+  });
+
   function pt(e) { return e.touches ? e.touches[0] : e; }
   function start(e) {
     down = true; moved = false;
     var p = pt(e);
-    sx = p.clientX; sy = p.clientY; baseX = rx; baseY = ry;
+    sx = p.clientX; sy = p.clientY; baseX = base.x; baseY = base.y;
     tile.classList.add("dragging");
     if (!e.touches) e.preventDefault();
   }
@@ -94,27 +149,25 @@
     var p = pt(e);
     var dx = p.clientX - sx, dy = p.clientY - sy;
     if (Math.abs(dx) > 4 || Math.abs(dy) > 4) moved = true;
-    ry = baseY + dx * 0.6;
-    rx = Math.max(-70, Math.min(70, baseX - dy * 0.6));
-    apply();
+    base.y = baseY + dx * 0.6;
+    base.x = Math.max(-70, Math.min(70, baseX - dy * 0.6));
     if (e.cancelable) e.preventDefault();
   }
   function end() {
     if (!down) return;
     down = false;
     tile.classList.remove("dragging");
-    var nearest = Math.round(ry / 180) * 180;
-    var offBy = Math.abs(ry - nearest);
+    var nearest = Math.round(base.y / 180) * 180;
+    var offBy = Math.abs(base.y - nearest);
     if (!moved) {
       // tap: land on a face, never the edge — square-on flips over,
       // side-on goes to whichever face is closest
-      ry = offBy < 45 ? nearest + 180 : nearest;
-      rx = 0;
+      base.y = offBy < 45 ? nearest + 180 : nearest;
+      base.x = 0;
     } else if (offBy > 68) {
       // never rest edge-on: the slab degenerates to hairlines there
-      ry = nearest;
+      base.y = nearest;
     }
-    apply();
   }
   tile.addEventListener("mousedown", start);
   window.addEventListener("mousemove", move);
@@ -128,9 +181,23 @@
   var lastFocus = null;
   function openFor(id, name, story) {
     var img = front.querySelector("img");
-    img.src = "assets/icons-3d/" + id + ".webp";
-    img.srcset = "assets/icons-3d/" + id + ".webp 512w, assets/icons-3d/" + id + "-lg.webp 1024w";
-    img.sizes = TILE + "px";
+    var layered = LAYERED[id];
+    function setSrc(el, base) {
+      el.src = "assets/icons-3d/" + base + ".webp";
+      el.srcset = "assets/icons-3d/" + base + ".webp 512w, assets/icons-3d/" + base + "-lg.webp 1024w";
+      el.sizes = TILE + "px";
+    }
+    if (layered) {
+      setSrc(img, layered.bg);
+      setSrc(plateEl.querySelector("img"), layered.face);
+      plateDepth = layered.depth;
+      plateEl.style.transform = "translateZ(" + (12 + layered.depth) + "px)";
+      plateEl.hidden = false;
+    } else {
+      setSrc(img, id);
+      plateDepth = 0;
+      plateEl.hidden = true;
+    }
     overlay.querySelector(".ipop-back h3").textContent = name;
     overlay.querySelector(".ipop-back p").textContent = story;
     tintFor(id, function (c) {
@@ -139,7 +206,9 @@
       tile.style.setProperty("--tint-edge", "rgba(" + c.join(",") + ",.55)");
       tile.style.setProperty("--tint-lite", lift(c, 0.62));
     });
-    rx = 0; ry = 0; apply();
+    base.x = 0; base.y = 0; cur.x = 0; cur.y = 0; follow.x = 0; follow.y = 0;
+    tile.style.transform = "rotateX(0deg) rotateY(0deg)";
+    if (rafId === null) rafId = requestAnimationFrame(frame);
     lastFocus = document.activeElement;
     overlay.classList.add("open");
     document.body.classList.add("ipop-lock");
@@ -148,6 +217,7 @@
   function close() {
     overlay.classList.remove("open");
     document.body.classList.remove("ipop-lock");
+    if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; }
     if (lastFocus && lastFocus.focus) lastFocus.focus();
   }
   overlay.addEventListener("click", function (e) { if (e.target === overlay) close(); });
