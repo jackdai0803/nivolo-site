@@ -655,19 +655,30 @@ footer { border-top: 1px solid var(--line); padding: 34px 0; }
 .split--flip .split-copy { order: 2; }
 .split--flip .split-visual { order: 1; }
 
-/* Device frame around a real app screenshot */
-.phone-panel { padding: 38px 24px; min-height: 0; }
+/* Real app screenshots float on the page background — no card box.
+   A soft accent glow sits behind the device, and the whole phone
+   (bezel included) dissolves into the page toward the bottom, which
+   also hides the screenshot's cropped edge. */
+.phone-stage { position: relative; padding: 26px 0 0; }
+.phone-stage::before {
+  content: "";
+  position: absolute; inset: -6% -18%;
+  background: radial-gradient(52% 50% at 50% 40%, rgba(100, 210, 255, 0.14), transparent 70%);
+  pointer-events: none;
+}
+.phone-stage--gold::before   { background: radial-gradient(52% 50% at 50% 40%, rgba(255, 214, 10, 0.11), transparent 70%); }
+.phone-stage--purple::before { background: radial-gradient(52% 50% at 50% 40%, rgba(167, 139, 250, 0.14), transparent 70%); }
+.phone-stage .float-chip { z-index: 2; }
 .phone {
   position: relative;
-  width: min(268px, 72vw);
+  width: min(280px, 74vw);
   margin: 0 auto;
   padding: 9px;
   border-radius: 44px;
   background: linear-gradient(165deg, #39445A, #141B29 62%);
-  box-shadow:
-    var(--shadow-lg),
-    0 0 0 1px rgba(255, 255, 255, 0.10) inset,
-    0 0 60px rgba(100, 210, 255, 0.10);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.10) inset;
+  -webkit-mask-image: linear-gradient(to bottom, #000 58%, transparent 97%);
+  mask-image: linear-gradient(to bottom, #000 58%, transparent 97%);
 }
 .phone picture, .phone img {
   display: block; width: 100%; height: auto;
@@ -799,7 +810,7 @@ footer { border-top: 1px solid var(--line); padding: 34px 0; }
   .cta-panel { padding: 56px 24px 50px; }
   .cta-gem { display: none; }
   .footer-inner { flex-direction: column; gap: 14px; }
-  .phone-panel { padding: 30px 18px; }
+  .phone-stage { padding: 18px 0 0; }
   .privacy-panel { padding: 36px 22px; }
   .plan { padding: 28px 22px; }
   .faq summary { font-size: 16px; }
