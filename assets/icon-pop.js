@@ -91,7 +91,10 @@
      base + follow — which also animates the flip, so the CSS transition
      is switched off and every motion runs through the same spring. */
   var base = { x: 0, y: 0 }, cur = { x: 0, y: 0 }, follow = { x: 0, y: 0 };
-  var FOLLOW_Y = 16, FOLLOW_X = 10, EASE = 0.1;
+  var FOLLOW_Y = 30, FOLLOW_X = 16, EASE = 0.13;
+  // Full deflection well before the cursor reaches the screen edge —
+  // normalising by the whole half-viewport made the sway near-invisible.
+  var FOLLOW_REACH = 0.45;
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   tile.style.transition = "none";
 
@@ -125,8 +128,8 @@
   window.addEventListener("mousemove", function (e) {
     if (!overlay.classList.contains("open") || down || reduceMotion) return;
     var r = stage.getBoundingClientRect();
-    var nx = (e.clientX - (r.left + r.width / 2)) / (window.innerWidth / 2);
-    var ny = (e.clientY - (r.top + r.height / 2)) / (window.innerHeight / 2);
+    var nx = (e.clientX - (r.left + r.width / 2)) / (window.innerWidth / 2 * FOLLOW_REACH);
+    var ny = (e.clientY - (r.top + r.height / 2)) / (window.innerHeight / 2 * FOLLOW_REACH);
     nx = Math.max(-1, Math.min(1, nx));
     ny = Math.max(-1, Math.min(1, ny));
     // when the story side faces you, mirror the yaw so the sway still
