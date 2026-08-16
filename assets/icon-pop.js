@@ -140,8 +140,9 @@
   });
 
   function pt(e) { return e.touches ? e.touches[0] : e; }
+  var dragJustEnded = false;
   function start(e) {
-    down = true; moved = false;
+    down = true; moved = false; dragJustEnded = false;
     var p = pt(e);
     sx = p.clientX; sy = p.clientY; baseX = base.x; baseY = base.y;
     tile.classList.add("dragging");
@@ -160,6 +161,7 @@
     if (!down) return;
     down = false;
     tile.classList.remove("dragging");
+    if (moved) dragJustEnded = true;
     var nearest = Math.round(base.y / 180) * 180;
     var offBy = Math.abs(base.y - nearest);
     if (!moved) {
@@ -223,7 +225,14 @@
     if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; }
     if (lastFocus && lastFocus.focus) lastFocus.focus();
   }
-  overlay.addEventListener("click", function (e) { if (e.target === overlay) close(); });
+  overlay.addEventListener("click", function (e) {
+    if (e.target !== overlay) return;
+    // A drag that swings the tile carries the cursor off it, so the release
+    // lands on the backdrop and the browser calls that a "click" — which
+    // was closing the popup the instant you finished turning the icon.
+    if (dragJustEnded) { dragJustEnded = false; return; }
+    close();
+  });
   overlay.querySelector(".ipop-close").addEventListener("click", close);
   window.addEventListener("keydown", function (e) {
     if (e.key === "Escape" && overlay.classList.contains("open")) close();
