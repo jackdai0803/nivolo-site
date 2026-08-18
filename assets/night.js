@@ -784,28 +784,52 @@
      PHYSICS slabs and the painted berg by the same amount, so the whole
      pile rides down with the ice instead of hovering over it. The
      waterline stays put — that is what makes the berg look loaded. */
-  var bergSink = 0, bergSinkVel = 0;
-  var BERG_SINK_MAX = 13, BERG_SINK_PER_ICON = 0.45;
+  var bergSink = 0, bergSinkVel = 0, bergSinkApplied = 0;
+  var BERG_SINK_MAX = 16, BERG_SINK_PER_ICON = 0.75;
 
-  function thumpBerg(impact) { bergSinkVel += 0.55 + impact * 1.5; }
+  function thumpBerg(impact) { bergSinkVel += 0.35 + impact * 1.1; }
 
+  /* Each icon pushes the floe a little further down until it reaches the
+     level a full berg sits at — past that the pile can't sink it further,
+     and taking icons away lets it come back up. Counts what is actually
+     STANDING on the ice: an icon in the visitor's hand, one still falling,
+     one already swimming, none of them weigh on it, so lifting one off
+     starts the floe rising before it has gone anywhere. */
   function bergLoad() {
-    var n = 0;
+    var held = dragConstraint && dragConstraint.bodyB, n = 0;
     for (var i = 0; i < icons.length; i++) {
-      var b = icons[i].body;
-      if (!icons[i].sinking && b.position.y > 0 && b.position.y < waterYCurrent) n++;
+      var it = icons[i], b = it.body;
+      if (it.sinking || b === held || b.speed > 2) continue;
+      if (b.position.y <= 0 || b.position.y >= waterYCurrent) continue;
+      n++;
     }
     return Math.min(BERG_SINK_MAX, n * BERG_SINK_PER_ICON);
   }
 
   function stepBergSink() {
     if (VARIANT !== "iceberg") return;
-    bergSinkVel += (bergLoad() - bergSink) * 0.035;
-    bergSinkVel *= 0.88;
-    var next = Math.max(0, Math.min(BERG_SINK_MAX + 6, bergSink + bergSinkVel));
-    var d = next - bergSink;
-    bergSink = next;
-    if (Math.abs(d) < 0.02) return;
+    // Asymmetric on purpose: weight arrives all at once and the ice takes
+    // it, but buoyancy is patient. A floe with its load removed drifts
+    // back up over seconds — an eased approach, not a spring, which would
+    // cover the same distance in a blink. Landings still kick the spring,
+    // so a hard hit dips the ice even while it is rising.
+    var target = bergLoad(), next;
+    if (target < bergSink && Math.abs(bergSinkVel) < 0.08) {
+      bergSinkVel = 0;
+      next = bergSink + (target - bergSink) * 0.005;
+    } else {
+      bergSinkVel += (target - bergSink) * 0.035;
+      bergSinkVel *= 0.88;
+      next = bergSink + bergSinkVel;
+    }
+    bergSink = Math.max(0, Math.min(BERG_SINK_MAX + 4, next));
+    // Compare against what was last APPLIED, not against last tick: a
+    // patient rise moves a hundredth of a pixel per tick, and a per-tick
+    // threshold would swallow every one of them and freeze the berg
+    // mid-float with the physics and the paint drifting apart.
+    var d = bergSink - bergSinkApplied;
+    if (Math.abs(d) < 0.05) return;
+    bergSinkApplied = bergSink;
     for (var i = 0; i < walls.length; i++) {
       var wb = walls[i];
       if (wb.bergBaseY == null) continue;
