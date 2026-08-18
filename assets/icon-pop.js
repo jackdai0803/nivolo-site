@@ -5,7 +5,9 @@
 (function () {
   "use strict";
 
-  var TILE = 220, RADIUS = 49, DEPTH = 24, STEP = 0.4;
+  /* The tile's pixel size is owned by CSS (--ipop-tile) so it can adapt to the
+     viewport; these are its proportions, expressed as fractions of that size. */
+  var BASE = 220, DEPTH = 24 / BASE, STEP = 0.4 / BASE;
 
   /* Icons with separated background/character art render the front as two
      plates: the background on the tile itself and Nivo floating `depth`
@@ -113,12 +115,15 @@
   var sceneId = null;
 
   // depth as a stack of rounded slices — flat side panels square off the corners
-  for (var z = -DEPTH / 2; z <= DEPTH / 2 + 0.001; z += STEP) {
+  for (var z = -DEPTH / 2; z <= DEPTH / 2 + 0.000001; z += STEP) {
     var s = document.createElement("div");
     s.className = "ipop-slice";
-    s.style.transform = "translateZ(" + z.toFixed(2) + "px)";
+    // keyed off the CSS knob, so the slab thickens with the tile
+    s.style.transform = "translateZ(calc(var(--ipop-tile) * " + z.toFixed(6) + "))";
     tile.insertBefore(s, front);
   }
+  // current tile size in px, for the few places that need a real number
+  function tilePx() { return tile.offsetWidth || BASE; }
 
   /* ── rotation state ──
      base = where the tile rests (set by drags and tap-flips).
@@ -162,8 +167,9 @@
       var offY = Math.abs(cur.y % 180); if (offY > 90) offY = 180 - offY;
       var tilt = Math.min(89, Math.max(offY, Math.abs(cur.x)));
       var f = Math.pow(Math.cos(tilt * Math.PI / 180), 2.5);
+      var u = tilePx() / BASE;
       plateEl.style.transform =
-        "translateZ(" + (12 + Math.max(plateDepth * f, 1.2)).toFixed(2) + "px)";
+        "translateZ(" + ((12 + Math.max(plateDepth * f, 1.2)) * u).toFixed(2) + "px)";
     }
     rafId = requestAnimationFrame(frame);
   }
@@ -234,7 +240,7 @@
     function setSrc(el, base) {
       el.src = "assets/icons-3d/" + base + ".webp";
       el.srcset = "assets/icons-3d/" + base + ".webp 512w, assets/icons-3d/" + base + "-lg.webp 1024w";
-      el.sizes = TILE + "px";
+      el.sizes = Math.round(tilePx()) + "px";
     }
     if (layered) {
       setSrc(img, layered.bg);

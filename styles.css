@@ -1210,6 +1210,11 @@ footer { border-top: 1px solid var(--line); padding: 34px 0; }
 }
 .ipop-lock { overflow: hidden; }
 .ipop-dialog {
+  /* every tile dimension below is a ratio of this one knob, so the icon keeps
+     its proportions — corner radius, slab depth and shadow included — at any size */
+  --ipop-tile: min(300px, 72vw, 42vh);
+  --ipop-radius: calc(var(--ipop-tile) * 0.2227);
+  --ipop-lift: calc(var(--ipop-tile) * 0.0545);
   position: relative; z-index: 1; text-align: center;
   padding: 30px 26px 24px;
   transform: scale(0.86);
@@ -1227,12 +1232,13 @@ footer { border-top: 1px solid var(--line); padding: 34px 0; }
 }
 .ipop-close:hover { color: var(--ink); border-color: rgba(255,255,255,.3); }
 .ipop-stage {
-  width: 320px; max-width: 82vw; height: 300px;
+  width: calc(var(--ipop-tile) + 100px); max-width: 82vw;
+  height: calc(var(--ipop-tile) + 80px);
   display: grid; place-items: center;
-  perspective: 900px;
+  perspective: calc(var(--ipop-tile) * 4.09);
 }
 .ipop-tile {
-  position: relative; width: 220px; height: 220px;
+  position: relative; width: var(--ipop-tile); height: var(--ipop-tile);
   transform-style: preserve-3d;
   transition: transform 0.7s cubic-bezier(.3,.9,.3,1);
   cursor: grab; touch-action: none;
@@ -1245,18 +1251,19 @@ footer { border-top: 1px solid var(--line); padding: 34px 0; }
 .ipop-tile img { pointer-events: none; }
 .ipop-face {
   position: absolute; left: 50%; top: 50%;
-  width: 220px; height: 220px; margin-left: -110px; margin-top: -110px;
-  border-radius: 49px; overflow: hidden;
+  width: var(--ipop-tile); height: var(--ipop-tile);
+  margin-left: calc(var(--ipop-tile) / -2); margin-top: calc(var(--ipop-tile) / -2);
+  border-radius: var(--ipop-radius); overflow: hidden;
   backface-visibility: hidden;
   display: grid; place-items: center;
 }
-.ipop-front { transform: translateZ(12px); }
+.ipop-front { transform: translateZ(var(--ipop-lift)); }
 .ipop-front img { width: 100%; height: 100%; display: block; }
 .ipop-back {
   background: linear-gradient(158deg, var(--tint-dark, #1b2334), var(--tint-deep, #0d121c));
   border: 1px solid var(--tint-edge, rgba(255,255,255,.16));
   padding: 26px 22px;
-  transform: rotateY(180deg) translateZ(12px);
+  transform: rotateY(180deg) translateZ(var(--ipop-lift));
 }
 .ipop-back h3 {
   font-family: var(--font-display);
@@ -1266,12 +1273,14 @@ footer { border-top: 1px solid var(--line); padding: 34px 0; }
 .ipop-back p { font-size: 13px; line-height: 1.5; color: rgba(234, 242, 250, 0.82); }
 .ipop-slice {
   position: absolute; left: 50%; top: 50%;
-  width: 220px; height: 220px; margin-left: -110px; margin-top: -110px;
-  border-radius: 49px;
+  width: var(--ipop-tile); height: var(--ipop-tile);
+  margin-left: calc(var(--ipop-tile) / -2); margin-top: calc(var(--ipop-tile) / -2);
+  border-radius: var(--ipop-radius);
   background: linear-gradient(178deg, var(--tint-dark, #2b3446), var(--tint-deep, #151b28));
 }
 .ipop-shadow {
-  width: 190px; height: 17px; border-radius: 50%;
+  width: calc(var(--ipop-tile) * 0.864); height: calc(var(--ipop-tile) * 0.077);
+  border-radius: 50%;
   margin: -12px auto 0;
   background: radial-gradient(ellipse, rgba(0,0,0,.55), transparent 70%);
   filter: blur(3px);
@@ -1280,7 +1289,7 @@ footer { border-top: 1px solid var(--line); padding: 34px 0; }
 .ipop-source { cursor: pointer; }
 .ipop-source:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
 @media (max-width: 640px) {
-  .ipop-stage { height: 270px; }
+  .ipop-dialog { --ipop-tile: min(300px, 78vw, 38vh); }
 }
 @media (prefers-reduced-motion: reduce) {
   .ipop-overlay, .ipop-dialog, .ipop-tile { transition: none; }
