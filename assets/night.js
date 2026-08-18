@@ -411,23 +411,26 @@
       src.connect(filter); filter.connect(g); g.connect(master);
       src.start(t); src.stop(t + dur + 0.02);
     }
-    /* One tiny noise particle with its own envelope and offset. Ice is
-       granular, not tonal — a landing is a scatter of these, and the
-       scatter is re-rolled every time so five in a row never machine-gun. */
-    function grain(o) {
+    /* A dull brown-noise crunch — the ice under the pock. Brown rather
+       than white, and a 6ms attack rather than 1.5ms: fast attacks on
+       white noise are what made the earlier grain scatter read as
+       digital glitch instead of a surface. */
+    function crunch(o) {
       var dur = o.dur, frames = Math.max(2, Math.floor(ctx.sampleRate * dur));
       var buffer = ctx.createBuffer(1, frames, ctx.sampleRate);
-      var data = buffer.getChannelData(0);
-      for (var i = 0; i < frames; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / frames);
+      var data = buffer.getChannelData(0), last = 0;
+      for (var i = 0; i < frames; i++) {
+        last = (last + 0.035 * (Math.random() * 2 - 1)) / 1.035;
+        data[i] = Math.max(-1, Math.min(1, last * 3.2));
+      }
       var src = ctx.createBufferSource(), filter = ctx.createBiquadFilter(), g = ctx.createGain();
-      var t = ctx.currentTime + (o.delay || 0);
+      var t = ctx.currentTime;
       src.buffer = buffer;
-      filter.type = o.type || "bandpass";
+      filter.type = "lowpass";
       filter.frequency.setValueAtTime(o.f0, t);
-      filter.frequency.exponentialRampToValueAtTime(Math.max(20, o.f1 || o.f0), t + dur);
-      filter.Q.value = o.q || 0.8;
-      g.gain.setValueAtTime(0.0004, t);
-      g.gain.exponentialRampToValueAtTime(o.vol, t + 0.0015);
+      filter.frequency.exponentialRampToValueAtTime(Math.max(60, o.f1), t + dur);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.linearRampToValueAtTime(o.vol, t + 0.006);
       g.gain.exponentialRampToValueAtTime(0.0004, t + dur);
       src.connect(filter); filter.connect(g); g.connect(master);
       src.start(t); src.stop(t + dur + 0.02);
@@ -453,23 +456,16 @@
       lastLandAt = t;
       strength = Math.max(0.28, Math.min(1, strength || 0.45));
       played++;
-      // The icon's first contact with the white ice: frozen gravel, not a
-      // pop. Seven grains scattered over ~70ms, a short high ring, and a
-      // low body underneath for the weight — all re-randomised per
-      // landing. Its own throttle means a collision just before touchdown
-      // cannot swallow it.
-      for (var i = 0; i < 7; i++) {
-        grain({
-          f0: rand(700, 3500) * (0.85 + 0.3 * strength),
-          f1: rand(400, 1100),
-          q: rand(1.4, 3),
-          vol: (0.045 + 0.055 * strength) * (1 - i * 0.1),
-          dur: rand(0.003, 0.009),
-          delay: i === 0 ? 0 : rand(0.004, 0.07),
-        });
-      }
-      grain({ f0: 1400, f1: 1100, q: 3.5, vol: 0.03 + 0.03 * strength, dur: 0.028, delay: 0.006 });
-      tone("sine", 172 + 45 * strength, 104, 0.05 + 0.05 * strength, 0.055);
+      // The icon's first contact with the white ice: a round two-note
+      // pock — pop, then an answer an octave below — over a dull crunch
+      // for the surface. Both notes FALL, where the water's two notes
+      // rise; that is what keeps a landing and a splash apart when they
+      // happen in the same second.
+      var f = 385 + 150 * strength;
+      var v = 0.11 + 0.11 * strength;
+      crunch({ f0: rand(900, 1150), f1: 380, vol: 0.03 + 0.035 * strength, dur: 0.055 });
+      tone("sine", f * 0.52, f, v, 0.085);
+      tone("sine", f * 0.32, f * 0.5, v * 0.55, 0.075, 0.085);
       return true;
     }
     function pop() {
