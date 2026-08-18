@@ -341,6 +341,7 @@
     var lastAt = -1, lastLandAt = -1, lastSplashAt = -1, played = 0;
     var muted = false;
     try { muted = localStorage.getItem("nivolo-sfx") === "off"; } catch (e) {}
+    var onLive = null; // fired the moment audio genuinely starts playing
     function ensure() {
       if (ctx) return ctx;
       var AC = window.AudioContext || window.webkitAudioContext;
@@ -349,7 +350,31 @@
       master = ctx.createGain();
       master.gain.value = 0.5;
       master.connect(ctx.destination);
+      // However it comes alive — gesture, engagement history, a site the
+      // visitor has allowed — that is the signal to pour out loud.
+      ctx.onstatechange = function () {
+        if (ctx.state !== "running") return;
+        armed = true;
+        if (onLive) onLive();
+      };
       return ctx;
+    }
+    /* Nudge the context awake without claiming a gesture happened. Costs
+       nothing when the browser says no (the resume simply never lands),
+       and on a browser that allows audio — engagement history, autoplay
+       permitted for the site — a mouse move is enough to start the show
+       with nobody having to tap anything. */
+    var lastTry = -1e9;
+    function tryResume() {
+      if (armed || muted) return;
+      var now = (window.performance && performance.now) ? performance.now() : +new Date();
+      if (now - lastTry < 400) return; // mousemove fires by the hundred
+      lastTry = now;
+      var c = ensure();
+      if (!c) return;
+      if (c.state === "running") { armed = true; if (onLive) onLive(); return; }
+      var r = c.resume();
+      if (r && r.catch) r.catch(function () {});
     }
     function arm() {
       armed = true;
@@ -440,10 +465,11 @@
       var c = ensure();
       if (!c) return false;
       if (c.state === "running") { armed = true; return true; }
-      c.onstatechange = function () { if (c.state === "running") armed = true; };
+      c.resume().catch(function () {}); // allowed? then onstatechange fires
       return false;
     }
-    return { arm: arm, probe: probe, hit: hit, land: land, pop: pop, plop: plop, setMuted: setMuted,
+    return { arm: arm, probe: probe, tryResume: tryResume, hit: hit, land: land, pop: pop, plop: plop,
+             setMuted: setMuted, onLive: function (fn) { onLive = fn; },
              isMuted: function () { return muted; },
              stats: function () { return { armed: armed, state: ctx ? ctx.state : null, played: played }; } };
   })();
@@ -934,7 +960,25 @@
 
   buildWalls();
   setRunning(true);
+
+  /* ── Sound without a tap, wherever the browser allows it ──────────────
+     Autoplay rules are the browser's, not ours: most visits stay locked
+     until a real gesture. But some are not — a site the visitor allowed,
+     enough media engagement, a desktop Safari set to auto-play — and on
+     those the pour should simply be audible with nothing asked of them.
+     So probe at load and keep nudging on every ambient signal (moving
+     the mouse, scrolling, the tab regaining focus); the instant the
+     context reports "running", the invite goes away and the pour runs. */
+  sfx.onLive(function () {
+    hideInvite();
+    beginPour();
+    maybeRepour();
+  });
   sfx.probe();
+  ["mousemove", "wheel", "scroll", "touchstart", "touchend", "focus"].forEach(function (type) {
+    (type === "scroll" || type === "focus" ? window : document)
+      .addEventListener(type, function () { sfx.tryResume(); }, { capture: true, passive: true });
+  });
 
   /* ── When the pour is allowed to start ────────────────────────────────
      Audio is locked until the visitor's first gesture, so a pour that
