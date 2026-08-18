@@ -411,6 +411,28 @@
       src.connect(filter); filter.connect(g); g.connect(master);
       src.start(t); src.stop(t + dur + 0.02);
     }
+    /* One tiny noise particle with its own envelope and offset. Ice is
+       granular, not tonal — a landing is a scatter of these, and the
+       scatter is re-rolled every time so five in a row never machine-gun. */
+    function grain(o) {
+      var dur = o.dur, frames = Math.max(2, Math.floor(ctx.sampleRate * dur));
+      var buffer = ctx.createBuffer(1, frames, ctx.sampleRate);
+      var data = buffer.getChannelData(0);
+      for (var i = 0; i < frames; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / frames);
+      var src = ctx.createBufferSource(), filter = ctx.createBiquadFilter(), g = ctx.createGain();
+      var t = ctx.currentTime + (o.delay || 0);
+      src.buffer = buffer;
+      filter.type = o.type || "bandpass";
+      filter.frequency.setValueAtTime(o.f0, t);
+      filter.frequency.exponentialRampToValueAtTime(Math.max(20, o.f1 || o.f0), t + dur);
+      filter.Q.value = o.q || 0.8;
+      g.gain.setValueAtTime(0.0004, t);
+      g.gain.exponentialRampToValueAtTime(o.vol, t + 0.0015);
+      g.gain.exponentialRampToValueAtTime(0.0004, t + dur);
+      src.connect(filter); filter.connect(g); g.connect(master);
+      src.start(t); src.stop(t + dur + 0.02);
+    }
+    function rand(a, b) { return a + Math.random() * (b - a); }
     function hit(strength) {
       if (!armed || muted || !ctx) return false;
       var t = ctx.currentTime;
@@ -431,11 +453,23 @@
       lastLandAt = t;
       strength = Math.max(0.28, Math.min(1, strength || 0.45));
       played++;
-      // A distinct, round pop reserved for the icon's first contact with
-      // the white ice. It has its own throttle, so an icon collision just
-      // before touchdown cannot swallow the landing sound.
-      var f = 520 + 230 * strength;
-      tone("sine", f * 0.48, f, 0.11 + 0.13 * strength, 0.085);
+      // The icon's first contact with the white ice: frozen gravel, not a
+      // pop. Seven grains scattered over ~70ms, a short high ring, and a
+      // low body underneath for the weight — all re-randomised per
+      // landing. Its own throttle means a collision just before touchdown
+      // cannot swallow it.
+      for (var i = 0; i < 7; i++) {
+        grain({
+          f0: rand(700, 3500) * (0.85 + 0.3 * strength),
+          f1: rand(400, 1100),
+          q: rand(1.4, 3),
+          vol: (0.045 + 0.055 * strength) * (1 - i * 0.1),
+          dur: rand(0.003, 0.009),
+          delay: i === 0 ? 0 : rand(0.004, 0.07),
+        });
+      }
+      grain({ f0: 1400, f1: 1100, q: 3.5, vol: 0.03 + 0.03 * strength, dur: 0.028, delay: 0.006 });
+      tone("sine", 172 + 45 * strength, 104, 0.05 + 0.05 * strength, 0.055);
       return true;
     }
     function pop() {
