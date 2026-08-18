@@ -289,7 +289,7 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
   outline: 1px solid rgba(255, 255, 255, 0.10);
   outline-offset: -1px;
 }
-.pit-hint {
+.pit-hint, .pit-call {
   position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
   font-size: 13px; font-weight: 600; color: var(--ink-3);
   background: var(--card); border: 1px solid var(--line); border-radius: 999px;
@@ -299,6 +299,20 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
 }
 .icon-pit.ready .pit-hint { opacity: 1; }
 .icon-pit.touched .pit-hint { opacity: 0; transition-delay: 0s; }
+/* Audio is locked until the visitor interacts, so the pour waits and asks
+   for the tap that unlocks it. Own class, not a .pit-hint modifier: the
+   hint's ready/touched rules would fight this one's fade. Same slot
+   though, so the grab hint holds back while this is up. */
+.pit-call {
+  display: inline-flex; align-items: center; gap: 7px;
+  color: var(--ink-2);
+  border-color: var(--line-strong);
+  box-shadow: 0 0 26px rgba(100, 210, 255, 0.12);
+  transition: opacity 0.45s ease;
+}
+.pit-call.in { opacity: 1; }
+.pit-call svg { color: var(--cyan); flex: none; }
+.icon-pit.calling .pit-hint { opacity: 0; transition-delay: 0s; }
 /* Sound toggle — bottom-right of the stage, outside the bowl */
 .pit-sound {
   position: absolute;

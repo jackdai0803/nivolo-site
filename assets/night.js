@@ -431,7 +431,19 @@
       muted = m;
       try { localStorage.setItem("nivolo-sfx", m ? "off" : "on"); } catch (e) {}
     }
-    return { arm: arm, hit: hit, land: land, pop: pop, plop: plop, setMuted: setMuted,
+    /* Not every visit needs a gesture: a site the browser already trusts
+       (autoplay allowed, enough media engagement, desktop Safari set to
+       allow auto-play) hands out a context that comes up "running". Build
+       it early to find out — if it does, the pour can pour and be heard
+       with nobody having touched anything. */
+    function probe() {
+      var c = ensure();
+      if (!c) return false;
+      if (c.state === "running") { armed = true; return true; }
+      c.onstatechange = function () { if (c.state === "running") armed = true; };
+      return false;
+    }
+    return { arm: arm, probe: probe, hit: hit, land: land, pop: pop, plop: plop, setMuted: setMuted,
              isMuted: function () { return muted; },
              stats: function () { return { armed: armed, state: ctx ? ctx.state : null, played: played }; } };
   })();
@@ -483,6 +495,7 @@
   ["pointerdown", "pointerup", "keydown"].forEach(function (type) {
     document.addEventListener(type, function () {
       sfx.arm();
+      hideInvite(); // the gesture it was asking for has arrived
       beginPour();   // the held pour is now allowed to run — and be heard
       maybeRepour(); // (only relevant once a pour has already happened)
     }, { capture: true, passive: true });
@@ -911,6 +924,7 @@
     soundBtn.addEventListener("click", function () {
       sfx.setMuted(!sfx.isMuted());
       sfx.arm();
+      hideInvite();
       if (!sfx.isMuted()) sfx.pop(); // audible confirmation
       syncSound();
       maybeRepour(); // unmuting is the moment to hear the pour
@@ -920,6 +934,7 @@
 
   buildWalls();
   setRunning(true);
+  sfx.probe();
 
   /* ── When the pour is allowed to start ────────────────────────────────
      Audio is locked until the visitor's first gesture, so a pour that
@@ -931,20 +946,60 @@
      Holding until the stage is on screen matters too: off screen the sim
      is paused, and icons queued into a paused world all drop together
      when it scrolls in — a dump, not a pour. */
-  var POUR_GRACE = 3500;
+  var POUR_GRACE = 5000;
   var pourStarted = false;
   var pourGraceTimer = null;
+
+  /* ── Ask for the tap ──────────────────────────────────────────────────
+     No amount of timing makes a load-time pour audible: the browser
+     simply refuses audio until the visitor interacts. So say so. The
+     pill explains why the shelf is empty for a beat ("tap and they
+     pour"), and if the grace runs out and they pour silently anyway it
+     switches to offering the replay. Any gesture anywhere dismisses it. */
+  var SPEAKER = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor"'
+    + ' stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+    + '<path d="M11 5 6.5 9H3v6h3.5L11 19z" fill="currentColor" stroke="none"/>'
+    + '<path d="M15.5 9.5a4 4 0 0 1 0 5"/><path d="M18 7a8 8 0 0 1 0 10"/></svg>';
+  var invite = null;
+  var inviteGone = false;
+
+  function showInvite(text) {
+    if (inviteGone || sfx.isMuted() || sfx.stats().armed) return;
+    if (!invite) {
+      invite = document.createElement("span");
+      invite.className = "pit-call";
+      invite.setAttribute("aria-hidden", "true");
+      stage.appendChild(invite);
+      pit.classList.add("calling"); // holds back the "grab one" hint
+    }
+    invite.innerHTML = SPEAKER + "<span>" + text + "</span>";
+    requestAnimationFrame(function () { if (invite) invite.classList.add("in"); });
+  }
+
+  function hideInvite() {
+    inviteGone = true;
+    pit.classList.remove("calling");
+    if (!invite) return;
+    var el = invite;
+    invite = null;
+    el.classList.remove("in");
+    setTimeout(function () { el.remove(); }, 500);
+  }
 
   function beginPour(force) {
     if (pourStarted || (!force && !stageOnScreen)) return;
     pourStarted = true;
     if (pourGraceTimer) { clearTimeout(pourGraceTimer); pourGraceTimer = null; }
+    // Poured without a gesture: the landings are about to be swallowed,
+    // so the invite stops asking for a pour and starts offering the replay.
+    if (!sfx.stats().armed && !force) showInvite("Tap for the sound");
     spawnIcons();
   }
 
   function armPourGrace() {
     if (pourStarted || pourGraceTimer) return;
     if (sfx.stats().armed) { beginPour(); return; } // already unlocked → pour now
+    showInvite("Tap anywhere and they pour in");
     pourGraceTimer = setTimeout(function () {
       pourGraceTimer = null;
       beginPour();
