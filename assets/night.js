@@ -383,13 +383,18 @@
     }
     /* Oscillator scheduled while the context is still resuming plays the
        moment it comes alive — no need to await resume(). */
-    function tone(type, f0, f1, vol, dur, delay) {
+    function tone(type, f0, f1, vol, dur, delay, atk) {
       var t = ctx.currentTime + (delay || 0);
       var o = ctx.createOscillator(), g = ctx.createGain();
       o.type = type;
       o.frequency.setValueAtTime(f0, t);
       o.frequency.exponentialRampToValueAtTime(Math.max(1, f1), t + dur);
-      g.gain.setValueAtTime(vol, t);
+      if (atk) {
+        g.gain.setValueAtTime(0.0004, t);
+        g.gain.exponentialRampToValueAtTime(vol, t + atk);
+      } else {
+        g.gain.setValueAtTime(vol, t);
+      }
       g.gain.exponentialRampToValueAtTime(0.0004, t + dur);
       o.connect(g); g.connect(master);
       o.start(t); o.stop(t + dur + 0.02);
@@ -419,9 +424,11 @@
       var dur = o.dur, frames = Math.max(2, Math.floor(ctx.sampleRate * dur));
       var buffer = ctx.createBuffer(1, frames, ctx.sampleRate);
       var data = buffer.getChannelData(0), last = 0;
+      var col = o.col == null ? 1 : o.col; // 1 = brown (dull), 0 = white (bright)
       for (var i = 0; i < frames; i++) {
-        last = (last + 0.035 * (Math.random() * 2 - 1)) / 1.035;
-        data[i] = Math.max(-1, Math.min(1, last * 3.2));
+        var w = Math.random() * 2 - 1;
+        last = (last + 0.035 * w) / 1.035;
+        data[i] = Math.max(-1, Math.min(1, last * 3.2 * col + w * (1 - col) * 0.55));
       }
       var src = ctx.createBufferSource(), filter = ctx.createBiquadFilter(), g = ctx.createGain();
       var t = ctx.currentTime;
@@ -474,7 +481,12 @@
     function pop() {
       if (muted || !ensure()) return;
       played++;
-      tone("sine", 330, 640, 0.14, 0.07);
+      // Grabbing an icon: a cork pop — a bright click on the front, then
+      // a fast 180→900Hz rise. The only cue the visitor fires themselves,
+      // so it is allowed to be the most tactile thing in the set, and it
+      // rises where a landing falls.
+      crunch({ col: 0.4, f0: 3000, f1: 1800, vol: 0.03, dur: 0.006, atk: 0.001 });
+      tone("sine", 180, 900, 0.15, 0.032, 0, 0.002);
     }
     function plop(strength) {
       if (!armed || muted || !ctx) return;
