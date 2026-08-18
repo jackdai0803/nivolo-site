@@ -545,7 +545,12 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
   display: grid; place-items: center;
   flex: 0 0 auto;
 }
-.widget-flame img { width: 32px; height: 32px; display: block; }
+/* The widget draws a blurred copy of this flame behind itself for glow;
+   a warm drop-shadow reads the same at this size. */
+.widget-flame img {
+  width: 32px; height: 32px; display: block;
+  filter: drop-shadow(0 0 6px rgba(255, 138, 30, 0.45));
+}
 .widget-card b { display: block; font-size: 16px; }
 .widget-card small { color: var(--ink-3); font-size: 13px; }
 
