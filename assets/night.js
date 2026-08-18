@@ -189,10 +189,15 @@
       // the water, and anything that sinks gets re-dropped from the sky.
       var mobile = s.w < 640;
       var waterY = s.h - (mobile ? 90 : 120);
-      var bergW = Math.min(740, s.w * 0.82);
+      // Match the PAINTED ice, not an arbitrary width: .bowl-visual is
+      // min(840, 90%) wide and its clip-path keeps 3%..97% of that at the
+      // top, so the ice a visitor can see is 94% of the box. The floe used
+      // to be 50px narrower than the ice on each side, which put the outer
+      // icons over painted-but-unsupported snow.
+      var bergW = Math.min(790, s.w * 0.846);
       var topEnd = waterY - (mobile ? 24 : 34);
       var waterLayerH = mobile ? 240 : 300;
-      var dip = 13, half = bergW / 2, quarter = bergW / 4;
+      var dip = 10, half = bergW / 2, quarter = bergW / 4;
       waterYCurrent = waterY;
       waterFadeStartCurrent = waterY + waterLayerH * 0.56;
       waterFadeEndCurrent = waterY + waterLayerH * 0.94;
@@ -208,9 +213,22 @@
         isStatic: true, angle: -slope, friction: 0.6, restitution: 0.1,
         label: "nivolo-ground",
       }));
-      // Underwater flanks lean outward so edge landings slide off, not perch.
-      walls.push(Bodies.rectangle(cx - half - 35, topEnd + 79, 30, 150, { isStatic: true, angle: 0.5 }));
-      walls.push(Bodies.rectangle(cx + half + 35, topEnd + 79, 30, 150, { isStatic: true, angle: -0.5 }));
+      // Shed ramps: steep continuations of the floe's tips, running from
+      // the slab ends down past the waterline. They replace the old
+      // outward-leaning guards, whose FLAT tops sat ~28px above the water
+      // and ~50px beyond the visible ice — an icon could balance up there,
+      // off the side of the berg with nothing under it, and never sink,
+      // because sinking only starts once a body's bottom crosses the
+      // waterline. At 49° and near-frictionless nothing rests: an icon
+      // that reaches the edge slides into the sea and swims home.
+      var rampA = 0.85, rampL = 150;
+      var rampDX = Math.cos(rampA) * rampL / 2, rampDY = Math.sin(rampA) * rampL / 2;
+      walls.push(Bodies.rectangle(cx - half + 6 - rampDX, topEnd + 14 + rampDY, rampL, 20, {
+        isStatic: true, angle: -rampA, friction: 0.05, restitution: 0.02,
+      }));
+      walls.push(Bodies.rectangle(cx + half - 6 + rampDX, topEnd + 14 + rampDY, rampL, 20, {
+        isStatic: true, angle: rampA, friction: 0.05, restitution: 0.02,
+      }));
       // No left/right stage walls: tossed icons may travel freely beyond
       // either viewport edge before gravity carries them into the ocean.
       walls.push(Bodies.rectangle(cx, skyTop - 460, s.w + 400, 80, { isStatic: true }));
@@ -786,6 +804,7 @@
      screen, nothing being dragged — lift the settled colony back over the
      page and pour it again, staggered, so each touchdown pops. Runs at
      most once, and is cancelled outright if a real landing was ever heard. */
+  var shoved = 0;          // floaters the maintenance pass pushed off the edge
   var landsHeard = 0;      // audible ice landings so far (see collision handler)
   var repourDone = false;
   var repourPending = false;
@@ -947,7 +966,22 @@
     }
     // Iceberg swimmers are intentionally unbounded horizontally. The
     // per-tick sinking pass still returns them after they fade underwater.
-    if (VARIANT === "iceberg") return;
+    if (VARIANT === "iceberg") {
+      // Nothing rests where there is no ice. Whatever the geometry does —
+      // a shoulder, a neighbour holding it up over open water — an icon
+      // asleep beyond the floe's ends and above the waterline is a floater,
+      // so shove it outward and down until the sea takes it.
+      icons.forEach(function (it) {
+        var b = it.body;
+        if (it.sinking || (dragConstraint && dragConstraint.bodyB === b)) return;
+        if (b.speed > 0.5 || b.position.y > waterYCurrent) return;
+        if (Math.abs(b.position.x - s.w / 2) - bowlHalfCurrent < 8) return;
+        Matter.Sleeping.set(b, false);
+        Body.setVelocity(b, { x: (b.position.x < s.w / 2 ? -1.6 : 1.6), y: 1.4 });
+        shoved++;
+      });
+      return;
+    }
     icons.forEach(function (it) {
       var b = it.body, p = b.position;
       // Clipped through geometry, or settled in the dead channel between
@@ -1118,7 +1152,8 @@
     return {
       sinking: icons.filter(function (it) { return it.sinking; }).length,
       respawns: icons.reduce(function (sum, it) { return sum + (it.respawns || 0); }, 0),
-      landsHeard: landsHeard, repourDone: repourDone, repourPending: repourPending,
+      landsHeard: landsHeard, shoved: shoved,
+      repourDone: repourDone, repourPending: repourPending,
     };
   } };
   // ?settle fast-forwards past the pour once all icons have spawned —
