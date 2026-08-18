@@ -451,12 +451,12 @@
       strength = Math.max(0.18, Math.min(1, strength || 0.45));
       played++;
       // Water rings UP as the cavity closes — the old falling bloop had it
-      // backwards. Two rising notes: the drop, then a second a fifth above,
-      // shorter and quieter, like the droplet that follows it in.
+      // backwards. Two rising notes: the drop, then a second an octave
+      // above, shorter and quieter — bright enough to read through a pour.
       var f = 560 + 220 * strength;
       var v = 0.10 + 0.12 * strength;
       tone("sine", f * 0.55, f * 1.75, v, 0.075);
-      tone("sine", f * 0.82, f * 2.62, v * 0.62, 0.055, 0.085);
+      tone("sine", f * 1.10, f * 3.50, v * 0.55, 0.05, 0.085);
       waterNoise(0.03 + 0.02 * strength, 0.02, strength, { type: "lowpass", f0: 1400, f1: 700 });
     }
     function setMuted(m) {
