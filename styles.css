@@ -289,6 +289,52 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
   outline: 1px solid rgba(255, 255, 255, 0.10);
   outline-offset: -1px;
 }
+/* ── Snow give on impact ── */
+.snow-divot {
+  position: absolute;
+  z-index: 2;
+  height: 15px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 50%,
+    rgba(74, 138, 194, 0.58) 0%, rgba(146, 202, 234, 0.3) 50%,
+    rgba(255, 255, 255, 0.26) 68%, transparent 80%);
+  pointer-events: none;
+  animation: snowDivot 0.95s ease-out forwards;
+}
+@keyframes snowDivot {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.45, 0.35); }
+  16% { opacity: 1; transform: translate(-50%, -50%) scale(1, 1); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.16, 0.8); }
+}
+.snow-puff {
+  position: absolute;
+  z-index: 4;
+  pointer-events: none;
+}
+.snow-puff i {
+  position: absolute;
+  left: 0; top: 0;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 0 7px rgba(206, 236, 255, 0.5);
+  opacity: 0;
+  animation: snowFlake 0.62s cubic-bezier(0.2, 0.7, 0.3, 1) var(--delay, 0s) forwards;
+}
+@keyframes snowFlake {
+  0% { opacity: 0; transform: translate(0, 0) scale(0.55); }
+  18% { opacity: 1; }
+  100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0.85); }
+}
+/* The wrapper's transform belongs to the render loop, so the squash
+   goes on the image inside it. */
+.pit-icon img.pressed { animation: iconPress 0.3s cubic-bezier(0.2, 0.8, 0.3, 1) both; }
+@keyframes iconPress {
+  0% { transform: scale(1.07, 0.88) translateY(4%); }
+  55% { transform: scale(0.98, 1.03) translateY(-1%); }
+  100% { transform: none; }
+}
 .pit-hint, .pit-call {
   position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
   font-size: 13px; font-weight: 600; color: var(--ink-3);
@@ -890,6 +936,10 @@ footer { border-top: 1px solid var(--line); padding: 34px 0; }
 }
 .pit--iceberg .bowl-visual {
   left: 50%; bottom: -13px;
+  /* --berg-sink is driven by night.js: the floe rides lower as the
+     colony piles on, and dips when something lands hard. The waterline
+     does not move, which is what makes the berg read as loaded. */
+  transform: translateX(-50%) translateY(var(--berg-sink, 0px));
   z-index: 1;
   width: min(840px, 90%);
   height: 168px;
@@ -991,6 +1041,7 @@ footer { border-top: 1px solid var(--line); padding: 34px 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   .pit--iceberg .pit-bob { animation: none; }
+  .snow-divot, .snow-puff { display: none; }
   .pit--iceberg .pit-stage::after { animation: none; }
   .water-splash i { display: none; }
 }

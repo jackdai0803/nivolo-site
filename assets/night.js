@@ -229,6 +229,10 @@
       walls.push(Bodies.rectangle(cx + half - 6 + rampDX, topEnd + 14 + rampDY, rampL, 20, {
         isStatic: true, angle: rampA, friction: 0.05, restitution: 0.02,
       }));
+      // Everything built so far is the floe itself, and the floe floats:
+      // remember where each piece sits at zero load so the sink pass can
+      // move them as one.
+      walls.forEach(function (wb) { wb.bergBaseY = wb.position.y; });
       // No left/right stage walls: tossed icons may travel freely beyond
       // either viewport edge before gravity carries them into the ocean.
       walls.push(Bodies.rectangle(cx, skyTop - 460, s.w + 400, 80, { isStatic: true }));
@@ -574,10 +578,12 @@
       var otherBody = iconA ? pa.bodyB : pa.bodyA;
       if (landedIcon && otherBody.label === "nivolo-ground" && rel > 0.55) {
         var simNow = engine.timing.timestamp;
-        if (simNow - (landedIcon.lastGroundPopAt || -1e9) > 260 &&
-            sfx.land(Math.max(0.34, Math.min(1, rel / 11)))) {
+        var impact = Math.max(0.34, Math.min(1, rel / 11));
+        if (simNow - (landedIcon.lastGroundPopAt || -1e9) > 260) {
           landedIcon.lastGroundPopAt = simNow;
-          landsHeard++; // enough of these and the replay is unnecessary
+          if (sfx.land(impact)) landsHeard++; // enough of these and the replay is unnecessary
+          thumpBerg(impact);                  // the floe feels it
+          if (rel > 1.6) snowImpact(landedIcon, impact); // and the snow shows it
         }
       }
     }
@@ -771,6 +777,98 @@
     else if (stage.getBoundingClientRect().bottom > 0) { setRunning(true); maybeRepour(); }
   });
 
+  /* ── The floe takes the weight ────────────────────────────────────────
+     Ice floats, so it should ride lower as the colony piles on and dip
+     when something lands hard. bergSink is a damped spring: the resting
+     icons set its target, each landing kicks its velocity. It moves the
+     PHYSICS slabs and the painted berg by the same amount, so the whole
+     pile rides down with the ice instead of hovering over it. The
+     waterline stays put — that is what makes the berg look loaded. */
+  var bergSink = 0, bergSinkVel = 0;
+  var BERG_SINK_MAX = 13, BERG_SINK_PER_ICON = 0.45;
+
+  function thumpBerg(impact) { bergSinkVel += 0.55 + impact * 1.5; }
+
+  function bergLoad() {
+    var n = 0;
+    for (var i = 0; i < icons.length; i++) {
+      var b = icons[i].body;
+      if (!icons[i].sinking && b.position.y > 0 && b.position.y < waterYCurrent) n++;
+    }
+    return Math.min(BERG_SINK_MAX, n * BERG_SINK_PER_ICON);
+  }
+
+  function stepBergSink() {
+    if (VARIANT !== "iceberg") return;
+    bergSinkVel += (bergLoad() - bergSink) * 0.035;
+    bergSinkVel *= 0.88;
+    var next = Math.max(0, Math.min(BERG_SINK_MAX + 6, bergSink + bergSinkVel));
+    var d = next - bergSink;
+    bergSink = next;
+    if (Math.abs(d) < 0.02) return;
+    for (var i = 0; i < walls.length; i++) {
+      var wb = walls[i];
+      if (wb.bergBaseY == null) continue;
+      Body.setPosition(wb, { x: wb.position.x, y: wb.bergBaseY + bergSink });
+    }
+    // A SLEEPING body does not fall when the ground drops away from it —
+    // it hangs exactly where it was, which left the colony floating above
+    // a sinking berg. So carry the cargo: every icon standing on the floe
+    // moves by the same delta, which keeps contacts intact without waking
+    // (and re-jittering) the whole pile every tick.
+    for (var j = 0; j < icons.length; j++) {
+      var it = icons[j], b = it.body;
+      if (it.sinking || (dragConstraint && dragConstraint.bodyB === b)) continue;
+      if (b.position.y < 0 || b.position.y > waterYCurrent) continue;
+      Body.translate(b, { x: 0, y: d });
+    }
+    if (bergVisual) bergVisual.style.setProperty("--berg-sink", bergSink.toFixed(2) + "px");
+  }
+
+  /* Snow gives where an icon hits it: a shallow divot at the contact
+     point, a few flakes kicked up, and the icon itself pressing in and
+     springing back. Appended to the bob wrapper so the marks ride with
+     the berg, and the squash goes on the <img> because the render loop
+     owns the wrapper's transform. */
+  function snowImpact(it, impact) {
+    var b = it.body;
+    var half = (b.bounds.max.y - b.bounds.min.y) / 2;
+    var x = b.position.x, y = b.position.y + half - 3;
+
+    var divot = document.createElement("span");
+    divot.className = "snow-divot";
+    divot.setAttribute("aria-hidden", "true");
+    divot.style.left = x.toFixed(1) + "px";
+    divot.style.top = y.toFixed(1) + "px";
+    divot.style.width = (44 + impact * 52).toFixed(0) + "px";
+    bobWrap.appendChild(divot);
+    setTimeout(function () { divot.remove(); }, 950);
+
+    var puff = document.createElement("span");
+    puff.className = "snow-puff";
+    puff.setAttribute("aria-hidden", "true");
+    puff.style.left = x.toFixed(1) + "px";
+    puff.style.top = y.toFixed(1) + "px";
+    var flakes = 3 + Math.round(impact * 3);
+    for (var i = 0; i < flakes; i++) {
+      var flake = document.createElement("i");
+      var spread = (i - (flakes - 1) / 2) / Math.max(1, (flakes - 1) / 2);
+      flake.style.setProperty("--dx", (spread * (16 + impact * 26) + Math.random() * 8 - 4).toFixed(1) + "px");
+      flake.style.setProperty("--dy", (-8 - Math.random() * (10 + impact * 16)).toFixed(1) + "px");
+      flake.style.setProperty("--delay", (Math.random() * 0.05).toFixed(2) + "s");
+      puff.appendChild(flake);
+    }
+    bobWrap.appendChild(puff);
+    setTimeout(function () { puff.remove(); }, 800);
+
+    var img = it.el.querySelector("img");
+    if (img) {
+      img.classList.remove("pressed");
+      void img.offsetWidth; // restart the keyframe on a rapid second landing
+      img.classList.add("pressed");
+    }
+  }
+
   /* Maintenance pass on the ENGINE TICK (not wall clock — must advance
      with sim time, and pause with it). Escape hatch: anything that clips
      through geometry gets re-dropped. Arch breaker: icons at rest above
@@ -942,7 +1040,7 @@
 
   var maintTick = 0;
   Matter.Events.on(engine, "afterUpdate", function () {
-    if (VARIANT === "iceberg") sinkingPass();
+    if (VARIANT === "iceberg") { sinkingPass(); stepBergSink(); }
     if (++maintTick % 100 !== 0) return;
     if (repourPending) maybeRepour(); // waiting on the colony to settle
     var s = stageSize();
