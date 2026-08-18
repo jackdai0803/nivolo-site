@@ -430,7 +430,7 @@
       filter.frequency.setValueAtTime(o.f0, t);
       filter.frequency.exponentialRampToValueAtTime(Math.max(60, o.f1), t + dur);
       g.gain.setValueAtTime(0.0001, t);
-      g.gain.linearRampToValueAtTime(o.vol, t + 0.006);
+      g.gain.linearRampToValueAtTime(o.vol, t + (o.atk || 0.006));
       g.gain.exponentialRampToValueAtTime(0.0004, t + dur);
       src.connect(filter); filter.connect(g); g.connect(master);
       src.start(t); src.stop(t + dur + 0.02);
@@ -442,11 +442,14 @@
       if (t - lastAt < 0.03) return false; // a pile settling is one pop, not ten
       lastAt = t;
       played++;
-      // Same rising "bloop" family as the grab pop — pitch and volume
-      // scale with impact so landings pop and nudges blip.
-      var v = 0.06 + 0.22 * strength;
-      var f = 420 + Math.random() * 140 + 260 * strength;
-      tone("sine", f * 0.52, f, v, 0.07);
+      // Icons meeting each other: a dry, PITCHLESS tick cut from the same
+      // brown noise as the landing's surface, but darker (1kHz down to
+      // 620Hz), 26ms long and about a third of a landing's volume. Two
+      // separate sound families is the point — the old shared "bloop"
+      // meant a settling pile and a touchdown were the same noise, so
+      // neither read. Nothing here has a note or a low body, which is
+      // what keeps a pile behind the pock instead of on top of it.
+      crunch({ f0: 1050 + 300 * strength, f1: 620, vol: 0.03 + 0.034 * strength, dur: 0.026, atk: 0.005 });
       return true;
     }
     function land(strength) {
