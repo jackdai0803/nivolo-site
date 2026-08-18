@@ -683,6 +683,36 @@ footer { border-top: 1px solid var(--line); padding: 34px 0; }
   display: flex; justify-content: space-between; align-items: center;
   font-size: 14px; color: var(--ink-3);
 }
+/* Maker's mark. The word stands alone on purpose — an unexplained line
+   reads as confidence, not as an omission — but hovering (or tapping, on
+   touch, which is why it is focusable) slides the gloss in for whoever
+   wonders. No script involved. Serif comes from the system: the site
+   self-hosts its fonts and one word is not worth another download. */
+.footer-mark { display: inline-flex; align-items: baseline; gap: 13px; }
+.motto {
+  display: inline-flex; align-items: baseline;
+  font-family: "Iowan Old Style", Georgia, "Times New Roman", serif;
+  font-style: italic; font-size: 15px;
+  color: var(--ink-2);
+  outline: none; cursor: default;
+}
+.motto::before {
+  content: "";
+  width: 20px; height: 1px; margin-right: 13px;
+  align-self: center;
+  background: rgba(150, 190, 225, 0.34);
+}
+.motto em {
+  /* inline-block, or max-width does nothing and the gloss never hides */
+  display: inline-block;
+  max-width: 0; overflow: hidden; white-space: nowrap; opacity: 0;
+  font-family: var(--font-display); font-style: normal;
+  font-size: 12px; color: var(--ink-3);
+  transition: max-width 0.5s ease, opacity 0.35s ease, margin-left 0.5s ease;
+}
+.motto:hover em,
+.motto:focus em,
+.motto:active em { max-width: 130px; opacity: 1; margin-left: 9px; }
 .footer-links { display: flex; gap: 22px; }
 .footer-links a { color: var(--ink-2); }
 .footer-links a:hover { color: var(--ink); }
