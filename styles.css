@@ -554,9 +554,17 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
 }
 .icon-swatches .swatch--locked {
   filter: grayscale(1) brightness(0.45);
-  opacity: 0.5;
-  box-shadow: inset 0 0 0 1px var(--line);
+  opacity: var(--fade, 0.5);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, var(--ring, 0.08));
 }
+/* The locked run trails off toward the rarest, ring and all, rather than
+   every unearned icon sitting at one flat weight behind a crisp hairline. */
+.icon-swatches .swatch--locked:nth-child(5)  { --fade: 0.58; --ring: 0.105; }
+.icon-swatches .swatch--locked:nth-child(6)  { --fade: 0.50; --ring: 0.088; }
+.icon-swatches .swatch--locked:nth-child(7)  { --fade: 0.43; --ring: 0.072; }
+.icon-swatches .swatch--locked:nth-child(8)  { --fade: 0.36; --ring: 0.056; }
+.icon-swatches .swatch--locked:nth-child(9)  { --fade: 0.30; --ring: 0.042; }
+.icon-swatches .swatch--locked:nth-child(10) { --fade: 0.24; --ring: 0.028; }
 @media (max-width: 640px) {
   /* Ten across shrinks each icon to ~20px on a phone — unreadable. */
   .icon-swatches { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
