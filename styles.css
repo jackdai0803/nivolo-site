@@ -385,20 +385,33 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
 }
 
 /* Visual panels */
+/* Like the phone screenshots, the panel dissolves into the page toward the
+   bottom rather than closing itself off with a hard border. The frame and
+   tint live on ::before so the mask takes the box without taking the
+   content — the text and icons inside stay at full strength. */
 .panel {
+  --panel-tint: linear-gradient(160deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015));
   border-radius: var(--radius);
   padding: 40px 34px;
   min-height: 320px;
   display: flex; flex-direction: column; justify-content: center; gap: 18px;
   position: relative; overflow: hidden;
-  border: 1px solid var(--line);
-  background: linear-gradient(160deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015));
-  box-shadow: var(--shadow-md);
 }
-.panel--blue   { background: linear-gradient(160deg, rgba(77, 163, 255, 0.13), rgba(77, 163, 255, 0.03) 65%), var(--card); }
-.panel--gold   { background: linear-gradient(160deg, rgba(255, 214, 10, 0.11), rgba(255, 214, 10, 0.02) 65%), var(--card); }
-.panel--purple { background: linear-gradient(160deg, rgba(167, 139, 250, 0.14), rgba(167, 139, 250, 0.03) 65%), var(--card); }
-.panel--green  { background: linear-gradient(160deg, rgba(52, 211, 153, 0.12), rgba(52, 211, 153, 0.03) 65%), var(--card); }
+.panel::before {
+  content: "";
+  position: absolute; inset: 0; z-index: 0;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: var(--panel-tint);
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, #000 54%, transparent 97%);
+  mask-image: linear-gradient(to bottom, #000 54%, transparent 97%);
+}
+.panel > * { position: relative; z-index: 1; }
+.panel--blue   { --panel-tint: linear-gradient(160deg, rgba(77, 163, 255, 0.13), rgba(77, 163, 255, 0.03) 65%), var(--card); }
+.panel--gold   { --panel-tint: linear-gradient(160deg, rgba(255, 214, 10, 0.11), rgba(255, 214, 10, 0.02) 65%), var(--card); }
+.panel--purple { --panel-tint: linear-gradient(160deg, rgba(167, 139, 250, 0.14), rgba(167, 139, 250, 0.03) 65%), var(--card); }
+.panel--green  { --panel-tint: linear-gradient(160deg, rgba(52, 211, 153, 0.12), rgba(52, 211, 153, 0.03) 65%), var(--card); }
 
 .ui-card {
   background: rgba(13, 20, 35, 0.85);
