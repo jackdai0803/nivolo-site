@@ -1099,11 +1099,118 @@ footer { border-top: 1px solid var(--line); padding: 34px 0; }
   -webkit-backdrop-filter: blur(14px) saturate(1.2);
   opacity: 0; pointer-events: none;
   transition: opacity 0.3s ease;
+  overflow: hidden;
 }
 .ipop-overlay.open { opacity: 1; pointer-events: auto; }
+.ipop-overlay.has-scene {
+  background: rgba(3, 8, 20, 0.24);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+.ipop-scene {
+  position: absolute;
+  inset: -3%;
+  z-index: 0;
+  overflow: hidden;
+  opacity: 0;
+  transform: scale(1.02);
+  transition: opacity 0.42s ease, transform 0.7s cubic-bezier(.2,.9,.3,1);
+  pointer-events: none;
+}
+.ipop-overlay.has-scene .ipop-scene {
+  opacity: 1;
+  transform: scale(1);
+}
+.ipop-scene img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  will-change: transform;
+  filter: brightness(.74) saturate(.88);
+}
+.ipop-scene::after {
+  content: "";
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(circle at center, transparent 18%, rgba(2, 7, 18, .12) 58%, rgba(2, 6, 15, .52) 100%),
+    linear-gradient(180deg, rgba(2, 7, 18, .08), rgba(2, 7, 18, .22));
+}
+.ipop-ambient {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity .42s ease;
+  pointer-events: none;
+}
+.ipop-overlay.has-scene .ipop-ambient { opacity: 1; }
+.ipop-aurora {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  opacity: .16;
+  filter: blur(16px);
+  will-change: transform, opacity;
+}
+.ipop-aurora-one {
+  width: 68%; height: 19%; left: -8%; top: 4%;
+  background: linear-gradient(90deg, transparent, rgba(75,220,255,.76), rgba(93,166,255,.2), transparent);
+  transform: rotate(9deg) translate3d(0,0,0);
+  animation: ipop-aurora-one 9s ease-in-out infinite alternate;
+}
+.ipop-aurora-two {
+  width: 58%; height: 15%; right: -5%; top: 15%;
+  background: linear-gradient(90deg, transparent, rgba(75,205,255,.18), rgba(79,226,255,.68), transparent);
+  transform: rotate(-11deg) translate3d(0,0,0);
+  animation: ipop-aurora-two 11s ease-in-out -3s infinite alternate;
+}
+.ipop-star {
+  position: absolute;
+  display: block;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: rgba(220,245,255,.92);
+  box-shadow: 0 0 12px rgba(115,210,255,.65);
+  animation: ipop-star 3.8s ease-in-out infinite;
+}
+.ipop-star-one { left: 13%; top: 18%; animation-delay: -.8s; }
+.ipop-star-two { left: 29%; top: 11%; width: 3px; height: 3px; animation-delay: -2.1s; }
+.ipop-star-three { right: 18%; top: 12%; width: 4px; height: 4px; animation-delay: -1.4s; }
+.ipop-star-four { right: 9%; top: 27%; width: 3px; height: 3px; animation-delay: -2.8s; }
+.ipop-star-five { left: 8%; top: 36%; width: 3px; height: 3px; animation-delay: -.2s; }
+.ipop-water-glint {
+  position: absolute;
+  display: block;
+  height: 4px;
+  border-radius: 999px;
+  bottom: 10%;
+  background: linear-gradient(90deg, transparent, rgba(104,185,255,.72), transparent);
+  opacity: .22;
+  animation: ipop-water-glint 6s ease-in-out infinite;
+}
+.ipop-glint-one { width: 22%; left: 16%; animation-delay: -1s; }
+.ipop-glint-two { width: 17%; right: 14%; bottom: 14%; animation-delay: -3.6s; }
+@keyframes ipop-aurora-one {
+  from { transform: rotate(9deg) translate3d(-3%, -4%, 0) scaleX(.96); opacity: .11; }
+  to { transform: rotate(6deg) translate3d(8%, 7%, 0) scaleX(1.08); opacity: .22; }
+}
+@keyframes ipop-aurora-two {
+  from { transform: rotate(-11deg) translate3d(5%, -3%, 0) scaleX(1.04); opacity: .09; }
+  to { transform: rotate(-7deg) translate3d(-9%, 8%, 0) scaleX(.92); opacity: .2; }
+}
+@keyframes ipop-star {
+  0%, 100% { transform: translateY(0) scale(.72); opacity: .3; }
+  45% { transform: translateY(-5px) scale(1.15); opacity: .95; }
+  70% { transform: translateY(-3px) scale(.9); opacity: .58; }
+}
+@keyframes ipop-water-glint {
+  0%, 100% { transform: translateX(-8%) scaleX(.82); opacity: .08; }
+  50% { transform: translateX(9%) scaleX(1.08); opacity: .31; }
+}
 .ipop-lock { overflow: hidden; }
 .ipop-dialog {
-  position: relative; text-align: center;
+  position: relative; z-index: 1; text-align: center;
   padding: 30px 26px 24px;
   transform: scale(0.86);
   transition: transform 0.35s cubic-bezier(.2,.9,.3,1.15);
@@ -1116,6 +1223,7 @@ footer { border-top: 1px solid var(--line); padding: 34px 0; }
   background: rgba(16, 24, 40, 0.8); color: var(--ink-2);
   font-size: 22px; line-height: 1; cursor: pointer;
   transition: color 0.2s ease, border-color 0.2s ease;
+  z-index: 2;
 }
 .ipop-close:hover { color: var(--ink); border-color: rgba(255,255,255,.3); }
 .ipop-stage {
@@ -1176,6 +1284,7 @@ footer { border-top: 1px solid var(--line); padding: 34px 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   .ipop-overlay, .ipop-dialog, .ipop-tile { transition: none; }
+  .ipop-aurora, .ipop-star, .ipop-water-glint { animation: none; }
 }
 
 /* ── Layered icons: Nivo floats above his background inside the popup ── */

@@ -16,6 +16,26 @@
     ghost: { bg: "ghost-bg", face: "ghost-face", depth: 14 },
   };
 
+  /* Full-screen environments shown behind selected icons. Keep these
+     separate from the tile artwork so the icon can still turn in 3D. */
+  var SCENES = {
+    classic: {
+      wide: "assets/scenes/classic.webp",
+      tall: "assets/scenes/classic-portrait.webp",
+    },
+  };
+
+  /* The artwork is a wide vista; on a portrait phone a cover-crop would show
+     only its empty middle, so a taller cut of the same scene is used there. */
+  var portraitQ = window.matchMedia("(max-aspect-ratio: 4/5)");
+  function sceneSrc(id) {
+    var s = SCENES[id];
+    return s && (portraitQ.matches ? s.tall : s.wide);
+  }
+  /* the 6% overscan only exists to give the cursor parallax room to travel;
+     portrait has no cursor, so it just eats into the vista */
+  function sceneZoom() { return portraitQ.matches ? 1 : 1.06; }
+
   /* ── tint: sample the icon's own edge colour for the slab ── */
   var tintCache = {};
   function tintFor(id, cb) {
@@ -61,6 +81,18 @@
   var overlay = document.createElement("div");
   overlay.className = "ipop-overlay";
   overlay.innerHTML =
+    '<div class="ipop-scene" aria-hidden="true"><img alt="" /></div>' +
+    '<div class="ipop-ambient" aria-hidden="true">' +
+    '  <i class="ipop-aurora ipop-aurora-one"></i>' +
+    '  <i class="ipop-aurora ipop-aurora-two"></i>' +
+    '  <i class="ipop-star ipop-star-one"></i>' +
+    '  <i class="ipop-star ipop-star-two"></i>' +
+    '  <i class="ipop-star ipop-star-three"></i>' +
+    '  <i class="ipop-star ipop-star-four"></i>' +
+    '  <i class="ipop-star ipop-star-five"></i>' +
+    '  <i class="ipop-water-glint ipop-glint-one"></i>' +
+    '  <i class="ipop-water-glint ipop-glint-two"></i>' +
+    '</div>' +
     '<div class="ipop-dialog" role="dialog" aria-modal="true" aria-label="Icon detail">' +
     '  <button class="ipop-close" type="button" aria-label="Close">&times;</button>' +
     '  <div class="ipop-stage"><div class="ipop-tile">' +
@@ -75,6 +107,10 @@
 
   var tile = overlay.querySelector(".ipop-tile");
   var front = overlay.querySelector(".ipop-front");
+  var sceneEl = overlay.querySelector(".ipop-scene");
+  var sceneImg = sceneEl.querySelector("img");
+  var sceneActive = false;
+  var sceneId = null;
 
   // depth as a stack of rounded slices — flat side panels square off the corners
   for (var z = -DEPTH / 2; z <= DEPTH / 2 + 0.001; z += STEP) {
@@ -112,6 +148,14 @@
       cur.y += (ty - cur.y) * EASE;
     }
     tile.style.transform = "rotateX(" + cur.x + "deg) rotateY(" + cur.y + "deg)";
+    if (sceneActive) {
+      // The environment drifts opposite the tile at a much lower rate,
+      // creating depth without making the backdrop feel attached to the cursor.
+      var sceneX = Math.max(-14, Math.min(14, cur.y * -0.28));
+      var sceneY = Math.max(-9, Math.min(9, cur.x * 0.20));
+      sceneImg.style.transform =
+        "translate3d(" + sceneX.toFixed(2) + "px," + sceneY.toFixed(2) + "px,0) scale(" + sceneZoom() + ")";
+    }
     if (plateDepth && !plateEl.hidden) {
       // The face's lift collapses as the tile turns away, so from the side
       // Nivo sits flush on the slab instead of visibly hovering off it.
@@ -203,6 +247,18 @@
       plateDepth = 0;
       plateEl.hidden = true;
     }
+    if (SCENES[id]) {
+      sceneId = id;
+      sceneImg.src = sceneSrc(id);
+      sceneImg.style.transform = "translate3d(0,0,0) scale(" + sceneZoom() + ")";
+      sceneActive = true;
+      overlay.classList.add("has-scene");
+    } else {
+      sceneId = null;
+      sceneActive = false;
+      sceneImg.removeAttribute("src");
+      overlay.classList.remove("has-scene");
+    }
     overlay.querySelector(".ipop-back h3").textContent = name;
     overlay.querySelector(".ipop-back p").textContent = story;
     tintFor(id, function (c) {
@@ -223,6 +279,8 @@
     overlay.classList.remove("open");
     document.body.classList.remove("ipop-lock");
     if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; }
+    sceneActive = false;
+    sceneId = null;
     if (lastFocus && lastFocus.focus) lastFocus.focus();
   }
   overlay.addEventListener("click", function (e) {
@@ -237,6 +295,17 @@
   window.addEventListener("keydown", function (e) {
     if (e.key === "Escape" && overlay.classList.contains("open")) close();
   });
+
+  function repickScene() {
+    if (!sceneActive || !sceneId) return;
+    var next = sceneSrc(sceneId);
+    // compare resolved URLs so re-setting the same cut never re-triggers a load
+    if (sceneImg.src !== new URL(next, location.href).href) sceneImg.src = next;
+  }
+  if (portraitQ.addEventListener) portraitQ.addEventListener("change", repickScene);
+  else if (portraitQ.addListener) portraitQ.addListener(repickScene);
+  window.addEventListener("resize", repickScene);
+  window.addEventListener("orientationchange", repickScene);
 
   /* ── wire up the collection ── */
   var items = document.querySelectorAll(
