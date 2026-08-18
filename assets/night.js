@@ -383,8 +383,8 @@
     }
     /* Oscillator scheduled while the context is still resuming plays the
        moment it comes alive — no need to await resume(). */
-    function tone(type, f0, f1, vol, dur) {
-      var t = ctx.currentTime;
+    function tone(type, f0, f1, vol, dur, delay) {
+      var t = ctx.currentTime + (delay || 0);
       var o = ctx.createOscillator(), g = ctx.createGain();
       o.type = type;
       o.frequency.setValueAtTime(f0, t);
@@ -394,17 +394,18 @@
       o.connect(g); g.connect(master);
       o.start(t); o.stop(t + dur + 0.02);
     }
-    function waterNoise(vol, dur, strength) {
+    function waterNoise(vol, dur, strength, spec) {
       var frames = Math.max(1, Math.floor(ctx.sampleRate * dur));
       var buffer = ctx.createBuffer(1, frames, ctx.sampleRate);
       var data = buffer.getChannelData(0);
       for (var i = 0; i < frames; i++) data[i] = Math.random() * 2 - 1;
       var src = ctx.createBufferSource(), filter = ctx.createBiquadFilter(), g = ctx.createGain();
       src.buffer = buffer;
-      filter.type = "bandpass";
-      filter.frequency.value = 720 + 520 * strength;
-      filter.Q.value = 0.7;
+      filter.type = (spec && spec.type) || "bandpass";
       var t = ctx.currentTime;
+      filter.frequency.setValueAtTime(spec ? spec.f0 : 720 + 520 * strength, t);
+      if (spec && spec.f1) filter.frequency.exponentialRampToValueAtTime(Math.max(20, spec.f1), t + dur);
+      filter.Q.value = (spec && spec.q) || 0.7;
       g.gain.setValueAtTime(vol, t);
       g.gain.exponentialRampToValueAtTime(0.0004, t + dur);
       src.connect(filter); filter.connect(g); g.connect(master);
@@ -449,8 +450,14 @@
       lastSplashAt = t;
       strength = Math.max(0.18, Math.min(1, strength || 0.45));
       played++;
-      tone("sine", 340 + 90 * strength, 120 + 35 * strength, 0.08 + 0.08 * strength, 0.12);
-      waterNoise(0.025 + 0.055 * strength, 0.11 + 0.08 * strength, strength);
+      // Water rings UP as the cavity closes — the old falling bloop had it
+      // backwards. Two rising notes: the drop, then a second a fifth above,
+      // shorter and quieter, like the droplet that follows it in.
+      var f = 560 + 220 * strength;
+      var v = 0.10 + 0.12 * strength;
+      tone("sine", f * 0.55, f * 1.75, v, 0.075);
+      tone("sine", f * 0.82, f * 2.62, v * 0.62, 0.055, 0.085);
+      waterNoise(0.03 + 0.02 * strength, 0.02, strength, { type: "lowpass", f0: 1400, f1: 700 });
     }
     function setMuted(m) {
       muted = m;
