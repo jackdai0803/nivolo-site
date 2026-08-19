@@ -713,6 +713,17 @@ footer { border-top: 1px solid var(--line); padding: 34px 0; }
 .motto:hover em,
 .motto:focus em,
 .motto:active em { max-width: 130px; opacity: 1; margin-left: 9px; }
+/* Same mark in the lockup, where it is the tagline rather than a
+   footnote: tighter rule, sized to sit on the wordmark's baseline. The
+   gloss still answers on hover or tap, so the one word never strands
+   anybody. Hidden on narrow screens, where the navbar has no room. */
+.motto--lockup { font-size: 14px; color: var(--ink-3); }
+.motto--lockup::before {
+  width: 1px; height: 13px; margin: 0 11px 0 12px;
+  background: rgba(150, 190, 225, 0.28);
+}
+.motto--lockup em { font-size: 11px; }
+@media (max-width: 860px) { .motto--lockup { display: none; } }
 .footer-links { display: flex; gap: 22px; }
 .footer-links a { color: var(--ink-2); }
 .footer-links a:hover { color: var(--ink); }
