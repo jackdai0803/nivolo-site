@@ -145,24 +145,23 @@
   var sceneRevealToken = 0;
   var closeCleanupTimer = null;
 
-  /* Do not reveal a scene until its pixels are ready. Two animation frames
-     preserve the browser's opacity:0 starting state, including cached images,
+  /* Do not reveal a scene until its pixels are ready. A short post-load pause
+     preserves the browser's opacity:0 starting state, including cached images,
      so opening never jumps directly to the finished background. */
-  function queueSceneReveal() {
+  function queueSceneReveal(nextSrc) {
     var token = ++sceneRevealToken;
     var queued = false;
     function reveal() {
       if (queued) return;
       queued = true;
-      requestAnimationFrame(function () {
-        requestAnimationFrame(function () {
-          if (token === sceneRevealToken && overlay.classList.contains("open")) {
-            overlay.classList.add("scene-ready");
-          }
-        });
-      });
+      setTimeout(function () {
+        if (token === sceneRevealToken && overlay.classList.contains("open")) {
+          overlay.classList.add("scene-ready");
+        }
+      }, 45);
     }
     sceneImg.onload = reveal;
+    sceneImg.src = nextSrc;
     if (sceneImg.complete && sceneImg.naturalWidth) reveal();
   }
 
@@ -338,13 +337,12 @@
     }
     if (SCENES[id]) {
       sceneId = id;
-      sceneImg.src = sceneSrc(id);
+      queueSceneReveal(sceneSrc(id));
       sceneImg.style.transform = "translate3d(0,0,0) scale(" + sceneZoom() + ")";
       sceneActive = true;
       overlay.setAttribute("data-scene", id);
       buildEffects(SCENES[id].effect);
       overlay.classList.add("has-scene");
-      queueSceneReveal();
     } else {
       sceneRevealToken++;
       sceneId = null;
