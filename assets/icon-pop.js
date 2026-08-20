@@ -18,13 +18,40 @@
     ghost: { bg: "ghost-bg", face: "ghost-face", depth: 14 },
   };
 
-  /* Full-screen environments shown behind selected icons. Keep these
-     separate from the tile artwork so the icon can still turn in 3D. */
+  /* Full-screen environments shown behind every collection icon. The image
+     stays independent from the 3D tile, while `effect` selects a lightweight
+     CSS animation that reinforces the icon's story. */
+  function scene(id, effect) {
+    return { wide: "assets/scenes/" + id + ".webp", effect: effect };
+  }
   var SCENES = {
-    classic: {
-      wide: "assets/scenes/classic.webp",
-      tall: "assets/scenes/classic-portrait.webp",
-    },
+    classic: scene("classic", "aurora"),
+    grumpy: scene("grumpy", "pressure"),
+    snowy: scene("snowy", "snow"),
+    blaze: scene("blaze", "embers"),
+    gold: scene("gold", "coins"),
+    melting: scene("melting", "drips"),
+    sick: scene("sick", "haze"),
+    party: scene("party", "confetti"),
+    ghost: scene("ghost", "wisps"),
+    sleepy: scene("sleepy", "twinkles"),
+    waiting: scene("waiting", "bubbles"),
+    bored: scene("bored", "dust"),
+    focused: scene("focused", "focus"),
+    relieved: scene("relieved", "breeze"),
+    starstruck: scene("starstruck", "stars"),
+    champion: scene("champion", "ribbons"),
+    repair: scene("repair", "stitches"),
+    revived: scene("revived", "sparkles"),
+    peekaboo: scene("peekaboo", "peek"),
+    squished: scene("squished", "pressure"),
+    love: scene("love", "hearts"),
+    detective: scene("detective", "search"),
+    turbo: scene("turbo", "speed"),
+    rainy: scene("rainy", "rain"),
+    upside_down: scene("upside_down", "float"),
+    glitch: scene("glitch", "glitch"),
+    coming_soon: scene("coming_soon", "fog"),
   };
 
   /* The artwork is a wide vista; on a portrait phone a cover-crop would show
@@ -32,7 +59,7 @@
   var portraitQ = window.matchMedia("(max-aspect-ratio: 4/5)");
   function sceneSrc(id) {
     var s = SCENES[id];
-    return s && (portraitQ.matches ? s.tall : s.wide);
+    return s && (portraitQ.matches && s.tall ? s.tall : s.wide);
   }
   /* the 6% overscan only exists to give the cursor parallax room to travel;
      portrait has no cursor, so it just eats into the vista */
@@ -84,6 +111,7 @@
   overlay.className = "ipop-overlay";
   overlay.innerHTML =
     '<div class="ipop-scene" aria-hidden="true"><img alt="" /></div>' +
+    '<div class="ipop-effects" aria-hidden="true"></div>' +
     '<div class="ipop-ambient" aria-hidden="true">' +
     '  <i class="ipop-aurora ipop-aurora-one"></i>' +
     '  <i class="ipop-aurora ipop-aurora-two"></i>' +
@@ -113,6 +141,33 @@
   var sceneImg = sceneEl.querySelector("img");
   var sceneActive = false;
   var sceneId = null;
+  var effectsEl = overlay.querySelector(".ipop-effects");
+
+  /* Deterministic particles avoid layout shifts between openings while still
+     giving every scene its own motion language. */
+  var EFFECT_COUNTS = {
+    snow: 20, rain: 22, embers: 14, confetti: 18, coins: 9,
+    twinkles: 12, stars: 12, sparkles: 14, hearts: 10,
+    bubbles: 10, dust: 9, drips: 10, stitches: 8,
+    glitch: 8, search: 3, speed: 9, ribbons: 4,
+    wisps: 6, haze: 5, fog: 6, breeze: 7,
+    pressure: 6, peek: 8, float: 7, focus: 5, aurora: 7,
+  };
+  function buildEffects(type) {
+    effectsEl.textContent = "";
+    effectsEl.setAttribute("data-effect", type || "");
+    var count = EFFECT_COUNTS[type] || 0;
+    for (var i = 0; i < count; i++) {
+      var bit = document.createElement("i");
+      bit.style.setProperty("--i", i);
+      bit.style.setProperty("--x", (5 + (i * 37) % 91) + "%");
+      bit.style.setProperty("--y", (6 + (i * 29) % 87) + "%");
+      bit.style.setProperty("--delay", (-0.43 * i).toFixed(2) + "s");
+      bit.style.setProperty("--dur", (4.4 + (i % 6) * 0.73).toFixed(2) + "s");
+      bit.style.setProperty("--scale", (0.65 + (i % 5) * 0.16).toFixed(2));
+      effectsEl.appendChild(bit);
+    }
+  }
 
   // depth as a stack of rounded slices — flat side panels square off the corners
   for (var z = -DEPTH / 2; z <= DEPTH / 2 + 0.000001; z += STEP) {
@@ -258,11 +313,15 @@
       sceneImg.src = sceneSrc(id);
       sceneImg.style.transform = "translate3d(0,0,0) scale(" + sceneZoom() + ")";
       sceneActive = true;
+      overlay.setAttribute("data-scene", id);
+      buildEffects(SCENES[id].effect);
       overlay.classList.add("has-scene");
     } else {
       sceneId = null;
       sceneActive = false;
       sceneImg.removeAttribute("src");
+      overlay.removeAttribute("data-scene");
+      buildEffects("");
       overlay.classList.remove("has-scene");
     }
     overlay.querySelector(".ipop-back h3").textContent = name;
@@ -287,6 +346,8 @@
     if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; }
     sceneActive = false;
     sceneId = null;
+    overlay.removeAttribute("data-scene");
+    buildEffects("");
     if (lastFocus && lastFocus.focus) lastFocus.focus();
   }
   overlay.addEventListener("click", function (e) {
@@ -315,7 +376,7 @@
 
   /* ── wire up the collection ── */
   var items = document.querySelectorAll(
-    "#collection .lore-card, #collection .lore-mini li:not(.lore-mini--soon)"
+    "#collection .lore-card, #collection .lore-mini li"
   );
   Array.prototype.forEach.call(items, function (el) {
     var img = el.querySelector("img");

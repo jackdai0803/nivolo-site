@@ -1294,7 +1294,7 @@ footer {
   object-fit: cover;
   display: block;
   will-change: transform;
-  filter: brightness(.74) saturate(.88);
+  filter: brightness(.82) saturate(.94);
 }
 .ipop-scene::after {
   content: "";
@@ -1303,6 +1303,211 @@ footer {
     radial-gradient(circle at center, transparent 18%, rgba(2, 7, 18, .12) 58%, rgba(2, 6, 15, .52) 100%),
     linear-gradient(180deg, rgba(2, 7, 18, .08), rgba(2, 7, 18, .22));
 }
+.ipop-overlay[data-scene="coming_soon"] .ipop-scene img,
+.ipop-overlay[data-scene="snowy"] .ipop-scene img,
+.ipop-overlay[data-scene="repair"] .ipop-scene img { filter: brightness(.92) saturate(.88); }
+
+/* ── Per-scene motion ───────────────────────────────────────────────
+   The art itself remains a single fast-loading image. These small CSS
+   accents give each environment a distinct living detail without tying
+   the background to the pointer or competing with the icon. */
+.ipop-effects {
+  position: absolute; inset: 0; z-index: 0;
+  overflow: hidden; opacity: 0; pointer-events: none;
+  transition: opacity .42s ease;
+}
+.ipop-overlay.has-scene .ipop-effects { opacity: .72; }
+.ipop-effects i {
+  position: absolute; display: block;
+  left: var(--x); top: var(--y);
+  will-change: transform, opacity;
+}
+
+/* falling weather */
+.ipop-effects[data-effect="snow"] i {
+  top: -7%; width: calc(9px * var(--scale)); height: calc(9px * var(--scale));
+  border-radius: 50%; background: rgba(238,250,255,.9);
+  box-shadow: 0 0 10px rgba(174,225,255,.42);
+  animation: ipop-fall var(--dur) linear var(--delay) infinite;
+}
+.ipop-effects[data-effect="rain"] i {
+  top: -12%; width: 2px; height: calc(48px * var(--scale));
+  border-radius: 999px;
+  background: linear-gradient(180deg, transparent, rgba(176,223,255,.9));
+  transform: rotate(9deg);
+  animation: ipop-rain 2.8s linear var(--delay) infinite;
+}
+.ipop-effects[data-effect="drips"] i {
+  top: -9%; width: calc(9px * var(--scale)); height: calc(28px * var(--scale));
+  border-radius: 60% 60% 70% 70%; background: rgba(255,181,214,.72);
+  animation: ipop-fall var(--dur) ease-in var(--delay) infinite;
+}
+@keyframes ipop-fall {
+  0% { transform: translate3d(0,-7vh,0) rotate(0); opacity: 0; }
+  12% { opacity: .9; }
+  100% { transform: translate3d(18px,116vh,0) rotate(160deg); opacity: .2; }
+}
+@keyframes ipop-rain {
+  from { transform: translate3d(0,-12vh,0) rotate(9deg); opacity: 0; }
+  12% { opacity: .8; }
+  to { transform: translate3d(-28px,120vh,0) rotate(9deg); opacity: .1; }
+}
+
+/* rising and floating collectibles */
+.ipop-effects[data-effect="embers"] i {
+  top: auto; bottom: -6%; width: calc(8px * var(--scale)); height: calc(13px * var(--scale));
+  border-radius: 70% 35% 65% 40%; background: #ffb51f;
+  box-shadow: 0 0 13px rgba(255,102,18,.72);
+  animation: ipop-rise var(--dur) ease-in var(--delay) infinite;
+}
+.ipop-effects[data-effect="coins"] i {
+  width: calc(24px * var(--scale)); height: calc(24px * var(--scale));
+  border-radius: 50%; border: 3px solid rgba(255,205,73,.78);
+  box-shadow: inset 0 0 0 3px rgba(164,91,8,.18), 0 0 13px rgba(255,190,42,.2);
+  animation: ipop-float var(--dur) ease-in-out var(--delay) infinite alternate;
+}
+.ipop-effects[data-effect="bubbles"] i {
+  width: calc(25px * var(--scale)); height: calc(25px * var(--scale));
+  border-radius: 50%; border: 2px solid rgba(203,249,255,.55);
+  background: rgba(111,232,244,.06);
+  animation: ipop-rise var(--dur) ease-in var(--delay) infinite;
+}
+.ipop-effects[data-effect="float"] i {
+  width: calc(36px * var(--scale)); height: calc(17px * var(--scale));
+  border-radius: 50%; background: rgba(245,218,255,.17); filter: blur(2px);
+  animation: ipop-float var(--dur) ease-in-out var(--delay) infinite alternate;
+}
+@keyframes ipop-rise {
+  from { transform: translate3d(0,12vh,0) scale(.7); opacity: 0; }
+  18% { opacity: .9; }
+  to { transform: translate3d(25px,-112vh,0) scale(1.12); opacity: 0; }
+}
+@keyframes ipop-float {
+  from { transform: translate3d(-5px,-7px,0) rotate(-4deg); opacity: .35; }
+  to { transform: translate3d(8px,9px,0) rotate(5deg); opacity: .92; }
+}
+
+/* celebration marks */
+.ipop-effects[data-effect="confetti"] i {
+  top: -8%; width: calc(8px * var(--scale)); height: calc(18px * var(--scale));
+  border-radius: 3px; background: #35d7f0;
+  animation: ipop-confetti var(--dur) linear var(--delay) infinite;
+}
+.ipop-effects[data-effect="confetti"] i:nth-child(3n+2) { background: #ffca35; }
+.ipop-effects[data-effect="confetti"] i:nth-child(3n) { background: #ff729c; }
+.ipop-effects[data-effect="twinkles"] i,
+.ipop-effects[data-effect="stars"] i,
+.ipop-effects[data-effect="sparkles"] i {
+  width: calc(7px * var(--scale)); height: calc(7px * var(--scale));
+  border-radius: 50%; background: rgba(243,250,255,.94);
+  box-shadow: 0 0 14px rgba(156,220,255,.76);
+  animation: ipop-twinkle var(--dur) ease-in-out var(--delay) infinite;
+}
+.ipop-effects[data-effect="stars"] i { background: #ffd35a; box-shadow: 0 0 16px rgba(255,174,50,.62); }
+.ipop-effects[data-effect="sparkles"] i { background: #c8ffcb; box-shadow: 0 0 16px rgba(100,255,175,.62); }
+.ipop-effects[data-effect="hearts"] i {
+  width: calc(15px * var(--scale)); height: calc(15px * var(--scale));
+  background: rgba(255,129,169,.76);
+  clip-path: polygon(50% 88%,8% 44%,8% 25%,21% 10%,39% 10%,50% 23%,61% 10%,79% 10%,92% 25%,92% 44%);
+  animation: ipop-float var(--dur) ease-in-out var(--delay) infinite alternate;
+}
+@keyframes ipop-confetti {
+  from { transform: translate3d(0,-10vh,0) rotate(0); opacity: 0; }
+  10% { opacity: 1; }
+  to { transform: translate3d(28px,116vh,0) rotate(420deg); opacity: .15; }
+}
+@keyframes ipop-twinkle {
+  0%,100% { transform: scale(.45); opacity: .2; }
+  48% { transform: scale(1.35); opacity: 1; }
+}
+
+/* atmosphere */
+.ipop-effects[data-effect="wisps"] i,
+.ipop-effects[data-effect="haze"] i,
+.ipop-effects[data-effect="fog"] i,
+.ipop-effects[data-effect="breeze"] i,
+.ipop-effects[data-effect="aurora"] i {
+  width: calc(180px * var(--scale)); height: calc(62px * var(--scale));
+  border-radius: 50%; filter: blur(15px);
+  background: rgba(130,225,242,.16);
+  animation: ipop-drift 11s ease-in-out var(--delay) infinite alternate;
+}
+.ipop-effects[data-effect="haze"] i { background: rgba(185,216,137,.13); }
+.ipop-effects[data-effect="fog"] i { background: rgba(255,255,255,.3); filter: blur(24px); }
+.ipop-effects[data-effect="breeze"] i { height: 20px; background: rgba(218,255,242,.18); filter: blur(5px); }
+.ipop-effects[data-effect="aurora"] i { width: 34vw; height: 8vw; background: rgba(80,218,255,.13); filter: blur(19px); }
+@keyframes ipop-drift {
+  from { transform: translate3d(-26px,-8px,0) scaleX(.9); opacity: .18; }
+  to { transform: translate3d(35px,14px,0) scaleX(1.12); opacity: .66; }
+}
+
+/* graphic motion accents */
+.ipop-effects[data-effect="glitch"] i {
+  width: calc(18vw + 40px); height: 9px;
+  left: auto; right: -5%; border-radius: 999px;
+  background: linear-gradient(90deg, #00e4ee, #00e4ee 48%, transparent 48%, transparent 52%, #ff20a8 52%);
+  animation: ipop-glitch 2.4s steps(2,end) var(--delay) infinite;
+}
+.ipop-effects[data-effect="glitch"] i:nth-child(odd) { left: -5%; right: auto; }
+.ipop-effects[data-effect="speed"] i {
+  width: calc(18vw + 70px); height: 5px; left: -20%;
+  border-radius: 999px; background: linear-gradient(90deg, transparent, rgba(255,105,160,.82));
+  animation: ipop-speed 2.7s ease-in var(--delay) infinite;
+}
+.ipop-effects[data-effect="focus"] i {
+  width: 32vw; height: 3px; left: 50%; top: calc(25% + (var(--i) * 10%));
+  transform-origin: left; border-radius: 999px;
+  background: linear-gradient(90deg, rgba(76,174,255,.5), transparent);
+  animation: ipop-focus var(--dur) ease-in-out var(--delay) infinite alternate;
+}
+.ipop-effects[data-effect="search"] i {
+  width: 52vw; height: 45vh; left: -9%; top: -10%;
+  clip-path: polygon(0 0,21% 0,100% 100%,72% 100%);
+  background: linear-gradient(145deg, rgba(255,213,145,.2), transparent 75%);
+  transform-origin: 8% 0;
+  animation: ipop-search 8s ease-in-out var(--delay) infinite alternate;
+}
+.ipop-effects[data-effect="search"] i:nth-child(even) { left: auto; right: -9%; transform: scaleX(-1); }
+.ipop-effects[data-effect="ribbons"] i {
+  width: 45vw; height: 18vh; left: -8%; top: 8%;
+  border-top: 8px solid rgba(212,244,255,.42); border-radius: 50%;
+  animation: ipop-ribbon var(--dur) ease-in-out var(--delay) infinite alternate;
+}
+.ipop-effects[data-effect="ribbons"] i:nth-child(even) { left: auto; right: -8%; }
+.ipop-effects[data-effect="stitches"] i {
+  width: 54px; height: 4px; border-radius: 999px;
+  background: repeating-linear-gradient(90deg,rgba(255,255,255,.65) 0 10px,transparent 10px 17px);
+  animation: ipop-stitch var(--dur) linear var(--delay) infinite;
+}
+@keyframes ipop-glitch {
+  0%,82%,100% { transform: translateX(0); opacity: .18; }
+  86% { transform: translateX(25px); opacity: .88; }
+  92% { transform: translateX(-16px); opacity: .55; }
+}
+@keyframes ipop-speed {
+  from { transform: translateX(-10vw) scaleX(.5); opacity: 0; }
+  35% { opacity: .78; }
+  to { transform: translateX(135vw) scaleX(1.25); opacity: 0; }
+}
+@keyframes ipop-focus { from { transform: rotate(-8deg) scaleX(.8); opacity: .12; } to { transform: rotate(8deg) scaleX(1.08); opacity: .48; } }
+@keyframes ipop-search { from { transform: rotate(-7deg); opacity: .18; } to { transform: rotate(8deg); opacity: .48; } }
+@keyframes ipop-ribbon { from { transform: translateY(-5px) rotate(-2deg); } to { transform: translateY(8px) rotate(2deg); } }
+@keyframes ipop-stitch { from { background-position: 0 0; opacity: .28; } to { background-position: 34px 0; opacity: .72; } }
+
+/* squash, peek and pressure beats */
+.ipop-effects[data-effect="pressure"] i,
+.ipop-effects[data-effect="peek"] i {
+  width: calc(34px * var(--scale)); height: calc(34px * var(--scale));
+  border: 4px solid rgba(255,231,145,.5); border-radius: 50%;
+  animation: ipop-pulse var(--dur) ease-out var(--delay) infinite;
+}
+.ipop-effects[data-effect="dust"] i {
+  width: calc(8px * var(--scale)); height: calc(8px * var(--scale));
+  border-radius: 50%; background: rgba(244,228,201,.42); filter: blur(1px);
+  animation: ipop-float var(--dur) ease-in-out var(--delay) infinite alternate;
+}
+@keyframes ipop-pulse { from { transform: scale(.4); opacity: .8; } to { transform: scale(2.4); opacity: 0; } }
+
 .ipop-ambient {
   position: absolute;
   inset: 0;
@@ -1312,7 +1517,8 @@ footer {
   transition: opacity .42s ease;
   pointer-events: none;
 }
-.ipop-overlay.has-scene .ipop-ambient { opacity: 1; }
+.ipop-overlay.has-scene .ipop-ambient { opacity: 0; }
+.ipop-overlay[data-scene="classic"] .ipop-ambient { opacity: 1; }
 .ipop-aurora {
   position: absolute;
   display: block;
@@ -1461,7 +1667,8 @@ footer {
 }
 @media (prefers-reduced-motion: reduce) {
   .ipop-overlay, .ipop-dialog, .ipop-tile { transition: none; }
-  .ipop-aurora, .ipop-star, .ipop-water-glint { animation: none; }
+  .ipop-aurora, .ipop-star, .ipop-water-glint, .ipop-effects i { animation: none; }
+  .ipop-effects { display: none; }
 }
 
 /* ── Layered icons: Nivo floats above his background inside the popup ── */
