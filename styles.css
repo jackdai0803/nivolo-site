@@ -1640,8 +1640,18 @@ footer {
   backface-visibility: hidden;
   display: grid; place-items: center;
 }
-.ipop-front { transform: translateZ(var(--ipop-lift)); }
-.ipop-front img { width: 100%; height: 100%; display: block; }
+.ipop-front {
+  transform: translateZ(var(--ipop-lift));
+  /* the collection thumbnail, standing in until the full-size art arrives */
+  background-size: cover; background-position: center;
+}
+.ipop-front img {
+  width: 100%; height: 100%; display: block;
+  opacity: 0; transition: opacity .22s ease;
+}
+.ipop-tile.icon-ready .ipop-front img { opacity: 1; }
+/* art already in cache — it is simply there, with nothing to fade */
+.ipop-tile.icon-instant .ipop-front img { transition: none; }
 .ipop-back {
   background: linear-gradient(158deg, var(--tint-dark, #1b2334), var(--tint-deep, #0d121c));
   border: 1px solid var(--tint-edge, rgba(255,255,255,.16));

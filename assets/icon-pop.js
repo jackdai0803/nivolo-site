@@ -169,6 +169,33 @@
     entry.img.src = src;
     return entry;
   }
+  /* The tile art is warmed the same way. `hires` mirrors the srcset and
+     sizes the popup itself will use, so the browser resolves to the very
+     same candidate it is about to request — a 2x screen warms the 1024px
+     master, a 1x screen the 512. Without hires only the 512 base is taken:
+     it is a third of the bytes and it is what the slab tint samples. */
+  function iconArt(id) {
+    var layered = LAYERED[id];
+    return layered ? [layered.bg, layered.face] : [id];
+  }
+  function warmIcon(id, hires) {
+    var bases = iconArt(id);
+    if (LAYERED[id]) bases = bases.concat(id);   // the tint still reads the composite
+    bases.forEach(function (b) {
+      var key = (hires ? "hi:" : "lo:") + b;
+      if (warm[key]) return;
+      var entry = warm[key] = { ready: false, img: new Image() };
+      entry.img.decoding = "async";
+      entry.img.onload = entry.img.onerror = function () { entry.ready = true; };
+      if (hires) {
+        entry.img.sizes = Math.round(tilePx()) + "px";
+        entry.img.srcset = "assets/icons-3d/" + b + ".webp 512w, " +
+          "assets/icons-3d/" + b + "-lg.webp 1024w";
+      }
+      entry.img.src = "assets/icons-3d/" + b + ".webp";
+    });
+  }
+
   function sceneIsWarm(id) {
     var src = sceneSrc(id);
     var entry = src && warm[src];
@@ -353,6 +380,14 @@
       el.srcset = "assets/icons-3d/" + base + ".webp 512w, assets/icons-3d/" + base + "-lg.webp 1024w";
       el.sizes = Math.round(tilePx()) + "px";
     }
+    /* The collection thumbnail is the same artwork at 160px and is already
+       decoded on the page behind the popup, so it fills the face on the very
+       first frame. The full-size art then sharpens in on top of it, instead
+       of the tile sitting empty while it downloads. */
+    tile.classList.remove("icon-ready");
+    tile.classList.remove("icon-instant");
+    front.style.backgroundImage = 'url("assets/icons/' + id + '.png")';
+    img.onload = function () { tile.classList.add("icon-ready"); };
     if (layered) {
       setSrc(img, layered.bg);
       setSrc(plateEl.querySelector("img"), layered.face);
@@ -364,6 +399,12 @@
       plateDepth = 0;
       plateEl.hidden = true;
     }
+    // already in cache: no crossfade at all, the art is simply there
+    if (img.complete && img.naturalWidth) {
+      tile.classList.add("icon-instant");
+      tile.classList.add("icon-ready");
+    }
+    warmIcon(id, true);   // keeps the master warm for the next open
     if (SCENES[id]) {
       sceneId = id;
       sceneImg.style.transform = "translate3d(0,0,0) scale(" + sceneZoom() + ")";
@@ -474,9 +515,9 @@
     el.setAttribute("role", "button");
     el.setAttribute("aria-label", "View " + head.textContent + " up close");
     function go() { openFor(id, head.textContent, para.textContent); }
-    /* fetch this one's environment the moment there is any hint of intent,
-       so by the time the click lands the pixels are already decoded */
-    function prime() { warmScene(id); }
+    /* fetch this one's art and environment the moment there is any hint of
+       intent, so by the time the click lands the pixels are already there */
+    function prime() { warmScene(id); warmIcon(id, true); }
     el.addEventListener("pointerenter", prime);
     el.addEventListener("pointerdown", prime);
     el.addEventListener("focus", prime);
@@ -488,13 +529,18 @@
     warmQueue.push(id);
   });
 
-  /* The whole set is ~750KB of small WebP, so once the collection is in
-     reach it is warmed quietly in the background, a couple at a time, well
-     behind anything the page still needs. Taps get the same instant reveal
-     as hovers this way, since a finger never announces itself early. */
+  /* Scenes and 512px tile art together are ~1.2MB of small WebP, so once the
+     collection is in reach they are warmed quietly in the background, a few
+     at a time, well behind anything the page still needs. Taps get the same
+     instant open as hovers this way, since a finger never announces itself
+     early. The 1024px masters stay out of the bulk pass — they are three
+     times the bytes, and the thumbnail placeholder covers the wait. */
   function drainWarmQueue() {
     if (!warmQueue.length) return;
-    warmQueue.splice(0, 4).forEach(warmScene);
+    warmQueue.splice(0, 4).forEach(function (id) {
+      warmScene(id);
+      warmIcon(id, false);
+    });
     // idle time when the browser offers it, a plain timer when it does not —
     // a throttled idle callback must not be able to stall the queue
     var went = false;
