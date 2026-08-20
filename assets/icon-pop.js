@@ -22,7 +22,7 @@
      stays independent from the 3D tile, while `effect` selects a lightweight
      CSS animation that reinforces the icon's story. */
   function scene(id, effect) {
-    return { wide: "assets/scenes/" + id + ".webp", effect: effect };
+    return { wide: "assets/scenes/" + id + ".webp?v=2", effect: effect };
   }
   var SCENES = {
     classic: scene("classic", "aurora"),
