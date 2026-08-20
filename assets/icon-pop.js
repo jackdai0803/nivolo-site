@@ -142,6 +142,29 @@
   var sceneActive = false;
   var sceneId = null;
   var effectsEl = overlay.querySelector(".ipop-effects");
+  var sceneRevealToken = 0;
+  var closeCleanupTimer = null;
+
+  /* Do not reveal a scene until its pixels are ready. Two animation frames
+     preserve the browser's opacity:0 starting state, including cached images,
+     so opening never jumps directly to the finished background. */
+  function queueSceneReveal() {
+    var token = ++sceneRevealToken;
+    var queued = false;
+    function reveal() {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          if (token === sceneRevealToken && overlay.classList.contains("open")) {
+            overlay.classList.add("scene-ready");
+          }
+        });
+      });
+    }
+    sceneImg.onload = reveal;
+    if (sceneImg.complete && sceneImg.naturalWidth) reveal();
+  }
 
   /* Deterministic particles avoid layout shifts between openings while still
      giving every scene its own motion language. */
@@ -290,6 +313,11 @@
   /* ── open / close ── */
   var lastFocus = null;
   function openFor(id, name, story) {
+    if (closeCleanupTimer !== null) {
+      clearTimeout(closeCleanupTimer);
+      closeCleanupTimer = null;
+    }
+    overlay.classList.remove("scene-ready");
     var img = front.querySelector("img");
     var layered = LAYERED[id];
     function setSrc(el, base) {
@@ -316,7 +344,9 @@
       overlay.setAttribute("data-scene", id);
       buildEffects(SCENES[id].effect);
       overlay.classList.add("has-scene");
+      queueSceneReveal();
     } else {
+      sceneRevealToken++;
       sceneId = null;
       sceneActive = false;
       sceneImg.removeAttribute("src");
@@ -341,13 +371,21 @@
     overlay.querySelector(".ipop-close").focus();
   }
   function close() {
+    overlay.classList.remove("scene-ready");
     overlay.classList.remove("open");
     document.body.classList.remove("ipop-lock");
     if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; }
+    sceneRevealToken++;
     sceneActive = false;
     sceneId = null;
-    overlay.removeAttribute("data-scene");
-    buildEffects("");
+    closeCleanupTimer = setTimeout(function () {
+      if (overlay.classList.contains("open")) return;
+      overlay.classList.remove("has-scene");
+      overlay.removeAttribute("data-scene");
+      sceneImg.removeAttribute("src");
+      buildEffects("");
+      closeCleanupTimer = null;
+    }, 620);
     if (lastFocus && lastFocus.focus) lastFocus.focus();
   }
   overlay.addEventListener("click", function (e) {
