@@ -145,23 +145,51 @@
   var sceneRevealToken = 0;
   var closeCleanupTimer = null;
 
-  /* Do not reveal a scene until its pixels are ready. A short post-load pause
-     preserves the browser's opacity:0 starting state, including cached images,
-     so opening never jumps directly to the finished background. */
+  /* ── scene pre-warming ──
+     A scene that is still downloading when the popup opens arrives half a
+     second after the icon, which reads as a bug. So every environment is
+     fetched *and decoded* ahead of the click — eagerly on hover/focus, and
+     lazily for the whole set once the collection nears the viewport. Once a
+     scene is warm the popup can paint it in the same frame as the tile. */
+  var warm = {};
+  function warmScene(id) {
+    var src = sceneSrc(id);
+    if (!src || warm[src]) return warm[src];
+    var entry = warm[src] = { ready: false, img: new Image() };
+    entry.img.decoding = "async";
+    function done() { entry.ready = true; }
+    entry.img.onload = function () {
+      done();
+      // decode() moves the CPU cost off the click too, but it is only an
+      // extra: in a background tab it never settles, and gating readiness
+      // on it would leave every scene cold for a restored tab.
+      if (entry.img.decode) entry.img.decode().catch(function () {});
+    };
+    entry.img.onerror = done;   // a missing scene must not block the reveal
+    entry.img.src = src;
+    return entry;
+  }
+  function sceneIsWarm(id) {
+    var src = sceneSrc(id);
+    var entry = src && warm[src];
+    return !!(entry && entry.ready) || !!(sceneImg.src && sceneImg.complete &&
+      sceneImg.naturalWidth && sceneImg.src === new URL(src, location.href).href);
+  }
+
+  /* Cold path only: the art was not ready in time, so fade it in as soon as
+     it lands rather than holding the whole popup back. */
   function queueSceneReveal(nextSrc) {
     var token = ++sceneRevealToken;
-    var queued = false;
     function reveal() {
-      if (queued) return;
-      queued = true;
-      setTimeout(function () {
-        if (token === sceneRevealToken && overlay.classList.contains("open")) {
-          overlay.classList.add("scene-ready");
-        }
-      }, 45);
+      if (token !== sceneRevealToken || !overlay.classList.contains("open")) return;
+      overlay.classList.remove("scene-instant");
+      // flush the opacity:0 start state synchronously — a rAF would never run
+      // here in a backgrounded tab, leaving the scene invisible
+      void sceneEl.offsetWidth;
+      overlay.classList.add("scene-ready");
     }
     sceneImg.onload = reveal;
-    sceneImg.src = nextSrc;
+    if (sceneImg.src !== new URL(nextSrc, location.href).href) sceneImg.src = nextSrc;
     if (sceneImg.complete && sceneImg.naturalWidth) reveal();
   }
 
@@ -317,6 +345,7 @@
       closeCleanupTimer = null;
     }
     overlay.classList.remove("scene-ready");
+    overlay.classList.remove("scene-instant");
     var img = front.querySelector("img");
     var layered = LAYERED[id];
     function setSrc(el, base) {
@@ -337,12 +366,25 @@
     }
     if (SCENES[id]) {
       sceneId = id;
-      queueSceneReveal(sceneSrc(id));
       sceneImg.style.transform = "translate3d(0,0,0) scale(" + sceneZoom() + ")";
       sceneActive = true;
       overlay.setAttribute("data-scene", id);
       buildEffects(SCENES[id].effect);
       overlay.classList.add("has-scene");
+      if (sceneIsWarm(id)) {
+        /* Ready before the click: skip the fade of its own and let the
+           overlay's single fade carry background and icon in together. */
+        sceneRevealToken++;
+        sceneImg.onload = null;
+        var src = sceneSrc(id);
+        if (sceneImg.src !== new URL(src, location.href).href) sceneImg.src = src;
+        overlay.classList.add("scene-instant");
+        overlay.classList.add("scene-ready");
+      } else {
+        overlay.classList.remove("scene-instant");
+        queueSceneReveal(sceneSrc(id));
+        warmScene(id);
+      }
     } else {
       sceneRevealToken++;
       sceneId = null;
@@ -351,6 +393,7 @@
       overlay.removeAttribute("data-scene");
       buildEffects("");
       overlay.classList.remove("has-scene");
+      overlay.classList.remove("scene-instant");
     }
     overlay.querySelector(".ipop-back h3").textContent = name;
     overlay.querySelector(".ipop-back p").textContent = story;
@@ -369,7 +412,8 @@
     overlay.querySelector(".ipop-close").focus();
   }
   function close() {
-    overlay.classList.remove("scene-ready");
+    // scene-ready stays on through the fade-out: dropping it here would snap
+    // an instant-revealed background away while the icon was still leaving
     overlay.classList.remove("open");
     document.body.classList.remove("ipop-lock");
     if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; }
@@ -378,6 +422,8 @@
     sceneId = null;
     closeCleanupTimer = setTimeout(function () {
       if (overlay.classList.contains("open")) return;
+      overlay.classList.remove("scene-ready");
+      overlay.classList.remove("scene-instant");
       overlay.classList.remove("has-scene");
       overlay.removeAttribute("data-scene");
       sceneImg.removeAttribute("src");
@@ -414,6 +460,7 @@
   var items = document.querySelectorAll(
     "#collection .lore-card, #collection .lore-mini li"
   );
+  var warmQueue = [];
   Array.prototype.forEach.call(items, function (el) {
     var img = el.querySelector("img");
     var head = el.querySelector("h4, h5");
@@ -427,9 +474,62 @@
     el.setAttribute("role", "button");
     el.setAttribute("aria-label", "View " + head.textContent + " up close");
     function go() { openFor(id, head.textContent, para.textContent); }
+    /* fetch this one's environment the moment there is any hint of intent,
+       so by the time the click lands the pixels are already decoded */
+    function prime() { warmScene(id); }
+    el.addEventListener("pointerenter", prime);
+    el.addEventListener("pointerdown", prime);
+    el.addEventListener("focus", prime);
+    el.addEventListener("touchstart", prime, { passive: true });
     el.addEventListener("click", go);
     el.addEventListener("keydown", function (e) {
       if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); }
     });
+    warmQueue.push(id);
   });
+
+  /* The whole set is ~750KB of small WebP, so once the collection is in
+     reach it is warmed quietly in the background, a couple at a time, well
+     behind anything the page still needs. Taps get the same instant reveal
+     as hovers this way, since a finger never announces itself early. */
+  function drainWarmQueue() {
+    if (!warmQueue.length) return;
+    warmQueue.splice(0, 4).forEach(warmScene);
+    // idle time when the browser offers it, a plain timer when it does not —
+    // a throttled idle callback must not be able to stall the queue
+    var went = false;
+    function next() { if (went) return; went = true; drainWarmQueue(); }
+    if (window.requestIdleCallback) requestIdleCallback(next, { timeout: 400 });
+    setTimeout(next, 400);
+  }
+  /* A plain proximity check rather than an IntersectionObserver: observers
+     are only delivered on a rendering update, which a backgrounded tab does
+     not get — the warm-up would then be waiting at the moment the tab comes
+     back and the first icon is tapped. */
+  var collection = document.getElementById("collection");
+  function nearCollection() {
+    if (!collection) return false;
+    var r = collection.getBoundingClientRect();
+    return r.top < window.innerHeight + 900 && r.bottom > -900;
+  }
+  function maybeWarm() {
+    if (!warmQueue.length || nearCollection()) {
+      window.removeEventListener("scroll", maybeWarm);
+      window.removeEventListener("resize", maybeWarm);
+      drainWarmQueue();
+    }
+  }
+  window.addEventListener("scroll", maybeWarm, { passive: true });
+  window.addEventListener("resize", maybeWarm, { passive: true });
+  window.addEventListener("load", maybeWarm);
+  maybeWarm();
+
+  /* Scroll events are not delivered while a tab is backgrounded, and a
+     restored tab can be scrolled to the collection already. A slow poll of
+     the same proximity test covers that — timers keep running when the
+     rendering loop does not — and it stops itself once warming starts. */
+  var poll = setInterval(function () {
+    if (!warmQueue.length) return clearInterval(poll);
+    if (nearCollection()) { clearInterval(poll); drainWarmQueue(); }
+  }, 500);
 })();

@@ -1289,6 +1289,14 @@ footer {
   opacity: 1;
   transform: scale(1);
 }
+/* Warm scene: the background is already decoded, so it carries no fade of its
+   own — the overlay's single fade brings it up with the icon, in one piece.
+   Only the slow settle-in of the zoom survives. */
+.ipop-overlay.scene-instant .ipop-scene {
+  transition: transform 0.62s cubic-bezier(.2,.9,.3,1);
+}
+.ipop-overlay.scene-instant .ipop-effects,
+.ipop-overlay.scene-instant .ipop-ambient { transition: none; }
 .ipop-scene img {
   width: 100%; height: 100%;
   object-fit: cover;
