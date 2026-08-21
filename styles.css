@@ -132,8 +132,8 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
 .logo-mark {
   width: 34px; flex-shrink: 0;
   display: grid; place-items: center;
-}
-/* A grey line drawn round the face itself, not a tile round its box: the
+
+/* A black line drawn round the face itself, not a tile round its box: the
    mark is mostly white and the navbar is white, so without it the head
    dissolves into the pill and only the eyes read. Eight stacked
    drop-shadows are the only way to stroke a PNG's alpha — four cardinal
@@ -143,10 +143,10 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
 .logo-mark img {
   display: block; width: 100%; height: auto;
   filter:
-    drop-shadow(1.3px 0 0 var(--ink-3)) drop-shadow(-1.3px 0 0 var(--ink-3))
-    drop-shadow(0 1.3px 0 var(--ink-3)) drop-shadow(0 -1.3px 0 var(--ink-3))
-    drop-shadow(1px 1px 0 var(--ink-3)) drop-shadow(-1px 1px 0 var(--ink-3))
-    drop-shadow(1px -1px 0 var(--ink-3)) drop-shadow(-1px -1px 0 var(--ink-3));
+    drop-shadow(1.3px 0 0 var(--ink)) drop-shadow(-1.3px 0 0 var(--ink))
+    drop-shadow(0 1.3px 0 var(--ink)) drop-shadow(0 -1.3px 0 var(--ink))
+    drop-shadow(1px 1px 0 var(--ink)) drop-shadow(-1px 1px 0 var(--ink))
+    drop-shadow(1px -1px 0 var(--ink)) drop-shadow(-1px -1px 0 var(--ink));
 }
 .logo:hover { text-decoration: none; }
 .nav-links { display: flex; align-items: center; gap: 22px; font-size: 14px; font-weight: 600; }
