@@ -63,8 +63,45 @@
     ["waiting", "Waiting"],
     ["coming_soon", "More coming soon…"],
   ];
+  /* ── How much shelf there is ──────────────────────────────────────────
+     The floe is only as wide as the screen allows. A desktop floe carries
+     the whole roster in three courses; a phone's ice is barely 290px
+     across, where all 27 pile four deep, spread wider than the ice itself
+     and push their own bottom course off the ends — which drops them in
+     the sea, respawns them from the sky, and knocks the next ones off in
+     turn, forever. So the shelf is cut to fit the ice: three courses with
+     a margin at each tip, at a size that still reads at arm's length. */
+  function bergWidthFor(w) { return Math.min(790, w * 0.846); }
+  function idealSize(w) { return w < 640 ? 46 : 76; }
+  function leastSize(w) { return w < 640 ? 40 : 54; }
+  /* What a floe of width W holds, measured rather than guessed: a mound
+     settles into three courses, the bottom one a body short of the ice at
+     each end and every course above it losing about one and a half. Both
+     the 980px stage (25 of 27 at 76px) and the 342px one (12 at 46px)
+     land on n = 3W/size − slack, so the size that fits n is 3W/(n + slack).
+     Narrow ice loses proportionally more to its own ends, so it keeps a
+     bigger reserve: measured, a phone holds about three fewer than the
+     desktop rule predicts. */
+  function slack(w) { return w < 640 ? 10 : 7.5; }
+  function sizeFor(w, n) { return Math.min(idealSize(w), 3 * bergWidthFor(w) / (n + slack(w))); }
+  function rosterFor(w) {
+    if (VARIANT !== "iceberg") return ICONS;
+    // Shrink the icons before dropping any: the full shelf is the point.
+    var fits = ICONS.length;
+    while (fits > 6 && sizeFor(w, fits) < leastSize(w)) fits--;
+    if (fits >= ICONS.length) return ICONS;
+    // Classic leads and "more coming soon" closes; between them a shuffled
+    // slice, so a phone doesn't always show the same faces.
+    var rest = ICONS.slice(1, ICONS.length - 1);
+    for (var i = rest.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = rest[i]; rest[i] = rest[j]; rest[j] = t;
+    }
+    return [ICONS[0]].concat(rest.slice(0, Math.max(4, fits - 2)), [ICONS[ICONS.length - 1]]);
+  }
+  var ROSTER = rosterFor(stage.clientWidth || window.innerWidth);
   // Pour cadence scales down as the roster grows so the show stays short.
-  var SPAWN_GAP = Math.max(130, Math.round(4800 / ICONS.length));
+  var SPAWN_GAP = Math.max(130, Math.round(4800 / ROSTER.length));
 
   function iconSrc(name) { return "assets/icons/" + name + ".png"; }
 
@@ -81,12 +118,12 @@
       ? h - (mobile ? 90 : 120) - (mobile ? 24 : 34) + 4
       : h - 12 - 60;
     var PER_ROW = 7;
-    ICONS.forEach(function (icon, i) {
+    ROSTER.forEach(function (icon, i) {
       var el = document.createElement("div");
       el.className = "pit-icon";
       el.style.width = el.style.height = size + "px";
       var row = Math.floor(i / PER_ROW);
-      var inRow = Math.min(PER_ROW, ICONS.length - row * PER_ROW);
+      var inRow = Math.min(PER_ROW, ROSTER.length - row * PER_ROW);
       var idx = i % PER_ROW;
       // Rows narrow as the mound rises so it reads as a pile, not a wall.
       var spread = bowlW * Math.max(0.3, (iceberg ? 0.78 : 0.62) - row * 0.09);
@@ -150,15 +187,17 @@
     var s = stageSize();
     if (VARIANT === "zerog") {
       // Free-floating: fill ~28% of the whole stage.
-      return Math.round(Math.max(36, Math.min(84, Math.sqrt(s.w * s.h * 0.28 / ICONS.length))));
+      return Math.round(Math.max(36, Math.min(84, Math.sqrt(s.w * s.h * 0.28 / ROSTER.length))));
+    }
+    if (VARIANT === "iceberg") {
+      // The size at which the shelf the floe was given is the shelf it can
+      // hold — see holds() above.
+      return Math.round(Math.max(30, sizeFor(s.w, ROSTER.length)));
     }
     var bw = Math.min(760, s.w * 0.92);
     var bh = s.w < 640 ? 200 : 285;
     var area = Math.PI * (bw / 2) * bh / 2;
-    var size = Math.sqrt(area * 0.55 / ICONS.length);
-    // The floe doesn't have to hold the whole roster — overflow swims —
-    // so icons run big and the colony spills into the water.
-    if (VARIANT === "iceberg") size *= 1.3;
+    var size = Math.sqrt(area * 0.55 / ROSTER.length);
     return Math.round(Math.max(30, Math.min(88, size)));
   }
 
@@ -197,7 +236,7 @@
       var bergW = Math.min(790, s.w * 0.846);
       var topEnd = waterY - (mobile ? 24 : 34);
       var waterLayerH = mobile ? 240 : 300;
-      var dip = 10, half = bergW / 2, quarter = bergW / 4;
+      var dip = 14, half = bergW / 2, quarter = bergW / 4;
       waterYCurrent = waterY;
       waterFadeStartCurrent = waterY + waterLayerH * 0.56;
       waterFadeEndCurrent = waterY + waterLayerH * 0.94;
@@ -229,6 +268,26 @@
       walls.push(Bodies.rectangle(cx + half - 6 + rampDX, topEnd + 14 + rampDY, rampL, 20, {
         isStatic: true, angle: rampA, friction: 0.05, restitution: 0.02,
       }));
+      /* Snow lips. A mound spreads until something stops it, and a floe
+         that ends in a frictionless ramp stops nothing: under the weight
+         of the courses above it the bottom row walks outward, steps off
+         the tip and drops in the sea — which respawns it from the sky
+         onto the pile, shoving the next one off in turn. These are short,
+         steep and INSIDE the painted ice, so the pile leans on the lip at
+         the edge of the snow instead of shedding over it. They are not
+         labelled ground: sliding into the kerb is not a touchdown. */
+      var lipH = Math.max(14, iconSize() * 0.4);
+      var lipA = 1.15;                       // ~66° from horizontal
+      var lipL = lipH / Math.sin(lipA) + 8;
+      var lipDX = Math.cos(lipA) * lipL / 2, lipDY = Math.sin(lipA) * lipL / 2;
+      [-1, 1].forEach(function (sgn) {
+        walls.push(Bodies.rectangle(
+          cx + sgn * (half - 10) - sgn * lipDX,
+          topEnd - 1 - lipDY,
+          lipL, 11,
+          { isStatic: true, angle: sgn * lipA, friction: 0.4, restitution: 0.02 }
+        ));
+      });
       // Everything built so far is the floe itself, and the floe floats:
       // remember where each piece sits at zero load so the sink pass can
       // move them as one.
@@ -285,9 +344,9 @@
 
     if (VARIANT === "zerog") {
       // Scatter on a jittered grid with a slow drift; no pour.
-      var cols = Math.ceil(Math.sqrt(ICONS.length * s.w / s.h));
-      var rows = Math.ceil(ICONS.length / cols);
-      ICONS.forEach(function (icon, i) {
+      var cols = Math.ceil(Math.sqrt(ROSTER.length * s.w / s.h));
+      var rows = Math.ceil(ROSTER.length / cols);
+      ROSTER.forEach(function (icon, i) {
         var el = document.createElement("div");
         el.className = "pit-icon";
         el.style.width = el.style.height = size + "px";
@@ -311,7 +370,7 @@
         icons.push({ body: body, el: el, key: icon[0], label: icon[1] });
         setTimeout(function () {
           Composite.add(engine.world, body);
-          if (i === ICONS.length - 1) pit.classList.add("ready");
+          if (i === ROSTER.length - 1) pit.classList.add("ready");
         }, 60 * i);
       });
       return;
@@ -324,7 +383,7 @@
     // icons slide down the curve — spreading to the rim lets them wedge
     // into a stable arch across the mouth; stacking one column is worse.
     var offsets = [-0.42, 0.34, -0.22, 0.42, -0.08, 0.16, -0.34, 0, 0.26, -0.14];
-    ICONS.forEach(function (icon, i) {
+    ROSTER.forEach(function (icon, i) {
       var el = document.createElement("div");
       el.className = "pit-icon";
       el.style.width = el.style.height = size + "px";
@@ -339,8 +398,11 @@
           chamfer: { radius: size * 0.225 },
           restitution: VARIANT === "iceberg" ? 0.25 : 0.35,
           // Grippy on ice so the open mound piles steep instead of
-          // shedding its edges into the water.
-          friction: VARIANT === "iceberg" ? 0.45 : 0.08,
+          // shedding its edges into the water. frictionStatic is the half
+          // that matters for the bottom course: it is not sliding yet, it
+          // is being squeezed, and this is what makes it hold.
+          friction: VARIANT === "iceberg" ? 0.5 : 0.08,
+          frictionStatic: VARIANT === "iceberg" ? 1.4 : 0.5,
           frictionAir: 0.015,
           angle: Math.random() * 0.8 - 0.4,
         }
@@ -350,7 +412,7 @@
       // Stagger the automatic drop so the icons pour in rather than dump.
       setTimeout(function () {
         Composite.add(engine.world, body);
-        if (i === ICONS.length - 1) { pit.classList.add("ready"); allSpawned = true; }
+        if (i === ROSTER.length - 1) { pit.classList.add("ready"); allSpawned = true; }
       }, 260 + i * SPAWN_GAP);
     });
   }
@@ -375,7 +437,13 @@
       // However it comes alive — gesture, engagement history, a site the
       // visitor has allowed — that is the signal to pour out loud.
       ctx.onstatechange = function () {
-        if (ctx.state !== "running") return;
+        if (ctx.state !== "running") {
+          // iOS parks a context as "interrupted" (a call, the lock screen)
+          // and as "suspended" after a long idle. Either way it is not
+          // audible any more, so stop claiming it is.
+          armed = false;
+          return;
+        }
         armed = true;
         if (onLive) onLive();
       };
@@ -386,22 +454,50 @@
        and on a browser that allows audio — engagement history, autoplay
        permitted for the site — a mouse move is enough to start the show
        with nobody having to tap anything. */
+    /* iOS mutes Web Audio outright whenever the ring/silent switch is on
+       — no error, no state change, just silence — unless the page claims a
+       playback session. Safari 16.4+ only; everywhere else this is a
+       no-op. It is the difference between a phone that pops and a phone
+       that does nothing, which is exactly what Jack saw. */
+    function claimSession() {
+      try {
+        if (navigator.audioSession && navigator.audioSession.type !== "playback")
+          navigator.audioSession.type = "playback";
+      } catch (e) {}
+    }
     var lastTry = -1e9;
     function tryResume() {
-      if (armed || muted) return;
+      if (muted) return;
+      if (armed && ctx && ctx.state === "running") return; // already live
       var now = (window.performance && performance.now) ? performance.now() : +new Date();
       if (now - lastTry < 400) return; // mousemove fires by the hundred
       lastTry = now;
       var c = ensure();
       if (!c) return;
-      if (c.state === "running") { armed = true; if (onLive) onLive(); return; }
+      if (c.state === "running") { if (!armed) { armed = true; if (onLive) onLive(); } return; }
       var r = c.resume();
       if (r && r.catch) r.catch(function () {});
     }
+    /* A gesture is not the same thing as permission. WebKit only counts
+       ACTIVATION events — touchend, click, keydown — so the resume asked
+       for inside a pointerdown is refused and the context stays suspended.
+       The old arm() believed itself anyway: it latched armed = true, every
+       cue after it was scheduled into a dead context, and tryResume's
+       `if (armed) return` meant the touchend that WOULD have worked never
+       tried again. A phone therefore went silent on the first tap and
+       stayed silent for the whole visit. armed now means one thing only —
+       the context is genuinely running (ctx.onstatechange sets it, and it
+       is what every cue checks). arm() just asks, as often as it likes. */
     function arm() {
-      armed = true;
+      claimSession();
       var c = ensure();
-      if (c && c.state === "suspended") c.resume();
+      if (!c) return;
+      if (c.state === "running") {
+        if (!armed) { armed = true; if (onLive) onLive(); }
+        return;
+      }
+      var r = c.resume();
+      if (r && r.catch) r.catch(function () {});
     }
     /* Oscillator scheduled while the context is still resuming plays the
        moment it comes alive — no need to await resume(). */
@@ -543,9 +639,50 @@
       return false;
     }
     return { arm: arm, probe: probe, tryResume: tryResume, hit: hit, land: land, pop: pop, plop: plop,
+             claimSession: claimSession,
              setMuted: setMuted, onLive: function (fn) { onLive = fn; },
              isMuted: function () { return muted; },
              stats: function () { return { armed: armed, state: ctx ? ctx.state : null, played: played }; } };
+  })();
+
+  /* ── Haptics: the ice knocks back ────────────────────────────────────
+     Android hands out the Vibration API. iOS never has — but since 17.4 a
+     switch-style checkbox buzzes the Taptic engine as it toggles, so an
+     off-screen switch clicked from code is the only way a web page taps
+     back on an iPhone. Both routes are throttled hard: 27 icons landing
+     inside five seconds would otherwise be one continuous buzz, which
+     reads as a malfunction rather than a pour. */
+  var haptics = (function () {
+    var canVibrate = !!(navigator.vibrate && typeof navigator.vibrate === "function");
+    var iosSwitch = !canVibrate && "ontouchend" in window &&
+      /iP(hone|od|ad)|Macintosh/.test(navigator.userAgent || "");
+    var label = null, lastAt = -1e9;
+    function ensure() {
+      if (label || !iosSwitch) return;
+      label = document.createElement("label");
+      label.className = "haptic-tap";
+      label.setAttribute("aria-hidden", "true");
+      var input = document.createElement("input");
+      input.type = "checkbox";
+      input.setAttribute("switch", ""); // the toggle that carries the buzz
+      input.tabIndex = -1;
+      label.appendChild(input);
+      document.body.appendChild(label);
+    }
+    function tap(strength) {
+      if (REDUCED || (!canVibrate && !iosSwitch)) return;
+      var now = (window.performance && performance.now) ? performance.now() : +new Date();
+      if (now - lastAt < 90) return; // one knock per landing, not per contact
+      lastAt = now;
+      if (canVibrate) {
+        // 7ms for a graze, 20 for a real drop — a tap, never a rumble.
+        navigator.vibrate(Math.round(7 + 13 * Math.max(0, Math.min(1, strength || 0.4))));
+        return;
+      }
+      ensure();
+      if (label) label.click();
+    }
+    return { tap: tap, supported: function () { return canVibrate || iosSwitch; } };
   })();
 
   function iconForBody(body) {
@@ -582,6 +719,7 @@
         if (simNow - (landedIcon.lastGroundPopAt || -1e9) > 260) {
           landedIcon.lastGroundPopAt = simNow;
           if (sfx.land(impact)) landsHeard++; // enough of these and the replay is unnecessary
+          if (!sfx.isMuted()) haptics.tap(impact); // and the phone feels it
           thumpBerg(impact);                  // the floe feels it
           if (rel > 1.6) snowImpact(landedIcon, impact); // and the snow shows it
         }
@@ -594,8 +732,10 @@
      silences every landing — the pops Jack expects are simply never heard.
      Arming therefore also schedules a replay of the pour (see maybeRepour):
      the colony lifts back into the sky and falls again, this time out loud. */
-  ["pointerdown", "pointerup", "keydown"].forEach(function (type) {
-    document.addEventListener(type, function () {
+  ["pointerdown", "pointerup", "touchend", "click", "keydown"].forEach(function (type) {
+    document.addEventListener(type, function (e) {
+      // The haptic switch clicks itself; only a real visitor counts.
+      if (e && e.isTrusted === false) return;
       sfx.arm();
       hideInvite(); // the gesture it was asking for has arrived
       beginPour();   // the held pour is now allowed to run — and be heard
@@ -635,6 +775,7 @@
     stage.classList.add("dragging");
     pit.classList.add("touched");
     sfx.pop();
+    if (!sfx.isMuted()) haptics.tap(0.55);
     if (clientEvent && clientEvent.cancelable) clientEvent.preventDefault();
     return true;
   }
@@ -650,6 +791,9 @@
     dragConstraint = null;
     dragMeta = null;
     stage.classList.remove("dragging");
+    // A throw is allowed to outrun a fall for a moment (see TOSS_CAP).
+    var thrown = iconForBody(meta && meta.body);
+    if (thrown) thrown.tossedAt = Date.now();
     // A short, small movement counts as a tap → show the icon's name.
     if (meta && pt && Date.now() - meta.t < 350 &&
         Math.hypot(pt.x - meta.startX, pt.y - meta.startY) < 7) {
@@ -737,7 +881,13 @@
 
   /* ── Render loop (DOM transforms; paused when off-screen) ────── */
   var running = false, rafId = null, lastT = 0;
-  var SPEED_CAP = VARIANT === "zerog" ? 4 : 24;
+  /* Terminal velocity. The sky is hundreds of pixels above the ice, so
+     an uncapped icon arrives like a dropped brick and splashes the
+     course it lands on off the ends of the floe. 13 still reads as a
+     fall and still lands hard enough to thump the berg. */
+  var SPEED_CAP = VARIANT === "zerog" ? 4 : VARIANT === "iceberg" ? 13 : 24;
+  var TOSS_CAP = 24;                     // a throw may outrun the fall
+
 
   function frame(t) {
     if (!running) return;
@@ -747,8 +897,9 @@
     for (var i = 0; i < icons.length; i++) {
       var it = icons[i], b = it.body, half = it.el.offsetWidth / 2;
       // Keep tosses fun but sub-orbital: cap linear and angular speed.
+      var cap = (it.tossedAt && Date.now() - it.tossedAt < 900) ? TOSS_CAP : SPEED_CAP;
       var sp = Math.hypot(b.velocity.x, b.velocity.y);
-      if (sp > SPEED_CAP) Body.setVelocity(b, { x: b.velocity.x * SPEED_CAP / sp, y: b.velocity.y * SPEED_CAP / sp });
+      if (sp > cap) Body.setVelocity(b, { x: b.velocity.x * cap / sp, y: b.velocity.y * cap / sp });
       if (Math.abs(b.angularVelocity) > 0.45) Body.setAngularVelocity(b, 0.45 * Math.sign(b.angularVelocity));
       it.el.style.transform =
         "translate(" + (b.position.x - half).toFixed(1) + "px," +
@@ -770,11 +921,31 @@
   new IntersectionObserver(function (entries) {
     stageOnScreen = entries[0].isIntersecting;
     setRunning(stageOnScreen && !document.hidden);
-    if (stageOnScreen) { armPourGrace(); maybeRepour(); }
+    if (stageOnScreen) maybeRepour();
   }, { threshold: 0.02 }).observe(stage);
+
+  /* The pour waits for the ICE to be somewhere on screen, not merely for
+     the stage. The stage's top edge crosses into view long before the floe
+     does, and on a short phone that meant the whole pour ran and finished
+     below the fold: scroll down and the icons are simply already there.
+     The threshold is deliberately low — a laptop shows a sliver of berg at
+     load and should still pour on arrival, icons streaming past the
+     headline the way they always have. (zerog paints no berg: watch the
+     stage there.) */
+  var pourTarget = (VARIANT === "zerog" || !bergVisual) ? stage : bergVisual;
+  var bergOnScreen = false;
+  new IntersectionObserver(function (entries) {
+    if (!entries[0].isIntersecting) return;
+    bergOnScreen = true;
+    armPourGrace();
+  }, { threshold: 0.02 }).observe(pourTarget);
   document.addEventListener("visibilitychange", function () {
     if (document.hidden) setRunning(false);
-    else if (stage.getBoundingClientRect().bottom > 0) { setRunning(true); maybeRepour(); }
+    else if (stage.getBoundingClientRect().bottom > 0) {
+      setRunning(true);
+      sfx.tryResume(); // iOS parks the context behind a lock screen or a call
+      maybeRepour();
+    }
   });
 
   /* ── The floe takes the weight ────────────────────────────────────────
@@ -1239,12 +1410,18 @@
   }
 
   function beginPour(force) {
-    if (pourStarted || (!force && !stageOnScreen)) return;
+    if (pourStarted || (!force && !(stageOnScreen && bergOnScreen))) return;
     pourStarted = true;
     if (pourGraceTimer) { clearTimeout(pourGraceTimer); pourGraceTimer = null; }
-    // Poured without a gesture: the landings are about to be swallowed,
-    // so the invite stops asking for a pour and starts offering the replay.
-    if (!sfx.stats().armed && !force) showInvite("Tap for the sound");
+    // Poured without audio: the landings are about to be swallowed, so the
+    // invite stops asking for a pour and starts offering the replay. The
+    // check waits a beat because a resume asked for in this same gesture
+    // is still in flight — armed only turns true when the context reports
+    // itself running, which is a tick or two later. (A gesture that DID
+    // arrive has already called hideInvite, and that is permanent.)
+    if (!force) setTimeout(function () {
+      if (!sfx.stats().armed) showInvite("Tap for the sound");
+    }, 700);
     spawnIcons();
   }
 
@@ -1282,6 +1459,6 @@
   // for screenshot tooling that can't wait out the animation.
   if (/[?&]settle\b/.test(location.search)) {
     setTimeout(function () { window.__nivolo.step(2600); },
-      260 + ICONS.length * SPAWN_GAP + 600);
+      260 + ROSTER.length * SPAWN_GAP + 600);
   }
 })();
