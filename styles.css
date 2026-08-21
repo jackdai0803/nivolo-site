@@ -133,9 +133,21 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
   width: 34px; flex-shrink: 0;
   display: grid; place-items: center;
 }
+/* A grey line drawn round the face itself, not a tile round its box: the
+   mark is mostly white and the navbar is white, so without it the head
+   dissolves into the pill and only the eyes read. Eight stacked
+   drop-shadows are the only way to stroke a PNG's alpha — four cardinal
+   at full weight, four diagonal a shade shorter so the corners don't
+   bulge — and the old soft shadow stays underneath to keep it sitting
+   ON the pill rather than printed onto it. */
 .logo-mark img {
   display: block; width: 100%; height: auto;
-  filter: drop-shadow(0 2px 5px rgba(22, 23, 26, 0.16));
+  filter:
+    drop-shadow(1.2px 0 0 var(--ink-3)) drop-shadow(-1.2px 0 0 var(--ink-3))
+    drop-shadow(0 1.2px 0 var(--ink-3)) drop-shadow(0 -1.2px 0 var(--ink-3))
+    drop-shadow(0.9px 0.9px 0 var(--ink-3)) drop-shadow(-0.9px 0.9px 0 var(--ink-3))
+    drop-shadow(0.9px -0.9px 0 var(--ink-3)) drop-shadow(-0.9px -0.9px 0 var(--ink-3))
+    drop-shadow(0 2px 4px rgba(22, 23, 26, 0.14));
 }
 .logo:hover { text-decoration: none; }
 .nav-links { display: flex; align-items: center; gap: 22px; font-size: 14px; font-weight: 600; }
