@@ -685,6 +685,162 @@
     return { tap: tap, supported: function () { return canVibrate || iosSwitch; } };
   })();
 
+  /* ── Give: the icons are not rigid ───────────────────────────────────
+     A sprite that falls at a constant shape and stops dead reads as a
+     sticker dropped on a photograph. Real things take the hit: they
+     flatten along the line of the blow, the side away from the contact
+     flexes up a beat later, and both spring back past their own shape
+     before they settle. Two damped springs per icon do that — a quick one
+     for the squash (~200ms, two visible bounces) and a slower, floppier
+     one for the fold, so the bend trails the flattening instead of moving
+     with it. That lag is the whole difference between something that
+     gives and something that is merely being scaled.
+
+     The squash runs along the CONTACT axis rather than the screen's, and
+     pivots on the point that was struck, so an icon that lands on a
+     corner folds over that corner. Hard enough and it keeps a little of
+     both — a dent that eases out over the next second, so the icon wears
+     the fall for a moment instead of snapping straight back to perfect.
+
+     It all rides on the <img>, because the wrapper's transform belongs to
+     the render loop, and it is only written for icons that are moving,
+     deforming or held: a settled colony costs nothing per frame. */
+  var GIVE = {
+    stiff: 0.28, damp: 0.86,          // squash spring: ~200ms, two bounces
+    amt: 0.30,                        // how much of `s` becomes flattening
+    foldStiff: 0.12, foldDamp: 0.885, // the bend, deliberately slower
+    // Perspective has to be a MULTIPLE of the icon, not a fixed distance:
+    // a 420px vanishing point barely bends a 69px square, and the same
+    // number on a phone's 41px icon does nothing at all.
+    perspRatio: 2.6,
+    airFrom: 4.5, airRate: 0.011, airMax: 0.13,
+    maxS: 0.75, maxStretch: 0.55, maxFold: 14,
+    keep: 0.978,                      // what the landing left behind, per tick
+    holdScale: 1.06,
+  };
+  var DEG = 180 / Math.PI;
+
+  function giveState(it) {
+    return it.give || (it.give = { s: 0, sv: 0, a: 0, fold: 0, foldV: 0,
+                                   res: 0, resFold: 0, hold: 0, ox: 50, oy: 50 });
+  }
+
+  /* Which way the blow came from: the real contact points when Matter
+     hands them over, otherwise the line between the two centres. The
+     difference matters — an icon landing on the tip of the floe is struck
+     from below, not from the middle of the slab. */
+  function contactDir(it, otherBody, pair) {
+    var p = it.body.position;
+    var col = pair && pair.collision;
+    var sup = col && col.supports;
+    // Matter keeps `supports` as a reused, over-long array — only the
+    // first `supportCount` entries are this collision's, the rest are
+    // stale or null. Reading past the count throws.
+    var count = sup ? Math.min(sup.length, col.supportCount == null ? sup.length : col.supportCount) : 0;
+    if (count) {
+      var sx = 0, sy = 0, used = 0;
+      for (var i = 0; i < count; i++) {
+        if (!sup[i]) continue;
+        sx += sup[i].x; sy += sup[i].y; used++;
+      }
+      if (used) {
+        var dx = sx / used - p.x, dy = sy / used - p.y;
+        if (Math.abs(dx) + Math.abs(dy) > 0.5) return { x: dx, y: dy };
+      }
+    }
+    return { x: otherBody.position.x - p.x, y: otherBody.position.y - p.y };
+  }
+
+  /* Kick both springs. `dir` points from the icon's centre toward whatever
+     it hit, in world space; `imp` is 0..1; `spin` decides which way the
+     free side folds. */
+  function giveKick(it, imp, dir, spin) {
+    if (REDUCED || !it) return;
+    var g = giveState(it);
+    imp = Math.max(0, Math.min(1, imp));
+    var len = Math.hypot(dir.x, dir.y) || 1;
+    var ux = dir.x / len, uy = dir.y / len;
+    // Held in the icon's OWN frame: a dent belongs to the material, so it
+    // turns with the icon as it rolls and settles.
+    g.a = Math.atan2(uy, ux) - it.body.angle;
+    g.ox = 50 + 45 * ux;
+    g.oy = 50 + 45 * uy;
+    // The strongest blow wins; blows do NOT add up. An icon buried in the
+    // mound is in contact with three neighbours and the ice at once, and
+    // summing those kicks folded it clean in half on the first tick.
+    var kick = 0.055 + 0.30 * imp;
+    if (kick > g.sv) g.sv = kick;
+    var fk = (1 + 3.4 * imp) * (spin < 0 ? -1 : 1);
+    if (Math.abs(fk) > Math.abs(g.foldV)) g.foldV = fk;
+    if (imp > 0.62) { // a real drop leaves a mark for a second or so
+      var over = (imp - 0.62) / 0.38;
+      g.res = Math.max(g.res, 0.035 + 0.075 * over);
+      g.resFold = (Math.abs(g.resFold) > 1.6 + 3.4 * over ? g.resFold
+        : (1.6 + 3.4 * over) * (spin < 0 ? -1 : 1));
+    }
+  }
+
+  function giveStep(it) {
+    if (REDUCED) return;
+    var g = it.give, b = it.body;
+    var img = it.img || (it.img = it.el.querySelector("img"));
+    if (!img) return;
+    var held = !!(dragConstraint && dragConstraint.bodyB === b);
+    var sp = Math.hypot(b.velocity.x, b.velocity.y);
+    var stretching = sp > GIVE.airFrom;
+    var busy = g && (Math.abs(g.s) > 0.002 || Math.abs(g.sv) > 0.002 ||
+                     Math.abs(g.fold) > 0.05 || Math.abs(g.foldV) > 0.05 ||
+                     g.res > 0.002 || Math.abs(g.resFold) > 0.05 || g.hold > 0.004);
+    if (!busy && !stretching && !held) {
+      if (it.giveOn) { img.style.transform = ""; img.style.transformOrigin = ""; it.giveOn = false; }
+      return;
+    }
+    g = giveState(it);
+    g.sv += -g.s * GIVE.stiff; g.sv *= GIVE.damp; g.s += g.sv;
+    g.foldV += -g.fold * GIVE.foldStiff; g.foldV *= GIVE.foldDamp; g.fold += g.foldV;
+    // Ceilings, with the velocity killed at the wall so the spring settles
+    // instead of grinding against its own limit.
+    if (g.s > GIVE.maxS) { g.s = GIVE.maxS; if (g.sv > 0) g.sv = 0; }
+    else if (g.s < -GIVE.maxStretch) { g.s = -GIVE.maxStretch; if (g.sv < 0) g.sv = 0; }
+    if (g.fold > GIVE.maxFold) { g.fold = GIVE.maxFold; if (g.foldV > 0) g.foldV = 0; }
+    else if (g.fold < -GIVE.maxFold) { g.fold = -GIVE.maxFold; if (g.foldV < 0) g.foldV = 0; }
+    g.res *= GIVE.keep; g.resFold *= GIVE.keep;
+    g.hold += ((held ? 1 : 0) - g.hold) * 0.18;
+
+    var k = 0, ang = 0, atContact = false;
+    if (Math.abs(g.s) + g.res > 0.006) {
+      k = (g.s + g.res) * GIVE.amt;
+      ang = g.a;
+      atContact = true;
+    } else if (stretching) {
+      // Falling or thrown: elongate along the line of travel. The oldest
+      // trick there is, and still the one that makes speed read as weight.
+      k = -Math.min(GIVE.airMax, (sp - GIVE.airFrom) * GIVE.airRate);
+      ang = Math.atan2(b.velocity.y, b.velocity.x) - b.angle;
+    }
+    k = Math.max(-0.20, Math.min(0.26, k));
+    var fold = g.fold + g.resFold;
+    var bent = Math.abs(fold) > 0.06;
+
+    var t = "";
+    if (bent) {
+      var pp = it.persp || (it.persp = Math.max(90, Math.round((it.el.offsetWidth || 64) * GIVE.perspRatio)));
+      t += "perspective(" + pp + "px) ";
+    }
+    if (g.hold > 0.004) t += "scale(" + (1 + (GIVE.holdScale - 1) * g.hold).toFixed(3) + ") ";
+    if (bent || Math.abs(k) > 0.0008) {
+      var A = ang * DEG;
+      t += "rotate(" + A.toFixed(1) + "deg) ";
+      if (bent) t += "rotateY(" + fold.toFixed(2) + "deg) ";
+      t += "scale(" + (1 - k).toFixed(4) + "," + (1 + k * 0.86).toFixed(4) + ") ";
+      t += "rotate(" + (-A).toFixed(1) + "deg)";
+    }
+    img.style.transformOrigin = atContact
+      ? g.ox.toFixed(1) + "% " + g.oy.toFixed(1) + "%" : "50% 50%";
+    img.style.transform = t;
+    it.giveOn = true;
+  }
+
   function iconForBody(body) {
     for (var i = 0; i < icons.length; i++) {
       if (icons[i].body === body) return icons[i];
@@ -704,6 +860,17 @@
       // throttle above folds a many-body pile-up into a pleasant short run.
       if (iconA && iconB) {
         if (rel > 0.7) sfx.hit(Math.max(0.2, Math.min(1, rel / 12)));
+        // Both sides of a knock give a little — the one that arrives and
+        // the one that was sitting there. Kept well under a landing so a
+        // settling pile shivers rather than throbs.
+        if (rel > 1) {
+          // An icon dropped onto the mound lands on another ICON, not on
+          // the ice, so this path has to carry a real landing as well as a
+          // settling shiver — hence the wide range off one relative speed.
+          var nudge = Math.min(0.7, rel / 16);
+          giveKick(iconA, nudge, contactDir(iconA, pa.bodyB, pa), pa.bodyA.velocity.x >= 0 ? 1 : -1);
+          giveKick(iconB, nudge, contactDir(iconB, pa.bodyA, pa), pa.bodyB.velocity.x >= 0 ? 1 : -1);
+        }
         continue;
       }
 
@@ -716,6 +883,15 @@
       if (landedIcon && otherBody.label === "nivolo-ground" && rel > 0.55) {
         var simNow = engine.timing.timestamp;
         var impact = Math.max(0.34, Math.min(1, rel / 11));
+        // The give is throttled tighter than the sound on purpose: a
+        // settling bounce should still be SEEN taking the ice, it just
+        // shouldn't pop a second time.
+        if (simNow - (landedIcon.lastGiveAt || -1e9) > 90) {
+          landedIcon.lastGiveAt = simNow;
+          var lb = landedIcon.body;
+          giveKick(landedIcon, impact, contactDir(landedIcon, otherBody, pa),
+                   lb.velocity.x + lb.angularVelocity * 24 >= 0 ? 1 : -1);
+        }
         if (simNow - (landedIcon.lastGroundPopAt || -1e9) > 260) {
           landedIcon.lastGroundPopAt = simNow;
           if (sfx.land(impact)) landsHeard++; // enough of these and the replay is unnecessary
@@ -772,6 +948,14 @@
     Composite.add(engine.world, dragConstraint);
     Matter.Sleeping.set(body, false);
     dragMeta = { startX: pt.x, startY: pt.y, t: Date.now(), body: body };
+    // Picked up: it pinches where the finger closed on it, rises toward
+    // the viewer and drops a longer shadow — held, not merely selected.
+    var grabbed = iconForBody(body);
+    if (grabbed) {
+      grabbed.el.classList.add("held");
+      giveKick(grabbed, 0.26, { x: pt.x - body.position.x, y: pt.y - body.position.y },
+               pt.x >= body.position.x ? 1 : -1);
+    }
     stage.classList.add("dragging");
     pit.classList.add("touched");
     sfx.pop();
@@ -794,6 +978,10 @@
     // A throw is allowed to outrun a fall for a moment (see TOSS_CAP).
     var thrown = iconForBody(meta && meta.body);
     if (thrown) thrown.tossedAt = Date.now();
+    // Clear the lift from whatever is wearing it, not just from the body we
+    // think we were holding — a stuck shadow outlives the gesture.
+    var lifted = stage.querySelectorAll(".pit-icon.held");
+    for (var li = 0; li < lifted.length; li++) lifted[li].classList.remove("held");
     // A short, small movement counts as a tap → show the icon's name.
     if (meta && pt && Date.now() - meta.t < 350 &&
         Math.hypot(pt.x - meta.startX, pt.y - meta.startY) < 7) {
@@ -889,22 +1077,36 @@
   var TOSS_CAP = 24;                     // a throw may outrun the fall
 
 
-  function frame(t) {
-    if (!running) return;
-    var dt = lastT ? Math.min(t - lastT, 33) : 16.7;
-    lastT = t;
-    Engine.update(engine, dt);
+  /* Speed limits belong to the SIM, painting belongs to the frame — kept
+     apart so tooling can step the engine many times and paint once. */
+  function governSpeeds() {
     for (var i = 0; i < icons.length; i++) {
-      var it = icons[i], b = it.body, half = it.el.offsetWidth / 2;
+      var it = icons[i], b = it.body;
       // Keep tosses fun but sub-orbital: cap linear and angular speed.
       var cap = (it.tossedAt && Date.now() - it.tossedAt < 900) ? TOSS_CAP : SPEED_CAP;
       var sp = Math.hypot(b.velocity.x, b.velocity.y);
       if (sp > cap) Body.setVelocity(b, { x: b.velocity.x * cap / sp, y: b.velocity.y * cap / sp });
       if (Math.abs(b.angularVelocity) > 0.45) Body.setAngularVelocity(b, 0.45 * Math.sign(b.angularVelocity));
+    }
+  }
+
+  function paintIcons() {
+    for (var i = 0; i < icons.length; i++) {
+      var it = icons[i], b = it.body, half = it.el.offsetWidth / 2;
       it.el.style.transform =
         "translate(" + (b.position.x - half).toFixed(1) + "px," +
         (b.position.y - half).toFixed(1) + "px) rotate(" + b.angle.toFixed(3) + "rad)";
+      giveStep(it);
     }
+  }
+
+  function frame(t) {
+    if (!running) return;
+    var dt = lastT ? Math.min(t - lastT, 33) : 16.7;
+    lastT = t;
+    Engine.update(engine, dt);
+    governSpeeds();
+    paintIcons();
     drawLines();
     rafId = requestAnimationFrame(frame);
   }
@@ -1056,12 +1258,12 @@
     bobWrap.appendChild(puff);
     setTimeout(function () { puff.remove(); }, 800);
 
-    var img = it.el.querySelector("img");
-    if (img) {
-      img.classList.remove("pressed");
-      void img.offsetWidth; // restart the keyframe on a rapid second landing
-      img.classList.add("pressed");
-    }
+    // The shadow reports it too: it snaps tight under the icon at the
+    // moment of contact and eases back out as the icon settles. (The
+    // squash and the fold are the give springs' job — see giveKick.)
+    it.el.classList.remove("thud");
+    void it.el.offsetWidth; // restart the keyframe on a rapid second landing
+    it.el.classList.add("thud");
   }
 
   /* Maintenance pass on the ENGINE TICK (not wall clock — must advance
@@ -1078,6 +1280,10 @@
 
   function respawnFromSky(it, s) {
     var b = it.body;
+    it.give = null; // it doesn't carry the last landing's dent into the next fall
+    it.el.classList.remove("thud", "held");
+    if (it.img) { it.img.style.transform = ""; it.img.style.transformOrigin = ""; }
+    it.giveOn = false;
     clearSinkState(it);
     it.lastGroundPopAt = -1e9; // a fresh fall always earns a fresh pop
     Body.setPosition(b, {
@@ -1202,6 +1408,8 @@
         it.el.classList.add("is-sinking");
         splashAt(p.x, waterYCurrent, impact);
         sfx.plop(impact);
+        // Water is a surface too: it squashes the icon before it gives way.
+        giveKick(it, impact * 0.8, { x: 0, y: 1 }, b.velocity.x >= 0 ? 1 : -1);
         Matter.Sleeping.set(b, false);
       }
       if (!it.sinking) continue;
@@ -1444,8 +1652,9 @@
 
   // Console/debug handle: lets tooling step the sim deterministically
   // (rAF never fires in hidden tabs, so screenshots freeze mid-pour).
-  window.__nivolo = { engine: engine, icons: icons, sfx: sfx, step: function (n) {
-    for (var i = 0; i < n; i++) Engine.update(engine, 16.7);
+  window.__nivolo = { engine: engine, icons: icons, sfx: sfx, give: GIVE, step: function (n) {
+    for (var i = 0; i < n; i++) { Engine.update(engine, 16.7); governSpeeds(); }
+    paintIcons();
     drawLines();
   }, repour: repour, stats: function () {
     return {
