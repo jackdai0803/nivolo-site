@@ -1150,6 +1150,11 @@
   new IntersectionObserver(function (entries) {
     stageOnScreen = entries[0].isIntersecting;
     setRunning(stageOnScreen && !document.hidden);
+    // The sim has always paused off-screen; the CSS did not. The swell is a
+    // 100vw band repainting every frame and the bob moves the floe, and both
+    // kept doing it the whole way down the page — competing with the scroll
+    // that took them out of view in the first place.
+    pit.classList.toggle("out-of-view", !stageOnScreen);
     if (stageOnScreen) maybeRepour();
   }, { threshold: 0.02 }).observe(stage);
 
@@ -1184,7 +1189,7 @@
      PHYSICS slabs and the painted berg by the same amount, so the whole
      pile rides down with the ice instead of hovering over it. The
      waterline stays put — that is what makes the berg look loaded. */
-  var bergSink = 0, bergSinkVel = 0, bergSinkApplied = 0;
+  var bergSink = 0, bergSinkVel = 0, bergSinkApplied = 0, lastBergSink = null;
   var BERG_SINK_MAX = 16, BERG_SINK_PER_ICON = 0.75;
 
   function thumpBerg(impact) { bergSinkVel += 0.35 + impact * 1.1; }
@@ -1246,7 +1251,17 @@
       if (b.position.y < 0 || b.position.y > waterYCurrent) continue;
       Body.translate(b, { x: 0, y: d });
     }
-    if (bergVisual) bergVisual.style.setProperty("--berg-sink", bergSink.toFixed(2) + "px");
+    // Quantised to a quarter pixel, and only written when it changes. The
+    // floe is a large clip-pathed element with a drop-shadow, so moving it
+    // is a real repaint — and at rest this was ordering one every frame for
+    // a value whose last two decimals nobody can see.
+    if (bergVisual) {
+      var bs = (Math.round(bergSink * 4) / 4).toFixed(2) + "px";
+      if (bs !== lastBergSink) {
+        lastBergSink = bs;
+        bergVisual.style.setProperty("--berg-sink", bs);
+      }
+    }
   }
 
   /* Snow gives where an icon hits it: a shallow divot at the contact
@@ -1304,6 +1319,7 @@
     it.el.classList.remove("is-sinking");
     it.el.style.opacity = "1";
     it.sway = null;
+    it.lastDress = it.lastBlur = null; // memos for the per-frame write skip
     ["--sink-blur", "--sink-sat", "--sink-dim", "--sink-tint"].forEach(function (k) {
       it.el.style.removeProperty(k);
     });
@@ -1504,10 +1520,22 @@
       // comes up over the icon: by the bottom it is a dim blue shape, not
       // a grey one. Neither end starts at nothing — crossing the surface
       // still has to read as an instant change.
-      var dress = it.el.style;
-      dress.setProperty("--sink-sat", (0.85 - 0.45 * progress).toFixed(3));
-      dress.setProperty("--sink-dim", (0.88 - 0.32 * progress).toFixed(3));
-      dress.setProperty("--sink-tint", (0.18 + 0.60 * progress).toFixed(3));
+      // Quantised, and skipped when the step lands on the same values as
+      // last frame. Every one of these is a filter on a blurred,
+      // drop-shadowed element: changing them re-rasterises it, and a
+      // three-decimal ramp asks for that ~50 times more often than the
+      // picture actually changes.
+      var sat = (Math.round((0.85 - 0.45 * progress) * 50) / 50).toFixed(2);
+      var dim = (Math.round((0.88 - 0.32 * progress) * 50) / 50).toFixed(2);
+      var tint = (Math.round((0.18 + 0.60 * progress) * 50) / 50).toFixed(2);
+      var dressed = sat + dim + tint;
+      if (dressed !== it.lastDress) {
+        it.lastDress = dressed;
+        var dress = it.el.style;
+        dress.setProperty("--sink-sat", sat);
+        dress.setProperty("--sink-dim", dim);
+        dress.setProperty("--sink-tint", tint);
+      }
 
       // And it rocks on the way down, the way anything flat falls through
       // water. Sim time, not wall clock, so the rock pauses with the sim;
@@ -1533,7 +1561,13 @@
         soft = f * f * 2.6; // blur: it dissolves into the water, not just down
       }
       it.el.style.opacity = Math.max(0, Math.min(1, opacity)).toFixed(3);
-      it.el.style.setProperty("--sink-blur", soft.toFixed(2) + "px");
+      // Opacity above is a compositor property and stays per-frame smooth.
+      // Blur is not: it re-rasterises, so it moves in quarter-pixel steps.
+      var blurPx = (Math.round(soft * 4) / 4).toFixed(2) + "px";
+      if (blurPx !== it.lastBlur) {
+        it.lastBlur = blurPx;
+        it.el.style.setProperty("--sink-blur", blurPx);
+      }
 
       if (p.y >= waterFadeEndCurrent) respawnFromSky(it, s);
     }

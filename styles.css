@@ -291,7 +291,11 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
 .pit-icon.is-sinking {
   filter: drop-shadow(0 8px 14px rgba(0, 24, 70, 0.38))
     saturate(var(--sink-sat, 0.85)) brightness(var(--sink-dim, 0.88)) blur(var(--sink-blur, 0px));
-  transition: filter 0.35s ease;
+  /* No transition: the sinking pass writes every one of these values fresh
+     each frame, so a transition has nothing to smooth and everything to
+     re-interpolate — a blurred, drop-shadowed element re-rasterised twice
+     over. The ramps are already frame-rate smooth on their own. */
+  transition: none;
 }
 /* The blue the water leaves behind. `color` keeps the icon's own light and
    shading and takes only its hue, so a swimmer goes blue-dark rather than
@@ -1172,6 +1176,12 @@ footer {
   box-shadow: none;
   clip-path: polygon(3% 0, 97% 0, 95% 45%, 91% 57%, 82% 68%, 69% 78%, 57% 88%, 50% 100%, 42% 89%, 29% 80%, 17% 70%, 8% 58%, 5% 45%);
   filter: drop-shadow(0 22px 30px rgba(30, 86, 124, 0.24));
+  /* The base .bowl-visual is glass and blurs what is behind it. The floe is
+     not: it is an opaque fill under an opaque snow cap, so the blur was
+     rasterising a backdrop nobody can see — on an element that moves every
+     frame, which is the expensive kind. The bowl variant keeps its glass. */
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   overflow: hidden;
 }
 .pit--iceberg .bowl-visual::before {
@@ -1211,24 +1221,27 @@ footer {
   border: 0;
   border-radius: 0;
   background:
-    radial-gradient(ellipse at 50% 0, rgba(255, 255, 255, 0.78) 0%, rgba(214, 244, 252, 0.34) 34%, transparent 70%) 0 0 / 180px 32px repeat-x,
+    radial-gradient(ellipse at 50% 0, rgba(255, 255, 255, 0.78) 0%, rgba(211, 245, 254, 0.34) 34%, transparent 70%) 0 0 / 180px 32px repeat-x,
     radial-gradient(ellipse at 50% 0, rgba(255, 255, 255, 0.52) 0%, transparent 68%) 80px 9px / 250px 40px repeat-x,
     linear-gradient(180deg,
-      rgba(116, 205, 232, 0.92) 0%,
-      rgba(78, 172, 214, 0.86) 30%,
-      rgba(96, 168, 205, 0.60) 52%,
-      rgba(150, 196, 216, 0.28) 70%,
+      rgba(107, 207, 237, 0.92) 0%,
+      rgba(69, 174, 221, 0.86) 30%,
+      rgba(89, 170, 211, 0.60) 52%,
+      rgba(145, 197, 219, 0.28) 70%,
       rgba(242, 241, 238, 0) 92%,
       rgba(242, 241, 238, 0) 100%);
   box-shadow:
-    0 -10px 30px rgba(120, 200, 230, 0.28),
+    0 -10px 30px rgba(112, 202, 235, 0.28),
     inset 0 16px 30px rgba(255, 255, 255, 0.34);
   clip-path: polygon(0 13px, 7% 2px, 15% 15px, 24% 4px, 34% 13px, 45% 2px, 56% 15px, 67% 2px, 78% 15px, 89% 4px, 100% 13px, 100% 100%, 0 100%);
   -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 56%, rgba(0,0,0,.78) 68%, rgba(0,0,0,.32) 82%, transparent 96%);
   mask-image: linear-gradient(to bottom, #000 0%, #000 56%, rgba(0,0,0,.78) 68%, rgba(0,0,0,.32) 82%, transparent 96%);
   animation: ocean-drift 4.8s linear infinite;
-  filter: saturate(1.12);
-  will-change: background-position, clip-path;
+  /* The 1.12 saturate is baked into the colours above. As a filter it was a
+     full pass over a 100vw band every time the band repainted, which the
+     drift animation makes every frame. will-change is gone for the same
+     reason it never helped: neither background-position nor clip-path is a
+     compositor property, so it bought a layer and repainted it anyway. */
   pointer-events: none;
 }
 @keyframes ocean-drift {
@@ -1248,9 +1261,15 @@ footer {
   .pit--iceberg .bowl-visual { width: 94%; height: 136px; bottom: -21px; background-size: 100% calc(100% - 19px); }
   .pit--iceberg .bowl-visual::before { top: 43px; }
   .pit--iceberg .bowl-visual::after { height: 51px; }
+  .pit--iceberg .berg-mark { top: 63px; font-size: 20px; letter-spacing: 0.16em; text-indent: 0.16em; }
   .pit--iceberg .pit-stage::after { width: 100vw; height: 240px; bottom: -150px; }
   .pit--iceberg .pit-caption { padding-top: 140px; }
 }
+/* Scrolled away: nothing here is being looked at, so nothing here should
+   be asking for frames. night.js sets this from the same observer that
+   parks the sim. */
+.icon-pit.out-of-view .pit-stage::after,
+.icon-pit.out-of-view .pit-bob { animation-play-state: paused; }
 @media (prefers-reduced-motion: reduce) {
   .pit--iceberg .pit-bob { animation: none; }
   .snow-divot, .snow-puff { display: none; }
