@@ -1400,6 +1400,33 @@
     setTimeout(function () { splash.remove(); }, 900);
   }
 
+  /* A swimmer lets go of a little air on the way down. Deliberately sparse:
+     three or four icons are often under at once and every one of them
+     eventually cycles through the water, so this is a cue, not a fountain.
+     Capped globally, and it stops before the icon gets faint — a bubble off
+     a 20%-opacity icon is just a speck with no parent. */
+  var liveBubbles = 0;
+  function bubbleFrom(x, y, alpha) {
+    if (liveBubbles > 11) return;
+    liveBubbles++;
+    var b = document.createElement("span");
+    b.className = "sink-bubble";
+    b.setAttribute("aria-hidden", "true");
+    var size = 3 + Math.random() * 3.4;
+    b.style.left = (x + (Math.random() * 16 - 8)).toFixed(1) + "px";
+    b.style.top = y.toFixed(1) + "px";
+    b.style.width = b.style.height = size.toFixed(1) + "px";
+    b.style.opacity = (0.5 + alpha * 0.4).toFixed(2);
+    b.style.setProperty("--rise", (-46 - Math.random() * 34).toFixed(0) + "px");
+    b.style.setProperty("--drift", (Math.random() * 13 - 6.5).toFixed(1) + "px");
+    var life = 1.5 + Math.random() * 0.5;
+    b.style.setProperty("--life", life.toFixed(2) + "s");
+    stage.appendChild(b);
+    // On a timer rather than animationend, the way the splash clears: an
+    // animation that never runs would stall the count and the cap with it.
+    setTimeout(function () { b.remove(); liveBubbles--; }, life * 1000 + 150);
+  }
+
   /* Sinking (iceberg, every tick): an icon that misses the floe loses
      its splash speed, drifts slowly through the ocean fade, disappears,
      then re-enters from the real top of the page. Collision masking lets
@@ -1417,6 +1444,7 @@
         it.sinking = true;
         it.body.collisionFilter.mask = 0;
         it.sinkPhase = Math.random() * 6.283; // nobody rocks in unison
+        it.nextBubble = engine.timing.timestamp + 240 + Math.random() * 260;
         it.el.classList.add("is-sinking");
         splashAt(p.x, waterYCurrent, impact);
         sfx.plop(impact);
@@ -1461,13 +1489,22 @@
       dress.setProperty("--sink-dim", (0.88 - 0.32 * progress).toFixed(3));
       dress.setProperty("--sink-tint", (0.18 + 0.60 * progress).toFixed(3));
 
-      // And it rocks on the way down, the way anything flat falls through
-      // water. Sim time, not wall clock, so the rock pauses with the sim;
-      // the amplitude ramps in over the first stretch below the surface so
-      // it never starts with a jump.
-      var beat = engine.timing.timestamp * 0.0016 + it.sinkPhase;
+      // And it leans on the way down, the way anything flat falls through
+      // water. Small and slow on purpose — a wide, quick rock makes a rigid
+      // little tile read as jelly. Sim time, not wall clock, so it pauses
+      // with the sim; the amplitude ramps in over the first stretch below
+      // the surface so it never starts with a jump.
+      var now = engine.timing.timestamp;
+      if (progress < 0.55 && now > (it.nextBubble || 0)) {
+        // First one comes soon after the splash, then it settles into a
+        // lazy, irregular cadence — a rhythm reads as machinery.
+        it.nextBubble = now + 620 + Math.random() * 900;
+        bubbleFrom(p.x, p.y, 1 - progress);
+      }
+
+      var beat = now * 0.0011 + it.sinkPhase;
       var rock = Math.min(1, (p.y - waterYCurrent) / 70);
-      it.sway = { x: Math.sin(beat) * 11 * rock, r: Math.sin(beat + 0.8) * 0.15 * rock };
+      it.sway = { x: Math.sin(beat) * 4.5 * rock, r: Math.sin(beat + 0.8) * 0.055 * rock };
 
       var opacity = 1, soft = 0;
       if (p.y > waterFadeStartCurrent) {

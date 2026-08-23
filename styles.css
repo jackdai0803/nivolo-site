@@ -355,6 +355,27 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
   12% { opacity: 0.96; }
   100% { opacity: 0; transform: translate(calc(-50% + var(--dx)), var(--dy)) scale(var(--drop-scale)); }
 }
+/* Air off a swimmer. Same vocabulary as the splash droplets — translucent
+   fill, brighter rim — but rising and slow. It sits under the icons so a
+   bubble never crosses a face, and above the floe so it reads as water. */
+.sink-bubble {
+  position: absolute;
+  z-index: 2;
+  border-radius: 50%;
+  background: rgba(216, 248, 255, 0.34);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  animation: bubble-rise var(--life, 1.7s) cubic-bezier(0.35, 0.1, 0.5, 1) forwards;
+}
+@keyframes bubble-rise {
+  0% { transform: translate(-50%, -50%) scale(0.55); }
+  100% {
+    transform: translate(calc(-50% + var(--drift, 0px)), calc(-50% + var(--rise, -55px))) scale(1.25);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) { .sink-bubble { display: none; } }
 .pit-icon img {
   display: block; width: 100%; height: 100%;
   border-radius: 22.5%;
