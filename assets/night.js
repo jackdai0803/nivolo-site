@@ -1,4 +1,4 @@
-/* Nivolo night sky + icon-bowl physics hero.
+/* Nivolo night sky + icon-floe physics hero.
    Requires matter.js (loaded before this script); degrades to a static
    arrangement when Matter is missing or reduced motion is preferred. */
 (function () {
@@ -24,15 +24,21 @@
   }
   document.body.prepend(sky);
 
-  /* ── Icon bowl ──────────────────────────────────────────────── */
+  /* ── Icon floe ──────────────────────────────────────────────── */
   var pit = document.getElementById("iconPit");
   var stage = document.getElementById("pitStage");
   if (!pit || !stage) return;
 
-  /* Container variants: the floating ice shelf is the shipped default,
-     2026-08-13); ?variant=bowl|zerog keep the alternatives reachable. */
-  var VARIANT = (location.search.match(/[?&]variant=([a-z]+)/) || [])[1] || "iceberg";
-  if (VARIANT !== "bowl") pit.classList.add("pit--" + VARIANT);
+  /* The floe is the container; ?variant=zerog is the one alternative left.
+     The glass bowl is gone — it was the UNCLASSED base style, which meant
+     the first paint of every visit was a bowl, swapped for ice as soon as
+     this file ran. The markup carries pit--iceberg now, so the ice is what
+     paints on frame one and nothing has to be swapped at all. */
+  var VARIANT = /[?&]variant=zerog\b/.test(location.search) ? "zerog" : "iceberg";
+  if (VARIANT === "zerog") {
+    pit.classList.remove("pit--iceberg");
+    pit.classList.add("pit--zerog");
+  }
 
   var ICONS = [
     ["classic", "Classic"],
@@ -180,29 +186,18 @@
   }
 
   function iconSize() {
-    // Size from container area vs roster count: fill ~55% of the bowl's
-    // half-ellipse so the pile settles below the rim (resting above it
-    // trips the arch-breaker and the pile never sleeps). Cap at 88:
-    // bigger and a few icons wedge into a stable arch across the mouth.
     var s = stageSize();
     if (VARIANT === "zerog") {
       // Free-floating: fill ~28% of the whole stage.
       return Math.round(Math.max(36, Math.min(84, Math.sqrt(s.w * s.h * 0.28 / ROSTER.length))));
     }
-    if (VARIANT === "iceberg") {
-      // The size at which the shelf the floe was given is the shelf it can
-      // hold — see holds() above.
-      return Math.round(Math.max(30, sizeFor(s.w, ROSTER.length)));
-    }
-    var bw = Math.min(760, s.w * 0.92);
-    var bh = s.w < 640 ? 200 : 285;
-    var area = Math.PI * (bw / 2) * bh / 2;
-    var size = Math.sqrt(area * 0.55 / ROSTER.length);
-    return Math.round(Math.max(30, Math.min(88, size)));
+    // The size at which the shelf the floe was given is the shelf it can
+    // hold — see holds() above.
+    return Math.round(Math.max(30, sizeFor(s.w, ROSTER.length)));
   }
 
-  /* Build the bowl from static segments tracing a U-shaped ellipse arc
-     that matches .bowl-visual, plus outer guards so tossed icons return. */
+  /* Build the floe from static segments matching the painted ice, plus the
+     ramps and lips that decide what it can hold. */
   function buildWalls() {
     walls.forEach(function (wb) { Composite.remove(engine.world, wb); });
     walls = [];
@@ -302,42 +297,6 @@
       return;
     }
 
-    var bowlW = Math.min(760, s.w * 0.92);
-    var bowlH = s.w < 640 ? 200 : 285;
-    var rimY = s.h - 12 - bowlH;
-    rimYCurrent = rimY;
-    var a = bowlW / 2, b = bowlH;
-    bowlHalfCurrent = a;
-
-    var pts = [];
-    var SEGS = 26;
-    for (var i = 0; i <= SEGS; i++) {
-      var t = Math.PI + (Math.PI * i) / SEGS; // 180° → 360°
-      pts.push({ x: cx + a * Math.cos(t), y: rimY + -b * Math.sin(t) });
-    }
-    for (var j = 0; j < pts.length - 1; j++) {
-      var p1 = pts[j], p2 = pts[j + 1];
-      var mid = { x: (p1.x + p2.x) / 2, y: (p1.y + p2.y) / 2 };
-      var len = Math.hypot(p2.x - p1.x, p2.y - p1.y) + 6;
-      var ang = Math.atan2(p2.y - p1.y, p2.x - p1.x);
-      walls.push(Bodies.rectangle(mid.x, mid.y + 14, len, 30, {
-        isStatic: true, angle: ang, friction: 0.4, restitution: 0.1,
-      }));
-    }
-    // Funnel flares instead of near-vertical guards: their lower ends sit
-    // at the rim endpoints and they lean 20° outward, so the rim corner is
-    // obtuse — edge landings slide into the bowl, and columns can't stack
-    // against them the way they could against a vertical wall.
-    var skyH = -skyTop + 600;
-    var FLARE = 0.35, glen = 560, ghalf = glen / 2;
-    var gdx = Math.sin(FLARE) * ghalf, gdy = Math.cos(FLARE) * ghalf;
-    walls.push(Bodies.rectangle(cx - a - 4 - gdx, rimY + 10 - gdy, 28, glen, { isStatic: true, angle: -FLARE }));
-    walls.push(Bodies.rectangle(cx + a + 4 + gdx, rimY + 10 - gdy, 28, glen, { isStatic: true, angle: FLARE }));
-    walls.push(Bodies.rectangle(-40, rimY - skyH / 2, 80, skyH + s.h, { isStatic: true }));
-    walls.push(Bodies.rectangle(s.w + 40, rimY - skyH / 2, 80, skyH + s.h, { isStatic: true }));
-    walls.push(Bodies.rectangle(cx, skyTop - 460, s.w + 400, 80, { isStatic: true }));
-    walls.push(Bodies.rectangle(cx, s.h + 220, s.w + 400, 80, { isStatic: true })); // last-resort net
-    walls.forEach(function (wb) { Composite.add(engine.world, wb); });
   }
 
   function spawnIcons() {
@@ -379,9 +338,7 @@
       return;
     }
 
-    var halfBowl = VARIANT === "iceberg"
-      ? Math.min(740, s.w * 0.82) / 2 * 0.6
-      : Math.min(760, s.w * 0.92) / 2;
+    var halfBowl = Math.min(740, s.w * 0.82) / 2 * 0.6;
     // Drop points stay well inside the bowl mouth (alternating sides) so
     // icons slide down the curve — spreading to the rim lets them wedge
     // into a stable arch across the mouth; stacking one column is worse.
@@ -399,13 +356,13 @@
         size, size,
         {
           chamfer: { radius: size * 0.225 },
-          restitution: VARIANT === "iceberg" ? 0.25 : 0.35,
+          restitution: 0.25,
           // Grippy on ice so the open mound piles steep instead of
           // shedding its edges into the water. frictionStatic is the half
           // that matters for the bottom course: it is not sliding yet, it
           // is being squeezed, and this is what makes it hold.
-          friction: VARIANT === "iceberg" ? 0.5 : 0.08,
-          frictionStatic: VARIANT === "iceberg" ? 1.4 : 0.5,
+          friction: 0.5,
+          frictionStatic: 1.4,
           frictionAir: 0.015,
           angle: Math.random() * 0.8 - 0.4,
         }
@@ -1096,7 +1053,7 @@
      an uncapped icon arrives like a dropped brick and splashes the
      course it lands on off the ends of the floe. 13 still reads as a
      fall and still lands hard enough to thump the berg. */
-  var SPEED_CAP = VARIANT === "zerog" ? 4 : VARIANT === "iceberg" ? 13 : 24;
+  var SPEED_CAP = VARIANT === "zerog" ? 4 : 13;
   var TOSS_CAP = 24;                     // a throw may outrun the fall
 
 
@@ -1615,28 +1572,6 @@
       });
       return;
     }
-    icons.forEach(function (it) {
-      var b = it.body, p = b.position;
-      // Clipped through geometry, or settled in the dead channel between
-      // the bowl and the stage edge → drop it back in from the sky.
-      var inSideChannel = p.y > rimYCurrent && b.speed < 0.3 &&
-        Math.abs(p.x - s.w / 2) > bowlHalfCurrent + 4;
-      if (p.y > s.h + 160 || p.x < -160 || p.x > s.w + 160 || inSideChannel) {
-        Body.setPosition(b, { x: s.w / 2 + (Math.random() * 240 - 120), y: skyTop - 120 });
-        Body.setVelocity(b, { x: 0, y: 0 });
-        Matter.Sleeping.set(b, false);
-        return;
-      }
-      if (!dragConstraint && p.y < rimYCurrent && b.speed < 0.3) {
-        // At rest above the rim = wedged near the mouth. Push INWARD —
-        // topples piles into the bowl; outward jams them into the flares.
-        Matter.Sleeping.set(b, false);
-        Body.applyForce(b, p, {
-          x: (p.x < s.w / 2 ? 1 : -1) * 0.006 * b.mass,
-          y: 0.002 * b.mass,
-        });
-      }
-    });
   });
 
   /* Rebuild walls on resize; nudge icons back over the bowl. */
