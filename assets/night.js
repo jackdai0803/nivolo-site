@@ -714,7 +714,7 @@
     // number on a phone's 41px icon does nothing at all.
     perspRatio: 2.6,
     airFrom: 4.5, airRate: 0.011, airMax: 0.13,
-    maxS: 0.75, maxStretch: 0.55, maxFold: 14,
+    maxS: 0.75, maxStretch: 0.55, maxFold: 19,
     keep: 0.978,                      // what the landing left behind, per tick
     holdScale: 1.06,
   };
@@ -770,13 +770,13 @@
     // summing those kicks folded it clean in half on the first tick.
     var kick = 0.055 + 0.30 * imp;
     if (kick > g.sv) g.sv = kick;
-    var fk = (1 + 3.4 * imp) * (spin < 0 ? -1 : 1);
+    var fk = (1.3 + 4.6 * imp) * (spin < 0 ? -1 : 1);
     if (Math.abs(fk) > Math.abs(g.foldV)) g.foldV = fk;
     if (imp > 0.62) { // a real drop leaves a mark for a second or so
       var over = (imp - 0.62) / 0.38;
       g.res = Math.max(g.res, 0.035 + 0.075 * over);
-      g.resFold = (Math.abs(g.resFold) > 1.6 + 3.4 * over ? g.resFold
-        : (1.6 + 3.4 * over) * (spin < 0 ? -1 : 1));
+      g.resFold = (Math.abs(g.resFold) > 2 + 4.2 * over ? g.resFold
+        : (2 + 4.2 * over) * (spin < 0 ? -1 : 1));
     }
   }
 
