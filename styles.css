@@ -289,8 +289,24 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
    frame, and a transition chasing that lags ~.09 behind, which is exactly
    the ghost that used to get cut off mid-fade. */
 .pit-icon.is-sinking {
-  filter: drop-shadow(0 8px 14px rgba(0, 24, 70, 0.38)) saturate(0.72) brightness(0.72) hue-rotate(7deg) blur(var(--sink-blur, 0px));
+  filter: drop-shadow(0 8px 14px rgba(0, 24, 70, 0.38))
+    saturate(var(--sink-sat, 0.85)) brightness(var(--sink-dim, 0.88)) blur(var(--sink-blur, 0px));
   transition: filter 0.35s ease;
+}
+/* The blue the water leaves behind. `color` keeps the icon's own light and
+   shading and takes only its hue, so a swimmer goes blue-dark rather than
+   painted-over — and the drop-shadow above isolates the blend, so it stops
+   at the icon's edge instead of tinting the sea. Silhouette is the img's:
+   same box, same radius. */
+.pit-icon.is-sinking::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 22.5%;
+  background: #1a5b98;
+  mix-blend-mode: color;
+  opacity: var(--sink-tint, 0);
+  pointer-events: none;
 }
 .water-splash {
   position: absolute;
