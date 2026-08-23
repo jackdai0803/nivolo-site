@@ -238,7 +238,10 @@
       var waterLayerH = mobile ? 240 : 300;
       var dip = 14, half = bergW / 2, quarter = bergW / 4;
       waterYCurrent = waterY;
-      waterFadeStartCurrent = waterY + waterLayerH * 0.56;
+      // The fade starts higher than it used to: an eased ramp needs room to
+      // ease, and vanishing while still over open water reads better than
+      // vanishing over the paper below it.
+      waterFadeStartCurrent = waterY + waterLayerH * 0.46;
       waterFadeEndCurrent = waterY + waterLayerH * 0.94;
       rimYCurrent = topEnd;
       bowlHalfCurrent = half;
@@ -1276,6 +1279,7 @@
     it.body.collisionFilter.mask = 0xFFFFFFFF;
     it.el.classList.remove("is-sinking");
     it.el.style.opacity = "1";
+    it.el.style.setProperty("--sink-blur", "0px");
   }
 
   function respawnFromSky(it, s) {
@@ -1430,12 +1434,23 @@
       Body.setAngularVelocity(b, b.angularVelocity * 0.965);
       Matter.Sleeping.set(b, false);
 
-      var opacity = 1;
+      // Going: the ramp is eased at BOTH ends and reaches nothing before the
+      // depth that teleports the icon back to the sky. A straight line was
+      // still falling at full speed when it hit zero — and the .18s opacity
+      // transition on .pit-icon, re-aimed every frame, left the paint about
+      // .09 behind the number — so the last thing a visitor actually saw was
+      // a faint icon being snatched away. Now it thins out, softens, and is
+      // already gone by the time the swap happens. (is-sinking drops opacity
+      // from the transition so the curve below is exactly what gets painted.)
+      var opacity = 1, soft = 0;
       if (p.y > waterFadeStartCurrent) {
-        opacity = 1 - (p.y - waterFadeStartCurrent) /
-          Math.max(1, waterFadeEndCurrent - waterFadeStartCurrent);
+        var f = Math.min(1, (p.y - waterFadeStartCurrent) /
+          Math.max(1, (waterFadeEndCurrent - waterFadeStartCurrent) * 0.9));
+        opacity = 1 - f * f * (3 - 2 * f);
+        soft = f * f * 2.6; // blur: it dissolves into the water, not just down
       }
       it.el.style.opacity = Math.max(0, Math.min(1, opacity)).toFixed(3);
+      it.el.style.setProperty("--sink-blur", soft.toFixed(2) + "px");
 
       if (p.y >= waterFadeEndCurrent) respawnFromSky(it, s);
     }

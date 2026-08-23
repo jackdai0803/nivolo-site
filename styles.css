@@ -283,8 +283,14 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
   filter: drop-shadow(0 8px 14px rgba(24, 52, 76, 0.26));
   transition: opacity 0.18s linear, filter 0.35s ease;
 }
+/* Underwater. The blur is driven by depth (--sink-blur, set per frame by
+   the sinking pass) so the icon softens as it thins — and opacity leaves
+   the transition list here on purpose: the pass writes a new alpha every
+   frame, and a transition chasing that lags ~.09 behind, which is exactly
+   the ghost that used to get cut off mid-fade. */
 .pit-icon.is-sinking {
-  filter: drop-shadow(0 8px 14px rgba(0, 24, 70, 0.38)) saturate(0.72) brightness(0.72) hue-rotate(7deg);
+  filter: drop-shadow(0 8px 14px rgba(0, 24, 70, 0.38)) saturate(0.72) brightness(0.72) hue-rotate(7deg) blur(var(--sink-blur, 0px));
+  transition: filter 0.35s ease;
 }
 .water-splash {
   position: absolute;
