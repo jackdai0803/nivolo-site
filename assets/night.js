@@ -709,16 +709,20 @@
      the render loop, and it is only written for icons that are moving,
      deforming or held: a settled colony costs nothing per frame. */
   var GIVE = {
-    stiff: 0.28, damp: 0.86,          // squash spring: ~200ms, two bounces
-    amt: 0.38,                        // how much of `s` becomes flattening
-    foldStiff: 0.12, foldDamp: 0.885, // the bend, deliberately slower
+    // Both springs settle inside about one bounce. They used to ring for
+    // two, and a ringing spring is the whole difference between a rigid
+    // tile taking a hit and a blob of jelly landing — especially in a pile,
+    // where every neighbour re-kicks before the last wobble has died.
+    stiff: 0.28, damp: 0.80,          // squash spring: ~200ms, one bounce
+    amt: 0.32,                        // how much of `s` becomes flattening
+    foldStiff: 0.12, foldDamp: 0.82,  // the bend, deliberately slower
     // Perspective has to be a MULTIPLE of the icon, not a fixed distance:
     // a 420px vanishing point barely bends a 69px square, and the same
     // number on a phone's 41px icon does nothing at all.
     perspRatio: 2.6,
     airFrom: 4.5, airRate: 0.011, airMax: 0.13,
-    maxS: 0.75, maxStretch: 0.55, maxFold: 19,
-    keep: 0.978,                      // what the landing left behind, per tick
+    maxS: 0.75, maxStretch: 0.55, maxFold: 12,
+    keep: 0.962,                      // what the landing left behind, per tick
     holdScale: 1.06,
   };
   var DEG = 180 / Math.PI;
@@ -773,13 +777,13 @@
     // summing those kicks folded it clean in half on the first tick.
     var kick = 0.055 + 0.30 * imp;
     if (kick > g.sv) g.sv = kick;
-    var fk = (1.3 + 4.6 * imp) * (spin < 0 ? -1 : 1);
+    var fk = (0.9 + 3.0 * imp) * (spin < 0 ? -1 : 1);
     if (Math.abs(fk) > Math.abs(g.foldV)) g.foldV = fk;
     if (imp > 0.62) { // a real drop leaves a mark for a second or so
       var over = (imp - 0.62) / 0.38;
       g.res = Math.max(g.res, 0.035 + 0.075 * over);
-      g.resFold = (Math.abs(g.resFold) > 2 + 4.2 * over ? g.resFold
-        : (2 + 4.2 * over) * (spin < 0 ? -1 : 1));
+      g.resFold = (Math.abs(g.resFold) > 1.4 + 2.8 * over ? g.resFold
+        : (1.4 + 2.8 * over) * (spin < 0 ? -1 : 1));
     }
   }
 
@@ -821,7 +825,7 @@
       k = -Math.min(GIVE.airMax, (sp - GIVE.airFrom) * GIVE.airRate);
       ang = Math.atan2(b.velocity.y, b.velocity.x) - b.angle;
     }
-    k = Math.max(-0.24, Math.min(0.33, k));
+    k = Math.max(-0.21, Math.min(0.28, k));
     var fold = g.fold + g.resFold;
     var bent = Math.abs(fold) > 0.06;
 
@@ -956,7 +960,9 @@
     var grabbed = iconForBody(body);
     if (grabbed) {
       grabbed.el.classList.add("held");
-      giveKick(grabbed, 0.26, { x: pt.x - body.position.x, y: pt.y - body.position.y },
+      // A grab is a press, not an impact: most of what a click should read
+      // as is the lift (holdScale), not the tile buckling under a fingertip.
+      giveKick(grabbed, 0.16, { x: pt.x - body.position.x, y: pt.y - body.position.y },
                pt.x >= body.position.x ? 1 : -1);
     }
     stage.classList.add("dragging");
