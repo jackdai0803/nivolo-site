@@ -968,6 +968,11 @@ footer {
 
 /* ── Pricing ── */
 .plans { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; max-width: 860px; margin: 0 auto; }
+.plans--four { grid-template-columns: repeat(4, 1fr); gap: 16px; max-width: 1180px; align-items: start; }
+.plans--four .plan { padding: 30px 22px; }
+.plans--four .plan-price { font-size: 34px; margin-bottom: 18px; }
+.plans--four .plan-price span { display: block; margin-left: 0; margin-top: 6px; }
+.plans--four .plan li { font-size: 14.5px; }
 .plan {
   position: relative;
   border: 1px solid var(--line); border-radius: var(--radius-lg);
@@ -1000,6 +1005,16 @@ footer {
 }
 .plan--pro li::before { background: #A07C1E; }
 .plan-note { margin-top: 20px; font-size: 13px; color: var(--ink-3); }
+.plan-tagline {
+  font-family: var(--font-mono);
+  font-size: 10.5px; font-weight: 500; letter-spacing: 0.13em; text-transform: uppercase;
+  color: var(--ink-3); margin: -6px 0 16px;
+}
+.plan--pro .plan-tagline { color: #6B571C; }
+/* Olympus carries a marker too, but stays an outline card — only one
+   filled card per row, or the row stops having a focal point. */
+.plan-badge--plain { color: var(--ink-3); background: rgba(22, 23, 26, 0.05); }
+.plans-foot { margin: 26px auto 0; max-width: 1180px; text-align: center; font-size: 13.5px; color: var(--ink-3); }
 
 /* ── FAQ ── */
 .faq { max-width: 760px; margin: 0 auto; }
@@ -1030,6 +1045,11 @@ footer {
 .reveal.in { opacity: 1; transform: translateY(0); }
 
 /* ── Responsive ── */
+@media (max-width: 1120px) {
+  .plans--four { gap: 12px; }
+  .plans--four .plan { padding: 26px 18px; }
+  .plans--four .plan-price { font-size: 30px; }
+}
 @media (max-width: 900px) {
   .split { grid-template-columns: 1fr; gap: 34px; }
   .split-visual { order: -1; }
@@ -1040,6 +1060,12 @@ footer {
   .steps { grid-template-columns: 1fr; gap: 16px; }
   .privacy-panel { grid-template-columns: 1fr; gap: 34px; padding: 42px 30px; }
   .plans { grid-template-columns: 1fr; }
+  /* Four tiers get one intermediate step — 2×2 — before stacking, so a
+     tablet doesn't scroll through four full-width cards. */
+  .plans--four { grid-template-columns: repeat(2, 1fr); gap: 20px; max-width: 720px; }
+}
+@media (max-width: 620px) {
+  .plans--four { grid-template-columns: 1fr; max-width: 460px; }
 }
 @media (max-width: 640px) {
   .nav-links .nav-plain { display: none; }
