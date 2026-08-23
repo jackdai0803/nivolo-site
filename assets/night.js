@@ -709,20 +709,21 @@
      the render loop, and it is only written for icons that are moving,
      deforming or held: a settled colony costs nothing per frame. */
   var GIVE = {
-    // Both springs settle inside about one bounce. They used to ring for
-    // two, and a ringing spring is the whole difference between a rigid
-    // tile taking a hit and a blob of jelly landing — especially in a pile,
-    // where every neighbour re-kicks before the last wobble has died.
-    stiff: 0.28, damp: 0.80,          // squash spring: ~200ms, one bounce
-    amt: 0.32,                        // how much of `s` becomes flattening
-    foldStiff: 0.12, foldDamp: 0.82,  // the bend, deliberately slower
+    // Both springs are damped past critical (0.43 for stiff .28, 0.55 for
+    // foldStiff .12), so neither one overshoots at all: the icon gives on
+    // contact and comes straight back. Any overshoot is a rigid tile
+    // behaving like a rubber one, and in a pile it compounds — the next
+    // neighbour re-kicks before the last wobble has died.
+    stiff: 0.28, damp: 0.42,          // squash spring: gives, returns, done
+    amt: 0.24,                        // how much of `s` becomes flattening
+    foldStiff: 0.12, foldDamp: 0.50,  // the bend, deliberately slower
     // Perspective has to be a MULTIPLE of the icon, not a fixed distance:
     // a 420px vanishing point barely bends a 69px square, and the same
     // number on a phone's 41px icon does nothing at all.
     perspRatio: 2.6,
-    airFrom: 4.5, airRate: 0.011, airMax: 0.13,
-    maxS: 0.75, maxStretch: 0.55, maxFold: 12,
-    keep: 0.962,                      // what the landing left behind, per tick
+    airFrom: 4.5, airRate: 0.011, airMax: 0.07,
+    maxS: 0.75, maxStretch: 0.55, maxFold: 6,
+    keep: 0.93,                       // what the landing left behind, per tick
     holdScale: 1.06,
   };
   var DEG = 180 / Math.PI;
@@ -775,15 +776,19 @@
     // The strongest blow wins; blows do NOT add up. An icon buried in the
     // mound is in contact with three neighbours and the ice at once, and
     // summing those kicks folded it clean in half on the first tick.
-    var kick = 0.055 + 0.30 * imp;
+    // Driven hard on purpose. An overdamped spring eats most of its kick
+    // getting back, so the numbers that used to give 20% of flattening now
+    // give 5 — the depth has to be bought back here rather than by letting
+    // the spring ring for it.
+    var kick = 0.14 + 0.86 * imp;
     if (kick > g.sv) g.sv = kick;
-    var fk = (0.9 + 3.0 * imp) * (spin < 0 ? -1 : 1);
+    var fk = (1.3 + 4.2 * imp) * (spin < 0 ? -1 : 1);
     if (Math.abs(fk) > Math.abs(g.foldV)) g.foldV = fk;
     if (imp > 0.62) { // a real drop leaves a mark for a second or so
       var over = (imp - 0.62) / 0.38;
-      g.res = Math.max(g.res, 0.035 + 0.075 * over);
-      g.resFold = (Math.abs(g.resFold) > 1.4 + 2.8 * over ? g.resFold
-        : (1.4 + 2.8 * over) * (spin < 0 ? -1 : 1));
+      g.res = Math.max(g.res, 0.018 + 0.032 * over);
+      g.resFold = (Math.abs(g.resFold) > 0.6 + 1.1 * over ? g.resFold
+        : (0.6 + 1.1 * over) * (spin < 0 ? -1 : 1));
     }
   }
 
@@ -825,7 +830,7 @@
       k = -Math.min(GIVE.airMax, (sp - GIVE.airFrom) * GIVE.airRate);
       ang = Math.atan2(b.velocity.y, b.velocity.x) - b.angle;
     }
-    k = Math.max(-0.21, Math.min(0.28, k));
+    k = Math.max(-0.12, Math.min(0.18, k));
     var fold = g.fold + g.resFold;
     var bent = Math.abs(fold) > 0.06;
 
@@ -960,9 +965,9 @@
     var grabbed = iconForBody(body);
     if (grabbed) {
       grabbed.el.classList.add("held");
-      // A grab is a press, not an impact: most of what a click should read
-      // as is the lift (holdScale), not the tile buckling under a fingertip.
-      giveKick(grabbed, 0.16, { x: pt.x - body.position.x, y: pt.y - body.position.y },
+      // A grab is a press, not an impact. What a click reads as is the lift
+      // (holdScale) — this is barely a flicker under the fingertip.
+      giveKick(grabbed, 0.06, { x: pt.x - body.position.x, y: pt.y - body.position.y },
                pt.x >= body.position.x ? 1 : -1);
     }
     stage.classList.add("dragging");
