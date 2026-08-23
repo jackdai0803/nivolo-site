@@ -1489,11 +1489,10 @@
       dress.setProperty("--sink-dim", (0.88 - 0.32 * progress).toFixed(3));
       dress.setProperty("--sink-tint", (0.18 + 0.60 * progress).toFixed(3));
 
-      // And it leans on the way down, the way anything flat falls through
-      // water. Small and slow on purpose — a wide, quick rock makes a rigid
-      // little tile read as jelly. Sim time, not wall clock, so it pauses
-      // with the sim; the amplitude ramps in over the first stretch below
-      // the surface so it never starts with a jump.
+      // And it rocks on the way down, the way anything flat falls through
+      // water. Sim time, not wall clock, so the rock pauses with the sim;
+      // the amplitude ramps in over the first stretch below the surface so
+      // it never starts with a jump.
       var now = engine.timing.timestamp;
       if (progress < 0.55 && now > (it.nextBubble || 0)) {
         // First one comes soon after the splash, then it settles into a
@@ -1502,9 +1501,9 @@
         bubbleFrom(p.x, p.y, 1 - progress);
       }
 
-      var beat = now * 0.0011 + it.sinkPhase;
+      var beat = now * 0.0016 + it.sinkPhase;
       var rock = Math.min(1, (p.y - waterYCurrent) / 70);
-      it.sway = { x: Math.sin(beat) * 4.5 * rock, r: Math.sin(beat + 0.8) * 0.055 * rock };
+      it.sway = { x: Math.sin(beat) * 11 * rock, r: Math.sin(beat + 0.8) * 0.15 * rock };
 
       var opacity = 1, soft = 0;
       if (p.y > waterFadeStartCurrent) {
