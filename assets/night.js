@@ -707,7 +707,7 @@
      deforming or held: a settled colony costs nothing per frame. */
   var GIVE = {
     stiff: 0.28, damp: 0.86,          // squash spring: ~200ms, two bounces
-    amt: 0.30,                        // how much of `s` becomes flattening
+    amt: 0.38,                        // how much of `s` becomes flattening
     foldStiff: 0.12, foldDamp: 0.885, // the bend, deliberately slower
     // Perspective has to be a MULTIPLE of the icon, not a fixed distance:
     // a 420px vanishing point barely bends a 69px square, and the same
@@ -818,7 +818,7 @@
       k = -Math.min(GIVE.airMax, (sp - GIVE.airFrom) * GIVE.airRate);
       ang = Math.atan2(b.velocity.y, b.velocity.x) - b.angle;
     }
-    k = Math.max(-0.20, Math.min(0.26, k));
+    k = Math.max(-0.24, Math.min(0.33, k));
     var fold = g.fold + g.resFold;
     var bent = Math.abs(fold) > 0.06;
 
