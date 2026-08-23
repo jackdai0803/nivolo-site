@@ -1261,7 +1261,6 @@ footer {
   .pit--iceberg .bowl-visual { width: 94%; height: 136px; bottom: -21px; background-size: 100% calc(100% - 19px); }
   .pit--iceberg .bowl-visual::before { top: 43px; }
   .pit--iceberg .bowl-visual::after { height: 51px; }
-  .pit--iceberg .berg-mark { top: 63px; font-size: 20px; letter-spacing: 0.16em; text-indent: 0.16em; }
   .pit--iceberg .pit-stage::after { width: 100vw; height: 240px; bottom: -150px; }
   .pit--iceberg .pit-caption { padding-top: 140px; }
 }
