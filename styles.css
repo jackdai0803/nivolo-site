@@ -16,6 +16,8 @@
   --ink: #16171A;
   --ink-2: #55595F;
   --ink-3: #8A8F97;
+  /* The stroke round the penguin face in the navbar — sand, not ink. */
+  --logo-line: #CFC9BE;
   --line: rgba(22, 23, 26, 0.10);
   --line-strong: rgba(22, 23, 26, 0.20);
 
@@ -133,20 +135,25 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
   width: 34px; flex-shrink: 0;
   display: grid; place-items: center;
 }
-/* A black line drawn round the face itself, not a tile round its box: the
-   mark is mostly white and the navbar is white, so without it the head
-   dissolves into the pill and only the eyes read. Eight stacked
-   drop-shadows are the only way to stroke a PNG's alpha — four cardinal
-   at full weight, four diagonal a shade shorter so the corners don't
-   bulge. No soft shadow under it: the line is the whole treatment, and a
-   shadow behind a stroke only muddies its edge. */
+/* A line drawn round the face itself, not a tile round its box: the mark
+   is mostly white and the navbar is white, so without it the head
+   dissolves into the pill and only the eyes read. The line is sand, not
+   ink — black read as a hard cartoon border against the paper palette and
+   fought the eyes for attention. Sand sits close enough to the paper that
+   it never registers as a border; it just stops the head bleeding into
+   the pill, and the eyes stay the only dark thing in the mark.
+   Eight stacked drop-shadows are the only way to stroke a PNG's alpha —
+   four cardinal at full weight, four diagonal a shade shorter so the
+   corners don't bulge. Keep the colour opaque: stacked translucent
+   shadows compound where they overlap and the ring goes blotchy. No soft
+   shadow under it — a shadow behind a stroke only muddies its edge. */
 .logo-mark img {
   display: block; width: 100%; height: auto;
   filter:
-    drop-shadow(1.3px 0 0 var(--ink)) drop-shadow(-1.3px 0 0 var(--ink))
-    drop-shadow(0 1.3px 0 var(--ink)) drop-shadow(0 -1.3px 0 var(--ink))
-    drop-shadow(1px 1px 0 var(--ink)) drop-shadow(-1px 1px 0 var(--ink))
-    drop-shadow(1px -1px 0 var(--ink)) drop-shadow(-1px -1px 0 var(--ink));
+    drop-shadow(1.3px 0 0 var(--logo-line)) drop-shadow(-1.3px 0 0 var(--logo-line))
+    drop-shadow(0 1.3px 0 var(--logo-line)) drop-shadow(0 -1.3px 0 var(--logo-line))
+    drop-shadow(1px 1px 0 var(--logo-line)) drop-shadow(-1px 1px 0 var(--logo-line))
+    drop-shadow(1px -1px 0 var(--logo-line)) drop-shadow(-1px -1px 0 var(--logo-line));
 }
 .logo:hover { text-decoration: none; }
 .nav-links { display: flex; align-items: center; gap: 22px; font-size: 14px; font-weight: 600; }
