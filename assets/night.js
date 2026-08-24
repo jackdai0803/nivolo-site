@@ -173,6 +173,7 @@
   var waterFadeStartCurrent = 0; // where submerged icons begin fading
   var waterFadeEndCurrent = 0; // where they vanish and re-enter from the sky
   var skyTop = 0;        // stage-relative y of the PAGE top (negative)
+  var skyCeiling = null; // the slab that keeps tosses on the page (buildWalls)
 
   /* Stage-relative y of the top of the page — icons spawn above it so
      they enter falling from the real top of the viewport. */
@@ -292,7 +293,8 @@
       walls.forEach(function (wb) { wb.bergBaseY = wb.position.y; });
       // No left/right stage walls: tossed icons may travel freely beyond
       // either viewport edge before gravity carries them into the ocean.
-      walls.push(Bodies.rectangle(cx, skyTop - 460, s.w + 400, 80, { isStatic: true }));
+      skyCeiling = Bodies.rectangle(cx, skyTop - 460, s.w + 400, 80, { isStatic: true });
+      walls.push(skyCeiling);
       walls.forEach(function (wb) { Composite.add(engine.world, wb); });
       return;
     }
@@ -898,6 +900,7 @@
   });
 
   /* ── Drag interaction (custom constraint; keeps page scroll usable) ── */
+  var HOLD = "nivolo-hold";
   var dragConstraint = null;
   var dragMeta = null; // { startX, startY, t, item }
 
@@ -914,8 +917,16 @@
   function startDrag(pt, clientEvent) {
     var body = bodyAt(pt);
     if (!body) return false;
+    // Never start a hold on top of another one. A drag can end somewhere the
+    // page never hears about — the button released over the browser's own
+    // chrome, a second finger landing mid-gesture — and the constraint it
+    // left behind used to stay in the world with nothing pointing at it,
+    // pinning that icon in the air for the rest of the visit. Stack a few of
+    // those and the tower genuinely cannot come down.
+    if (dragConstraint) endDrag(null);
     var local = Vector.rotate(Vector.sub(pt, body.position), -body.angle);
     dragConstraint = Constraint.create({
+      label: HOLD,
       pointA: pt,
       bodyB: body,
       pointB: local,
@@ -925,6 +936,17 @@
     });
     Composite.add(engine.world, dragConstraint);
     Matter.Sleeping.set(body, false);
+    // Lifting one out of a pile has to unstick whatever was leaning on it.
+    // Matter only wakes a sleeper when something hits it hard enough, and a
+    // careful lift never does — so the neighbours would stay asleep exactly
+    // where they were, holding a shape with its bottom course removed.
+    var reach = (body.bounds.max.x - body.bounds.min.x) * 2.2;
+    for (var wi = 0; wi < icons.length; wi++) {
+      var nb = icons[wi].body;
+      if (nb !== body && Vector.magnitude(Vector.sub(nb.position, body.position)) < reach) {
+        Matter.Sleeping.set(nb, false);
+      }
+    }
     dragMeta = { startX: pt.x, startY: pt.y, t: Date.now(), body: body };
     // Picked up: it pinches where the finger closed on it, rises toward
     // the viewer and drops a longer shadow — held, not merely selected.
@@ -948,6 +970,19 @@
     if (dragConstraint) dragConstraint.pointA = pt;
   }
 
+  /* Every hold in the world should be THE hold. Anything else is a leak
+     from a gesture that never finished, and whatever it is attached to is
+     hanging in the air — so cut it loose and let it fall. */
+  function releaseStrayHolds() {
+    var live = Composite.allConstraints(engine.world);
+    for (var i = 0; i < live.length; i++) {
+      var c = live[i];
+      if (c.label !== HOLD || c === dragConstraint) continue;
+      Composite.remove(engine.world, c);
+      if (c.bodyB) Matter.Sleeping.set(c.bodyB, false);
+    }
+  }
+
   function endDrag(pt) {
     if (!dragConstraint) return;
     var meta = dragMeta;
@@ -962,6 +997,7 @@
     // think we were holding — a stuck shadow outlives the gesture.
     var lifted = stage.querySelectorAll(".pit-icon.held");
     for (var li = 0; li < lifted.length; li++) lifted[li].classList.remove("held");
+    releaseStrayHolds();
     // A short, small movement counts as a tap → show the icon's name.
     if (meta && pt && Date.now() - meta.t < 350 &&
         Math.hypot(pt.x - meta.startX, pt.y - meta.startY) < 7) {
@@ -987,14 +1023,24 @@
     e.preventDefault(); // play area — never start a text selection here
     sfx.arm();
     if (startDrag(stagePoint(e.clientX, e.clientY), e)) {
-      var onMove = function (ev) { moveDrag(stagePoint(ev.clientX, ev.clientY)); };
-      var onUp = function (ev) {
-        endDrag(stagePoint(ev.clientX, ev.clientY));
+      var stop = function (pt) {
+        endDrag(pt);
         window.removeEventListener("mousemove", onMove);
         window.removeEventListener("mouseup", onUp);
+        window.removeEventListener("blur", onBlur);
       };
+      var onMove = function (ev) {
+        // The button can come up where the page never hears it: over the
+        // browser's chrome, or off the edge of the window. The next move
+        // with nothing held is that release, arriving late.
+        if (ev.buttons === 0) return stop(stagePoint(ev.clientX, ev.clientY));
+        moveDrag(stagePoint(ev.clientX, ev.clientY));
+      };
+      var onUp = function (ev) { stop(stagePoint(ev.clientX, ev.clientY)); };
+      var onBlur = function () { stop(null); }; // switched away still holding one
       window.addEventListener("mousemove", onMove);
       window.addEventListener("mouseup", onUp);
+      window.addEventListener("blur", onBlur);
     }
   });
 
@@ -1060,6 +1106,10 @@
   /* Speed limits belong to the SIM, painting belongs to the frame — kept
      apart so tooling can step the engine many times and paint once. */
   function governSpeeds() {
+    // A hand holds an icon still, and still is exactly what Matter reads as
+    // asleep. A sleeping body is skipped by the integrator — gravity and all
+    // — so it would be let go in mid-air and simply stay there.
+    if (dragConstraint && dragConstraint.bodyB) Matter.Sleeping.set(dragConstraint.bodyB, false);
     for (var i = 0; i < icons.length; i++) {
       var it = icons[i], b = it.body;
       // Keep tosses fun but sub-orbital: cap linear and angular speed.
@@ -1131,7 +1181,7 @@
     armPourGrace();
   }, { threshold: 0.02 }).observe(pourTarget);
   document.addEventListener("visibilitychange", function () {
-    if (document.hidden) setRunning(false);
+    if (document.hidden) { endDrag(null); setRunning(false); }
     else if (stage.getBoundingClientRect().bottom > 0) {
       setRunning(true);
       sfx.tryResume(); // iOS parks the context behind a lock screen or a call
@@ -1298,6 +1348,62 @@
     Body.setAngularVelocity(b, Math.random() * 0.08 - 0.04);
     Matter.Sleeping.set(b, false);
     it.respawns = (it.respawns || 0) + 1;
+  }
+
+  /* ── Nothing rests on nothing ─────────────────────────────────────────
+     Matter stops integrating a sleeping body, gravity included, so an icon
+     that comes to a stop with no ice under it hangs there for good. That is
+     what a tower of icons stranded in mid-air is: each one dozed off while
+     it was being held or while it leaned on a neighbour that has since been
+     carried away, and nothing in the sim ever asks them to fall again.
+     So ask, on the maintenance tick: what is actually beneath this icon? */
+  function standsOnSomething(b) {
+    var probe = [], i;
+    for (i = 0; i < icons.length; i++) {
+      if (icons[i].body === b || icons[i].sinking) continue; // swimmers hold nothing up
+      probe.push(icons[i].body);
+    }
+    for (i = 0; i < walls.length; i++) {
+      if (walls[i] !== skyCeiling) probe.push(walls[i]); // the roof is not a floor
+    }
+    // Five short rays down off the bottom edge — corners included, because a
+    // pile is mostly icons perched on the shoulder of the one below.
+    var x0 = b.bounds.min.x, span = b.bounds.max.x - x0, y = b.bounds.max.y;
+    for (var k = 0; k <= 4; k++) {
+      var x = x0 + span * (k / 4);
+      if (Query.ray(probe, { x: x, y: y - 5 }, { x: x, y: y + 10 }, 2).length) return true;
+    }
+    return false;
+  }
+
+  function dropFloaters(s) {
+    for (var i = 0; i < icons.length; i++) {
+      var it = icons[i], b = it.body;
+      if (it.sinking || (dragConstraint && dragConstraint.bodyB === b)) continue;
+      if (b.speed > 0.4 || b.position.y > waterYCurrent) { it.floating = 0; continue; }
+      if (standsOnSomething(b)) { it.floating = 0; continue; }
+      it.floating = (it.floating || 0) + 1;
+      // Above the sky wall it is out of the world — it got there through the
+      // geometry and can never fall back through it, so re-drop it. Same for
+      // anything the nudge below has failed to shift three passes running.
+      if (it.floating > 3 || (skyCeiling && b.position.y < skyCeiling.position.y)) {
+        respawnFromSky(it, s);
+        it.floating = 0;
+        continue;
+      }
+      Matter.Sleeping.set(b, false);
+      Body.setVelocity(b, { x: b.velocity.x, y: Math.max(b.velocity.y, 0.6) });
+      // Whatever was riding on it is just as stranded: wake the whole column
+      // so it comes down together instead of one icon per pass.
+      var reach = (b.bounds.max.x - b.bounds.min.x) * 1.6;
+      for (var j = 0; j < icons.length; j++) {
+        var up = icons[j].body;
+        if (up === b || icons[j].sinking) continue;
+        if (up.position.y < b.position.y && Math.abs(up.position.x - b.position.x) < reach) {
+          Matter.Sleeping.set(up, false);
+        }
+      }
+    }
   }
 
   /* ── Audible re-pour ──────────────────────────────────────────────────
@@ -1557,6 +1663,8 @@
     // Iceberg swimmers are intentionally unbounded horizontally. The
     // per-tick sinking pass still returns them after they fade underwater.
     if (VARIANT === "iceberg") {
+      releaseStrayHolds(); // a gesture that never finished is still holding one
+      dropFloaters(s);
       // Nothing rests where there is no ice. Whatever the geometry does —
       // a shoulder, a neighbour holding it up over open water — an icon
       // asleep beyond the floe's ends and above the waterline is a floater,
