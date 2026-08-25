@@ -14,8 +14,13 @@
   --card: #FFFFFF;
   --card-solid: #FFFFFF;
   --ink: #16171A;
-  --ink-2: #55595F;
-  --ink-3: #8A8F97;
+  /* Text greys are tuned for WCAG AA on the #F2F1EE paper: --ink-2 is
+     7.1:1 and --ink-3 is 5.0:1. The previous pair (#55595F / #8A8F97)
+     came from the dark app design, where the same greys sit on black and
+     read fine; on paper --ink-3 was 2.9:1 and swallowed every caption,
+     hero note and figure label. Matches the Nivolo app's Day theme. */
+  --ink-2: #4C5158;
+  --ink-3: #63686F;
   /* The one edge line on the page. Sand, not ink: it sits close enough to
      the paper that it never registers as a border, and it is the same line
      whether it is stopping the logo face bleeding into the navbar or an
@@ -570,7 +575,7 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
 }
 .ui-flame--green { background: var(--green-soft); }
 .ui-flame-row b { display: block; font-size: 16px; letter-spacing: -0.01em; }
-.ui-flame-row small { color: #6B7078; font-size: 13px; }
+.ui-flame-row small { color: var(--ink-3); font-size: 13px; }
 .week-row { display: flex; gap: 6px; justify-content: space-between; }
 .week-day {
   display: flex; flex-direction: column; align-items: center; gap: 6px;
@@ -687,7 +692,7 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
   filter: drop-shadow(0 0 6px rgba(255, 138, 30, 0.45));
 }
 .widget-card b { display: block; font-size: 16px; }
-.widget-card small { color: #6B7078; font-size: 13px; }
+.widget-card small { color: var(--ink-3); font-size: 13px; }
 
 /* The real icon set, told as a progress story: the four you've earned in
    colour, the rest dimmed behind a hairline until you get there. */
