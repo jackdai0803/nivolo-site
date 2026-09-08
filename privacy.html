@@ -37,7 +37,7 @@
     <div class="card">
       <p><strong>The short version</strong></p>
       <p>Your goals, actions, streaks, Pecks, gems, name, birthday and any email you enter are stored <strong>on your device only</strong> and are never sent to us.</p>
-      <p>The only data that ever leaves your phone is what you type into the <strong>AI plan</strong> feature and the <strong>aggregate weekly numbers</strong> behind the AI weekly insight — both optional, both tied to a random ID rather than to you.</p>
+      <p>The current release sends nothing at all. Two optional AI features are planned — an <strong>AI plan</strong> and an <strong>AI weekly insight</strong>; when they arrive, the only data that ever leaves your phone is what you type into them and the aggregate weekly numbers behind the insight, tied to a random ID rather than to you. Section 3 describes exactly how that will work.</p>
       <p>We do not run analytics, ads, or trackers. We do not sell or share personal information. We have no way to identify you.</p>
     </div>
 
@@ -92,7 +92,7 @@
     <p>Because this data lives on your device, it is included in your normal iPhone backup (iCloud or a computer), where it is handled under Apple's backup and encryption terms. Deleting the app deletes this data from your device; a backup you have already made may still contain a copy until that backup is deleted or overwritten.</p>
 
     <h2 id="ai" class="anchor">3. Data sent when you use AI features</h2>
-    <p>Nivolo has two optional AI features. Neither runs on its own — each one sends data only at the moment you tap to use it. Requests go over an encrypted HTTPS connection to our own server (a Cloudflare Worker), carrying a short-lived signed token derived from the random app ID described above.</p>
+    <p>Nivolo has two optional AI features, which are not switched on in the current release — until they are, nothing described in this section is sent. Neither runs on its own — each one sends data only at the moment you tap to use it. Requests go over an encrypted HTTPS connection to our own server (a Cloudflare Worker), carrying a short-lived signed token derived from the random app ID described above.</p>
 
     <h3>AI goal plan</h3>
     <p>When you ask Nivolo to draft a plan for a goal, the following is sent:</p>
