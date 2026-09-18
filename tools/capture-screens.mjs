@@ -4,6 +4,10 @@
 //   cd ~/pebble-app && npm run dev -- --port 5273     # in one terminal
 //   npm i puppeteer-core && node tools/capture-screens.mjs
 //
+// THEME=midnight picks the app's dark look; the default is "day", the one
+// the app itself describes as matching nivolo.app. OUT=dir/ redirects the
+// PNGs (handy for comparing both themes before overwriting the site's).
+//
 // It seeds a demo user ("Alex", 12-day streak, 4 finished goals) straight
 // into localStorage, then taps through to each screen. Afterwards, run the
 // resize/WebP step — see the note at the bottom of this file.
@@ -12,8 +16,11 @@ import fs from "node:fs";
 import path from "node:path";
 
 const CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
-const URL = "http://localhost:5273";
-const OUT = new URL("../assets/screens/", import.meta.url).pathname;
+// Not `URL` — that shadows the global the next line needs, and the
+// script dies with "URL is not a constructor" before it opens Chrome.
+const APP_URL = "http://localhost:5273";
+const THEME = process.env.THEME === "midnight" ? "midnight" : "day";
+const OUT = process.env.OUT || new URL("../assets/screens/", import.meta.url).pathname;
 fs.mkdirSync(OUT, { recursive: true });
 
 // Same demo state used in the browser pane, kept in one place so every
@@ -74,7 +81,11 @@ const buildSnapshot = (screen) => {
     goals, actions, gems,
     // "Goals done" on Profile counts goal_completed timeline events
     // (App.jsx:6721), not goal.status — so each finished goal needs one.
+    // Profile's "Steps" tile counts step_completed events the same way,
+    // so each step marked complete above gets one too.
     timelineEvents: [
+      ...goals.flatMap((g) => g.steps.filter((s) => s.status === "complete").map((s) => (
+        { id: "ts" + s.id, type: "step_completed", goalId: g.id, stepId: s.id, title: `Step completed: ${s.title}`, date: s.completedAt }))),
       { id: "t1", type: "goal_started", goalId: "g1", title: "Goal started: Learn guitar", date: iso(-24) },
       { id: "t2", type: "milestone", goalId: "g1", title: "Milestone reached: First full song", date: iso(-9) },
       { id: "t3", type: "milestone", goalId: "g2", title: "Milestone reached: First 1K", date: iso(-5) },
@@ -150,17 +161,19 @@ const browser = await puppeteer.launch({
 
 const page = await browser.newPage();
 // Seed before any app code runs on the target origin.
-await page.goto(URL, { waitUntil: "domcontentloaded" });
+await page.goto(APP_URL, { waitUntil: "domcontentloaded" });
 
 for (const shot of SHOTS) {
   const snap = buildSnapshot("home");
   await page.evaluate((s) => {
     localStorage.setItem("pebble.app.v1", JSON.stringify(s));
-    localStorage.setItem("pebble.resetToken", "2026-07-22-replay");
+    // The theme is read once at module load, so it has to be in storage
+    // before the reload below, not toggled afterwards.
+    localStorage.setItem("pebble.theme", s.theme);
     // Stop the dying page's debounced persist from clobbering the seed.
     const orig = Storage.prototype.setItem;
     Storage.prototype.setItem = function (k) { if (k === "pebble.app.v1") return; return orig.apply(this, arguments); };
-  }, snap);
+  }, { ...snap, theme: THEME });
   await page.reload({ waitUntil: "networkidle2" });
   // Splash + greeting typewriter + reveal animations need to settle.
   await sleep(6000);
@@ -178,6 +191,17 @@ for (const shot of SHOTS) {
     if (!hits.length) return;
     hits.sort((a, b) => (a.innerText || "").length - (b.innerText || "").length);
     hits[0].style.visibility = "hidden";
+  });
+  // Freeze the page into a clean frame: one-shot entrances (Store's coin
+  // shower, card reveals) jump to their end state instead of being caught
+  // mid-flight, and Nivo's looping blink and pupil dart are pinned to
+  // frame 0 — eyes open, looking at you.
+  await page.evaluate(() => {
+    for (const a of document.getAnimations()) {
+      const name = a.animationName || "";
+      if (/^nivo(LidSweep|ClosedEyes|PupilDart)$/.test(name)) { a.currentTime = 0; a.pause(); }
+      else if (a.effect && a.effect.getTiming().iterations !== Infinity) a.finish();
+    }
   });
   await sleep(1200);
   const file = path.join(OUT, `${shot.name}.png`);
