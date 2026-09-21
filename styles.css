@@ -29,13 +29,17 @@
   --line: rgba(22, 23, 26, 0.10);
   --line-strong: rgba(22, 23, 26, 0.20);
 
-  /* The Hilos bento palette — flat pastel blocks, no gradient, no glow. */
-  --pastel-blue: #AECDF0;
-  --pastel-butter: #F6DE8D;
-  --pastel-blush: #F3C9D9;
-  --pastel-salmon: #F4A491;
-  --pastel-ice: #C9E7F2;
-  --pastel-sage: #C7DFC9;
+  /* Flat colour blocks, Hilos-style, but in the app's own colours. These
+     were Hilos' pastels (sky, butter, blush, salmon, sage) until the app
+     cut itself down to one brand hue plus amber in its "looks AI" pass —
+     six unrelated pastels on one page is the same tell as seven iOS system
+     colours in one app. Now they are the app's Day --decor-1..5 exactly:
+     ice for the product, sand for anything you earn. */
+  --tint-ice: #BBD9E8;      /* app --decor-1 */
+  --tint-ice-2: #D2E2EA;    /* app --decor-5 */
+  --tint-slate: #C8D7E4;    /* app --decor-3 */
+  --tint-sand: #E7D4AE;     /* app --decor-2 */
+  --tint-stone: #E3DCCB;    /* app --decor-4 */
 
   /* Brand. --cyan-pale is a fill only; on paper it cannot carry text or
      a hairline, so --cyan is now the darkened version that can. */
@@ -192,7 +196,7 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
 }
 .kicker-chip .dot {
   width: 6px; height: 6px; border-radius: 50%;
-  background: var(--pastel-salmon);
+  background: var(--cyan);
   box-shadow: none;
   animation: pulse 2.4s ease-in-out infinite;
 }
@@ -549,14 +553,14 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
   min-height: 320px;
   display: flex; flex-direction: column; justify-content: center; gap: 18px;
   position: relative; overflow: hidden;
-  background: var(--pastel-blue);
+  background: var(--tint-ice);
 }
 .panel::before { content: none; }
 .panel > * { position: relative; z-index: 1; }
-.panel--blue { background: var(--pastel-blue); }
-.panel--gold { background: var(--pastel-butter); }
-.panel--purple { background: var(--pastel-blush); }
-.panel--green { background: var(--pastel-sage); }
+.panel--blue { background: var(--tint-ice); }
+.panel--gold { background: var(--tint-sand); }
+.panel--purple { background: var(--tint-slate); }
+.panel--green { background: var(--tint-stone); }
 
 .ui-card {
   background: #fff;
@@ -931,14 +935,14 @@ footer {
   content: "";
   position: absolute; inset: 4% 8% 10%;
   border-radius: 999px 999px 22% 22%;
-  background: var(--pastel-ice);
-  opacity: 0.68;
+  background: var(--tint-ice-2);
+  opacity: 0.8;
   -webkit-mask-image: linear-gradient(to bottom, #000 52%, transparent 94%);
   mask-image: linear-gradient(to bottom, #000 52%, transparent 94%);
   pointer-events: none;
 }
-.phone-stage--gold::before { background: var(--pastel-butter); opacity: 0.66; }
-.phone-stage--purple::before { background: var(--pastel-blush); opacity: 0.62; }
+.phone-stage--gold::before { background: var(--tint-sand); opacity: 0.72; }
+.phone-stage--purple::before { background: var(--tint-slate); opacity: 0.8; }
 .phone-stage .float-chip { z-index: 2; }
 .phone {
   position: relative;
@@ -964,15 +968,17 @@ footer {
 }
 .step {
   border: 0; border-radius: var(--radius);
-  background: var(--pastel-blue);
+  background: var(--tint-ice);
   padding: 30px 26px 28px;
 }
 /* Flat colour blocks, one per step — the Hilos bento, where the panel
-   itself is the graphic instead of a tinted card on a dark page. */
-.step:nth-child(2) { background: var(--pastel-butter); }
-.step:nth-child(3) { background: var(--pastel-blush); }
+   itself is the graphic. Two ice steps for the doing, sand for the gem
+   you collect at the end: the app's own rule, amber means earned. */
+.step:nth-child(2) { background: var(--tint-slate); }
+.step:nth-child(3) { background: var(--tint-sand); }
 .step h3, .step p { color: #1D2026; }
-.step p { opacity: 0.72; }
+/* Body copy is plain --ink-2 (below), not ink at .72 opacity: the faded
+   version measured ~2.8:1 on these tints, under WCAG AA. */
 .step-num {
   display: grid; place-items: center;
   width: 30px; height: 30px; border-radius: 50%;
@@ -1000,7 +1006,7 @@ footer {
 .privacy-list { list-style: none; display: grid; gap: 14px; }
 .privacy-list li {
   display: grid; gap: 2px;
-  border-left: 2px solid var(--pastel-sage); padding-left: 16px;
+  border-left: 2px solid var(--tint-ice); padding-left: 16px;
 }
 .privacy-list b { font-size: 15px; }
 .privacy-list span { font-size: 14px; color: var(--ink-3); }
@@ -1017,7 +1023,7 @@ footer {
   border: 1px solid var(--line); border-radius: var(--radius-lg);
   background: #fff; padding: 34px 30px;
 }
-.plan--pro { border-color: transparent; background: var(--pastel-butter); }
+.plan--pro { border-color: transparent; background: var(--tint-sand); }
 .plan--pro li, .plan--pro .plan-price span, .plan--pro .plan-note { color: #4A3B12; }
 .plan--pro h3, .plan--pro .plan-price { color: #241C05; }
 .plan-badge {
@@ -1367,6 +1373,52 @@ footer {
   .lore-mini { grid-template-columns: 1fr; gap: 2px; margin-bottom: 26px; }
   .lore-mini li { padding: 9px 8px; gap: 11px; }
   .lore-mini img { width: 34px; height: 34px; border-radius: 10px; }
+}
+
+/* ── Frost: the rare shelf starts frozen in (assets/frost.js) ──
+   The pane's box is the list plus 12px of overhanging ice, so the ice
+   covers each row's hover background and the canvases can sit at 0,0.
+   Everything here only matters once frost.js has run; without it (or
+   under reduced motion) the list renders exactly as before. */
+.frost { position: relative; padding: 12px; margin: -12px -12px 22px; border-radius: 22px; }
+.frost .lore-mini { margin-bottom: 0; }
+.frost-ice, .frost-fx {
+  position: absolute; left: 0; top: 0;
+  pointer-events: none;
+  transition: opacity 0.9s ease;
+}
+.frost-ice { z-index: 2; }
+.frost-fx { z-index: 3; }
+.frost.is-clear .frost-ice, .frost.is-clear .frost-fx { opacity: 0; }
+/* a held finger is how the ice gets warmed on a phone — don't let iOS
+   turn that into a text selection or an image callout */
+.frost.is-frozen { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+.frost-bar {
+  display: flex; justify-content: center; align-items: center; gap: 10px;
+  margin: -6px 0 24px;
+  font-family: var(--font-mono);
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 0.13em; text-transform: uppercase;
+  color: var(--ink-3);
+}
+.frost-sep::before { content: "\00B7"; }
+.frost-all {
+  font: inherit; letter-spacing: inherit; text-transform: inherit;
+  color: var(--cyan);
+  background: none; border: 0; padding: 6px 2px; cursor: pointer;
+}
+.frost-all:hover { text-decoration: underline; text-underline-offset: 3px; }
+.frost-all:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; border-radius: 4px; }
+.frost-bar.is-done { text-transform: none; letter-spacing: 0; font-family: inherit; font-size: 13.5px; }
+.frost-bar.is-done .frost-sep { display: none; }
+.lore-mini li.is-thawed img { animation: thaw-in 0.7s cubic-bezier(.2,.8,.3,1); }
+@keyframes thaw-in {
+  0% { transform: scale(0.9); filter: saturate(0.35) brightness(1.18); }
+  55% { transform: scale(1.06); filter: saturate(1.05) brightness(1.04); }
+  100% { transform: none; filter: none; }
+}
+@media (max-width: 640px) {
+  .frost { margin-bottom: 14px; }
 }
 
 /* ── Icon popup (3D tile) ── */
