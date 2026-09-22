@@ -1394,11 +1394,18 @@ footer {
    turn that into a text selection or an image callout */
 .frost.is-frozen { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
 /* frost.js draws a torch at the pointer over the ice, so the system
-   cursor hides there — except over an icon that has already thawed,
-   where a click opens it and the ordinary hand is the honest cursor. */
+   cursor hides there — thawed icons included; they still open on click
+   and still take the row highlight on hover. The torch itself is a fixed
+   canvas on <body>, above everything but the icon popup (z 90). */
 .frost.is-frozen.has-torch,
-.frost.is-frozen.has-torch .lore-mini li:not(.is-thawed) { cursor: none; }
-.frost.is-frozen.has-torch .lore-mini li.is-thawed { cursor: pointer; }
+.frost.is-frozen.has-torch .lore-mini li { cursor: none; }
+.frost-torch {
+  position: fixed; left: 0; top: 0; z-index: 60;
+  pointer-events: none;
+  display: none;
+  will-change: transform;
+}
+.frost-torch.on { display: block; }
 .frost-bar {
   display: flex; justify-content: center; align-items: center; gap: 10px;
   margin: -6px 0 24px;

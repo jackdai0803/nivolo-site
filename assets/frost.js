@@ -50,6 +50,18 @@
   // A mouse gets the torch as its cursor, over the ice only. Phones keep
   // the finger as the warmth — a torch drawn under a fingertip is hidden.
   if (FINE) pane.classList.add("has-torch");
+  // The torch is the cursor, so it lives where a cursor does: a small
+  // fixed canvas on <body>, above every section, icon and stacking
+  // context on the page. Drawn inside the pane it could be painted over.
+  var TW = 92, TH = 104, HX = 36, HY = 46; // canvas size, hotspot (flame) inside it
+  var tcv = null, tctx = null;
+  if (FINE) {
+    tcv = document.createElement("canvas");
+    tcv.className = "frost-torch";
+    tcv.setAttribute("aria-hidden", "true");
+    tctx = tcv.getContext("2d");
+    document.body.appendChild(tcv);
+  }
 
   // Status line above the ice: a count, and a way past it for anyone who
   // would rather just read.
@@ -104,6 +116,11 @@
     // fx draws in the same pane coordinates as the ice; the margin is
     // just room to spill over the edge
     fxc.setTransform(dpr, 0, 0, dpr, FX_M * dpr, FX_M * dpr);
+    if (tcv) {
+      tcv.width = TW * dpr; tcv.height = TH * dpr;
+      tcv.style.width = TW + "px"; tcv.style.height = TH + "px";
+      tctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
     cols = Math.ceil(W / CELL);
     rows = Math.ceil(H / CELL);
     cells = new Float32Array(cols * rows);
@@ -520,6 +537,7 @@
         cancelAnimationFrame(raf);
         if (ice.parentNode) ice.parentNode.removeChild(ice);
         if (fx.parentNode) fx.parentNode.removeChild(fx);
+        if (tcv && tcv.parentNode) tcv.parentNode.removeChild(tcv);
       }, 900);
     }, 650);
   }
@@ -543,6 +561,9 @@
   }
   function tick(now) {
     raf = 0;
+    // A second tick in the same frame (see the end of tick) would see
+    // zero elapsed time; skip it rather than divide by it.
+    if (last && now - last < 1) { if (!raf) raf = requestAnimationFrame(tick); return; }
     var dt = last ? Math.min(50, now - last) : 16.7;
     last = now;
     var busy = false;
@@ -563,6 +584,7 @@
         var mvx = (heat.x - torch.px) * 16.7 / dt;
         torch.px = heat.x;
         torch.vx += (mvx - torch.vx) * 0.2;
+        if (!isFinite(torch.vx)) torch.vx = 0; // one bad frame must not snuff the torch for good
         // Ice under the flame gives off steam; the flame throws the odd ember.
         torch.steam += dt;
         if (torch.steam > 95 && frostAt(heat.x, heat.y) > 0.12) {
@@ -592,8 +614,10 @@
     }
     if (bits.length) busy = true;
     drawFx(now);
-    if (busy) raf = requestAnimationFrame(tick);
-    else clearFx();
+    // thawItem() inside this tick may already have called kick(); never
+    // queue a second frame on top of it
+    if (busy) { if (!raf) raf = requestAnimationFrame(tick); }
+    else { clearFx(); placeTorch(); }
   }
 
   // The warm light itself, on its own canvas so it never marks the ice.
@@ -621,8 +645,21 @@
     });
     fxc.restore();
     bits.forEach(function (b) { if (b.steam) puff(b); });
-    if (heat.on && FINE && thawedCount < items.length) drawTorch(heat.x, heat.y, now);
     bits.forEach(function (b) { if (!b.steam) ember(b); });
+    paintTorch(now);
+  }
+
+  function torchLit() { return !!(tcv && heat.on && mouseAt && !done); }
+  function placeTorch() {
+    if (!torchLit()) { tcv && tcv.classList.remove("on"); return; }
+    tcv.style.transform = "translate3d(" + (mouseAt.x - HX) + "px," + (mouseAt.y - HY) + "px,0)";
+    tcv.classList.add("on");
+  }
+  function paintTorch(now) {
+    placeTorch();
+    if (!torchLit()) return;
+    tctx.clearRect(0, 0, TW, TH);
+    drawTorch(tctx, HX, HY, now);
   }
 
   function puff(b) {
@@ -651,8 +688,7 @@
      and the flame always burns straight up, leaning away from the move.
      Flat and rounded, in the style of Nivo's icons; the wrap under the
      head is the brand ice blue. */
-  function drawTorch(x, y, now) {
-    var c = fxc;
+  function drawTorch(c, x, y, now) {
     var vx = torch.vx;
     var tilt = 0.52 + Math.max(-0.28, Math.min(0.28, vx * 0.012));
     var hx = x + 1, hy = y + 9; // centre of the head, just under the flame
@@ -758,10 +794,6 @@
     var p = local(e);
     if (e.pointerType === "mouse") {
       mouseAt = { x: e.clientX, y: e.clientY };
-      // Over an icon that has already thawed the torch goes out and the
-      // ordinary hand comes back: here a click opens, it doesn't melt.
-      var i = indexOf(e.target);
-      if (i >= 0 && state[i].thawed) { heat.on = false; kick(); return; }
       if (heat.on) sweep(heat.x, heat.y, p.x, p.y);
       else torch.px = p.x;
       heat.on = true;
@@ -771,6 +803,7 @@
       return;
     }
     heat.x = p.x; heat.y = p.y;
+    if (tcv) placeTorch(); // move it on the event itself, not a frame later
     kick();
   }
   pane.addEventListener("pointerenter", onMove);
@@ -815,6 +848,7 @@
     if (i < 0) return;
     if (state[i].thawed) {
       if (state[i].thawedAt >= pointerAt) { e.stopPropagation(); e.preventDefault(); }
+      else { heat.on = false; kick(); } // the popup opens over it; put the torch out
       return;
     }
     e.stopPropagation();
