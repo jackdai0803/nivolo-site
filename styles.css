@@ -581,12 +581,15 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
 .ui-flame-row b { display: block; font-size: 16px; letter-spacing: -0.01em; }
 .ui-flame-row small { color: var(--ink-3); font-size: 13px; }
 .week-row { display: flex; gap: 6px; justify-content: space-between; }
+/* A day may shrink below its 30px dot, so seven of them still fit the card
+   on a 375px phone instead of forcing the whole panel wider than the page. */
 .week-day {
   display: flex; flex-direction: column; align-items: center; gap: 6px;
+  flex: 0 1 30px; min-width: 0;
   font-size: 11px; font-weight: 600; color: var(--ink-3);
 }
 .week-dot {
-  width: 30px; height: 30px; border-radius: 50%;
+  width: 100%; aspect-ratio: 1; border-radius: 50%;
   border: 2px solid rgba(22, 23, 26, 0.14);
   display: grid; place-items: center;
   font-size: 12px; color: var(--ink-3);
@@ -791,7 +794,7 @@ footer {
 .footer-col h4 {
   font-family: var(--font-mono);
   font-size: 10.5px; font-weight: 500; letter-spacing: 0.13em; text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.38);
+  color: rgba(255, 255, 255, 0.6);
   margin-bottom: 3px;
 }
 .footer-col a { color: rgba(255, 255, 255, 0.72); font-size: 14px; }
@@ -801,11 +804,14 @@ footer {
   gap: 20px;
   padding-top: 22px;
   border-top: 1px solid rgba(255, 255, 255, 0.10);
-  font-size: 13px; color: rgba(255, 255, 255, 0.42);
+  font-size: 13px; color: rgba(255, 255, 255, 0.6);
 }
 @media (max-width: 760px) {
   .footer-inner { flex-direction: column; gap: 34px; }
   .footer-cols { gap: 40px; }
+  /* Thumb-sized rows: each link is 44px tall here instead of 22px. */
+  .footer-col { gap: 0; }
+  .footer-col a { padding: 11px 0; }
   .footer-base { flex-direction: column; align-items: flex-start; gap: 10px; }
   .footer-word { margin: 40px 0 22px; }
 }
@@ -814,7 +820,7 @@ footer {
    touch, which is why it is focusable) slides the gloss in for whoever
    wonders. No script involved. Serif comes from the system: the site
    self-hosts its fonts and one word is not worth another download. */
-.footer-mark { display: inline-flex; align-items: baseline; gap: 13px; color: rgba(255, 255, 255, 0.42); }
+.footer-mark { display: inline-flex; align-items: baseline; gap: 13px; color: rgba(255, 255, 255, 0.6); }
 .motto {
   display: inline-flex; align-items: baseline;
   font-family: var(--font-serif);
@@ -916,6 +922,16 @@ footer {
   border-left: 2px solid var(--line); padding-left: 14px; margin: 18px 0;
 }
 .page .anchor { scroll-margin-top: 90px; }
+
+/* 404 — one centred message and a way home. */
+.page--lost { text-align: center; padding-top: 96px; }
+.page--lost .lost-icon {
+  display: block; width: 96px; height: 96px; margin: 0 auto 26px;
+  border-radius: 22.5%;
+  box-shadow: var(--shadow-md);
+}
+.page--lost .lede { max-width: 440px; margin: 0 auto 30px; text-wrap: balance; }
+.page--lost .lost-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
 
 /* ── Feature rows (replaced the old tab panels) ── */
 /* .split only carries the column sizes; the removed .tab-panel.active
@@ -1096,7 +1112,8 @@ footer {
   .plans--four .plan-price { font-size: 30px; }
 }
 @media (max-width: 900px) {
-  .split { grid-template-columns: 1fr; gap: 34px; }
+  /* minmax(0, …): the column may be narrower than its widest child. */
+  .split { grid-template-columns: minmax(0, 1fr); gap: 34px; }
   .split-visual { order: -1; }
   /* Stacked, the art always leads — cancel the desktop flip. */
   .split--flip .split-copy { order: 0; }
@@ -1784,12 +1801,12 @@ footer {
   position: absolute; top: -6px; right: -6px;
   width: 40px; height: 40px; border-radius: 50%;
   border: 1px solid var(--line-strong);
-  background: rgba(16, 24, 40, 0.8); color: var(--ink-2);
+  background: rgba(16, 24, 40, 0.8); color: rgba(255, 255, 255, 0.82);
   font-size: 22px; line-height: 1; cursor: pointer;
   transition: color 0.2s ease, border-color 0.2s ease;
   z-index: 2;
 }
-.ipop-close:hover { color: var(--ink); border-color: rgba(255,255,255,.3); }
+.ipop-close:hover { color: #fff; border-color: rgba(255,255,255,.3); }
 .ipop-stage {
   width: calc(var(--ipop-tile) + 100px); max-width: 82vw;
   height: calc(var(--ipop-tile) + 80px);
