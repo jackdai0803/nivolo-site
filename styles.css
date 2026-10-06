@@ -1175,110 +1175,70 @@ footer {
   z-index: 1;
   width: min(840px, 90%);
   height: 168px;
-  border: none;
-  border-radius: 0;
-  background:
-    radial-gradient(ellipse at 50% 0, rgba(222, 248, 255, 0.18), transparent 62%),
-    linear-gradient(177deg,
-      #9bdcf7 0%,
-      #86cff0 32%,
-      #66b7e2 35%,
-      #4d9fd3 64%,
-      #347fba 67%,
-      #1a5b98 100%);
-  background-position: center bottom;
-  background-repeat: no-repeat;
-  background-size: 100% calc(100% - 23px);
-  box-shadow: none;
-  clip-path: polygon(3% 0, 97% 0, 95% 45%, 91% 57%, 82% 68%, 69% 78%, 57% 88%, 50% 100%, 42% 89%, 29% 80%, 17% 70%, 8% 58%, 5% 45%);
-  filter: drop-shadow(0 22px 30px rgba(30, 86, 124, 0.24));
-  overflow: hidden;
+  overflow: visible;
+  filter: drop-shadow(0 18px 0 rgba(39, 104, 143, 0.12)) drop-shadow(0 24px 24px rgba(30, 86, 124, 0.22));
 }
-/* NOTE: a .pit--iceberg .bowl-visual::before lived here — a shade meant to
-   run from 52px down to the floe's foot. It never did: the glass rule above
-   it set height: 2px, which wins over a top/bottom pair, so it rendered as
-   a 2px sliver of a gradient that is transparent for its first 46% — i.e.
-   nothing at all. Deleting the glass rule would have switched it on for the
-   first time and quietly changed how the ice looks, so it goes too. Ask if
-   you want the shade it was written for; it is a one-liner to restore. */
-.pit--iceberg .bowl-visual::after {
-  content: "";
-  position: absolute;
-  left: 0; right: 0; top: 0;
-  height: 63px;
-  border-radius: 0;
-  background:
-    radial-gradient(260px 38px at 28% 12%, rgba(255, 255, 255, 0.92), transparent 72%),
-    linear-gradient(180deg, #ffffff 0%, #edf9ff 54%, #c7edfc 100%);
-  box-shadow: inset 0 -10px 18px rgba(44, 148, 205, 0.12);
-  /* Snow line follows the floe the physics actually builds: highest at
-     the two ends, dipping ~14px towards the middle, with drift jitter on
-     top. It used to run the other way — lowest at the ends — so icons
-     resting on the floe's high outer edge were painted 17px above the
-     snow, floating on air at the sides. */
-  clip-path: polygon(0 4%, 7% 0, 17% 6%, 29% 8%, 40% 15%, 52% 21%, 65% 14%, 78% 7%, 90% 3%, 100% 6%, 98% 57%, 89% 67%, 76% 71%, 63% 67%, 50% 75%, 37% 69%, 23% 72%, 10% 65%, 2% 54%);
+.pit--iceberg .berg-body {
+  fill: #58B3DE;
+  stroke: #123A57;
+  stroke-width: 8px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
-.pit--iceberg .pit-stage::after {
-  content: "";
+.pit--iceberg .berg-facet {
+  stroke: #236D9B;
+  stroke-width: 5px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.pit--iceberg .berg-facet--left { fill: #7CCDF0; }
+.pit--iceberg .berg-facet--middle { fill: #4BA7D6; }
+.pit--iceberg .berg-facet--right { fill: #378CC1; }
+.pit--iceberg .berg-facet--edge { fill: #65BCE3; }
+.pit--iceberg .berg-snow {
+  fill: #F8FDFF;
+  stroke: #123A57;
+  stroke-width: 7px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.pit--iceberg .berg-snow-shadow { fill: #D8F1FB; }
+.pit--iceberg .berg-shine {
+  fill: none;
+  stroke: #FFFFFF;
+  stroke-width: 5px;
+  stroke-linecap: round;
+  opacity: 0.95;
+}
+.pit--iceberg .ocean-water {
   position: absolute;
   left: 50%; bottom: -180px;
   z-index: 0;
   width: 100vw; height: 300px;
   transform: translateX(-50%);
-  border: 0;
-  border-radius: 0;
-  background:
-    radial-gradient(ellipse at 50% 0, rgba(255, 255, 255, 0.78) 0%, rgba(211, 245, 254, 0.34) 34%, transparent 70%) 0 0 / 180px 32px repeat-x,
-    radial-gradient(ellipse at 50% 0, rgba(255, 255, 255, 0.52) 0%, transparent 68%) 80px 9px / 250px 40px repeat-x,
-    linear-gradient(180deg,
-      rgba(107, 207, 237, 0.92) 0%,
-      rgba(69, 174, 221, 0.86) 30%,
-      rgba(89, 170, 211, 0.60) 52%,
-      rgba(145, 197, 219, 0.28) 70%,
-      rgba(242, 241, 238, 0) 92%,
-      rgba(242, 241, 238, 0) 100%);
-  box-shadow:
-    0 -10px 30px rgba(112, 202, 235, 0.28),
-    inset 0 16px 30px rgba(255, 255, 255, 0.34);
-  clip-path: polygon(0 13px, 7% 2px, 15% 15px, 24% 4px, 34% 13px, 45% 2px, 56% 15px, 67% 2px, 78% 15px, 89% 4px, 100% 13px, 100% 100%, 0 100%);
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 56%, rgba(0,0,0,.78) 68%, rgba(0,0,0,.32) 82%, transparent 96%);
-  mask-image: linear-gradient(to bottom, #000 0%, #000 56%, rgba(0,0,0,.78) 68%, rgba(0,0,0,.32) 82%, transparent 96%);
-  animation: ocean-drift 4.8s linear infinite;
-  /* The 1.12 saturate is baked into the colours above. As a filter it was a
-     full pass over a 100vw band every time the band repainted, which the
-     drift animation makes every frame. will-change is gone for the same
-     reason it never helped: neither background-position nor clip-path is a
-     compositor property, so it bought a layer and repainted it anyway. */
+  overflow: visible;
   pointer-events: none;
 }
-@keyframes ocean-drift {
-  0%, 100% {
-    background-position: 0 0, 80px 9px, 0 0;
-    clip-path: polygon(0 13px, 7% 2px, 15% 15px, 24% 4px, 34% 13px, 45% 2px, 56% 15px, 67% 2px, 78% 15px, 89% 4px, 100% 13px, 100% 100%, 0 100%);
-  }
-  50% {
-    background-position: 360px 0, -420px 9px, 0 0;
-    clip-path: polygon(0 2px, 8% 15px, 17% 4px, 27% 13px, 38% 2px, 49% 13px, 60% 2px, 71% 15px, 82% 4px, 92% 13px, 100% 2px, 100% 100%, 0 100%);
-  }
+.pit--iceberg .ocean-water-shape {
+  filter: drop-shadow(0 -8px 18px rgba(112, 202, 235, 0.24));
 }
 .pit--zerog .bowl-visual { display: none; }
 .pit-lines { position: absolute; inset: 0; pointer-events: none; }
 .pit--iceberg .pit-caption { padding-top: 172px; }
 @media (max-width: 640px) {
-  .pit--iceberg .bowl-visual { width: 94%; height: 136px; bottom: -21px; background-size: 100% calc(100% - 19px); }
-  .pit--iceberg .bowl-visual::after { height: 51px; }
-  .pit--iceberg .pit-stage::after { width: 100vw; height: 240px; bottom: -150px; }
+  .pit--iceberg .bowl-visual { width: 94%; height: 136px; bottom: -21px; }
+  .pit--iceberg .ocean-water { width: 100vw; height: 240px; bottom: -150px; }
   .pit--iceberg .pit-caption { padding-top: 140px; }
 }
 /* Scrolled away: nothing here is being looked at, so nothing here should
    be asking for frames. night.js sets this from the same observer that
    parks the sim. */
-.icon-pit.out-of-view .pit-stage::after,
 .icon-pit.out-of-view .pit-bob { animation-play-state: paused; }
+.icon-pit.out-of-view .ocean-water { visibility: hidden; }
 @media (prefers-reduced-motion: reduce) {
   .pit--iceberg .pit-bob { animation: none; }
   .snow-divot, .snow-puff { display: none; }
-  .pit--iceberg .pit-stage::after { animation: none; }
+  .ocean-water-motion { display: none; }
   .water-splash i { display: none; }
 }
 

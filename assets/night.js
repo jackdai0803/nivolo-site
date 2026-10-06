@@ -225,8 +225,9 @@
       var mobile = s.w < 640;
       var waterY = s.h - (mobile ? 90 : 120);
       // Match the PAINTED ice, not an arbitrary width: .bowl-visual is
-      // min(840, 90%) wide and its clip-path keeps 3%..97% of that at the
-      // top, so the ice a visitor can see is 94% of the box. The floe used
+      // min(840, 90%) wide and the SVG body runs from x=28..812 in an
+      // 840-wide viewBox, so the ice a visitor can see is 93.3% of the box.
+      // The floe used
       // to be 50px narrower than the ice on each side, which put the outer
       // icons over painted-but-unsupported snow.
       var bergW = Math.min(790, s.w * 0.846);

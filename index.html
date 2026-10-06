@@ -29,7 +29,7 @@
   <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon.png?v=3" />
   <link rel="apple-touch-icon" href="assets/app-icon.png" />
   <link rel="stylesheet" href="assets/fonts.css?v=3" />
-  <link rel="stylesheet" href="styles.css?v=74" />
+  <link rel="stylesheet" href="styles.css?v=83" />
 
   <script type="application/ld+json">
   {
@@ -82,7 +82,57 @@
     <div class="icon-pit pit--iceberg reveal in" id="iconPit">
       <div class="pit-stage" id="pitStage" aria-label="A floating ice shelf piled with Nivo's icons and moods, with more on the way — grab and toss them">
         <span class="pit-hint">Go on — grab one.</span>
-        <div class="bowl-visual"></div>
+        <svg class="ocean-water" viewBox="0 0 1200 300" preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="oceanDepth" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#70d0ec" stop-opacity=".94" />
+              <stop offset=".28" stop-color="#4aaedf" stop-opacity=".86" />
+              <stop offset=".55" stop-color="#65add1" stop-opacity=".58" />
+              <stop offset=".78" stop-color="#a7cfdf" stop-opacity=".25" />
+              <stop offset="1" stop-color="#f2f1ee" stop-opacity="0" />
+            </linearGradient>
+          </defs>
+          <path
+            class="ocean-water-shape"
+            fill="url(#oceanDepth)"
+            stroke="rgba(218, 248, 255, .72)"
+            stroke-width="5"
+            vector-effect="non-scaling-stroke"
+            d="M0 15 C92 18 164 5 257 14 C356 23 444 7 546 14 C654 22 741 5 849 14 C958 23 1072 7 1200 15 L1200 300 L0 300 Z"
+          >
+            <animate
+              class="ocean-water-motion"
+              attributeName="d"
+              dur="9.5s"
+              repeatCount="indefinite"
+              calcMode="spline"
+              keyTimes="0; .25; .5; .75; 1"
+              keySplines=".42 0 .58 1; .42 0 .58 1; .42 0 .58 1; .42 0 .58 1"
+              values="
+                M0 15 C92 18 164 5 257 14 C356 23 444 7 546 14 C654 22 741 5 849 14 C958 23 1072 7 1200 15 L1200 300 L0 300 Z;
+                M0 11 C101 3 174 21 270 15 C370 8 455 23 558 13 C664 4 758 21 864 16 C975 10 1080 22 1200 11 L1200 300 L0 300 Z;
+                M0 16 C94 24 180 8 278 13 C380 19 468 3 570 12 C677 22 768 8 876 13 C988 20 1090 4 1200 16 L1200 300 L0 300 Z;
+                M0 12 C103 7 188 22 287 15 C391 6 479 20 582 14 C689 7 784 23 892 14 C1002 5 1101 19 1200 12 L1200 300 L0 300 Z;
+                M0 15 C92 18 164 5 257 14 C356 23 444 7 546 14 C654 22 741 5 849 14 C958 23 1072 7 1200 15 L1200 300 L0 300 Z"
+            />
+          </path>
+        </svg>
+        <svg class="bowl-visual" viewBox="0 0 840 168" preserveAspectRatio="none" aria-hidden="true">
+          <!-- One chunky, outlined illustration instead of a clipped CSS
+               gradient, so the floe speaks the same cartoon language as
+               Nivo's square icon art. -->
+          <path class="berg-body" vector-effect="non-scaling-stroke" d="M28 9C101 2 160 7 224 15C297 24 352 28 421 29C495 23 557 17 626 11C699 4 764 2 812 10L800 61L780 80L736 92L691 112L618 111L571 138L506 134L451 160L398 151L346 164L292 143L235 139L196 121L133 116L94 95L58 86L42 61L28 9Z" />
+
+          <path class="berg-facet berg-facet--left" vector-effect="non-scaling-stroke" d="M42 61L183 76L292 143L235 139L196 121L133 116L94 95L58 86L42 61Z" />
+          <path class="berg-facet berg-facet--middle" vector-effect="non-scaling-stroke" d="M183 76L421 79L451 160L398 151L346 164L292 143L183 76Z" />
+          <path class="berg-facet berg-facet--right" vector-effect="non-scaling-stroke" d="M421 79L659 75L736 92L691 112L618 111L571 138L506 134L451 160L421 79Z" />
+          <path class="berg-facet berg-facet--edge" vector-effect="non-scaling-stroke" d="M659 75L800 61L780 80L736 92L659 75Z" />
+
+          <path class="berg-snow" vector-effect="non-scaling-stroke" d="M28 9C101 2 160 7 224 15C297 24 352 28 421 29C495 23 557 17 626 11C699 4 764 2 812 10L806 43C752 47 697 51 635 55C565 60 500 65 421 67C342 65 273 61 208 56C142 51 86 47 34 42L28 9Z" />
+          <path class="berg-snow-shadow" d="M56 31C121 29 177 34 237 40C305 47 358 51 421 52C488 49 546 44 609 39C671 34 727 30 784 30L782 42C730 46 681 50 625 54C555 59 492 63 421 65C350 63 285 59 218 54C154 49 101 45 48 41L56 31Z" />
+          <path class="berg-shine" d="M109 19C145 17 174 19 205 23" />
+          <path class="berg-shine" d="M665 20C706 15 739 15 767 17" />
+        </svg>
         <button class="pit-sound" id="pitSound" type="button" aria-label="Toggle icon sound effects" hidden>
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M11 5 6.5 9H3v6h3.5L11 19z" fill="currentColor" stroke="none"/>
