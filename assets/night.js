@@ -303,6 +303,13 @@
       // remember where each piece sits at zero load so the sink pass can
       // move them as one.
       walls.forEach(function (wb) { wb.bergBaseY = wb.position.y; });
+      // A rebuild comes back at the depth the floe was already riding at.
+      // The pile rode down with the old one; put the new one in at zero
+      // load and every icon is suddenly standing inside the ice.
+      var riding = bergSinkApplied || 0;
+      if (riding) walls.forEach(function (wb) {
+        Body.setPosition(wb, { x: wb.position.x, y: wb.bergBaseY + riding });
+      });
       // No left/right stage walls: tossed icons may travel freely beyond
       // either viewport edge before gravity carries them into the ocean.
       skyCeiling = Bodies.rectangle(cx, skyTop - 460, s.w + 400, 80, { isStatic: true });
@@ -1785,19 +1792,27 @@
     }
   });
 
-  /* Rebuild walls on resize; nudge icons back over the bowl. */
+  /* Rebuild on resize — but only when the WIDTH changes. A phone fires
+     resize every time its address bar slides away, and nothing about the
+     floe depends on the window's height: rebuilding there dealt a settled
+     pile out again under the visitor's thumb. When the width does change
+     the stage stays centred, so the pile moves with it — by half the
+     difference, and by however far the snow line moved where the stage
+     changes height — instead of being scattered afresh. */
   var resizeTimer = null;
+  var builtW = stage.clientWidth;
   window.addEventListener("resize", function () {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(function () {
+      var w = stage.clientWidth;
+      if (w === builtW) return;
+      var dx = (w - builtW) / 2, rimWas = rimYCurrent;
+      builtW = w;
       buildWalls();
-      var s = stageSize();
+      var dy = rimYCurrent - rimWas;
       icons.forEach(function (it) {
-        clearSinkState(it);
-        Body.setPosition(it.body, {
-          x: s.w / 2 + (Math.random() * 160 - 80),
-          y: Math.min(it.body.position.y, s.h - 160),
-        });
+        Body.translate(it.body, { x: dx, y: dy });
+        // The floe under it may be a different width now: let it resettle.
         Matter.Sleeping.set(it.body, false);
       });
     }, 220);

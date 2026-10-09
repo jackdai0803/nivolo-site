@@ -264,7 +264,10 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
 .pit-stage {
   position: relative;
   height: 420px;
-  touch-action: none;
+  /* A swipe that starts here still scrolls the page. night.js cancels the
+     touch only when it lands on an icon, so grabbing one never scrolls and
+     everything else does — `none` made the whole hero a dead zone. */
+  touch-action: pan-y;
   cursor: grab;
 }
 .pit-stage.dragging { cursor: grabbing; }
@@ -1279,7 +1282,12 @@ footer {
 }
 
 /* ── Icon lore / collection ── */
-.lore { padding-bottom: 10px; }
+/* The frost's effects canvas overhangs its pane by 72px a side (frost.js,
+   FX_M) so the torch is not sliced at the edge. On a phone that is 60px
+   past each side of the screen — enough to make the page wider than the
+   phone. The section is full width, so clipping here cuts nothing that
+   was on screen. */
+.lore { padding-bottom: 10px; overflow-x: clip; }
 .lore-tier { text-align: center; margin: 42px 0 20px; }
 .lore-tier-label { color: var(--ink-3); }
 .lore-tier-note {
