@@ -25,7 +25,7 @@
   <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon.png?v=3" />
   <link rel="apple-touch-icon" href="assets/app-icon.png" />
   <link rel="stylesheet" href="assets/fonts.css?v=3" />
-  <link rel="stylesheet" href="styles.css?v=74" />
+  <link rel="stylesheet" href="styles.css?v=86" />
 </head>
 <body>
 
@@ -37,7 +37,7 @@
         <a class="nav-plain" href="index.html#pricing">Pricing</a>
         <a class="nav-plain" href="index.html#faq">FAQ</a>
         <a class="nav-plain" href="support.html">Support</a>
-        <a class="nav-cta" href="https://apps.apple.com/app/nivolo">Get the app</a>
+        <span class="nav-cta is-soon" data-store><span data-live="Get the app">Coming soon</span></span>
       </div>
     </div>
   </nav>
@@ -292,8 +292,8 @@
           </div>
           <div class="footer-col">
             <h4>Get it</h4>
-            <!-- TODO: replace href with the real App Store link -->
-            <a href="https://apps.apple.com/app/nivolo">App Store</a>
+            <!-- A badge until launch; assets/store.js holds the App Store link -->
+            <span class="is-soon" data-store><span data-live="App Store">App Store <small>Coming soon</small></span></span>
           </div>
         </div>
       </div>
@@ -305,5 +305,7 @@
     </div>
   </footer>
 
+  <!-- No ?v= on purpose: this is the one file edited at launch, and it should be the only edit. -->
+  <script src="assets/store.js" defer></script>
 </body>
 </html>
