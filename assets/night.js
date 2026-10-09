@@ -106,8 +106,12 @@
     return [ICONS[0]].concat(rest.slice(0, Math.max(4, fits - 2)), [ICONS[ICONS.length - 1]]);
   }
   var ROSTER = rosterFor(stage.clientWidth || window.innerWidth);
-  // Pour cadence scales down as the roster grows so the show stays short.
-  var SPAWN_GAP = Math.max(130, Math.round(4800 / ROSTER.length));
+  // Pour cadence: the whole shelf is in the air in about 1.4s — one icon
+  // every 50ms for the full roster, a little slower for a phone's shorter
+  // one so the show lasts as long. The audible replay keeps its own, slower
+  // rhythm: there every touchdown is meant to be heard on its own.
+  var SPAWN_GAP = Math.max(50, Math.round(1350 / ROSTER.length));
+  var REPOUR_GAP = Math.max(130, Math.round(4800 / ROSTER.length));
 
   function iconSrc(name) { return "assets/icons/" + name + ".png"; }
 
@@ -168,6 +172,8 @@
   var walls = [];
   var icons = []; // { body, el, key, label }
   var rimYCurrent = 0;   // top of the container, set by buildWalls
+  var dipCurrent = 0;    // iceberg only: how far the snow dishes at its middle
+  var lipTopOff = 0, lipTopY = 0; // iceberg only: top of each snow lip (x from centre, y)
   var bowlHalfCurrent = 0; // container half-width, set by buildWalls
   var waterYCurrent = 0; // iceberg only: the waterline, set by buildWalls
   var waterFadeStartCurrent = 0; // where submerged icons begin fading
@@ -202,6 +208,8 @@
   function buildWalls() {
     walls.forEach(function (wb) { Composite.remove(engine.world, wb); });
     walls = [];
+    var guarded = pourGuards.length > 0; // a rebuild mid-pour keeps the mould on
+    pourGuards = [];
     var s = stageSize();
     var cx = s.w / 2;
     measureSky();
@@ -241,6 +249,7 @@
       waterFadeStartCurrent = waterY + waterLayerH * 0.46;
       waterFadeEndCurrent = waterY + waterLayerH * 0.94;
       rimYCurrent = topEnd;
+      dipCurrent = dip;
       bowlHalfCurrent = half;
       var slope = Math.atan(dip / half);
       var segLen = Math.sqrt(half * half + dip * dip) + 6;
@@ -280,6 +289,8 @@
       var lipA = 1.15;                       // ~66° from horizontal
       var lipL = lipH / Math.sin(lipA) + 8;
       var lipDX = Math.cos(lipA) * lipL / 2, lipDY = Math.sin(lipA) * lipL / 2;
+      lipTopOff = half - 10 - 2 * lipDX;
+      lipTopY = topEnd - 1 - 2 * lipDY;
       [-1, 1].forEach(function (sgn) {
         walls.push(Bodies.rectangle(
           cx + sgn * (half - 10) - sgn * lipDX,
@@ -297,9 +308,64 @@
       skyCeiling = Bodies.rectangle(cx, skyTop - 460, s.w + 400, 80, { isStatic: true });
       walls.push(skyCeiling);
       walls.forEach(function (wb) { Composite.add(engine.world, wb); });
+      if (guarded) raiseGuards(iconSize(), Math.max(0, guardsBusyUntil - engine.timing.timestamp));
       return;
     }
 
+  }
+
+  /* ── The pour is cast in a mould ──────────────────────────────────────
+     Poured in a second and a half, the pile is still liquid when the last
+     icon lands, and a liquid pile runs over the lips: the outer icons of
+     the upper courses slide down the flank and into the sea — which sends
+     them back down from the top of the page, across the headline. So for
+     the pour only, an unseen wall stands on each lip. They ride with the
+     floe (bergBaseY) and come away once the pile has set — every icon
+     asleep — or the moment a hand arrives, because a toss has to be free
+     to leave by the side. The audible replay goes up inside the same
+     mould: it throws the whole colony at once, and it is the pour most
+     visitors will actually hear. */
+  var pourGuards = [];
+  var guardsSince = 0;
+  var guardsBusyUntil = 0;   // sim ms: icons are still being let go
+  var GUARD_PATIENCE = 4000; // sim ms after the last icon is in
+
+  function raiseGuards(size, busyFor) {
+    guardsSince = 0;
+    guardsBusyUntil = engine.timing.timestamp + (busyFor || 0);
+    if (VARIANT !== "iceberg" || pourGuards.length) return;
+    var cx = stageSize().w / 2, t = 24;
+    var top = -size * 1.5, bottom = lipTopY + 8;
+    [-1, 1].forEach(function (sgn) {
+      var g = Bodies.rectangle(cx + sgn * (lipTopOff + t / 2), (top + bottom) / 2, t, bottom - top, {
+        isStatic: true, friction: 0.4, restitution: 0.02,
+      });
+      g.bergBaseY = g.position.y;
+      Body.setPosition(g, { x: g.position.x, y: g.bergBaseY + bergSinkApplied });
+      pourGuards.push(g);
+      walls.push(g);
+      Composite.add(engine.world, g);
+    });
+  }
+
+  function lowerGuards() {
+    pourGuards.forEach(function (g) {
+      Composite.remove(engine.world, g);
+      var at = walls.indexOf(g);
+      if (at !== -1) walls.splice(at, 1);
+    });
+    pourGuards = [];
+  }
+
+  function tendGuards() {
+    var now = engine.timing.timestamp;
+    if (!allSpawned || now < guardsBusyUntil) return;
+    if (!guardsSince) guardsSince = now;
+    var set = now - guardsSince > GUARD_PATIENCE;
+    for (var i = 0; !set && i < icons.length; i++) {
+      if (!icons[i].sinking && !icons[i].body.isSleeping) return;
+    }
+    lowerGuards();
   }
 
   function spawnIcons() {
@@ -341,21 +407,44 @@
       return;
     }
 
-    var halfBowl = Math.min(740, s.w * 0.82) / 2 * 0.6;
-    // Drop points stay well inside the bowl mouth (alternating sides) so
-    // icons slide down the curve — spreading to the rim lets them wedge
-    // into a stable arch across the mouth; stacking one column is worse.
-    var offsets = [-0.42, 0.34, -0.22, 0.42, -0.08, 0.16, -0.34, 0, 0.26, -0.14];
+    /* The pour enters from just above the stage, not from the top of the
+       page: falling the whole height of the hero meant icons crossing the
+       headline and the buttons for five seconds. The lowest line of hero
+       copy is the ceiling — a tile tilted as far as it starts (0.4rad)
+       reaches 0.66 of its size from its centre, so that is the clearance. */
+    var stageTop = stage.getBoundingClientRect().top, ceil = -Infinity;
+    var copy = pit.parentNode.querySelectorAll(".hero-actions, .hero-note");
+    for (var c = 0; c < copy.length; c++) {
+      ceil = Math.max(ceil, copy[c].getBoundingClientRect().bottom - stageTop);
+    }
+    var dropY = Math.max(ceil + size * 0.66 + 4, -size / 2);
+    /* Nothing has fallen clear before the next icon arrives, so each gets
+       a lane of its own, laid out as the three courses the floe settles
+       into anyway (see slack() above): each course one lane shorter than
+       the one below and sitting over its gaps. Evens before odds within a
+       course, so neighbours are never let go back to back. */
+    var lanes = Math.max(2, Math.ceil((ROSTER.length + 3) / 3));
+    var pitch = Math.min(size * 1.07, 2 * (lipTopOff - size * 0.7) / (lanes - 1));
+    var slots = [];
+    for (var course = 0; slots.length < ROSTER.length; course++) {
+      var n = Math.min(Math.max(2, lanes - course), ROSTER.length - slots.length);
+      var x0 = cx - (n - 1) * pitch / 2;
+      for (var k = 0; k < n; k += 2) slots.push(x0 + k * pitch);
+      for (k = 1; k < n; k += 2) slots.push(x0 + k * pitch);
+    }
+    raiseGuards(size);
     ROSTER.forEach(function (icon, i) {
       var el = document.createElement("div");
       el.className = "pit-icon";
       el.style.width = el.style.height = size + "px";
+      // Parked in view until its turn, so hidden until its turn.
+      el.style.visibility = "hidden";
       el.innerHTML = '<img src="' + iconSrc(icon[0]) + '" alt="' + icon[1] + ' app icon" draggable="false" />';
       bobWrap.appendChild(el);
 
       var body = Bodies.rectangle(
-        cx + halfBowl * (offsets[i % offsets.length] || 0),
-        skyTop - size / 2 - Math.random() * 140,
+        slots[i] + (Math.random() * 2 - 1) * pitch * 0.07,
+        dropY + Math.random() * size * 0.25,
         size, size,
         {
           chamfer: { radius: size * 0.225 },
@@ -370,19 +459,27 @@
           angle: Math.random() * 0.8 - 0.4,
         }
       );
+      // Already on its way down as it appears: it reads as arriving from
+      // above the frame, and it is out of its lane before the lane is reused.
+      Body.setVelocity(body, { x: 0, y: 3 });
       Body.setAngularVelocity(body, Math.random() * 0.08 - 0.04);
       icons.push({ body: body, el: el, key: icon[0], label: icon[1], lastGroundPopAt: -1e9 });
       // Stagger the automatic drop so the icons pour in rather than dump.
       setTimeout(function () {
         Composite.add(engine.world, body);
+        el.style.visibility = "";
+        el.classList.add("pour-in");
+        // Off again once it has played: .thud shares the animation slot,
+        // and a class left behind would replay the fade after every thud.
+        setTimeout(function () { el.classList.remove("pour-in"); }, 300);
         if (i === ROSTER.length - 1) { pit.classList.add("ready"); allSpawned = true; }
-      }, 260 + i * SPAWN_GAP);
+      }, i * SPAWN_GAP);
     });
   }
 
   /* ── Bowl SFX: tiny synthesized clacks + pops (Web Audio, no assets).
      Arms on the first real pointer gesture (autoplay policy blocks
-     anything earlier), so the initial pour is silent by design. ── */
+     anything earlier) — which is why the pour waits for its button. ── */
   var sfx = (function () {
     var ctx = null, master = null, armed = false;
     var lastAt = -1, lastLandAt = -1, lastSplashAt = -1, played = 0;
@@ -620,6 +717,11 @@
     var iosSwitch = !canVibrate && "ontouchend" in window &&
       /iP(hone|od|ad)|Macintosh/.test(navigator.userAgent || "");
     var label = null, lastAt = -1e9;
+    // Nothing buzzes before the visitor has touched the page. The pour runs
+    // at load now, ahead of any gesture: Chrome refuses the call there and
+    // logs an error for every landing, and a phone that did allow it would
+    // be buzzing at someone who has only just arrived.
+    var unlocked = false;
     function ensure() {
       if (label || !iosSwitch) return;
       label = document.createElement("label");
@@ -633,7 +735,7 @@
       document.body.appendChild(label);
     }
     function tap(strength) {
-      if (REDUCED || (!canVibrate && !iosSwitch)) return;
+      if (!unlocked || REDUCED || (!canVibrate && !iosSwitch)) return;
       var now = (window.performance && performance.now) ? performance.now() : +new Date();
       if (now - lastAt < 90) return; // one knock per landing, not per contact
       lastAt = now;
@@ -645,7 +747,8 @@
       ensure();
       if (label) label.click();
     }
-    return { tap: tap, supported: function () { return canVibrate || iosSwitch; } };
+    return { tap: tap, unlock: function () { unlocked = true; },
+             supported: function () { return canVibrate || iosSwitch; } };
   })();
 
   /* ── Give: the icons are not rigid ───────────────────────────────────
@@ -884,19 +987,18 @@
     }
   });
 
-  /* Keep audio resumable after any real gesture. The pour starts at load,
-     long before a visitor can click, so the browser's autoplay policy
-     silences every landing — the pops Jack expects are simply never heard.
-     Arming therefore also schedules a replay of the pour (see maybeRepour):
-     the colony lifts back into the sky and falls again, this time out loud. */
+  /* Keep audio resumable after any real gesture. If a pour ever did go
+     by in silence (see maybeRepour), arming also schedules its replay: the
+     colony is tossed back into the air and lands again, this time out
+     loud. */
   ["pointerdown", "pointerup", "touchend", "click", "keydown"].forEach(function (type) {
     document.addEventListener(type, function (e) {
       // The haptic switch clicks itself; only a real visitor counts.
       if (e && e.isTrusted === false) return;
       sfx.arm();
+      haptics.unlock();
       hideInvite(); // the gesture it was asking for has arrived
-      beginPour();   // the held pour is now allowed to run — and be heard
-      maybeRepour(); // (only relevant once a pour has already happened)
+      maybeRepour(); // sound is on now: play the pour again, out loud
     }, { capture: true, passive: true });
   });
 
@@ -925,6 +1027,7 @@
     // pinning that icon in the air for the rest of the visit. Stack a few of
     // those and the tower genuinely cannot come down.
     if (dragConstraint) endDrag(null);
+    lowerGuards(); // a hand is here: the mould comes off, tosses go where they go
     var local = Vector.rotate(Vector.sub(pt, body.position), -body.angle);
     dragConstraint = Constraint.create({
       label: HOLD,
@@ -1163,24 +1266,12 @@
     // kept doing it the whole way down the page — competing with the scroll
     // that took them out of view in the first place.
     pit.classList.toggle("out-of-view", !stageOnScreen);
-    if (stageOnScreen) maybeRepour();
+    if (stageOnScreen) {
+      if (!startBtn) beginPour(); // no button in this markup: pour on arrival
+      maybeRepour();
+    }
   }, { threshold: 0.02 }).observe(stage);
 
-  /* The pour waits for the ICE to be somewhere on screen, not merely for
-     the stage. The stage's top edge crosses into view long before the floe
-     does, and on a short phone that meant the whole pour ran and finished
-     below the fold: scroll down and the icons are simply already there.
-     The threshold is deliberately low — a laptop shows a sliver of berg at
-     load and should still pour on arrival, icons streaming past the
-     headline the way they always have. (zerog paints no berg: watch the
-     stage there.) */
-  var pourTarget = (VARIANT === "zerog" || !bergVisual) ? stage : bergVisual;
-  var bergOnScreen = false;
-  new IntersectionObserver(function (entries) {
-    if (!entries[0].isIntersecting) return;
-    bergOnScreen = true;
-    armPourGrace();
-  }, { threshold: 0.02 }).observe(pourTarget);
   document.addEventListener("visibilitychange", function () {
     if (document.hidden) { endDrag(null); setRunning(false); }
     else if (stage.getBoundingClientRect().bottom > 0) {
@@ -1408,9 +1499,9 @@
   }
 
   /* ── Audible re-pour ──────────────────────────────────────────────────
-     The load-time pour is always silent (no user gesture yet = no audio),
-     so the "icons land on the ice with a pop" moment is lost on a fresh
-     visit. Once sound is genuinely available — armed, unmuted, stage on
+     A pour that went by in silence — muted at the time, or the audio was
+     slow to wake — has lost its "icons land on the ice with a pop" moment.
+     Once sound is genuinely available — armed, unmuted, stage on
      screen, nothing being dragged — lift the settled colony back over the
      page and pour it again, staggered, so each touchdown pops. Runs at
      most once, and is cancelled outright if a real landing was ever heard. */
@@ -1442,6 +1533,7 @@
      the pop. Staggered on the pour's own rhythm. */
   function repour() {
     var s = stageSize();
+    raiseGuards(iconSize(), icons.length * REPOUR_GAP);
     var order = icons.map(function (_, i) { return i; });
     for (var i = order.length - 1; i > 0; i--) {
       var j = Math.floor(Math.random() * (i + 1));
@@ -1461,7 +1553,7 @@
         });
         Body.setAngularVelocity(b, Math.random() * 0.12 - 0.06);
         it.lastGroundPopAt = -1e9; // the landing to come is a fresh one
-      }, n * SPAWN_GAP);
+      }, n * REPOUR_GAP);
     });
   }
 
@@ -1536,7 +1628,16 @@
     for (var i = 0; i < icons.length; i++) {
       var it = icons[i], b = it.body, p = b.position;
       var half = (b.bounds.max.y - b.bounds.min.y) / 2;
-      var touchesWater = p.y + half > waterYCurrent;
+      // Over the floe the ice is in the way, however low it is riding. A
+      // loaded berg takes its dished middle under the waterline, and an
+      // icon standing there used to count as swimming: it dropped straight
+      // through the snow. Over ice the line is the snow itself, plus room
+      // for an icon pressed into it.
+      var line = waterYCurrent, off = Math.abs(p.x - s.w / 2);
+      if (off < bowlHalfCurrent - half) {
+        line = Math.max(line, rimYCurrent + dipCurrent * (1 - off / bowlHalfCurrent) + bergSink + 8);
+      }
+      var touchesWater = p.y + half > line;
 
       if (!it.sinking && touchesWater) {
         var impact = Math.max(0.18, Math.min(1, Math.abs(b.velocity.y) / 11));
@@ -1640,6 +1741,7 @@
   var maintTick = 0;
   Matter.Events.on(engine, "afterUpdate", function () {
     if (VARIANT === "iceberg") { sinkingPass(); stepBergSink(); }
+    if (pourGuards.length) tendGuards();
     if (++maintTick % 100 !== 0) return;
     if (repourPending) maybeRepour(); // waiting on the colony to settle
     var s = stageSize();
@@ -1731,10 +1833,12 @@
      those the pour should simply be audible with nothing asked of them.
      So probe at load and keep nudging on every ambient signal (moving
      the mouse, scrolling, the tab regaining focus); the instant the
-     context reports "running", the invite goes away and the pour runs. */
+     context reports "running", the invite goes away and landings pop. */
   sfx.onLive(function () {
     hideInvite();
-    beginPour();
+    // Alive while the pour is still coming down: that pour is being heard,
+    // so there is nothing to play back afterwards.
+    if (pourStarted && !allSpawned && !sfx.isMuted()) repourDone = true;
     maybeRepour();
   });
   sfx.probe();
@@ -1743,26 +1847,24 @@
       .addEventListener(type, function () { sfx.tryResume(); }, { capture: true, passive: true });
   });
 
-  /* ── When the pour is allowed to start ────────────────────────────────
-     Audio is locked until the visitor's first gesture, so a pour that
-     starts at load is silent no matter what we do — the icons hit the ice
-     before anyone can click. So hold it: the first gesture starts the
-     pour, and the very first touchdown is heard. The wait is bounded —
-     after POUR_GRACE the pour runs anyway (silently, and maybeRepour
-     covers it later), so the berg is never left empty.
-     Holding until the stage is on screen matters too: off screen the sim
-     is paused, and icons queued into a paused world all drop together
-     when it scrolls in — a dump, not a pour. */
-  var POUR_GRACE = 5000;
+  /* ── The pour is the visitor's to start ───────────────────────────────
+     A browser plays no sound until the visitor has clicked or tapped, so a
+     pour that starts by itself is a silent one — and the pops are the
+     point. So the ice waits with a button on it: the click that starts the
+     pour is the gesture that unlocks the audio, and every landing is heard
+     from the first. Nobody clicks, nothing pours. (Both other ways have
+     been lived with: pouring at load is silent, and holding five seconds
+     for a tap anywhere left most visitors looking at an empty shelf and
+     then a silent pour anyway.) */
+  var startBtn = document.getElementById("pitStart");
   var pourStarted = false;
-  var pourGraceTimer = null;
 
-  /* ── Ask for the tap ──────────────────────────────────────────────────
-     No amount of timing makes a load-time pour audible: the browser
-     simply refuses audio until the visitor interacts. So say so. The
-     pill explains why the shelf is empty for a beat ("tap and they
-     pour"), and if the grace runs out and they pour silently anyway it
-     switches to offering the replay. Any gesture anywhere dismisses it. */
+  /* ── Offer the sound ──────────────────────────────────────────────────
+     The backstop. The click on the button normally has the audio running
+     before the first icon lands; where it does not (a browser that takes
+     its time, a pour started by tooling), the icons come down silent — so
+     once they are down, say so: a tap replays the pour with its pops. Any
+     gesture anywhere dismisses it. */
   var SPEAKER = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor"'
     + ' stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
     + '<path d="M11 5 6.5 9H3v6h3.5L11 19z" fill="currentColor" stroke="none"/>'
@@ -1793,33 +1895,36 @@
     setTimeout(function () { el.remove(); }, 500);
   }
 
-  function beginPour(force) {
-    if (pourStarted || (!force && !(stageOnScreen && bergOnScreen))) return;
+  function beginPour(quiet) {
+    if (pourStarted) return;
     pourStarted = true;
-    if (pourGraceTimer) { clearTimeout(pourGraceTimer); pourGraceTimer = null; }
-    // Poured without audio: the landings are about to be swallowed, so the
-    // invite stops asking for a pour and starts offering the replay. The
-    // check waits a beat because a resume asked for in this same gesture
-    // is still in flight — armed only turns true when the context reports
-    // itself running, which is a tick or two later. (A gesture that DID
-    // arrive has already called hideInvite, and that is permanent.)
-    if (!force) setTimeout(function () {
+    if (startBtn) {
+      startBtn.classList.remove("in");
+      setTimeout(function () { startBtn.hidden = true; }, 260);
+    }
+    // After the last icon is down, so the pill is not put up in the path
+    // of the pour. (A gesture that DID unlock the audio has already called
+    // hideInvite, and that is permanent.)
+    if (!quiet) setTimeout(function () {
       if (!sfx.stats().armed) showInvite("Tap for the sound");
-    }, 700);
+    }, ROSTER.length * SPAWN_GAP + 700);
     spawnIcons();
   }
 
-  function armPourGrace() {
-    if (pourStarted || pourGraceTimer) return;
-    if (sfx.stats().armed) { beginPour(); return; } // already unlocked → pour now
-    showInvite("Tap anywhere and they pour in");
-    pourGraceTimer = setTimeout(function () {
-      pourGraceTimer = null;
+  if (startBtn) {
+    startBtn.hidden = false;
+    requestAnimationFrame(function () { startBtn.classList.add("in"); });
+    startBtn.addEventListener("click", function () {
+      sfx.arm();
+      haptics.unlock();
+      // Audio already running (they clicked something else first): this
+      // pour is the audible one. If it is still waking, onLive says so.
+      if (sfx.stats().armed && !sfx.isMuted()) repourDone = true;
       beginPour();
-    }, POUR_GRACE);
+    });
   }
 
-  // Screenshot tooling can't gesture; it wants the pour immediately.
+  // Screenshot tooling can't click; it wants the pour immediately.
   if (/[?&]settle\b/.test(location.search)) beginPour(true);
   // Button rects shift once the webfont lands — remeasure the terrain.
   if (document.fonts && document.fonts.ready) {
@@ -1844,6 +1949,6 @@
   // for screenshot tooling that can't wait out the animation.
   if (/[?&]settle\b/.test(location.search)) {
     setTimeout(function () { window.__nivolo.step(2600); },
-      260 + ROSTER.length * SPAWN_GAP + 600);
+      ROSTER.length * SPAWN_GAP + 600);
   }
 })();

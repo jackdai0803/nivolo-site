@@ -388,6 +388,11 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
 /* Held: it lifts toward the viewer and throws a longer, softer shadow —
    the transform half of that is the give system's `hold` easing. */
 .pit-icon.held { filter: drop-shadow(0 18px 26px rgba(24, 52, 76, 0.34)); z-index: 6; }
+/* The pour starts just above the stage, already in view, so an icon has
+   nowhere to arrive from: it fades up as it is let go. Only the physics
+   path adds the class, and that path does not run under reduced motion. */
+.pit-icon.pour-in { animation: pourIn 240ms cubic-bezier(0.22, 1, 0.36, 1) backwards; }
+@keyframes pourIn { from { opacity: 0; } }
 /* A landing squeezes the shadow shut under the icon and lets it back out
    as the weight settles. No fill mode: the base filter takes over again
    cleanly, including for an icon that goes on to sink. */
@@ -458,6 +463,35 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
 .pit-call.in { opacity: 1; }
 .pit-call svg { color: var(--cyan); flex: none; }
 .icon-pit.calling .pit-hint { opacity: 0; transition-delay: 0s; }
+/* The pour's own button. The ice waits empty until it is pressed: the
+   click that starts the pour is also the gesture a browser needs before it
+   will play a sound, so every landing is heard. It sits over the snow it
+   fills, and only the physics path shows it — under reduced motion the
+   icons are simply there. */
+.pit-start {
+  position: absolute; left: 50%; bottom: 202px;
+  z-index: 6;
+  translate: -50% 0;
+  display: inline-flex; align-items: center; gap: 9px;
+  min-height: 44px; padding: 0 20px 0 16px;
+  font: inherit; font-size: 14px; font-weight: 600; line-height: 1;
+  color: var(--ink); white-space: nowrap;
+  background: var(--card);
+  border: 1px solid var(--line-strong); border-radius: 999px;
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  opacity: 0; pointer-events: none;
+  transition: opacity 240ms cubic-bezier(0.22, 1, 0.36, 1), transform 0.2s ease, border-color 0.2s ease;
+}
+.pit-start[hidden] { display: none; }
+.pit-start.in { opacity: 1; pointer-events: auto; }
+.pit-start svg { color: var(--cyan); flex: none; }
+.pit-start:hover { transform: translateY(-2px); border-color: var(--ink); }
+.pit-start:active { transform: translateY(0); }
+.pit-start:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
+@media (max-width: 640px) {
+  .pit-start { bottom: 154px; }
+}
 /* Sound toggle — bottom-right of the stage, outside the bowl */
 .pit-sound {
   position: absolute;
@@ -1158,7 +1192,9 @@ footer {
 
 /* ── The floe. ?variant=zerog is the one alternative left ── */
 .pit-bob { position: absolute; inset: 0; z-index: 2; }
-.pit--iceberg .pit-bob { animation: berg-bob 7.5s ease-in-out infinite; }
+/* Two swells and it rests: an endless loop under the headline keeps
+   pulling the eye off the words. */
+.pit--iceberg .pit-bob { animation: berg-bob 7.5s ease-in-out 2; }
 @keyframes berg-bob {
   0%, 100% { transform: translateY(0) rotate(0deg); }
   30% { transform: translateY(-5px) rotate(0.25deg); }

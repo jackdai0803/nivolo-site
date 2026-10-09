@@ -29,7 +29,7 @@
   <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon.png?v=3" />
   <link rel="apple-touch-icon" href="assets/app-icon.png" />
   <link rel="stylesheet" href="assets/fonts.css?v=3" />
-  <link rel="stylesheet" href="styles.css?v=83" />
+  <link rel="stylesheet" href="styles.css?v=84" />
 
   <script type="application/ld+json">
   {
@@ -82,6 +82,10 @@
     <div class="icon-pit pit--iceberg reveal in" id="iconPit">
       <div class="pit-stage" id="pitStage" aria-label="A floating ice shelf piled with Nivo's icons and moods, with more on the way — grab and toss them">
         <span class="pit-hint">Go on — grab one.</span>
+        <button class="pit-start" id="pitStart" type="button" hidden>
+          <svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M7 4.2v15.6L20 12z" fill="currentColor"/></svg>
+          Pour the icons in
+        </button>
         <svg class="ocean-water" viewBox="0 0 1200 300" preserveAspectRatio="none" aria-hidden="true">
           <defs>
             <linearGradient id="oceanDepth" x1="0" y1="0" x2="0" y2="1">
@@ -619,7 +623,7 @@
     document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
   </script>
   <script src="assets/vendor/matter.min.js?v=0.20.0" defer></script>
-  <script src="assets/night.js?v=45" defer></script>
+  <script src="assets/night.js?v=46" defer></script>
   <script src="assets/icon-pop.js?v=17" defer></script>
   <script src="assets/frost.js?v=3" defer></script>
 </body>
