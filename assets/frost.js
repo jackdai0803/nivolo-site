@@ -27,7 +27,7 @@
   if (!ctx || !fxc) return;
 
   var FINE = !!(window.matchMedia && matchMedia("(hover: hover) and (pointer: fine)").matches);
-  var RADIUS = 22;               // the pane's corner, matches .frost in styles.css
+  var RADIUS = 20;               // the pane's corner, matches .frost (--radius) in styles.css
   var CELL = 10;                 // coverage grid, CSS px per cell
   var BRUSH = FINE ? 58 : 50;    // radius of the warmth
   var FX_M = 72;                 // the fx canvas overhangs the ice so the torch
