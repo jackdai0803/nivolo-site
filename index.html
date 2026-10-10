@@ -29,7 +29,7 @@
   <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon.png?v=3" />
   <link rel="apple-touch-icon" href="assets/app-icon.png" />
   <link rel="stylesheet" href="assets/fonts.css?v=3" />
-  <link rel="stylesheet" href="styles.css?v=87" />
+  <link rel="stylesheet" href="styles.css?v=88" />
 
   <script type="application/ld+json">
   {
@@ -155,12 +155,12 @@
 
   <section class="section steps-section" id="how">
     <div class="wrap">
-      <div class="section-head reveal">
+      <div class="section-head reveal" data-stagger="60">
         <p class="section-kicker">How it works</p>
         <h2 class="section-title">Three taps to start</h2>
         <p class="section-sub">No setup weekend, no spreadsheet. Nivolo asks for one small thing a day and keeps the rest out of your way.</p>
       </div>
-      <ol class="steps reveal">
+      <ol class="steps reveal" data-stagger="50">
         <li class="step">
           <span class="step-num">1</span>
           <h3>Name the goal</h3>
@@ -182,13 +182,13 @@
 
   <section class="section" id="features">
     <div class="wrap">
-      <div class="section-head reveal">
+      <div class="section-head reveal" data-stagger="60">
         <p class="section-kicker">What's inside</p>
         <h2 class="section-title">Consistency, made comfortable</h2>
         <p class="section-sub">Everything in Nivolo is designed so that showing up daily feels good — and missing a day doesn't ruin everything.</p>
       </div>
 
-      <div class="feature split reveal">
+      <div class="feature split reveal" data-stagger="60">
         <div class="split-copy">
           <p class="section-kicker">Streaks</p>
           <h3>Miss a day, not your momentum.</h3>
@@ -212,7 +212,7 @@
         </div>
       </div>
 
-      <div class="feature split split--flip reveal">
+      <div class="feature split split--flip reveal" data-stagger="60">
         <div class="split-copy">
           <p class="section-kicker">Rest days</p>
           <h3>Recharge without breaking anything.</h3>
@@ -245,7 +245,7 @@
         </div>
       </div>
 
-      <div class="feature split reveal">
+      <div class="feature split reveal" data-stagger="60">
         <div class="split-copy">
           <p class="section-kicker">Krill &amp; the shop</p>
           <h3>Every check-in pays.</h3>
@@ -270,7 +270,7 @@
         </div>
       </div>
 
-      <div class="feature split split--flip reveal">
+      <div class="feature split split--flip reveal" data-stagger="60">
         <div class="split-copy">
           <p class="section-kicker">Gems</p>
           <h3>A shelf full of finished goals.</h3>
@@ -294,7 +294,7 @@
         </div>
       </div>
 
-      <div class="feature split reveal">
+      <div class="feature split reveal" data-stagger="60">
         <div class="split-copy">
           <p class="section-kicker">Your progress</p>
           <h3>See the week, not just the day.</h3>
@@ -318,7 +318,7 @@
         </div>
       </div>
 
-      <div class="feature split split--flip reveal">
+      <div class="feature split split--flip reveal" data-stagger="60">
         <div class="split-copy">
           <p class="section-kicker">Home screen</p>
           <h3>Your streak, always in sight.</h3>
@@ -356,7 +356,7 @@
 
   <section class="section lore" id="collection">
     <div class="wrap">
-      <div class="section-head reveal">
+      <div class="section-head reveal" data-stagger="60">
         <p class="section-kicker">The collection</p>
         <h2 class="section-title">Every icon has a story</h2>
         <p class="section-sub">Nivo's icons aren't decoration. Each one turns up for a different kind of showing up — and you'll only meet it by earning it.</p>
@@ -367,7 +367,7 @@
         <p class="lore-tier-note">The ones you'll meet in your first week or two</p>
       </div>
 
-      <div class="lore-grid reveal">
+      <div class="lore-grid reveal" data-stagger="50">
         <article class="lore-card">
           <img class="lore-ic" src="assets/icons/classic.png" alt="" loading="lazy" />
           <div>
@@ -467,7 +467,7 @@
 
   <section class="section privacy-section" id="privacy">
     <div class="wrap">
-      <div class="privacy-panel reveal">
+      <div class="privacy-panel reveal" data-stagger="60">
         <div class="privacy-copy">
           <p class="section-kicker">Yours alone</p>
           <h2 class="section-title">No account. No&nbsp;cloud. No&nbsp;tracking.</h2>
@@ -486,12 +486,12 @@
 
   <section class="section" id="pricing">
     <div class="wrap">
-      <div class="section-head reveal">
+      <div class="section-head reveal" data-stagger="60">
         <p class="section-kicker">Pricing</p>
         <h2 class="section-title">Free is the whole habit app</h2>
         <p class="section-sub">Every habit feature is free forever, with no ads. One optional upgrade speeds up the collecting.</p>
       </div>
-      <div class="plans reveal">
+      <div class="plans reveal" data-stagger="50">
 
         <div class="plan">
           <h3>Free</h3>
@@ -530,11 +530,11 @@
 
   <section class="section" id="faq">
     <div class="wrap">
-      <div class="section-head reveal">
+      <div class="section-head reveal" data-stagger="60">
         <p class="section-kicker">Questions</p>
         <h2 class="section-title">Before you download</h2>
       </div>
-      <div class="faq reveal">
+      <div class="faq reveal" data-stagger="60">
         <details>
           <summary>Do I need an account?</summary>
           <p>No. There's no sign-up and no password. Nivolo opens straight into the app and keeps your data on your iPhone.</p>
@@ -569,7 +569,7 @@
 
   <section class="cta">
     <div class="wrap">
-      <div class="closing reveal">
+      <div class="closing reveal" data-stagger="60">
         <h2>Your first goal takes <em>30&nbsp;seconds.</em></h2>
         <div class="closing-act">
           <!-- A badge until launch; assets/store.js holds the App Store link -->
@@ -616,10 +616,15 @@
   </footer>
 
   <script>
-    // Reveal sections on scroll
+    // Reveal sections on scroll. A block with data-stagger lets its children
+    // arrive one after another: the number is the gap between them, in ms.
+    document.querySelectorAll(".reveal[data-stagger]").forEach((el) => {
+      const step = +el.dataset.stagger;
+      [...el.children].forEach((kid, i) => kid.style.setProperty("--d", i * step + "ms"));
+    });
     const io = new IntersectionObserver((entries) => {
       entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
-    }, { threshold: 0.12 });
+    }, { rootMargin: "0px 0px -10% 0px" });
     document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
   </script>
   <!-- No ?v= on purpose: this is the one file edited at launch, and it should be the only edit. -->

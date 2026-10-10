@@ -257,13 +257,12 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
 }
 .hero .btn-dark.is-soon { animation: none; }
 .nav-cta.is-soon { color: var(--ink-2) !important; } /* .nav-cta pins its colour with !important */
-/* Hero CTA drifts like everything else in the night sky. The hover lift
-   moved to `translate` so it composes with the animated transform. */
-@keyframes btn-float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-7px); }
-}
-.hero .btn-dark { animation: btn-float 3.6s ease-in-out infinite; }
+/* The hero CTA lifts once, a beat after load, and then holds still: an
+   endless bob kept pulling the eye off the words and left the button out
+   of line with its neighbour most of the time. The hover lift is on
+   `translate` so it composes with the animated transform. */
+@keyframes btn-lift { from { transform: translateY(-4px); } }
+.hero .btn-dark { animation: btn-lift 600ms cubic-bezier(0.34, 1.56, 0.64, 1) 0.8s 1; }
 .hero .btn-dark:hover { translate: 0 -2px; }
 @media (prefers-reduced-motion: reduce) {
   .hero .btn-dark { animation: none; }
@@ -476,6 +475,9 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
   padding: 6px 14px; white-space: nowrap;
   opacity: 0; transition: opacity 0.6s ease 1.6s;
   pointer-events: none;
+  /* Above the icons (the bob wrapper is z 2): one falling past, or the
+     top of a tall pile, goes behind the pill instead of over its words. */
+  z-index: 7;
 }
 .icon-pit.ready .pit-hint { opacity: 1; }
 .icon-pit.touched .pit-hint { opacity: 0; transition-delay: 0s; }
@@ -1171,8 +1173,24 @@ footer {
 .faq details p { color: var(--ink-2); font-size: 16px; padding: 0 34px 22px 0; }
 
 /* ── Reveal on scroll ── */
-.reveal { opacity: 0; transform: translateY(22px); transition: opacity 0.7s ease, transform 0.7s ease; }
+/* Scroll reveals: a short rise. A block with several parts lets them arrive
+   one after another — data-stagger on the block is the gap in ms, and the
+   inline script in index.html hands each child its --d. The children use
+   an animation, not a transition, so once it has played their own hover
+   transforms and transitions are exactly as they were. (translateY(0), not
+   none: the blocks keep the stacking context they have always had.) */
+.reveal {
+  opacity: 0; transform: translateY(16px);
+  transition: opacity 500ms cubic-bezier(0.22, 1, 0.36, 1), transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
+}
 .reveal.in { opacity: 1; transform: translateY(0); }
+.reveal[data-stagger] { opacity: 1; transform: translateY(0); transition: none; }
+.reveal[data-stagger] > * { opacity: 0; }
+.reveal[data-stagger].in > * {
+  opacity: 1;
+  animation: revealRise 500ms cubic-bezier(0.22, 1, 0.36, 1) var(--d, 0ms) backwards;
+}
+@keyframes revealRise { from { opacity: 0; transform: translateY(16px); } }
 
 /* ── Responsive ── */
 @media (max-width: 1120px) {
@@ -1223,6 +1241,7 @@ footer {
   html { scroll-behavior: auto; }
   .kicker-chip .dot, .float-chip { animation: none; }
   .reveal { opacity: 1; transform: none; transition: none; }
+  .reveal[data-stagger] > *, .reveal[data-stagger].in > * { opacity: 1; animation: none; }
 }
 
 /* ── The floe. ?variant=zerog is the one alternative left ── */
@@ -1285,9 +1304,15 @@ footer {
   position: absolute;
   left: 50%; bottom: -180px;
   z-index: 0;
-  width: 100vw; height: 300px;
+  /* The shape is stroked all the way round, so its sides and its lower
+     edge were pale lines too: one down each edge of the screen and one
+     straight through the caption. A little wider than the screen puts the
+     sides out of sight; the clip takes the lower edge and leaves the
+     waterline, and the glow above it, alone. */
+  width: calc(100vw + 16px); height: 300px;
   transform: translateX(-50%);
   overflow: visible;
+  clip-path: inset(-80px 0 4px 0);
   pointer-events: none;
 }
 .pit--iceberg .ocean-water-shape {
@@ -1295,11 +1320,13 @@ footer {
 }
 .pit--zerog .bowl-visual { display: none; }
 .pit-lines { position: absolute; inset: 0; pointer-events: none; }
-.pit--iceberg .pit-caption { padding-top: 172px; }
+/* The water runs 180px below the stage (150px on a phone); the caption
+   starts 24px under where it ends. */
+.pit--iceberg .pit-caption { padding-top: 204px; }
 @media (max-width: 640px) {
   .pit--iceberg .bowl-visual { width: 94%; height: 136px; bottom: -21px; }
-  .pit--iceberg .ocean-water { width: 100vw; height: 240px; bottom: -150px; }
-  .pit--iceberg .pit-caption { padding-top: 140px; }
+  .pit--iceberg .ocean-water { height: 240px; bottom: -150px; }
+  .pit--iceberg .pit-caption { padding-top: 174px; }
 }
 /* Scrolled away: nothing here is being looked at, so nothing here should
    be asking for frames. night.js sets this from the same observer that
