@@ -103,7 +103,9 @@
   }
 
   function size() {
-    dpr = Math.min(2, window.devicePixelRatio || 1);
+    // 1.5 is plenty for frost — it is soft by nature — and a 3x phone was
+    // painting four times the pixels to show the same blur.
+    dpr = Math.min(1.5, window.devicePixelRatio || 1);
     [[ice, 0], [fx, FX_M]].forEach(function (pair) {
       var c = pair[0], m = pair[1];
       c.width = Math.max(1, Math.round((W + m * 2) * dpr));
@@ -896,12 +898,43 @@
     lastW = W;
   }
 
-  build();
   updateCount();
 
+  /* The shelf is most of a page below the fold, so nothing is painted until
+     it is nearly on screen: building at load spent the first second of
+     every visit on ice nobody could see yet. (The canvases are empty until
+     then, which only matters if the shelf could be looked at — and the
+     margin means it cannot.) */
+  var near = false;
+  function arrive() {
+    if (near) return;
+    near = true;
+    build();
+  }
+  if (window.IntersectionObserver) {
+    var watch = new IntersectionObserver(function (entries) {
+      if (!entries[0].isIntersecting) return;
+      watch.disconnect();
+      arrive();
+    }, { rootMargin: "900px 0px" });
+    watch.observe(pane);
+  } else {
+    arrive();
+  }
+
   // Fonts and lazy icons land after the first paint and move the text and
-  // colour blooms. Repaint for them only while the ice is untouched.
-  function refresh() { if (!touched && !done) build(); }
+  // colour blooms. Repaint for them only while the ice is untouched — and
+  // once per frame, not once per icon: eighteen of them finish loading
+  // within a few frames of each other, and each used to repaint the lot.
+  var refreshQueued = false;
+  function refresh() {
+    if (!near || touched || done || refreshQueued) return;
+    refreshQueued = true;
+    requestAnimationFrame(function () {
+      refreshQueued = false;
+      if (!touched && !done) build();
+    });
+  }
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(refresh);
   items.forEach(function (li) {
     var img = li.querySelector("img");
@@ -909,11 +942,11 @@
   });
   if (window.ResizeObserver) {
     new ResizeObserver(function () {
-      if (done) return;
+      if (done || !near) return;
       var w = Math.round(pane.getBoundingClientRect().width);
       if (!touched || Math.abs(w - lastW) > 1) build();
     }).observe(pane);
   } else {
-    window.addEventListener("resize", function () { if (!done) build(); });
+    window.addEventListener("resize", function () { if (!done && near) build(); });
   }
 })();

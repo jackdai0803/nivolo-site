@@ -1,28 +1,10 @@
-/* Nivolo night sky + icon-floe physics hero.
+/* Nivolo icon-floe physics hero.
    Requires matter.js (loaded before this script); degrades to a static
    arrangement when Matter is missing or reduced motion is preferred. */
 (function () {
   "use strict";
 
   var REDUCED = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  /* ── Star field ─────────────────────────────────────────────── */
-  var sky = document.createElement("div");
-  sky.className = "sky";
-  sky.setAttribute("aria-hidden", "true");
-  var starCount = window.innerWidth < 640 ? 50 : 95;
-  for (var i = 0; i < starCount; i++) {
-    var s = document.createElement("i");
-    var size = Math.random() < 0.85 ? 1 + Math.random() : 2 + Math.random();
-    s.style.width = s.style.height = size.toFixed(1) + "px";
-    s.style.left = (Math.random() * 100).toFixed(2) + "%";
-    s.style.top = (Math.random() * 100).toFixed(2) + "%";
-    s.style.setProperty("--o", (0.25 + Math.random() * 0.55).toFixed(2));
-    s.style.setProperty("--tw", (3 + Math.random() * 5).toFixed(1) + "s");
-    s.style.setProperty("--td", (-Math.random() * 8).toFixed(1) + "s");
-    sky.appendChild(s);
-  }
-  document.body.prepend(sky);
 
   /* ── Icon floe ──────────────────────────────────────────────── */
   var pit = document.getElementById("iconPit");
@@ -405,7 +387,7 @@
         );
         Body.setVelocity(body, { x: Math.random() * 1.6 - 0.8, y: Math.random() * 1.6 - 0.8 });
         Body.setAngularVelocity(body, Math.random() * 0.03 - 0.015);
-        icons.push({ body: body, el: el, key: icon[0], label: icon[1] });
+        icons.push({ body: body, el: el, key: icon[0], label: icon[1], half: size / 2 });
         setTimeout(function () {
           Composite.add(engine.world, body);
           if (i === ROSTER.length - 1) pit.classList.add("ready");
@@ -470,7 +452,7 @@
       // above the frame, and it is out of its lane before the lane is reused.
       Body.setVelocity(body, { x: 0, y: 3 });
       Body.setAngularVelocity(body, Math.random() * 0.08 - 0.04);
-      icons.push({ body: body, el: el, key: icon[0], label: icon[1], lastGroundPopAt: -1e9 });
+      icons.push({ body: body, el: el, key: icon[0], label: icon[1], half: size / 2, lastGroundPopAt: -1e9 });
       // Stagger the automatic drop so the icons pour in rather than dump.
       setTimeout(function () {
         Composite.add(engine.world, body);
@@ -910,7 +892,7 @@
 
     var t = "";
     if (bent) {
-      var pp = it.persp || (it.persp = Math.max(90, Math.round((it.el.offsetWidth || 64) * GIVE.perspRatio)));
+      var pp = it.persp || (it.persp = Math.max(90, Math.round((it.half * 2 || 64) * GIVE.perspRatio)));
       t += "perspective(" + pp + "px) ";
     }
     if (g.hold > 0.004) t += "scale(" + (1 + (GIVE.holdScale - 1) * g.hold).toFixed(3) + ") ";
@@ -1233,7 +1215,7 @@
 
   function paintIcons() {
     for (var i = 0; i < icons.length; i++) {
-      var it = icons[i], b = it.body, half = it.el.offsetWidth / 2, sw = it.sway;
+      var it = icons[i], b = it.body, half = it.half, sw = it.sway;
       // Swimmers rock and drift on the way down (sinkingPass sets .sway).
       // It is paint-only on purpose: a sinking body has its collisions
       // masked off, so nothing downstream has to agree with the offset.
