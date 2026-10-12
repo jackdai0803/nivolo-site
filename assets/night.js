@@ -124,7 +124,8 @@
       var y = baseY - row * (size + 6) - size / 2;
       var rot = (Math.random() * 24 - 12).toFixed(1);
       el.style.transform = "translate(" + x + "px," + y + "px) rotate(" + rot + "deg)";
-      el.innerHTML = '<img src="' + iconSrc(icon[0]) + '" alt="' + icon[1] + ' app icon" />';
+      el.setAttribute("aria-hidden", "true");
+      el.innerHTML = '<img src="' + iconSrc(icon[0]) + '" alt="" />';
       stage.appendChild(el);
     });
     pit.classList.add("ready");
@@ -370,7 +371,8 @@
         var el = document.createElement("div");
         el.className = "pit-icon";
         el.style.width = el.style.height = size + "px";
-        el.innerHTML = '<img src="' + iconSrc(icon[0]) + '" alt="' + icon[1] + ' app icon" draggable="false" />';
+        el.setAttribute("aria-hidden", "true");
+        el.innerHTML = '<img src="' + iconSrc(icon[0]) + '" alt="" draggable="false" />';
         bobWrap.appendChild(el);
         var gx = i % cols, gy = Math.floor(i / cols);
         var body = Bodies.rectangle(
@@ -428,7 +430,8 @@
       el.style.width = el.style.height = size + "px";
       // Parked in view until its turn, so hidden until its turn.
       el.style.visibility = "hidden";
-      el.innerHTML = '<img src="' + iconSrc(icon[0]) + '" alt="' + icon[1] + ' app icon" draggable="false" />';
+      el.setAttribute("aria-hidden", "true");
+      el.innerHTML = '<img src="' + iconSrc(icon[0]) + '" alt="" draggable="false" />';
       bobWrap.appendChild(el);
 
       var body = Bodies.rectangle(

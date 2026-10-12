@@ -7,6 +7,7 @@
   <meta name="description" content="Nivolo is the cozy habit app. Set goals, keep your streak alive with Nivo, earn Krill, and collect gems for every milestone. Free on iPhone, no account needed." />
   <link rel="canonical" href="https://nivolo.app/" />
   <meta name="theme-color" content="#F2F1EE" />
+  <link rel="manifest" href="site.webmanifest" />
 
   <!-- Link previews (iMessage, Slack, Discord, X, Reddit…) -->
   <meta property="og:type" content="website" />
@@ -48,7 +49,7 @@
     @font-face { font-family: 'Newsreader Fallback'; font-style: italic; src: local('Georgia Italic'), local('Georgia-Italic'); size-adjust: 89%; ascent-override: 82.6%; descent-override: 29.8%; line-gap-override: 0%; }
     @font-face { font-family: 'Inter Fallback'; src: local('Arial'); size-adjust: 106.7%; ascent-override: 90.79%; descent-override: 22.61%; line-gap-override: 0%; }
   </style>
-  <link rel="stylesheet" href="styles.css?v=89" />
+  <link rel="stylesheet" href="styles.css?v=90" />
 
   <script type="application/ld+json">
   {
@@ -69,6 +70,7 @@
   </script>
 </head>
 <body>
+  <a class="skip-link" href="#main">Skip to content</a>
 
   <nav>
     <div class="nav-pill">
@@ -84,6 +86,7 @@
     </div>
   </nav>
 
+  <main id="main" tabindex="-1">
   <header class="hero">
     <span class="kicker-chip"><span class="dot"></span>The cozy habit app</span>
     <h1>Habits that hold,<br /><em>even when you don&rsquo;t.</em></h1>
@@ -99,12 +102,16 @@
     <p class="hero-note">Free to download · iPhone · English &amp; 中文</p>
 
     <div class="icon-pit pit--iceberg reveal in" id="iconPit">
-      <div class="pit-stage" id="pitStage" aria-label="A floating ice shelf piled with Nivo's icons and moods, with more on the way — grab and toss them">
+      <div class="pit-stage" id="pitStage">
         <span class="pit-hint">Go on — grab one.</span>
         <button class="pit-start" id="pitStart" type="button" hidden>
           <svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M7 4.2v15.6L20 12z" fill="currentColor"/></svg>
           Pour the icons in
         </button>
+        <!-- The picture, named once. Everything drawn inside it (and every icon
+             night.js adds) is hidden from screen readers; the buttons sit
+             outside it so they stay reachable. -->
+        <div class="pit-art" role="img" aria-label="A floating ice shelf piled with Nivo's icons and moods, with more on the way — grab and toss them">
         <svg class="ocean-water" viewBox="0 0 1200 300" preserveAspectRatio="none" aria-hidden="true">
           <defs>
             <linearGradient id="oceanDepth" x1="0" y1="0" x2="0" y2="1">
@@ -156,6 +163,7 @@
           <path class="berg-shine" d="M109 19C145 17 174 19 205 23" />
           <path class="berg-shine" d="M665 20C706 15 739 15 767 17" />
         </svg>
+        </div>
         <button class="pit-sound" id="pitSound" type="button" aria-label="Toggle icon sound effects" hidden>
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M11 5 6.5 9H3v6h3.5L11 19z" fill="currentColor" stroke="none"/>
@@ -390,63 +398,63 @@
         <article class="lore-card">
           <img class="lore-ic" src="assets/icons/classic.png" alt="" loading="lazy" />
           <div>
-            <h4>Classic</h4>
+            <h3>Classic</h3>
             <p>The first Nivo. The same face he had on day one — and the one waiting whenever you come back.</p>
           </div>
         </article>
         <article class="lore-card">
           <img class="lore-ic" src="assets/icons/waiting.png" alt="" loading="lazy" />
           <div>
-            <h4>Waiting</h4>
+            <h3>Waiting</h3>
             <p>By the door with his coat on since the moment you woke up. Nivo is nothing if not eager.</p>
           </div>
         </article>
         <article class="lore-card">
           <img class="lore-ic" src="assets/icons/grumpy.png" alt="" loading="lazy" />
           <div>
-            <h4>Grumpy</h4>
+            <h3>Grumpy</h3>
             <p>Some mornings the habit wins and the mood doesn't. He turns up anyway, and he'd like that noted.</p>
           </div>
         </article>
         <article class="lore-card">
           <img class="lore-ic" src="assets/icons/relieved.png" alt="" loading="lazy" />
           <div>
-            <h4>Relieved</h4>
+            <h3>Relieved</h3>
             <p>The exhale that comes a few mornings in, when showing up stops feeling like a decision.</p>
           </div>
         </article>
         <article class="lore-card">
           <img class="lore-ic" src="assets/icons/focused.png" alt="" loading="lazy" />
           <div>
-            <h4>Focused</h4>
+            <h3>Focused</h3>
             <p>Nothing exists but the next small thing. Nivo is extremely busy and would rather not be disturbed.</p>
           </div>
         </article>
         <article class="lore-card">
           <img class="lore-ic" src="assets/icons/snowy.png" alt="" loading="lazy" />
           <div>
-            <h4>Snowy</h4>
+            <h3>Snowy</h3>
             <p>Arrives after your first proper week. Nivo swears it always snows right before something starts to stick.</p>
           </div>
         </article>
         <article class="lore-card">
           <img class="lore-ic" src="assets/icons/love.png" alt="" loading="lazy" />
           <div>
-            <h4>Love</h4>
+            <h3>Love</h3>
             <p>Somewhere in that first week a habit stops being a chore and starts being yours. He felt it before you did.</p>
           </div>
         </article>
         <article class="lore-card">
           <img class="lore-ic" src="assets/icons/melting.png" alt="" loading="lazy" />
           <div>
-            <h4>Melting</h4>
+            <h3>Melting</h3>
             <p>The face of a streak that nearly went. A freeze went off in the night, and he's still dripping with relief.</p>
           </div>
         </article>
         <article class="lore-card">
           <img class="lore-ic" src="assets/icons/turbo.png" alt="" loading="lazy" />
           <div>
-            <h4>Turbo</h4>
+            <h3>Turbo</h3>
             <p>Past a certain point the momentum starts pushing you along. Nivo suggests holding on to something.</p>
           </div>
         </article>
@@ -459,24 +467,24 @@
         </div>
         <div class="frost" id="frost">
         <ul class="lore-mini">
-          <li><img src="assets/icons/repair.png" alt="" loading="lazy" /><div><h5>Repair</h5><p>Tape, patience and a second chance. Broken streaks are fixable.</p></div></li>
-          <li><img src="assets/icons/sleepy.png" alt="" loading="lazy" /><div><h5>Sleepy</h5><p>Caught before sunrise. He didn't think anyone else was up either.</p></div></li>
-          <li><img src="assets/icons/upside_down.png" alt="" loading="lazy" /><div><h5>Upside Down</h5><p>Nivo keeps strange hours too. It all makes more sense after midnight.</p></div></li>
-          <li><img src="assets/icons/blaze.png" alt="" loading="lazy" /><div><h5>Blaze</h5><p>Carried up out of the old fire under the ice. It finds the ones who don't cool off.</p></div></li>
-          <li><img src="assets/icons/rainy.png" alt="" loading="lazy" /><div><h5>Rainy</h5><p>Grey days count double. This one's for the people who showed up anyway.</p></div></li>
-          <li><img src="assets/icons/sick.png" alt="" loading="lazy" /><div><h5>Sick</h5><p>Everyone goes under sometimes. This one shows up for the getting back out.</p></div></li>
-          <li><img src="assets/icons/revived.png" alt="" loading="lazy" /><div><h5>Revived</h5><p>Everyone thought that streak was gone. Then it stood back up.</p></div></li>
-          <li><img src="assets/icons/party.png" alt="" loading="lazy" /><div><h5>Party</h5><p>He's held that confetti since the day you set the goal. Finishing it opens his hands.</p></div></li>
-          <li><img src="assets/icons/squished.png" alt="" loading="lazy" /><div><h5>Squished</h5><p>A whole day's worth in one go. Regrets nothing, cannot move.</p></div></li>
-          <li><img src="assets/icons/starstruck.png" alt="" loading="lazy" /><div><h5>Starstruck</h5><p>He looked at what you'd built and forgot how to blink.</p></div></li>
-          <li><img src="assets/icons/bored.png" alt="" loading="lazy" /><div><h5>Bored</h5><p>He's done this so many times he could do it asleep. That's the point.</p></div></li>
-          <li><img src="assets/icons/ghost.png" alt="" loading="lazy" /><div><h5>Ghost</h5><p>A long stretch of quiet, faithful days leaves something behind.</p></div></li>
-          <li><img src="assets/icons/peekaboo.png" alt="" loading="lazy" /><div><h5>Peekaboo</h5><p>Hiding behind the ice a good while, seeing if you'd keep coming back.</p></div></li>
-          <li><img src="assets/icons/gold.png" alt="" loading="lazy" /><div><h5>Golden</h5><p>Deep under the shelf there's a seam of gold. Almost nobody walks that far.</p></div></li>
-          <li><img src="assets/icons/champion.png" alt="" loading="lazy" /><div><h5>Champion</h5><p>There's a shelf in the ice for the very consistent. He won't come down.</p></div></li>
-          <li><img src="assets/icons/detective.png" alt="" loading="lazy" /><div><h5>Detective</h5><p>A hundred small clues about who you are. He's read every one.</p></div></li>
-          <li><img src="assets/icons/glitch.png" alt="" loading="lazy" /><div><h5>Glitch</h5><p>You went so far the ice started skipping. Almost nobody sees this one.</p></div></li>
-          <li class="lore-mini--soon"><img src="assets/icons/coming_soon.png" alt="" loading="lazy" /><div><h5>?</h5><p>A few more are still being drawn. You'll meet them when they're ready.</p></div></li>
+          <li><img src="assets/icons/repair.png" alt="" loading="lazy" /><div><h3>Repair</h3><p>Tape, patience and a second chance. Broken streaks are fixable.</p></div></li>
+          <li><img src="assets/icons/sleepy.png" alt="" loading="lazy" /><div><h3>Sleepy</h3><p>Caught before sunrise. He didn't think anyone else was up either.</p></div></li>
+          <li><img src="assets/icons/upside_down.png" alt="" loading="lazy" /><div><h3>Upside Down</h3><p>Nivo keeps strange hours too. It all makes more sense after midnight.</p></div></li>
+          <li><img src="assets/icons/blaze.png" alt="" loading="lazy" /><div><h3>Blaze</h3><p>Carried up out of the old fire under the ice. It finds the ones who don't cool off.</p></div></li>
+          <li><img src="assets/icons/rainy.png" alt="" loading="lazy" /><div><h3>Rainy</h3><p>Grey days count double. This one's for the people who showed up anyway.</p></div></li>
+          <li><img src="assets/icons/sick.png" alt="" loading="lazy" /><div><h3>Sick</h3><p>Everyone goes under sometimes. This one shows up for the getting back out.</p></div></li>
+          <li><img src="assets/icons/revived.png" alt="" loading="lazy" /><div><h3>Revived</h3><p>Everyone thought that streak was gone. Then it stood back up.</p></div></li>
+          <li><img src="assets/icons/party.png" alt="" loading="lazy" /><div><h3>Party</h3><p>He's held that confetti since the day you set the goal. Finishing it opens his hands.</p></div></li>
+          <li><img src="assets/icons/squished.png" alt="" loading="lazy" /><div><h3>Squished</h3><p>A whole day's worth in one go. Regrets nothing, cannot move.</p></div></li>
+          <li><img src="assets/icons/starstruck.png" alt="" loading="lazy" /><div><h3>Starstruck</h3><p>He looked at what you'd built and forgot how to blink.</p></div></li>
+          <li><img src="assets/icons/bored.png" alt="" loading="lazy" /><div><h3>Bored</h3><p>He's done this so many times he could do it asleep. That's the point.</p></div></li>
+          <li><img src="assets/icons/ghost.png" alt="" loading="lazy" /><div><h3>Ghost</h3><p>A long stretch of quiet, faithful days leaves something behind.</p></div></li>
+          <li><img src="assets/icons/peekaboo.png" alt="" loading="lazy" /><div><h3>Peekaboo</h3><p>Hiding behind the ice a good while, seeing if you'd keep coming back.</p></div></li>
+          <li><img src="assets/icons/gold.png" alt="" loading="lazy" /><div><h3>Golden</h3><p>Deep under the shelf there's a seam of gold. Almost nobody walks that far.</p></div></li>
+          <li><img src="assets/icons/champion.png" alt="" loading="lazy" /><div><h3>Champion</h3><p>There's a shelf in the ice for the very consistent. He won't come down.</p></div></li>
+          <li><img src="assets/icons/detective.png" alt="" loading="lazy" /><div><h3>Detective</h3><p>A hundred small clues about who you are. He's read every one.</p></div></li>
+          <li><img src="assets/icons/glitch.png" alt="" loading="lazy" /><div><h3>Glitch</h3><p>You went so far the ice started skipping. Almost nobody sees this one.</p></div></li>
+          <li class="lore-mini--soon"><img src="assets/icons/coming_soon.png" alt="" loading="lazy" /><div><h3>?</h3><p>A few more are still being drawn. You'll meet them when they're ready.</p></div></li>
         </ul>
         </div>
         <p class="lore-more-note">Twenty-six so far, and counting. <b>What each one takes is something you find out in the app.</b></p>
@@ -602,25 +610,27 @@
     </div>
   </section>
 
+  </main>
+
   <footer>
     <div class="wrap">
       <div class="footer-inner">
         <p class="footer-tag">Habits that hold,<br /><em>even when you don&rsquo;t.</em></p>
         <div class="footer-cols">
           <div class="footer-col">
-            <h4>Nivolo</h4>
+            <h3>Nivolo</h3>
             <a href="index.html#features">Features</a>
             <a href="index.html#collection">The collection</a>
             <a href="index.html#pricing">Pricing</a>
             <a href="index.html#faq">FAQ</a>
           </div>
           <div class="footer-col">
-            <h4>Help</h4>
+            <h3>Help</h3>
             <a href="support.html">Support</a>
             <a href="privacy.html">Privacy Policy</a>
           </div>
           <div class="footer-col">
-            <h4>Get it</h4>
+            <h3>Get it</h3>
             <!-- A badge until launch; assets/store.js holds the App Store link -->
             <span class="is-soon" data-store><span data-live="App Store">App Store <small>Coming soon</small></span></span>
           </div>
@@ -649,8 +659,8 @@
   <!-- No ?v= on purpose: this is the one file edited at launch, and it should be the only edit. -->
   <script src="assets/store.js" defer></script>
   <script src="assets/vendor/matter.min.js?v=0.20.0" defer></script>
-  <script src="assets/night.js?v=48" defer></script>
-  <script src="assets/icon-pop.js?v=17" defer></script>
-  <script src="assets/frost.js?v=5" defer></script>
+  <script src="assets/night.js?v=49" defer></script>
+  <script src="assets/icon-pop.js?v=18" defer></script>
+  <script src="assets/frost.js?v=6" defer></script>
 </body>
 </html>

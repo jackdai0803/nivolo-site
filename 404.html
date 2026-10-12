@@ -6,6 +6,7 @@
   <title>Page not found — Nivolo</title>
   <meta name="robots" content="noindex" />
   <meta name="theme-color" content="#F2F1EE" />
+  <link rel="manifest" href="/site.webmanifest" />
   <!-- Root-absolute paths throughout: GitHub Pages serves this file for any
        missing address, however deep, so relative links would break. -->
   <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png?v=3" />
@@ -14,9 +15,10 @@
   <link rel="icon" type="image/png" sizes="64x64" href="/assets/favicon.png?v=3" />
   <link rel="apple-touch-icon" href="/assets/app-icon.png" />
   <link rel="stylesheet" href="/assets/fonts.css?v=4" />
-  <link rel="stylesheet" href="/styles.css?v=89" />
+  <link rel="stylesheet" href="/styles.css?v=90" />
 </head>
 <body>
+  <a class="skip-link" href="#main">Skip to content</a>
 
   <nav>
     <div class="nav-pill">
@@ -32,7 +34,7 @@
     </div>
   </nav>
 
-  <main class="page page--lost">
+  <main id="main" tabindex="-1" class="page page--lost">
     <img class="lost-icon" src="/assets/icons/detective.png" width="96" height="96" alt="" />
     <div class="section-kicker">404 &middot; Page not found</div>
     <h1>This page drifted off.</h1>
@@ -43,25 +45,26 @@
     </div>
   </main>
 
+  <!-- h2 here, h3 on the other pages: this page has no h2 above the footer to hang them from. -->
   <footer>
     <div class="wrap">
       <div class="footer-inner">
         <p class="footer-tag">Habits that hold,<br /><em>even when you don&rsquo;t.</em></p>
         <div class="footer-cols">
           <div class="footer-col">
-            <h4>Nivolo</h4>
+            <h2>Nivolo</h2>
             <a href="/#features">Features</a>
             <a href="/#collection">The collection</a>
             <a href="/#pricing">Pricing</a>
             <a href="/#faq">FAQ</a>
           </div>
           <div class="footer-col">
-            <h4>Help</h4>
+            <h2>Help</h2>
             <a href="/support.html">Support</a>
             <a href="/privacy.html">Privacy Policy</a>
           </div>
           <div class="footer-col">
-            <h4>Get it</h4>
+            <h2>Get it</h2>
             <!-- A badge until launch; assets/store.js holds the App Store link -->
             <span class="is-soon" data-store><span data-live="App Store">App Store <small>Coming soon</small></span></span>
           </div>

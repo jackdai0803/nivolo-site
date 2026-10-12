@@ -1,0 +1,12 @@
+{
+  "name": "Nivolo",
+  "short_name": "Nivolo",
+  "description": "A cozy habit app. One small action a day, and a penguin who's extremely proud of you.",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#F2F1EE",
+  "theme_color": "#F2F1EE",
+  "icons": [
+    { "src": "/assets/app-icon.png", "sizes": "192x192", "type": "image/png" }
+  ]
+}

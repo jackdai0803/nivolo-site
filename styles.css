@@ -20,7 +20,7 @@
      read fine; on paper --ink-3 was 2.9:1 and swallowed every caption,
      hero note and figure label. Matches the Nivolo app's Day theme. */
   --ink-2: #4C5158;
-  --ink-3: #63686F;
+  --ink-3: #585D64;
   /* The one edge line on the page. Sand, not ink: it sits close enough to
      the paper that it never registers as a border, and it is the same line
      whether it is stopping the logo face bleeding into the navbar or an
@@ -132,6 +132,15 @@ button { font: inherit; }
 
 
 nav, header, main, section, footer { position: relative; z-index: 1; }
+main:focus { outline: none; }
+/* First stop for a keyboard: off screen until it is focused. */
+.skip-link {
+  position: absolute; left: 16px; top: -64px; z-index: 100;
+  padding: 10px 16px; border-radius: var(--radius-pill);
+  background: var(--ink); color: #fff; font-size: 14px; font-weight: 600;
+  transition: top 0.15s ease;
+}
+.skip-link:focus { top: 12px; text-decoration: none; }
 
 /* ── Nav ── */
 nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
@@ -294,6 +303,10 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
   cursor: grab;
 }
 .pit-stage.dragging { cursor: grabbing; }
+/* The picture's label lives on this box (role="img"); it is the same box as
+   the stage and takes no clicks, so the water and ice sit exactly where
+   they did. */
+.pit-art { position: absolute; inset: 0; pointer-events: none; }
 /* The floe, painted. Physics walls in night.js match it. */
 .pit-icon {
   position: absolute; top: 0; left: 0;
@@ -854,7 +867,7 @@ footer {
 .footer-tag em { font-style: italic; }
 .footer-cols { display: flex; gap: 56px; }
 .footer-col { display: grid; gap: 9px; align-content: start; }
-.footer-col h4 {
+.footer-col h2, .footer-col h3 {
   font-family: var(--font-mono);
   font-size: 12px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
   color: rgba(255, 255, 255, 0.6);
@@ -915,7 +928,8 @@ footer {
    footnote: tighter rule, sized to sit on the wordmark's baseline. The
    gloss still answers on hover or tap, so the one word never strands
    anybody. Hidden on narrow screens, where the navbar has no room. */
-.motto--lockup { font-family: var(--font-serif); font-size: 16px; color: var(--ink-3); }
+/* Full strength: at .85 the grey fell to 3.97:1 on the nav, under AA. */
+.motto--lockup { font-family: var(--font-serif); font-size: 16px; color: var(--ink-3); opacity: 1; }
 .motto--lockup::before {
   width: 1px; height: 13px; margin: 0 11px 0 12px;
   background: currentColor; opacity: 0.35;
@@ -1377,7 +1391,7 @@ footer {
   transition: transform 0.35s cubic-bezier(.2,.8,.3,1);
 }
 .lore-card:hover .lore-ic { transform: rotate(-4deg) scale(1.06); }
-.lore-card h4 {
+.lore-card h3 {
   font-family: var(--font-serif);
   font-size: 18px; font-weight: 600; letter-spacing: -0.012em;
   margin-bottom: 5px;
@@ -1412,7 +1426,7 @@ footer {
   border-radius: 22.5%;
   box-shadow: 0 0 0 1.5px var(--edge-line), var(--shadow-sm);
 }
-.lore-mini h5 {
+.lore-mini h3 {
   font-family: var(--font-serif);
   font-size: 16px; font-weight: 600; letter-spacing: -0.01em;
   color: var(--ink);
@@ -1427,7 +1441,7 @@ footer {
   transition: filter 0.4s ease, opacity 0.4s ease;
 }
 .lore-mini--soon:hover img { filter: grayscale(1) contrast(0.8) brightness(1.06); opacity: 0.78; }
-.lore-mini--soon h5 { color: var(--ink-3); }
+.lore-mini--soon h3 { color: var(--ink-3); }
 .lore-more-note {
   margin-top: 30px;
   font-size: 14px; line-height: 20px; color: var(--ink-3);
@@ -1496,7 +1510,7 @@ footer {
 .frost-sep::before { content: "\00B7"; }
 .frost-all {
   font: inherit; letter-spacing: inherit; text-transform: inherit;
-  color: var(--cyan);
+  color: #0F5F88; /* 12px text: the brand blue alone is too light at this size */
   background: none; border: 0; padding: 6px 2px; cursor: pointer;
 }
 .frost-all:hover { text-decoration: underline; text-underline-offset: 3px; }
@@ -1950,8 +1964,16 @@ footer {
   backdrop-filter: blur(7px) saturate(1.1);
   -webkit-backdrop-filter: blur(7px) saturate(1.1);
 }
-.ipop-source { cursor: pointer; }
-.ipop-source:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
+.ipop-source { cursor: pointer; position: relative; }
+/* The button icon-pop.js lays over each card: the whole card presses it,
+   and it carries the keyboard focus ring for the card. */
+.ipop-open {
+  position: absolute; inset: 0;
+  padding: 0; border: 0; background: none;
+  border-radius: inherit; cursor: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+.ipop-open:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
 @media (max-width: 640px) {
   .ipop-dialog { --ipop-tile: min(300px, 78vw, 38vh); }
 }

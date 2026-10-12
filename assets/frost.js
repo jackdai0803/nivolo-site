@@ -88,7 +88,7 @@
         s.img = { el: img, x: ir.left - pr.left, y: ir.top - pr.top, w: ir.width, h: ir.height };
       }
       s.lines = [];
-      ["h5", "p"].forEach(function (sel, k) {
+      ["h3", "p"].forEach(function (sel, k) {
         var el = li.querySelector(sel);
         if (!el) return;
         var range = document.createRange();

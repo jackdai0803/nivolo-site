@@ -483,7 +483,20 @@
   });
   overlay.querySelector(".ipop-close").addEventListener("click", close);
   window.addEventListener("keydown", function (e) {
-    if (e.key === "Escape" && overlay.classList.contains("open")) close();
+    if (!overlay.classList.contains("open")) return;
+    if (e.key === "Escape") { close(); return; }
+    /* The dialog says aria-modal, so Tab has to stay inside it: without
+       this the focus walked off into the page behind the dark overlay. */
+    if (e.key !== "Tab") return;
+    var stops = Array.prototype.filter.call(
+      overlay.querySelectorAll("button, [href], [tabindex]:not([tabindex='-1'])"),
+      function (n) { return !n.disabled && n.offsetParent !== null; }
+    );
+    if (!stops.length) { e.preventDefault(); return; }
+    var first = stops[0], last = stops[stops.length - 1];
+    var inside = overlay.contains(document.activeElement);
+    if (e.shiftKey && (!inside || document.activeElement === first)) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && (!inside || document.activeElement === last)) { e.preventDefault(); first.focus(); }
   });
 
   function repickScene() {
@@ -504,28 +517,31 @@
   var warmQueue = [];
   Array.prototype.forEach.call(items, function (el) {
     var img = el.querySelector("img");
-    var head = el.querySelector("h4, h5");
+    var head = el.querySelector("h3");
     var para = el.querySelector("p");
     if (!img || !head || !para) return;
     var m = (img.getAttribute("src") || "").match(/([a-z_]+)\.png$/);
     if (!m) return;
     var id = m[1];
     el.classList.add("ipop-source");
-    el.setAttribute("tabindex", "0");
-    el.setAttribute("role", "button");
-    el.setAttribute("aria-label", "View " + head.textContent + " up close");
+    /* A real button, laid over the whole card: the card stays an article
+       (or a list item) with its heading and its story, and the thing that
+       opens it is something a keyboard and a screen reader already know
+       how to press. role="button" on the card itself hid all of that. */
+    var opener = document.createElement("button");
+    opener.type = "button";
+    opener.className = "ipop-open";
+    opener.setAttribute("aria-label", "View " + head.textContent + " up close");
+    el.appendChild(opener);
     function go() { openFor(id, head.textContent, para.textContent); }
     /* fetch this one's art and environment the moment there is any hint of
        intent, so by the time the click lands the pixels are already there */
     function prime() { warmScene(id); warmIcon(id, true); }
     el.addEventListener("pointerenter", prime);
     el.addEventListener("pointerdown", prime);
-    el.addEventListener("focus", prime);
+    opener.addEventListener("focus", prime);
     el.addEventListener("touchstart", prime, { passive: true });
-    el.addEventListener("click", go);
-    el.addEventListener("keydown", function (e) {
-      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); }
-    });
+    opener.addEventListener("click", go);
     warmQueue.push(id);
   });
 
