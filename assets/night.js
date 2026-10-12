@@ -307,8 +307,8 @@
   /* ── The pour is cast in a mould ──────────────────────────────────────
      Poured in a second and a half, the pile is still liquid when the last
      icon lands, and a liquid pile runs over the lips: the outer icons of
-     the upper courses slide down the flank and into the sea — which sends
-     them back down from the top of the page, across the headline. So for
+     the upper courses slide down the flank and into the sea, and whatever
+     the sea takes it hands back a few seconds later, mid-settle. So for
      the pour only, an unseen wall stands on each lip. They ride with the
      floe (bergBaseY) and come away once the pile has set — every icon
      asleep — or the moment a hand arrives, because a toss has to be free
@@ -358,6 +358,21 @@
     lowerGuards();
   }
 
+  /* Where an icon may start falling from: just under the hero copy, never
+     the top of the page. Falling the whole height of the hero meant icons
+     crossing the headline and the buttons. The lowest line of copy is the
+     ceiling — a tile tilted as far as it starts (0.4rad) reaches 0.66 of
+     its size from its centre, so that is the clearance. Used by the pour
+     and by every icon that comes back out of the sea. */
+  function dropLine(size) {
+    var stageTop = stage.getBoundingClientRect().top, ceil = -Infinity;
+    var copy = pit.parentNode.querySelectorAll(".hero-actions, .hero-note");
+    for (var c = 0; c < copy.length; c++) {
+      ceil = Math.max(ceil, copy[c].getBoundingClientRect().bottom - stageTop);
+    }
+    return Math.max(ceil + size * 0.66 + 4, -size / 2);
+  }
+
   function spawnIcons() {
     var s = stageSize();
     var size = iconSize();
@@ -398,17 +413,7 @@
       return;
     }
 
-    /* The pour enters from just above the stage, not from the top of the
-       page: falling the whole height of the hero meant icons crossing the
-       headline and the buttons for five seconds. The lowest line of hero
-       copy is the ceiling — a tile tilted as far as it starts (0.4rad)
-       reaches 0.66 of its size from its centre, so that is the clearance. */
-    var stageTop = stage.getBoundingClientRect().top, ceil = -Infinity;
-    var copy = pit.parentNode.querySelectorAll(".hero-actions, .hero-note");
-    for (var c = 0; c < copy.length; c++) {
-      ceil = Math.max(ceil, copy[c].getBoundingClientRect().bottom - stageTop);
-    }
-    var dropY = Math.max(ceil + size * 0.66 + 4, -size / 2);
+    var dropY = dropLine(size);
     /* Nothing has fallen clear before the next icon arrives, so each gets
        a lane of its own, laid out as the three courses the floe settles
        into anyway (see slack() above): each course one lane shorter than
@@ -1424,13 +1429,21 @@
     it.giveOn = false;
     clearSinkState(it);
     it.lastGroundPopAt = -1e9; // a fresh fall always earns a fresh pop
+    // Back in from just under the hero copy, the way the pour comes in —
+    // not from the top of the page, across the headline. It fades up for
+    // the same reason the pour does: it has nowhere to arrive from.
     Body.setPosition(b, {
       x: s.w / 2 + (Math.random() * 2 - 1) * bowlHalfCurrent * 0.62,
-      y: skyTop - 90 - Math.random() * 170,
+      // (a little lower than the pour: it may be turned any way up)
+      y: dropLine(it.half * 2) + it.half * 0.12 + Math.random() * it.half * 0.5,
     });
-    Body.setVelocity(b, { x: Math.random() * 0.8 - 0.4, y: 0 });
+    Body.setVelocity(b, { x: Math.random() * 0.8 - 0.4, y: 3 });
     Body.setAngularVelocity(b, Math.random() * 0.08 - 0.04);
     Matter.Sleeping.set(b, false);
+    it.el.classList.remove("pour-in");
+    void it.el.offsetWidth; // restart the fade for an icon that has faded in before
+    it.el.classList.add("pour-in");
+    setTimeout(function () { it.el.classList.remove("pour-in"); }, 300);
     it.respawns = (it.respawns || 0) + 1;
   }
 

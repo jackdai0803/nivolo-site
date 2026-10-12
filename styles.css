@@ -199,9 +199,15 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
 .nav-cta:hover { transform: translateY(-1px); background: #000; text-decoration: none; }
 
 /* ── Hero ── */
+/* The hero has to fit the first screen, iceberg included, so its spacing
+   follows the HEIGHT of the window: roomy on a tall one, tight on a laptop.
+   At 900px tall the waterline lands near y=780; at 768 it is still in
+   view. (svh where the browser has it: on a phone that is the height with
+   the address bar showing, which is the screen a visitor actually gets.) */
 .hero {
   text-align: center;
-  padding: 84px 24px 0;
+  padding: clamp(14px, calc(10vh - 62px), 84px) 24px 0;
+  padding-top: clamp(14px, calc(10svh - 62px), 84px);
   max-width: var(--w-wide); margin: 0 auto;
 }
 .kicker-chip {
@@ -211,7 +217,7 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
   letter-spacing: 0.1em; text-transform: uppercase;
   color: var(--ink-3);
   background: none; border: 0; border-radius: 0;
-  padding: 0; margin-bottom: 26px;
+  padding: 0; margin-bottom: clamp(14px, 2vh, 26px);
   backdrop-filter: none; -webkit-backdrop-filter: none;
 }
 .kicker-chip .dot {
@@ -225,13 +231,13 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
   font-family: var(--font-serif);
   font-size: clamp(32px, 10.8vw, 72px);
   font-weight: 500; letter-spacing: -0.021em; line-height: 1.042;
-  margin-bottom: 22px;
+  margin-bottom: clamp(14px, 2vh, 22px);
   text-shadow: none;
 }
 .hero h1 em { font-style: italic; color: var(--ink); text-shadow: none; }
 .hero-sub {
   font-size: 18px; line-height: 28px; color: var(--ink-2); max-width: 520px;
-  margin: 0 auto 32px;
+  margin: 0 auto clamp(18px, 2.7vh, 32px);
 }
 .hero-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
 .btn-dark, .btn-light {
@@ -283,13 +289,14 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
   transition: border-color 0.2s ease, background 0.2s ease;
 }
 .btn-ghost:hover { border-color: var(--ink); background: rgba(22, 23, 26, 0.04); text-decoration: none; }
-.hero-note { margin-top: 18px; font-size: 14px; line-height: 20px; color: var(--ink-3); }
+.hero-note { margin-top: clamp(10px, 1.6vh, 18px); font-size: 14px; line-height: 20px; color: var(--ink-3); }
 
 /* ── Icon floe (physics intro) ── */
 .icon-pit {
   position: relative;
   max-width: var(--w-wide);
-  margin: 72px auto 0;
+  margin: clamp(0px, calc(22vh - 196px), 72px) auto 0;
+  margin-top: clamp(0px, calc(22svh - 196px), 72px);
   user-select: none;
   -webkit-user-select: none;
 }
@@ -478,8 +485,11 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
   18% { opacity: 1; }
   100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0.85); }
 }
+/* Bottom-left corner of the stage, opposite the sound toggle: the top of
+   the stage now sits right under the hero copy, and its middle is where
+   the pile goes. */
 .pit-hint, .pit-call {
-  position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
+  position: absolute; left: 14px; bottom: 18px;
   font-size: 14px; font-weight: 600; color: var(--ink-3);
   background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-pill);
   padding: 6px 14px; white-space: nowrap;
@@ -1232,12 +1242,12 @@ footer {
   /* A phone has one screen to make the point with, and the ice used to
      start 855px down it: the pour happened, in full, below the fold. The
      hero keeps its words and gives back its air. */
-  .hero { padding-top: 40px; }
-  .kicker-chip { margin-bottom: 16px; }
+  .hero { padding-top: clamp(12px, calc(12vh - 61px), 40px); padding-top: clamp(12px, calc(12svh - 61px), 40px); }
+  .kicker-chip { margin-bottom: clamp(10px, 1.9vh, 16px); margin-bottom: clamp(10px, 1.9svh, 16px); }
   .hero h1 { margin-bottom: 14px; }
-  .hero-sub { margin-bottom: 20px; }
-  .hero-note { margin-top: 12px; }
-  .icon-pit { margin-top: 20px; }
+  .hero-sub { margin-bottom: clamp(12px, 2.4vh, 20px); margin-bottom: clamp(12px, 2.4svh, 20px); }
+  .hero-note { margin-top: clamp(8px, 1.4vh, 12px); margin-top: clamp(8px, 1.4svh, 12px); }
+  .icon-pit { margin-top: clamp(4px, calc(9vh - 56px), 20px); margin-top: clamp(4px, calc(9svh - 56px), 20px); }
   .pit-stage { height: 300px; }
   :root { --section-pad: 80px; }
   .closing { grid-template-columns: 1fr; gap: 26px; padding-top: 32px; }
