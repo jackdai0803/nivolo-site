@@ -1432,10 +1432,25 @@
     // Back in from just under the hero copy, the way the pour comes in —
     // not from the top of the page, across the headline. It fades up for
     // the same reason the pour does: it has nowhere to arrive from.
+    // The pile can stand as high as that line now, and an icon set down
+    // inside another one is thrown clear by the engine — straight up over
+    // the buttons. So it comes down over the lowest part of the pile,
+    // where there is still air to fall through.
+    var size = it.half * 2, line = dropLine(size) + it.half * 0.12; // (may be turned any way up)
+    var spot = null;
+    for (var k = 0; k < 9; k++) {
+      var x = s.w / 2 + ((k + Math.random() * 0.6 - 0.3) / 8 * 2 - 1) * bowlHalfCurrent * 0.66;
+      var top = rimYCurrent + bergSink;            // bare snow, unless something stands here
+      for (var j = 0; j < icons.length; j++) {
+        var o = icons[j];
+        if (o === it || o.sinking || Math.abs(o.body.position.x - x) > size) continue;
+        if (o.body.position.y > 0) top = Math.min(top, o.body.bounds.min.y);
+      }
+      if (!spot || top > spot.top) spot = { x: x, top: top };
+    }
     Body.setPosition(b, {
-      x: s.w / 2 + (Math.random() * 2 - 1) * bowlHalfCurrent * 0.62,
-      // (a little lower than the pour: it may be turned any way up)
-      y: dropLine(it.half * 2) + it.half * 0.12 + Math.random() * it.half * 0.5,
+      x: spot.x,
+      y: line + Math.random() * Math.max(0, Math.min(it.half, spot.top - size * 0.8 - line)),
     });
     Body.setVelocity(b, { x: Math.random() * 0.8 - 0.4, y: 3 });
     Body.setAngularVelocity(b, Math.random() * 0.08 - 0.04);
