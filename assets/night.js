@@ -1221,27 +1221,63 @@
     }
   }
 
-  function paintIcons() {
+  /* `mix` is how far the frame falls between the last two sim steps (0..1):
+     the sim ticks at a fixed rate and the screen at its own, so each icon
+     is drawn part-way from where it was to where it is. Without that a
+     120Hz screen would show every position twice and a 90Hz one would
+     stutter. An icon that was just moved by hand of code (back from the
+     sea, a resize) is drawn where it is — there is no "between". */
+  function paintIcons(mix) {
+    if (mix == null) mix = 1;
     for (var i = 0; i < icons.length; i++) {
       var it = icons[i], b = it.body, half = it.half, sw = it.sway;
+      var x = b.position.x, y = b.position.y, a = b.angle;
+      if (mix < 1 && it.px != null && !it.jumped) {
+        x = it.px + (x - it.px) * mix;
+        y = it.py + (y - it.py) * mix;
+        a = it.pa + (a - it.pa) * mix;
+      }
       // Swimmers rock and drift on the way down (sinkingPass sets .sway).
       // It is paint-only on purpose: a sinking body has its collisions
       // masked off, so nothing downstream has to agree with the offset.
       it.el.style.transform =
-        "translate(" + (b.position.x - half + (sw ? sw.x : 0)).toFixed(1) + "px," +
-        (b.position.y - half).toFixed(1) + "px) rotate(" +
-        (b.angle + (sw ? sw.r : 0)).toFixed(3) + "rad)";
-      giveStep(it);
+        "translate(" + (x - half + (sw ? sw.x : 0)).toFixed(1) + "px," +
+        (y - half).toFixed(1) + "px) rotate(" +
+        (a + (sw ? sw.r : 0)).toFixed(3) + "rad)";
     }
+  }
+
+  /* ── One clock for everything that moves ──────────────────────────────
+     The sim advances in fixed 1/60s steps however fast the screen
+     refreshes. Everything tuned "per tick" — the swimmers' drag, the
+     floe's slow rise, the give springs, the maintenance pass — used to be
+     per FRAME, so a 120Hz phone ran all of it twice as fast as the laptop
+     it was tuned on, and a throttled 30Hz tab at half speed. */
+  var STEP = 1000 / 60;
+  var owed = 0; // ms of sim time the screen has shown but the sim has not run
+
+  function simStep() {
+    var i, it;
+    for (i = 0; i < icons.length; i++) {
+      it = icons[i];
+      it.px = it.body.position.x; it.py = it.body.position.y; it.pa = it.body.angle;
+      it.jumped = false;
+    }
+    Engine.update(engine, STEP);
+    governSpeeds();
+    for (i = 0; i < icons.length; i++) giveStep(icons[i]);
   }
 
   function frame(t) {
     if (!running) return;
-    var dt = lastT ? Math.min(t - lastT, 33) : 16.7;
+    owed += lastT ? Math.min(t - lastT, 100) : STEP;
     lastT = t;
-    Engine.update(engine, dt);
-    governSpeeds();
-    paintIcons();
+    var steps = 0;
+    while (owed >= STEP && steps < 5) { simStep(); owed -= STEP; steps++; }
+    // Fallen behind (a slow phone, a tab coming back): drop the debt rather
+    // than race to repay it — the old loop slowed down here too.
+    if (owed >= STEP) owed = 0;
+    paintIcons(owed / STEP);
     drawLines();
     rafId = requestAnimationFrame(frame);
   }
@@ -1250,6 +1286,7 @@
     if (on === running) return;
     running = on;
     lastT = 0;
+    owed = 0;
     if (on) rafId = requestAnimationFrame(frame);
     else if (rafId) cancelAnimationFrame(rafId);
   }
@@ -1455,6 +1492,7 @@
     Body.setVelocity(b, { x: Math.random() * 0.8 - 0.4, y: 3 });
     Body.setAngularVelocity(b, Math.random() * 0.08 - 0.04);
     Matter.Sleeping.set(b, false);
+    it.jumped = true; // moved, not travelled: do not draw it sliding across
     it.el.classList.remove("pour-in");
     void it.el.offsetWidth; // restart the fade for an icon that has faded in before
     it.el.classList.add("pour-in");
@@ -1825,6 +1863,7 @@
       var dy = rimYCurrent - rimWas;
       icons.forEach(function (it) {
         Body.translate(it.body, { x: dx, y: dy });
+        it.jumped = true;
         // The floe under it may be a different width now: let it resettle.
         Matter.Sleeping.set(it.body, false);
       });
@@ -1962,7 +2001,8 @@
   // Console/debug handle: lets tooling step the sim deterministically
   // (rAF never fires in hidden tabs, so screenshots freeze mid-pour).
   window.__nivolo = { engine: engine, icons: icons, sfx: sfx, give: GIVE, step: function (n) {
-    for (var i = 0; i < n; i++) { Engine.update(engine, 16.7); governSpeeds(); }
+    for (var i = 0; i < n; i++) { Engine.update(engine, STEP); governSpeeds(); }
+    for (var j = 0; j < icons.length; j++) giveStep(icons[j]);
     paintIcons();
     drawLines();
   }, repour: repour, stats: function () {

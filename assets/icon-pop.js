@@ -275,14 +275,20 @@
   var plateDepth = 0;
 
   var down = false, moved = false, sx = 0, sy = 0, baseX = 0, baseY = 0;
-  var rafId = null;
-  function frame() {
+  var rafId = null, lastFrame = 0;
+  function frame(now) {
+    // EASE is "13% of the way there per 1/60s". Scaled by the real time
+    // since the last frame, so the tile turns at the same speed on a 120Hz
+    // screen as on a 60Hz one instead of twice as fast.
+    var dt = lastFrame && now ? Math.min(100, now - lastFrame) : 1000 / 60;
+    lastFrame = now || 0;
     if (down) {
       cur.x = base.x; cur.y = base.y;          // drags track the hand exactly
     } else {
       var tx = base.x + follow.x, ty = base.y + follow.y;
-      cur.x += (tx - cur.x) * EASE;
-      cur.y += (ty - cur.y) * EASE;
+      var k = 1 - Math.pow(1 - EASE, dt / (1000 / 60));
+      cur.x += (tx - cur.x) * k;
+      cur.y += (ty - cur.y) * k;
     }
     tile.style.transform = "rotateX(" + cur.x + "deg) rotateY(" + cur.y + "deg)";
     if (sceneActive) {
@@ -446,7 +452,7 @@
     });
     base.x = 0; base.y = 0; cur.x = 0; cur.y = 0; follow.x = 0; follow.y = 0;
     tile.style.transform = "rotateX(0deg) rotateY(0deg)";
-    if (rafId === null) rafId = requestAnimationFrame(frame);
+    if (rafId === null) { lastFrame = 0; rafId = requestAnimationFrame(frame); }
     lastFocus = document.activeElement;
     overlay.classList.add("open");
     document.body.classList.add("ipop-lock");
