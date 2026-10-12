@@ -131,6 +131,14 @@
     pit.classList.add("ready");
   }
 
+  /* Reduced motion means the water as well. It is an SVG <animate>, which
+     CSS cannot stop (hiding the element does nothing: it was never drawn),
+     so the SVG's own clock is stopped at its first frame. */
+  if (REDUCED) {
+    var sea = pit.querySelector(".ocean-water");
+    if (sea && sea.pauseAnimations) { sea.pauseAnimations(); sea.setCurrentTime(0); }
+  }
+
   if (REDUCED || typeof Matter === "undefined") {
     staticFallback();
     return;
@@ -141,6 +149,7 @@
      inside every tap target). Inert outside the iceberg variant. */
   var bobWrap = document.createElement("div");
   bobWrap.className = "pit-bob";
+  bobWrap.setAttribute("aria-hidden", "true"); // the picture is named on .pit-art
   var bergVisual = stage.querySelector(".bowl-visual");
   if (bergVisual) bobWrap.appendChild(bergVisual);
   stage.insertBefore(bobWrap, stage.firstChild);
@@ -469,7 +478,10 @@
         // Off again once it has played: .thud shares the animation slot,
         // and a class left behind would replay the fade after every thud.
         setTimeout(function () { el.classList.remove("pour-in"); }, 300);
-        if (i === ROSTER.length - 1) { pit.classList.add("ready"); allSpawned = true; }
+        if (i === ROSTER.length - 1) {
+          pit.classList.add("ready"); allSpawned = true;
+          if (tossBtn) tossBtn.hidden = false; // there is something to toss now
+        }
       }, i * SPAWN_GAP);
     });
   }
@@ -524,8 +536,10 @@
     }
     var lastTry = -1e9;
     function tryResume() {
-      if (muted) return;
-      if (armed && ctx && ctx.state === "running") return; // already live
+      // Only ever wakes a context a real tap already made (see arm): one
+      // created before any gesture is refused and logged by the browser.
+      if (muted || !ctx) return;
+      if (armed && ctx.state === "running") return; // already live
       var now = (window.performance && performance.now) ? performance.now() : +new Date();
       if (now - lastTry < 400) return; // mousemove fires by the hundred
       lastTry = now;
@@ -683,19 +697,7 @@
       muted = m;
       try { localStorage.setItem("nivolo-sfx", m ? "off" : "on"); } catch (e) {}
     }
-    /* Not every visit needs a gesture: a site the browser already trusts
-       (autoplay allowed, enough media engagement, desktop Safari set to
-       allow auto-play) hands out a context that comes up "running". Build
-       it early to find out — if it does, the pour can pour and be heard
-       with nobody having touched anything. */
-    function probe() {
-      var c = ensure();
-      if (!c) return false;
-      if (c.state === "running") { armed = true; return true; }
-      c.resume().catch(function () {}); // allowed? then onstatechange fires
-      return false;
-    }
-    return { arm: arm, probe: probe, tryResume: tryResume, hit: hit, land: land, pop: pop, plop: plop,
+    return { arm: arm, tryResume: tryResume, hit: hit, land: land, pop: pop, plop: plop,
              claimSession: claimSession,
              setMuted: setMuted, onLive: function (fn) { onLive = fn; },
              isMuted: function () { return muted; },
@@ -1870,6 +1872,39 @@
     }, 220);
   });
 
+  /* ── Toss one from the keyboard ───────────────────────────────────────
+     Grabbing and throwing needs a mouse or a finger. This button does the
+     throw for anyone using neither: it picks an icon near the top of the
+     pile (one that is free to go) and flicks it up with a spin. It shows
+     itself only when it has keyboard focus, and only once there are icons. */
+  var tossBtn = document.getElementById("pitToss");
+  if (tossBtn) tossBtn.addEventListener("click", function () {
+    var s = stageSize();
+    var free = icons.filter(function (it) {
+      return !it.sinking && it.body.position.y > 0 && it.body.position.y < waterYCurrent;
+    }).sort(function (a, b) { return a.body.position.y - b.body.position.y; });
+    if (!free.length) return;
+    var it = free[Math.floor(Math.random() * Math.max(1, Math.ceil(free.length / 3)))], b = it.body;
+    lowerGuards();
+    Matter.Sleeping.set(b, false);
+    // Only as high as the air above it allows — the pile stands right under
+    // the hero copy now, and a toss should not go up through the buttons.
+    // It goes outward instead: over the others, or off the end and into
+    // the sea, which is the better show anyway.
+    var room = Math.max(8, (b.position.y - dropLine(it.half * 2)) * 0.55); // it turns as it goes: leave a margin
+    var side = b.position.x === s.w / 2 ? (Math.random() < 0.5 ? -1 : 1) : (b.position.x < s.w / 2 ? -1 : 1);
+    Body.setVelocity(b, {
+      x: side * (4 + Math.random() * 4),
+      y: -Math.min(11, Math.sqrt(2 * 0.278 * room)), // 0.278 px/step²: the sim's gravity
+    });
+    Body.setAngularVelocity(b, side * (0.08 + Math.random() * 0.14));
+    it.tossedAt = Date.now();   // a throw may outrun a fall (TOSS_CAP)
+    it.lastGroundPopAt = -1e9;  // the landing to come is a fresh one
+    pit.classList.add("touched");
+    sfx.pop();
+    showName(b);
+  });
+
   /* Mute toggle — only shown on the physics path (the reduced-motion
      fallback returns before this and stays silent). */
   var soundBtn = document.getElementById("pitSound");
@@ -1893,25 +1928,18 @@
   buildWalls();
   setRunning(true);
 
-  /* ── Sound without a tap, wherever the browser allows it ──────────────
-     Autoplay rules are the browser's, not ours: most visits stay locked
-     until a real gesture. But some are not — a site the visitor allowed,
-     enough media engagement, a desktop Safari set to auto-play — and on
-     those the pour should simply be audible with nothing asked of them.
-     So probe at load and keep nudging on every ambient signal (moving
-     the mouse, scrolling, the tab regaining focus); the instant the
-     context reports "running", the invite goes away and landings pop. */
+  /* ── Sound starts with the first real tap, never before ───────────────
+     The audio context used to be built at load and nudged on every mouse
+     move and scroll, in case the browser would allow sound unasked. It
+     almost never does, each attempt logs a warning, and the pour waits for
+     a click anyway — so the context is made by that click (sfx.arm) and
+     nothing touches audio until then. */
   sfx.onLive(function () {
     hideInvite();
     // Alive while the pour is still coming down: that pour is being heard,
     // so there is nothing to play back afterwards.
     if (pourStarted && !allSpawned && !sfx.isMuted()) repourDone = true;
     maybeRepour();
-  });
-  sfx.probe();
-  ["mousemove", "wheel", "scroll", "touchstart", "touchend", "focus"].forEach(function (type) {
-    (type === "scroll" || type === "focus" ? window : document)
-      .addEventListener(type, function () { sfx.tryResume(); }, { capture: true, passive: true });
   });
 
   /* ── The pour is the visitor's to start ───────────────────────────────
