@@ -321,7 +321,10 @@
   // The invitation, written on the glass the way you would with a
   // fingertip: darker where the frost was wiped, a bright lip under it.
   function writing() {
-    var msg = FINE ? "linger here to thaw" : "tap one to thaw it";
+    // On touch the shelf thaws itself as it scrolls in (see selfThaw), so
+    // there is nothing left to invite anyone to do.
+    if (!FINE) return;
+    var msg = "linger here to thaw";
     var fs = Math.round(Math.max(21, Math.min(30, W / 28)));
     var x = W / 2, y = Math.min(H / 2, 118);
     ctx.save();
@@ -572,7 +575,7 @@
     if (heat.on && thawedCount < items.length) {
       // A still cursor or a held finger keeps radiating, and the patch
       // under it widens the longer it stays.
-      heat.dwell = Math.min(1, heat.dwell + dt / 1500);
+      heat.dwell = Math.min(1, heat.dwell + dt / 900);
       var r = BRUSH * (1 + 0.35 * heat.dwell);
       // Jittered, so thousands of tiny erases on one spot don't quantise
       // into visible concentric rings (8-bit alpha bands otherwise).
@@ -866,14 +869,22 @@
     if (i >= 0) thawItem(i, null, null, true);
   });
 
-  allBtn.addEventListener("click", function () {
-    var k = 0;
-    state.forEach(function (s, i) {
-      if (s.thawed) return;
-      var n = k++;
-      setTimeout(function () { thawItem(i, null, null, n % 3 !== 0); }, 70 * n);
+  /* Everything still frozen, cleared the way the shelf is read: row by
+     row, left to right, 40ms apart. Each icon keeps its own thaw (560ms of
+     melt, then the 0.7s settle). */
+  function thawAll() {
+    var order = [];
+    state.forEach(function (s, i) { if (!s.thawed) order.push(i); });
+    order.sort(function (a, b) {
+      var ra = state[a].rect, rb = state[b].rect;
+      if (!ra || !rb) return a - b;
+      return Math.abs(ra.y - rb.y) > 8 ? ra.y - rb.y : ra.x - rb.x;
     });
-  });
+    order.forEach(function (i, n) {
+      setTimeout(function () { thawItem(i, null, null, n % 3 !== 0); }, 40 * n);
+    });
+  }
+  allBtn.addEventListener("click", thawAll);
 
   /* ── Build, and rebuild when the layout moves ─────────────────────── */
 
@@ -920,6 +931,21 @@
     watch.observe(pane);
   } else {
     arrive();
+  }
+
+  /* A phone has no cursor to linger with, and most visitors never guessed
+     that the ice wanted tapping — so the rare icons stayed hidden from the
+     people most likely to be looking. On touch the shelf clears itself once
+     its top is a quarter of the way up the screen. */
+  if (!FINE && window.IntersectionObserver) {
+    var selfThaw = new IntersectionObserver(function (entries) {
+      if (!entries[0].isIntersecting) return;
+      selfThaw.disconnect();
+      arrive();
+      touched = true; // a late font or image must not refreeze what is melting
+      setTimeout(thawAll, 350);
+    }, { rootMargin: "0px 0px -25% 0px" });
+    selfThaw.observe(pane);
   }
 
   // Fonts and lazy icons land after the first paint and move the text and
