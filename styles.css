@@ -79,6 +79,7 @@
   --shadow-lg: 0 4px 10px rgba(22, 23, 26, 0.05), 0 24px 60px rgba(22, 23, 26, 0.09);
   --font-display: "Inter Tight", "Inter", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   --font-serif: "Newsreader", "Newsreader Fallback", "Iowan Old Style", Georgia, "Times New Roman", serif;
+  --font-body: "Inter", "Inter Fallback", -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, "Helvetica Neue", Arial, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
 }
 
@@ -89,7 +90,7 @@ html { scroll-behavior: smooth; }
 body {
   background: var(--paper);
   color: var(--ink);
-  font-family: "Inter", "Inter Fallback", -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   line-height: 1.625; /* 16/26 */
   /* clip, not hidden: a tossed icon that leaves the stage used to widen
@@ -1146,9 +1147,15 @@ footer {
 .plan-price {
   font-family: var(--font-serif);
   font-size: 48px; font-weight: 500; letter-spacing: -0.022em; line-height: 1;
-  margin-bottom: 22px;
+  margin-bottom: 10px;
 }
-.plan-price span { font-family: var(--font-body, inherit); font-size: 14px; font-weight: 500; color: var(--ink-3); margin-left: 8px; letter-spacing: 0; }
+/* "/month" and "forever" are labels, not part of the figure: body font.
+   (--font-body used to be undefined here, so they came out in the serif.) */
+.plan-price span { font-family: var(--font-body); font-size: 14px; font-weight: 500; color: var(--ink-3); margin-left: 8px; letter-spacing: 0; }
+/* The other way to pay, on its own row under the price. The Free card
+   carries an empty one so the two lists start level. */
+.plan-alt { font-size: 14px; line-height: 20px; color: var(--ink-3); margin-bottom: 20px; }
+.plan--pro .plan-alt { color: #4A3B12; }
 .plan ul { list-style: none; display: grid; gap: 11px; }
 .plan li { position: relative; padding-left: 26px; font-size: 16px; color: var(--ink-2); }
 .plan li::before {
@@ -1158,17 +1165,16 @@ footer {
   background: var(--ink-3);
 }
 .plan--pro li::before { background: #A07C1E; }
-.plan-note { margin-top: 20px; font-size: 14px; color: var(--ink-3); }
+.plan-note { margin-top: 20px; font-size: 14px; line-height: 20px; color: var(--ink-3); }
 .plan-tagline {
   font-family: var(--font-mono);
   font-size: 12px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
   color: var(--ink-3); margin: -6px 0 16px;
 }
-.plan--pro .plan-tagline { color: #6B571C; }
+.plan--pro .plan-tagline { color: #5A4714; }
 /* Olympus carries a marker too, but stays an outline card — only one
    filled card per row, or the row stops having a focal point. */
 .plan-badge--plain { color: var(--ink-3); background: rgba(22, 23, 26, 0.05); }
-.plans-foot { margin: 26px auto 0; max-width: var(--w-mid); text-align: center; font-size: 14px; line-height: 20px; color: var(--ink-3); }
 
 /* ── FAQ ── */
 .faq { max-width: var(--w-narrow); margin: 0 auto; }
@@ -1178,21 +1184,27 @@ footer {
 }
 .faq summary {
   cursor: pointer; list-style: none;
-  padding: 20px 34px 20px 0; position: relative;
-  font-family: var(--font-serif);
-  font-size: 20px; font-weight: 500; letter-spacing: -0.011em; color: var(--ink);
+  display: flex; align-items: center;
+  min-height: 56px; padding: 14px 40px 14px 0; position: relative;
+  font-family: var(--font-display);
+  font-size: 20px; font-weight: 600; line-height: 26px; letter-spacing: -0.012em; color: var(--ink);
 }
 .faq summary::-webkit-details-marker { display: none; }
+/* A 16px chevron that turns over when the answer is open. Drawn as a mask
+   so it takes the text colour. */
 .faq summary::after {
-  content: "+";
-  position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
-  font-size: 24px; font-weight: 400; color: var(--ink-3);
-  transition: transform 0.2s ease, color 0.2s ease;
+  content: "";
+  position: absolute; right: 6px; top: 50%;
+  width: 16px; height: 16px; margin-top: -8px;
+  background: var(--ink-3);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 6l4.5 4.5L12.5 6'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 6l4.5 4.5L12.5 6'/%3E%3C/svg%3E") center / contain no-repeat;
+  transition: transform 0.2s ease, background-color 0.2s ease;
 }
-.faq details[open] summary::after { content: "−"; color: var(--ink); }
+.faq details[open] summary::after { transform: rotate(180deg); background: var(--ink); }
 .faq summary:hover { color: var(--ink); opacity: 0.62; }
 .faq summary:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; border-radius: var(--radius-xs); }
-.faq details p { color: var(--ink-2); font-size: 16px; padding: 0 34px 22px 0; }
+.faq details p { color: var(--ink-2); font-size: 16px; padding: 4px 40px 22px 0; }
 
 /* ── Reveal on scroll ── */
 /* Scroll reveals: a short rise. A block with several parts lets them arrive
@@ -1257,7 +1269,8 @@ footer {
   .phone-stage { padding: 18px 0 0; }
   .privacy-panel { padding: 36px 22px; }
   .plan { padding: 28px 22px; }
-  .faq summary { font-size: 16px; }
+  .faq summary { font-size: 18px; line-height: 24px; }
+  .plan-alt[aria-hidden] { display: none; } /* stacked: nothing to line up with */
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
