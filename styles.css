@@ -1058,9 +1058,10 @@ footer {
   padding: 9px;
   border-radius: var(--radius-lg);
   background: linear-gradient(165deg, #39445A, #141B29 62%);
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.10) inset;
-  -webkit-mask-image: linear-gradient(to bottom, #000 58%, transparent 97%);
-  mask-image: linear-gradient(to bottom, #000 58%, transparent 97%);
+  /* The whole screenshot, to its bottom edge, standing on the page: it used
+     to fade out below the middle, which made a real screen read as a
+     mock-up. */
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.10) inset, var(--shadow-lg);
 }
 .phone picture, .phone img {
   display: block; width: 100%; height: auto;
