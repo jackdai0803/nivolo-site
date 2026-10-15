@@ -70,7 +70,7 @@
      Narrow ice loses proportionally more to its own ends, so it keeps a
      bigger reserve: measured, a phone holds about three fewer than the
      desktop rule predicts. */
-  function slack(w) { return w < 640 ? 10 : 7.5; }
+  function slack(w) { return w < 640 ? 6.5 : 7.5; }
   function sizeFor(w, n) { return Math.min(idealSize(w), 3 * bergWidthFor(w) / (n + slack(w))); }
   function rosterFor(w) {
     if (VARIANT !== "iceberg") return ICONS;
@@ -88,11 +88,11 @@
     return [ICONS[0]].concat(rest.slice(0, Math.max(4, fits - 2)), [ICONS[ICONS.length - 1]]);
   }
   var ROSTER = rosterFor(stage.clientWidth || window.innerWidth);
-  // Pour cadence: the whole shelf is in the air in about 1.4s — one icon
-  // every 50ms for the full roster, a little slower for a phone's shorter
-  // one so the show lasts as long. The audible replay keeps its own, slower
-  // rhythm: there every touchdown is meant to be heard on its own.
-  var SPAWN_GAP = Math.max(50, Math.round(1350 / ROSTER.length));
+  // The first screen already carries a small resting pile. The button adds
+  // the remainder, with the same ~1.4s rhythm on laptop and phone.
+  var RESTING_COUNT = VARIANT === "iceberg" ? Math.min(stage.clientWidth < 640 ? 8 : 10, ROSTER.length - 2) : 0;
+  var POUR_ROSTER = ROSTER.slice(RESTING_COUNT);
+  var SPAWN_GAP = Math.max(50, Math.round(1350 / Math.max(1, POUR_ROSTER.length)));
   var REPOUR_GAP = Math.max(130, Math.round(4800 / ROSTER.length));
 
   function iconSrc(name) { return "assets/icons/" + name + ".png"; }
@@ -423,22 +423,23 @@
     }
 
     var dropY = dropLine(size);
+    var falling = POUR_ROSTER;
     /* Nothing has fallen clear before the next icon arrives, so each gets
        a lane of its own, laid out as the three courses the floe settles
        into anyway (see slack() above): each course one lane shorter than
        the one below and sitting over its gaps. Evens before odds within a
        course, so neighbours are never let go back to back. */
-    var lanes = Math.max(2, Math.ceil((ROSTER.length + 3) / 3));
+    var lanes = Math.max(2, Math.ceil((falling.length + 3) / 3));
     var pitch = Math.min(size * 1.07, 2 * (lipTopOff - size * 0.7) / (lanes - 1));
     var slots = [];
-    for (var course = 0; slots.length < ROSTER.length; course++) {
-      var n = Math.min(Math.max(2, lanes - course), ROSTER.length - slots.length);
+    for (var course = 0; slots.length < falling.length; course++) {
+      var n = Math.min(Math.max(2, lanes - course), falling.length - slots.length);
       var x0 = cx - (n - 1) * pitch / 2;
       for (var k = 0; k < n; k += 2) slots.push(x0 + k * pitch);
       for (k = 1; k < n; k += 2) slots.push(x0 + k * pitch);
     }
     raiseGuards(size);
-    ROSTER.forEach(function (icon, i) {
+    falling.forEach(function (icon, i) {
       var el = document.createElement("div");
       el.className = "pit-icon";
       el.style.width = el.style.height = size + "px";
@@ -478,12 +479,51 @@
         // Off again once it has played: .thud shares the animation slot,
         // and a class left behind would replay the fade after every thud.
         setTimeout(function () { el.classList.remove("pour-in"); }, 300);
-        if (i === ROSTER.length - 1) {
+        if (i === falling.length - 1) {
           pit.classList.add("ready"); allSpawned = true;
           if (tossBtn) tossBtn.hidden = false; // there is something to toss now
         }
       }, i * SPAWN_GAP);
     });
+  }
+
+  /* Seed the floe with a quiet, already-settled pile. These bodies are real:
+     visitors can grab them immediately, and the later pour lands on them
+     instead of swapping a decorative fake for the interactive colony. */
+  function spawnRestingPile() {
+    if (!RESTING_COUNT) return;
+    var s = stageSize(), size = iconSize(), cx = s.w / 2;
+    var resting = ROSTER.slice(0, RESTING_COUNT);
+    var bottomN = Math.ceil(resting.length * 0.6);
+    var pitch = size * 0.96;
+    resting.forEach(function (icon, i) {
+      var top = i >= bottomN;
+      var rowI = top ? i - bottomN : i;
+      var rowN = top ? resting.length - bottomN : bottomN;
+      var x = cx + (rowI - (rowN - 1) / 2) * pitch + (top ? pitch * 0.5 : 0);
+      var surface = rimYCurrent + dipCurrent * (1 - Math.min(1, Math.abs(x - cx) / Math.max(1, bowlHalfCurrent)));
+      var y = surface - size / 2 - 2 - (top ? size * 0.86 : 0);
+      var el = document.createElement("div");
+      el.className = "pit-icon";
+      el.style.width = el.style.height = size + "px";
+      el.setAttribute("aria-hidden", "true");
+      el.innerHTML = '<img src="' + iconSrc(icon[0]) + '" alt="" draggable="false" />';
+      bobWrap.appendChild(el);
+      var body = Bodies.rectangle(x, y, size, size, {
+        chamfer: { radius: size * 0.225 },
+        restitution: 0.25,
+        friction: 0.5,
+        frictionStatic: 1.4,
+        frictionAir: 0.015,
+        angle: (i % 2 ? 1 : -1) * (0.035 + (i % 3) * 0.018),
+      });
+      Matter.Sleeping.set(body, true);
+      Composite.add(engine.world, body);
+      icons.push({ body: body, el: el, key: icon[0], label: icon[1], half: size / 2, lastGroundPopAt: -1e9 });
+    });
+    pit.classList.add("ready");
+    if (tossBtn) tossBtn.hidden = false;
+    paintIcons();
   }
 
   /* ── Bowl SFX: tiny synthesized clacks + pops (Web Audio, no assets).
@@ -1926,6 +1966,7 @@
   }
 
   buildWalls();
+  spawnRestingPile();
   setRunning(true);
 
   /* ── Sound starts with the first real tap, never before ───────────────
@@ -1942,15 +1983,9 @@
     maybeRepour();
   });
 
-  /* ── The pour is the visitor's to start ───────────────────────────────
-     A browser plays no sound until the visitor has clicked or tapped, so a
-     pour that starts by itself is a silent one — and the pops are the
-     point. So the ice waits with a button on it: the click that starts the
-     pour is the gesture that unlocks the audio, and every landing is heard
-     from the first. Nobody clicks, nothing pours. (Both other ways have
-     been lived with: pouring at load is silent, and holding five seconds
-     for a tap anywhere left most visitors looking at an empty shelf and
-     then a silent pour anyway.) */
+  /* ── The rest of the pour is the visitor's to start ───────────────────
+     A resting pile makes the first screen feel alive. The button remains
+     the gesture that unlocks audio, so every new landing can still pop. */
   var startBtn = document.getElementById("pitStart");
   var pourStarted = false;
 
@@ -2002,7 +2037,7 @@
     // hideInvite, and that is permanent.)
     if (!quiet) setTimeout(function () {
       if (!sfx.stats().armed) showInvite("Tap for the sound");
-    }, ROSTER.length * SPAWN_GAP + 700);
+    }, POUR_ROSTER.length * SPAWN_GAP + 700);
     spawnIcons();
   }
 
@@ -2045,6 +2080,6 @@
   // for screenshot tooling that can't wait out the animation.
   if (/[?&]settle\b/.test(location.search)) {
     setTimeout(function () { window.__nivolo.step(2600); },
-      ROSTER.length * SPAWN_GAP + 600);
+      POUR_ROSTER.length * SPAWN_GAP + 600);
   }
 })();

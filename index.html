@@ -49,7 +49,7 @@
     @font-face { font-family: 'Newsreader Fallback'; font-style: italic; src: local('Georgia Italic'), local('Georgia-Italic'); size-adjust: 89%; ascent-override: 82.6%; descent-override: 29.8%; line-gap-override: 0%; }
     @font-face { font-family: 'Inter Fallback'; src: local('Arial'); size-adjust: 106.7%; ascent-override: 90.79%; descent-override: 22.61%; line-gap-override: 0%; }
   </style>
-  <link rel="stylesheet" href="styles.css?v=94" />
+  <link rel="stylesheet" href="styles.css?v=95" />
 
   <script type="application/ld+json">
   {
@@ -80,8 +80,8 @@
         <a class="nav-plain" href="#pricing">Pricing</a>
         <a class="nav-plain" href="#faq">FAQ</a>
         <a class="nav-plain" href="support.html">Support</a>
-        <!-- A badge until launch; assets/store.js holds the App Store link -->
-        <span class="nav-cta is-soon" data-store><span data-live="Get the app">Coming soon</span></span>
+        <!-- assets/store.js uses the launch-alert email until an App Store URL is available. -->
+        <span class="nav-cta is-soon" data-store><span data-live="Get the app" data-soon="Email me at launch">Email me at launch</span></span>
       </div>
     </div>
   </nav>
@@ -92,21 +92,21 @@
     <h1>Habits that hold,<br /><em>even when you don&rsquo;t.</em></h1>
     <p class="hero-sub">One small action a day, a free freeze for when life wins, and a penguin who&rsquo;s extremely proud of you.</p>
     <div class="hero-actions">
-      <!-- A badge until launch; assets/store.js holds the App Store link -->
+      <!-- assets/store.js uses the launch-alert email until an App Store URL is available. -->
       <span class="btn-dark is-soon" data-store>
         <svg viewBox="0 0 384 512" fill="currentColor" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
-        <span data-live="Download on the App Store">Coming soon to the App Store</span>
+        <span data-live="Download on the App Store" data-soon="Email me when it&rsquo;s out">Email me when it&rsquo;s out</span>
       </span>
       <a class="btn-ghost" href="#features">See what's inside</a>
     </div>
-    <p class="hero-note">Free to download · iPhone · English &amp; 中文</p>
+    <p class="hero-note">Free at launch · iPhone · English &amp; 中文</p>
 
     <div class="icon-pit pit--iceberg reveal in" id="iconPit">
       <div class="pit-stage" id="pitStage">
         <span class="pit-hint">Go on — grab one.</span>
         <button class="pit-start" id="pitStart" type="button" hidden>
           <svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M7 4.2v15.6L20 12z" fill="currentColor"/></svg>
-          Pour the icons in
+          Pour in the rest (with sound)
         </button>
         <button class="pit-toss" id="pitToss" type="button" hidden>Toss an icon</button>
         <!-- The picture, named once. Everything drawn inside it (and every icon
@@ -120,7 +120,7 @@
               <stop offset=".28" stop-color="#4aaedf" stop-opacity=".86" />
               <stop offset=".55" stop-color="#65add1" stop-opacity=".58" />
               <stop offset=".78" stop-color="#a7cfdf" stop-opacity=".25" />
-              <stop offset="1" stop-color="#f2f1ee" stop-opacity="0" />
+              <stop offset="1" stop-color="#F2F1EE" />
             </linearGradient>
           </defs>
           <path
@@ -252,23 +252,14 @@
           </ul>
         </div>
         <div class="split-visual">
-          <div class="panel panel--green">
-            <div class="ui-card ui-card--tilt-l">
-              <div class="ui-flame-row">
-                <span class="ui-flame ui-flame--green">☾</span>
-                <span><b>Rest day</b><small>Every Sunday</small></span>
-              </div>
-              <div class="week-row">
-                <span class="week-day"><span class="week-dot week-dot--done">✓</span>M</span>
-                <span class="week-day"><span class="week-dot week-dot--done">✓</span>T</span>
-                <span class="week-day"><span class="week-dot week-dot--done">✓</span>W</span>
-                <span class="week-day"><span class="week-dot week-dot--done">✓</span>T</span>
-                <span class="week-day"><span class="week-dot week-dot--done">✓</span>F</span>
-                <span class="week-day"><span class="week-dot week-dot--done">✓</span>S</span>
-                <span class="week-day"><span class="week-dot week-dot--rest">☾</span>S</span>
-              </div>
+          <div class="phone-stage phone-stage--blue">
+            <div class="phone">
+              <picture>
+                <source srcset="assets/screens/rest-320.webp 320w, assets/screens/rest-480.webp 480w, assets/screens/rest.webp 640w" sizes="(max-width: 378px) calc(74vw - 18px), 262px" type="image/webp" />
+                <img src="assets/screens/rest.png" width="640" height="1387" loading="lazy" decoding="async"
+                     alt="Nivolo home screen showing the option to take a rest day without breaking the streak." />
+              </picture>
             </div>
-            <div class="ui-banner ui-banner--green ui-card--tilt-r">☾&nbsp; Rest day — your streak is protected.</div>
           </div>
         </div>
       </div>
@@ -358,24 +349,32 @@
           </ul>
         </div>
         <div class="split-visual">
-          <div class="panel panel--gold">
-            <div class="widget-card">
-              <span class="widget-flame"><img src="assets/streak-badge-flame.webp" alt="" loading="lazy" /></span>
-              <span><b>12 day streak</b><small>2 of 3 goals done today</small></span>
+          <div class="phone-stage phone-stage--blue">
+            <div class="phone">
+              <div class="ios-home" role="img" aria-label="An iPhone home screen with the Nivolo streak widget and unlockable app icons.">
+                <div class="ios-status" aria-hidden="true"><span>9:41</span><span>● ● ▰</span></div>
+                <div class="ios-widget" aria-hidden="true">
+                  <span class="widget-flame"><img src="assets/streak-badge-flame.webp" alt="" loading="lazy" /></span>
+                  <span><b>12 day streak</b><small>2 of 3 goals done today</small></span>
+                </div>
+                <div class="ios-apps" aria-hidden="true">
+                  <span><img src="assets/icons-3d/classic.webp" alt="" /><small>Nivolo</small></span>
+                  <span><img src="assets/icons-3d/grumpy.webp" alt="" /><small>Notes</small></span>
+                  <span><img src="assets/icons-3d/snowy.webp" alt="" /><small>Weather</small></span>
+                  <span><img src="assets/icons-3d/blaze.webp" alt="" /><small>Music</small></span>
+                  <span><img src="assets/icons-3d/party.webp" alt="" /><small>Photos</small></span>
+                  <span><img src="assets/icons-3d/love.webp" alt="" /><small>Health</small></span>
+                  <span><img src="assets/icons-3d/gold.webp" alt="" /><small>Wallet</small></span>
+                  <span><img src="assets/icons-3d/ghost.webp" alt="" /><small>Focus</small></span>
+                </div>
+                <div class="ios-dock" aria-hidden="true">
+                  <img src="assets/icons-3d/classic.webp" alt="" />
+                  <img src="assets/icons-3d/snowy.webp" alt="" />
+                  <img src="assets/icons-3d/blaze.webp" alt="" />
+                  <img src="assets/icons-3d/love.webp" alt="" />
+                </div>
             </div>
-            <div class="icon-swatches">
-              <img src="assets/icons-3d/classic.webp" alt="" loading="lazy" />
-              <img src="assets/icons-3d/grumpy.webp" alt="" loading="lazy" />
-              <img src="assets/icons-3d/snowy.webp" alt="" loading="lazy" />
-              <img src="assets/icons-3d/blaze.webp" alt="" loading="lazy" />
-              <img class="swatch--locked" src="assets/icons-3d/party.webp" alt="" loading="lazy" />
-              <img class="swatch--locked" src="assets/icons-3d/melting.webp" alt="" loading="lazy" />
-              <img class="swatch--locked" src="assets/icons-3d/sick.webp" alt="" loading="lazy" />
-              <img class="swatch--locked" src="assets/icons-3d/ghost.webp" alt="" loading="lazy" />
-              <img class="swatch--locked" src="assets/icons-3d/gold.webp" alt="" loading="lazy" />
-              <img class="swatch--locked" src="assets/icons-3d/glitch.webp" alt="" loading="lazy" />
             </div>
-            <div class="stat-line"><span>App icons unlocked</span><b>4 of 10</b></div>
           </div>
         </div>
       </div>
@@ -561,7 +560,7 @@
     <div class="wrap">
       <div class="section-head reveal" data-stagger="60">
         <p class="section-kicker">Questions</p>
-        <h2 class="section-title">Before you download</h2>
+        <h2 class="section-title">Good to know</h2>
       </div>
       <div class="faq reveal" data-stagger="60">
         <details>
@@ -601,10 +600,10 @@
       <div class="closing reveal" data-stagger="60">
         <h2>Your first goal takes <em>30&nbsp;seconds.</em></h2>
         <div class="closing-act">
-          <!-- A badge until launch; assets/store.js holds the App Store link -->
+          <!-- assets/store.js uses the launch-alert email until an App Store URL is available. -->
           <span class="btn-light is-soon" data-store>
             <svg viewBox="0 0 384 512" fill="currentColor" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
-            <span data-live="Download on the App Store">Coming soon to the App Store</span>
+            <span data-live="Download on the App Store" data-soon="Email me when it&rsquo;s out">Email me when it&rsquo;s out</span>
           </span>
           <p class="closing-note">Free &middot; No account needed</p>
         </div>
@@ -633,8 +632,8 @@
           </div>
           <div class="footer-col">
             <h3>Get it</h3>
-            <!-- A badge until launch; assets/store.js holds the App Store link -->
-            <span class="is-soon" data-store><span data-live="App Store">App Store <small>Coming soon</small></span></span>
+            <!-- assets/store.js uses the launch-alert email until an App Store URL is available. -->
+            <span class="is-soon" data-store><span data-live="App Store" data-soon="Email launch alert">Email launch alert</span></span>
           </div>
         </div>
       </div>
@@ -661,7 +660,7 @@
   <!-- No ?v= on purpose: this is the one file edited at launch, and it should be the only edit. -->
   <script src="assets/store.js" defer></script>
   <script src="assets/vendor/matter.min.js?v=0.20.0" defer></script>
-  <script src="assets/night.js?v=53" defer></script>
+  <script src="assets/night.js?v=54" defer></script>
   <script src="assets/icon-pop.js?v=19" defer></script>
   <script src="assets/frost.js?v=7" defer></script>
 </body>

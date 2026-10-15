@@ -43,7 +43,7 @@
 
   /* Brand. --cyan-pale is a fill only; on paper it cannot carry text or
      a hairline, so --cyan is now the darkened version that can. */
-  --cyan: #14709F;
+  --cyan: #0F5F88;
   --cyan-pale: #64D2FF;
   --blue: #2A6FD6;
   --blue-soft: rgba(20, 112, 159, 0.11);
@@ -64,6 +64,7 @@
   --radius-sm: 12px;
   --radius: 20px;
   --radius-lg: 28px;
+  --radius-icon: 22.5%;
   --radius-pill: 999px;
   /* Type: eight sizes and nothing between. 12 eyebrow, 14 meta, 16 body,
      18 lead, 24 card title, 32 feature title, 48 section title, 72 hero. */
@@ -78,6 +79,7 @@
   --shadow-md: 0 2px 6px rgba(22, 23, 26, 0.06), 0 12px 30px rgba(22, 23, 26, 0.07);
   --shadow-lg: 0 4px 10px rgba(22, 23, 26, 0.05), 0 24px 60px rgba(22, 23, 26, 0.09);
   --font-display: "Inter Tight", "Inter", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-rounded: ui-rounded, "Inter Tight", "Inter", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   --font-serif: "Newsreader", "Newsreader Fallback", "Iowan Old Style", Georgia, "Times New Roman", serif;
   --font-body: "Inter", "Inter Fallback", -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, "Helvetica Neue", Arial, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
@@ -225,7 +227,7 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
   width: 6px; height: 6px; border-radius: 50%;
   background: var(--cyan);
   box-shadow: none;
-  animation: pulse 2.4s ease-in-out infinite;
+  animation: pulse 2.4s ease-in-out 2;
 }
 @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(0.72); opacity: 0.6; } }
 .hero h1 {
@@ -252,24 +254,23 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
 }
 .btn-dark:hover, .btn-light:hover {
   transform: translateY(-2px);
-  background: #000;
-  box-shadow: var(--shadow-lg);
+  background: var(--tint-ice);
+  color: #0B4A6B;
+  box-shadow: 0 3px 0 #0B4A6B, var(--shadow-lg);
   text-decoration: none;
 }
 .btn-dark svg, .btn-light svg { width: 18px; height: 18px; }
-/* Until the app is live, the "get the app" spots are badges, not links:
-   the same pill with nothing to press, so it is quiet rather than black —
-   a button that does nothing reads as broken. assets/store.js turns each
-   one back into its link the day the App Store address goes into it. */
+/* Pre-launch CTAs are ice-blue before store.js turns them into solid,
+   working email links, avoiding a disabled-looking first paint. */
 .nav-cta.is-soon, .btn-dark.is-soon, .btn-light.is-soon {
-  background: rgba(22, 23, 26, 0.07); color: var(--ink-2);
+  background: var(--tint-ice); color: #0B4A6B;
   box-shadow: none; cursor: default;
 }
 .nav-cta.is-soon:hover, .btn-dark.is-soon:hover, .btn-light.is-soon:hover {
-  background: rgba(22, 23, 26, 0.07); box-shadow: none; transform: none; translate: none;
+  background: var(--tint-ice); box-shadow: none; transform: none; translate: none;
 }
 .hero .btn-dark.is-soon { animation: none; }
-.nav-cta.is-soon { color: var(--ink-2) !important; } /* .nav-cta pins its colour with !important */
+.nav-cta.is-soon { color: #0B4A6B !important; } /* .nav-cta pins its colour with !important */
 /* The hero CTA lifts once, a beat after load, and then holds still: an
    endless bob kept pulling the eye off the words and left the button out
    of line with its neighbour most of the time. The hover lift is on
@@ -347,7 +348,7 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
   content: "";
   position: absolute;
   inset: 0;
-  border-radius: 22.5%;
+  border-radius: var(--radius-icon);
   background: #1a5b98;
   mix-blend-mode: color;
   opacity: var(--sink-tint, 0);
@@ -423,7 +424,7 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
 @media (prefers-reduced-motion: reduce) { .sink-bubble { display: none; } }
 .pit-icon img {
   display: block; width: 100%; height: 100%;
-  border-radius: 22.5%;
+  border-radius: var(--radius-icon);
   outline: 1px solid rgba(22, 23, 26, 0.08);
   outline-offset: -1px;
   /* The give springs drive this element's transform every frame (the
@@ -486,9 +487,7 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
   18% { opacity: 1; }
   100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0.85); }
 }
-/* Bottom-left corner of the stage, opposite the sound toggle: the top of
-   the stage now sits right under the hero copy, and its middle is where
-   the pile goes. */
+/* Bottom-left corner of the stage, opposite the sound toggle. */
 .pit-hint, .pit-call {
   position: absolute; left: 14px; bottom: 18px;
   font-size: 14px; font-weight: 600; color: var(--ink-3);
@@ -516,13 +515,10 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
 .pit-call.in { opacity: 1; }
 .pit-call svg { color: var(--cyan); flex: none; }
 .icon-pit.calling .pit-hint { opacity: 0; transition-delay: 0s; }
-/* The pour's own button. The ice waits empty until it is pressed: the
-   click that starts the pour is also the gesture a browser needs before it
-   will play a sound, so every landing is heard. It sits over the snow it
-   fills, and only the physics path shows it — under reduced motion the
-   icons are simply there. */
+/* The pour button sits on the front edge of the floe. A small pile is
+   already resting above it; the click unlocks sound and pours the rest. */
 .pit-start {
-  position: absolute; left: 50%; bottom: 202px;
+  position: absolute; left: 50%; bottom: 112px;
   z-index: 6;
   translate: -50% 0;
   display: inline-flex; align-items: center; gap: 9px;
@@ -543,7 +539,7 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
 .pit-start:active { transform: translateY(0); }
 .pit-start:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
 @media (max-width: 640px) {
-  .pit-start { bottom: 154px; }
+  .pit-start { bottom: 74px; }
 }
 /* The keyboard's way to play: beside the sound toggle, out of sight until
    it has keyboard focus (a mouse or a finger can simply grab an icon). */
@@ -627,8 +623,8 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
   grid-template-columns: 1fr 1.1fr; gap: 56px; align-items: center;
 }
 .split-copy h3 {
-  font-family: var(--font-serif);
-  font-size: clamp(24px, 2.8vw, 32px); font-weight: 500; letter-spacing: -0.014em;
+  font-family: var(--font-rounded);
+  font-size: clamp(24px, 2.8vw, 32px); font-weight: 700; letter-spacing: -0.018em;
   line-height: 1.1875;
   margin: 10px 0 14px;
 }
@@ -716,7 +712,7 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
   border-radius: var(--radius-pill); padding: 7px 14px;
   font-weight: 600; font-size: 14px; color: var(--ink);
   box-shadow: var(--shadow-md);
-  animation: floatChip 3.4s ease-in-out infinite;
+  animation: floatChip 3.4s ease-in-out 2;
 }
 @keyframes floatChip { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
 .coin {
@@ -816,7 +812,7 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
 .icon-swatches img {
   width: 100%; height: auto;
   aspect-ratio: 1 / 1;
-  border-radius: 22%;
+  border-radius: var(--radius-icon);
   display: block;
   box-shadow: 0 0 0 1.5px var(--edge-line), var(--shadow-sm);
 }
@@ -844,7 +840,7 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
    No panel, no art, no decoration: a rule, a line of type, and the button.
    Everything that used to sit in this space — a tinted box, three floating
    gems, an app screenshot — was filler around a one-line ask. */
-.cta { padding: 104px 0 46px; }
+.cta { padding: 120px 0 80px; }
 .closing {
   display: grid; grid-template-columns: 1fr auto;
   gap: 32px 48px; align-items: end;
@@ -863,11 +859,11 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
 
 /* ── Footer ── */
 footer {
-  margin-top: 90px;
+  margin-top: 96px;
   background: #131417;
   color: rgba(255, 255, 255, 0.62);
   border-top: 0;
-  padding: 66px 0 34px;
+  padding: 64px 0 32px;
 }
 .footer-inner {
   display: flex; justify-content: space-between; align-items: flex-start;
@@ -1035,7 +1031,7 @@ footer {
 .page--lost { text-align: center; padding-top: 96px; }
 .page--lost .lost-icon {
   display: block; width: 96px; height: 96px; margin: 0 auto 26px;
-  border-radius: 22.5%;
+  border-radius: var(--radius-icon);
   box-shadow: var(--shadow-md);
 }
 .page--lost .lede { max-width: 440px; margin: 0 auto 30px; text-wrap: balance; }
@@ -1085,6 +1081,56 @@ footer {
   border-radius: var(--radius);
 }
 
+/* The home-screen feature uses the same arch + phone treatment as every
+   other row. Its contents are built from the app's real widget badge and
+   icon art so the visual can stay current without a separate iOS mockup. */
+.ios-home {
+  position: relative;
+  aspect-ratio: 640 / 1387;
+  overflow: hidden;
+  border-radius: var(--radius);
+  padding: 18% 7% 8%;
+  color: #fff;
+  background:
+    radial-gradient(circle at 20% 16%, rgba(255, 255, 255, 0.42), transparent 28%),
+    linear-gradient(155deg, #79CAE9 0%, #3B91C1 44%, #183D69 100%);
+}
+.ios-status {
+  position: absolute; top: 2.2%; left: 8%; right: 8%;
+  display: flex; justify-content: space-between;
+  font-size: 8px; font-weight: 700; letter-spacing: 0.02em;
+}
+.ios-widget {
+  display: flex; align-items: center; gap: 12px;
+  min-height: 94px; padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.52);
+  border-radius: var(--radius);
+  background: rgba(11, 34, 56, 0.78);
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+}
+.ios-widget .widget-flame { background: rgba(255, 255, 255, 0.13); }
+.ios-widget b { display: block; font: 700 16px/20px var(--font-rounded); }
+.ios-widget small { display: block; margin-top: 3px; color: rgba(255, 255, 255, 0.76); font-size: 11px; line-height: 15px; }
+.ios-apps {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px 10px;
+  margin-top: 24px;
+}
+.ios-apps span { display: grid; justify-items: center; gap: 5px; min-width: 0; }
+.ios-apps img, .ios-dock img {
+  width: 43px; height: 43px; border-radius: var(--radius-icon);
+  box-shadow: 0 3px 10px rgba(7, 25, 45, 0.28);
+}
+.ios-apps small { width: 100%; overflow: hidden; text-overflow: ellipsis; text-align: center; font-size: 7px; white-space: nowrap; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4); }
+.ios-dock {
+  position: absolute; left: 6%; right: 6%; bottom: 3%;
+  display: flex; justify-content: space-around; padding: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  border-radius: var(--radius-lg);
+  background: rgba(235, 248, 255, 0.38);
+  backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+}
+
 /* ── How it works ── */
 .steps {
   list-style: none;
@@ -1112,8 +1158,8 @@ footer {
   margin-bottom: 18px;
 }
 .step h3 {
-  font-family: var(--font-serif);
-  font-size: 24px; font-weight: 600; letter-spacing: -0.012em; line-height: 30px; margin-bottom: 8px;
+  font-family: var(--font-rounded);
+  font-size: 24px; font-weight: 700; letter-spacing: -0.016em; line-height: 30px; margin-bottom: 8px;
 }
 .step p { color: var(--ink-2); font-size: 16px; }
 
@@ -1149,20 +1195,20 @@ footer {
   border: 1px solid var(--line); border-radius: var(--radius-lg);
   background: #fff; padding: 34px 30px;
 }
-.plan--pro { border-color: transparent; background: var(--tint-sand); }
-.plan--pro li, .plan--pro .plan-price span, .plan--pro .plan-note { color: #4A3B12; }
-.plan--pro h3, .plan--pro .plan-price { color: #241C05; }
+.plan--pro { border-color: transparent; background: var(--tint-ice); }
+.plan--pro li, .plan--pro .plan-price span, .plan--pro .plan-note { color: #164F6D; }
+.plan--pro h3, .plan--pro .plan-price { color: #0B3148; }
 .plan-badge {
   position: absolute; top: 20px; right: 22px;
   font-family: var(--font-mono);
   font-size: 12px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
-  color: #4A3B12; background: rgba(255, 255, 255, 0.6);
+  color: #0B4A6B; background: rgba(255, 255, 255, 0.62);
   border-radius: var(--radius-pill); padding: 5px 11px;
 }
-.plan h3 { font-family: var(--font-serif); font-size: 24px; line-height: 30px; font-weight: 500; margin-bottom: 10px; }
+.plan h3 { font-family: var(--font-rounded); font-size: 24px; line-height: 30px; font-weight: 700; margin-bottom: 10px; }
 .plan-price {
-  font-family: var(--font-serif);
-  font-size: 48px; font-weight: 500; letter-spacing: -0.022em; line-height: 1;
+  font-family: var(--font-rounded);
+  font-size: 48px; font-weight: 700; letter-spacing: -0.025em; line-height: 1;
   margin-bottom: 10px;
 }
 /* "/month" and "forever" are labels, not part of the figure: body font.
@@ -1171,7 +1217,7 @@ footer {
 /* The other way to pay, on its own row under the price. The Free card
    carries an empty one so the two lists start level. */
 .plan-alt { font-size: 14px; line-height: 20px; color: var(--ink-3); margin-bottom: 20px; }
-.plan--pro .plan-alt { color: #4A3B12; }
+.plan--pro .plan-alt { color: #164F6D; }
 .plan ul { list-style: none; display: grid; gap: 11px; }
 .plan li { position: relative; padding-left: 26px; font-size: 16px; color: var(--ink-2); }
 .plan li::before {
@@ -1180,14 +1226,14 @@ footer {
   width: 6px; height: 6px; border-radius: 50%;
   background: var(--ink-3);
 }
-.plan--pro li::before { background: #A07C1E; }
+.plan--pro li::before { background: #0F5F88; }
 .plan-note { margin-top: 20px; font-size: 14px; line-height: 20px; color: var(--ink-3); }
 .plan-tagline {
   font-family: var(--font-mono);
   font-size: 12px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
   color: var(--ink-3); margin: -6px 0 16px;
 }
-.plan--pro .plan-tagline { color: #5A4714; }
+.plan--pro .plan-tagline { color: #164F6D; }
 /* Olympus carries a marker too, but stays an outline card — only one
    filled card per row, or the row stops having a focal point. */
 .plan-badge--plain { color: var(--ink-3); background: rgba(22, 23, 26, 0.05); }
@@ -1203,7 +1249,7 @@ footer {
   display: flex; align-items: center;
   min-height: 56px; padding: 14px 40px 14px 0; position: relative;
   font-family: var(--font-display);
-  font-size: 20px; font-weight: 600; line-height: 26px; letter-spacing: -0.012em; color: var(--ink);
+  font-size: 18px; font-weight: 600; line-height: 26px; letter-spacing: -0.012em; color: var(--ink);
 }
 .faq summary::-webkit-details-marker { display: none; }
 /* A 16px chevron that turns over when the answer is open. Drawn as a mask
@@ -1279,13 +1325,15 @@ footer {
   .icon-pit { margin-top: clamp(4px, calc(9vh - 56px), 20px); margin-top: clamp(4px, calc(9svh - 56px), 20px); }
   .pit-stage { height: 300px; }
   :root { --section-pad: 80px; }
+  .cta { padding: 80px 0; }
   .closing { grid-template-columns: 1fr; gap: 26px; padding-top: 32px; }
   .closing h2 { max-width: none; }
   .footer-inner { flex-direction: column; gap: 14px; }
   .phone-stage { padding: 18px 0 0; }
   .privacy-panel { padding: 36px 22px; }
   .plan { padding: 28px 22px; }
-  .faq summary { font-size: 18px; line-height: 24px; }
+  .faq summary { font-size: 18px; line-height: 26px; }
+  .pit-hint, .pit-call { top: 12px; bottom: auto; }
   .plan-alt[aria-hidden] { display: none; } /* stacked: nothing to line up with */
 }
 @media (prefers-reduced-motion: reduce) {
@@ -1360,7 +1408,7 @@ footer {
      straight through the caption. A little wider than the screen puts the
      sides out of sight; the clip takes the lower edge and leaves the
      waterline, and the glow above it, alone. */
-  width: calc(100vw + 16px); height: 300px;
+  width: 100%; height: 300px;
   transform: translateX(-50%);
   overflow: visible;
   clip-path: inset(-80px 0 4px 0);
@@ -1426,14 +1474,14 @@ footer {
 }
 .lore-ic {
   flex: 0 0 auto; width: 58px; height: 58px;
-  border-radius: 22.5%;
+  border-radius: var(--radius-icon);
   box-shadow: 0 0 0 1.5px var(--edge-line), var(--shadow-sm);
   transition: transform 0.35s cubic-bezier(.2,.8,.3,1);
 }
 .lore-card:hover .lore-ic { transform: rotate(-4deg) scale(1.06); }
 .lore-card h3 {
-  font-family: var(--font-serif);
-  font-size: 18px; font-weight: 600; letter-spacing: -0.012em;
+  font-family: var(--font-rounded);
+  font-size: 18px; font-weight: 700; letter-spacing: -0.012em;
   margin-bottom: 5px;
 }
 .lore-card p {
@@ -1463,12 +1511,12 @@ footer {
 .lore-mini li:hover { background: rgba(22, 23, 26, 0.04); }
 .lore-mini img {
   flex: 0 0 auto; width: 38px; height: 38px;
-  border-radius: 22.5%;
+  border-radius: var(--radius-icon);
   box-shadow: 0 0 0 1.5px var(--edge-line), var(--shadow-sm);
 }
 .lore-mini h3 {
-  font-family: var(--font-serif);
-  font-size: 16px; font-weight: 600; letter-spacing: -0.01em;
+  font-family: var(--font-rounded);
+  font-size: 16px; font-weight: 700; letter-spacing: -0.01em;
   color: var(--ink);
   margin-bottom: 2px;
 }
@@ -1495,7 +1543,7 @@ footer {
   .lore-grid { grid-template-columns: 1fr; gap: 12px; }
   .lore-tier { margin: 32px 0 16px; }
   .lore-card { padding: 15px; gap: 13px; }
-  .lore-ic { width: 50px; height: 50px; border-radius: 22.5%; }
+  .lore-ic { width: 50px; height: 50px; border-radius: var(--radius-icon); }
 }
 @media (prefers-reduced-motion: reduce) {
   .lore-card, .lore-ic, .lore-mini li, .lore-mini--soon img { transition: none; }
@@ -1505,7 +1553,7 @@ footer {
 @media (max-width: 640px) {
   .lore-mini { grid-template-columns: 1fr; gap: 2px; margin-bottom: 26px; }
   .lore-mini li { padding: 9px 8px; gap: 11px; }
-  .lore-mini img { width: 34px; height: 34px; border-radius: 22.5%; }
+  .lore-mini img { width: 34px; height: 34px; border-radius: var(--radius-icon); }
 }
 
 /* ── Frost: the rare shelf starts frozen in (assets/frost.js) ──
@@ -1586,7 +1634,7 @@ footer {
 }
 .ipop-scene {
   position: absolute;
-  inset: -3%;
+  inset: 0;
   z-index: 0;
   overflow: hidden;
   opacity: 0;

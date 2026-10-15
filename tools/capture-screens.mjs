@@ -11,7 +11,7 @@
 // It seeds a demo user ("Alex", 12-day streak, 4 finished goals) straight
 // into localStorage, then taps through to each screen. Afterwards, run the
 // resize/WebP step — see the note at the bottom of this file.
-import puppeteer from "puppeteer-core";
+const { default: puppeteer } = await import(process.env.PUPPETEER_CORE_PATH || "puppeteer-core");
 import fs from "node:fs";
 import path from "node:path";
 
@@ -115,13 +115,14 @@ const buildSnapshot = (screen) => {
 // value can't drive navigation — each shot clicks its way there instead.
 const SHOTS = [
   { name: "home", taps: [] },
+  { name: "rest", taps: [], restDay: true },
   { name: "store", taps: ["Store"] },
   { name: "profile", taps: ["Profile"] },
   // Profile has two "See all" buttons (goals → home, achievements →
   // trophy shelf), so reach the shelf via a completed-goal wallet card.
   // The wallet strip shows only the 3 most recent cards, newest first.
   { name: "achievements", taps: ["Profile", { label: "Cook 20 meals", exact: false }] },
-];
+].filter((shot) => !process.env.SHOT || shot.name === process.env.SHOT);
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -165,6 +166,14 @@ await page.goto(APP_URL, { waitUntil: "domcontentloaded" });
 
 for (const shot of SHOTS) {
   const snap = buildSnapshot("home");
+  if (shot.restDay) {
+    const today = new Date().toISOString().split("T")[0];
+    snap.data.actions = snap.data.actions.filter((a) => !a.createdAt.startsWith(today));
+    snap.data.frozenDays = (snap.data.frozenDays || []).filter((d) => d !== today);
+    snap.data.restDays = [];
+    snap.data.streakChallenge.progress = snap.data.streakChallenge.progress
+      .filter((p) => p.date !== today);
+  }
   await page.evaluate((s) => {
     localStorage.setItem("pebble.app.v1", JSON.stringify(s));
     // The theme is read once at module load, so it has to be in storage
@@ -216,7 +225,7 @@ console.log("done");
 //
 //   python3 - <<'PY'
 //   from PIL import Image
-//   for n in ["home", "store", "achievements", "profile"]:
+//   for n in ["home", "rest", "store", "achievements", "profile"]:
 //       im = Image.open(f"assets/screens/{n}.png").convert("RGB")
 //       im = im.resize((640, round(im.height * 640 / im.width)), Image.LANCZOS)
 //       im.save(f"assets/screens/{n}.webp", "WEBP", quality=82, method=6)
