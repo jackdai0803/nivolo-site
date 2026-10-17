@@ -1417,6 +1417,12 @@ footer {
 .pit--iceberg .ocean-water-shape {
   filter: drop-shadow(0 -8px 18px rgba(112, 202, 235, 0.24));
 }
+/* The phone composition stays tucked into the hero gutter. On a laptop,
+   the sea becomes the wide establishing layer: the floe and physics keep
+   their 1120px stage, while only the painted water reaches both edges. */
+@media (min-width: 641px) {
+  .pit--iceberg .ocean-water { width: 100vw; }
+}
 .pit--zerog .bowl-visual { display: none; }
 .pit-lines { position: absolute; inset: 0; pointer-events: none; }
 /* The water runs 180px below the stage (150px on a phone); the caption
