@@ -1,0 +1,77 @@
+.early-supporter {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: 28px 40px;
+  align-items: center;
+  margin: 0 0 42px;
+  padding: clamp(24px, 4vw, 40px);
+  border: 1px solid #c7d2c9;
+  border-radius: var(--radius-lg);
+  background: #e8eee6;
+  color: #163c2e;
+}
+.early-supporter-art img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 25%;
+}
+.early-supporter-kicker {
+  margin: 0 0 10px;
+  font: 600 12px/1.4 var(--font-mono);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.early-supporter-copy h3 {
+  margin: 0 0 12px;
+  font: 800 clamp(30px, 4vw, 44px)/1.08 var(--font-display);
+  letter-spacing: -.045em;
+}
+.early-supporter-copy > p:not(.early-supporter-kicker) {
+  max-width: 470px;
+  margin: 0 0 22px;
+  color: #3d5849;
+  font-size: 16px;
+  line-height: 1.65;
+}
+.early-supporter-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 13px 19px;
+  border: 1px solid #123426;
+  border-radius: var(--radius-sm);
+  background: #163c2e;
+  color: #fff;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 650;
+  box-shadow: 0 3px 0 #0a2419;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.early-supporter-cta:hover { transform: translateY(-1px); box-shadow: 0 4px 0 #0a2419; }
+.early-supporter-cta:active { transform: translateY(2px); box-shadow: 0 1px 0 #0a2419; }
+.early-supporter-cta:focus-visible { outline: 3px solid #8a5d00; outline-offset: 5px; }
+.early-supporter-footer {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  padding-top: 18px;
+  border-top: 1px solid #c7d2c9;
+  color: #3d5849;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.early-supporter-limit { font-weight: 650; }
+@media (max-width: 600px) {
+  .early-supporter { grid-template-columns: minmax(0, 1fr); gap: 24px; text-align: center; }
+  .early-supporter-art { width: 150px; margin: 0 auto; }
+  .early-supporter-copy > p:not(.early-supporter-kicker) { margin-left: auto; margin-right: auto; }
+  .early-supporter-footer { justify-content: center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .early-supporter-cta { transition: none; }
+}

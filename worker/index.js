@@ -89,6 +89,15 @@ async function handleLaunchSignup(request, env, ctx) {
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
+    if (url.pathname === "/api/early-supporter/status") {
+      if (request.method !== "GET") return new Response(null, { status: 405, headers: { Allow: "GET" } });
+      try {
+        const response = await fetch("https://api.nivolo.app/early-supporter/status", { signal: AbortSignal.timeout(5000) });
+        const count = await response.json();
+        if (!response.ok || count.limit !== 20 || !Number.isInteger(count.claimed) || count.claimed < 0 || count.claimed > 20) throw new Error("invalid_count");
+        return json(count);
+      } catch { return json({ error: "count_unavailable" }, 503); }
+    }
     if (url.pathname === "/api/launch-alert") {
       if (request.method !== "POST") {
         return new Response("Method Not Allowed", { status: 405, headers: { Allow: "POST" } });
