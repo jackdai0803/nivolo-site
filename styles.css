@@ -1394,7 +1394,7 @@ footer {
   /* Titanium band, black bezel, Dynamic Island and side buttons at
      Xcode's iPhone 16 Pro Max proportions; the screen area is a punched
      hole so the screenshot shows through. */
-  background: url("assets/iphone16-frame.svg?v=2") center / 100% 100% no-repeat;
+  background: url("assets/iphone16-frame.svg?v=3") center / 100% 100% no-repeat;
   pointer-events: none;
 }
 .phone picture,
