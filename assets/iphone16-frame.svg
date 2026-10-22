@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- iPhone 16 Pro Max chassis drawn to the proportions of Xcode's
+     Simulator device profile: the 1320×2868 framebuffer sits in the
+     transparent hole (x 66, y 44), ringed by a 28px black bezel and a
+     16px titanium band (body 1408×2956, corner radius 300 — the screen
+     mask's 255 plus the 44px frame). Side buttons and the Dynamic
+     Island are part of the chrome, as in Xcode's device bezel; the
+     screenshot underneath keeps its own Apple screen-contour mask. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1452 2956">
+  <defs>
+    <linearGradient id="band" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F2F3F5"/>
+      <stop offset="0.1" stop-color="#D4D6DA"/>
+      <stop offset="0.5" stop-color="#B6BAC0"/>
+      <stop offset="0.9" stop-color="#D4D6DA"/>
+      <stop offset="1" stop-color="#F2F3F5"/>
+    </linearGradient>
+    <linearGradient id="btn" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#9EA3AA"/>
+      <stop offset="0.5" stop-color="#D2D4D8"/>
+      <stop offset="1" stop-color="#9EA3AA"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Side buttons: action, volume up, volume down (left); side button
+       and Camera Control (right). Tucked 8px under the band edge. -->
+  <g fill="url(#btn)" stroke="rgba(20,23,28,0.25)" stroke-width="2">
+    <rect x="4" y="462" width="26" height="154" rx="12"/>
+    <rect x="4" y="689" width="26" height="218" rx="12"/>
+    <rect x="4" y="943" width="26" height="217" rx="12"/>
+    <rect x="1422" y="798" width="26" height="380" rx="12"/>
+    <rect x="1422" y="1760" width="26" height="220" rx="12"/>
+  </g>
+
+  <!-- Titanium band (a ring — the middle stays transparent for the screen) -->
+  <path fill="url(#band)" fill-rule="evenodd" d="M 322,0 H 1130 A 300,300 0 0 1 1430,300 V 2656 A 300,300 0 0 1 1130,2956 H 322 A 300,300 0 0 1 22,2656 V 300 A 300,300 0 0 1 322,0 Z M 322,16 H 1130 A 284,284 0 0 1 1414,300 V 2656 A 284,284 0 0 1 1130,2940 H 322 A 284,284 0 0 1 38,2656 V 300 A 284,284 0 0 1 322,16 Z"/>
+  <rect x="23" y="1" width="1406" height="2954" rx="299" fill="none" stroke="rgba(20,23,28,0.3)" stroke-width="2"/>
+
+  <!-- Black bezel with the screen punched out -->
+  <path fill="#0A0B0D" fill-rule="evenodd" d="M 322,16 H 1130 A 284,284 0 0 1 1414,300 V 2656 A 284,284 0 0 1 1130,2940 H 322 A 284,284 0 0 1 38,2656 V 300 A 284,284 0 0 1 322,16 Z M 321,44 H 1131 A 255,255 0 0 1 1386,299 V 2657 A 255,255 0 0 1 1131,2912 H 321 A 255,255 0 0 1 66,2657 V 299 A 255,255 0 0 1 321,44 Z"/>
+  <rect x="39" y="17" width="1374" height="2922" rx="283" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2"/>
+
+  <!-- Dynamic Island -->
+  <rect x="540" y="77" width="372" height="110" rx="55" fill="#050607"/>
+</svg>
