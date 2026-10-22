@@ -21,7 +21,7 @@ process.chdir(root);
 // Everything the public site is made of, and nothing else: notes, tools
 // and config never reach dist/.
 const PUBLISH = [
-  "index.html", "privacy.html", "support.html", "404.html",
+  "index.html", "launch.html", "privacy.html", "support.html", "404.html",
   "styles.css", "assets",
   "robots.txt", "sitemap.xml", "favicon.ico", "site.webmanifest", "CNAME",
 ];

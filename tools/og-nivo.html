@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nivolo link preview</title>
+  <link rel="stylesheet" href="../assets/fonts.css">
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; }
+    body { position: relative; padding: 84px; background: #04080e; color: #edf3f8; font-family: Inter, sans-serif; }
+    body::before { content: ""; position: absolute; top: -100px; right: -90px; width: 670px; height: 730px; border-radius: 50%; background: #0b1929; }
+    .brand { position: relative; display: flex; align-items: center; gap: 22px; }
+    .brand img { width: 104px; height: 104px; border-radius: 30px; }
+    .brand span { font: 500 50px/1 "Inter Tight", sans-serif; letter-spacing: -.035em; }
+    h1 { position: relative; margin: 66px 0 24px; font: 500 75px/1.14 "Inter Tight", sans-serif; letter-spacing: -.035em; }
+    h1 em { display: block; color: #66ccee; font-style: normal; }
+    p { position: relative; margin: 0; color: #a7b7c9; font-size: 29px; line-height: 1.5; letter-spacing: -.02em; }
+    .note { margin-top: 20px; color: #71859c; font-size: 25px; }
+    .phone { position: absolute; top: 96px; right: 38px; width: 326px; height: 706px; overflow: hidden; border: 8px solid #293849; border-radius: 49px; background: #f2f1ee; transform: rotate(8deg); box-shadow: 0 20px 50px #0004; }
+    .phone img { display: block; width: 100%; height: auto; }
+  </style>
+</head>
+<body>
+  <div class="brand"><img src="../assets/app-icon.png" alt=""><span>nivolo</span></div>
+  <h1>Small habits,<em>kept for good.</em></h1>
+  <p>One small action a day.<br>Streaks with a safety net.</p>
+  <p class="note">Free on iPhone · No account needed</p>
+  <div class="phone"><img src="../assets/screens/nivo-home.png" alt="Nivo in the updated app"></div>
+</body>
+</html>
