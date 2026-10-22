@@ -50,10 +50,10 @@
     @font-face { font-family: 'Newsreader Fallback'; font-style: italic; src: local('Georgia Italic'), local('Georgia-Italic'); size-adjust: 89%; ascent-override: 82.6%; descent-override: 29.8%; line-gap-override: 0%; }
     @font-face { font-family: 'Inter Fallback'; src: local('Arial'); size-adjust: 106.7%; ascent-override: 90.79%; descent-override: 22.61%; line-gap-override: 0%; }
   </style>
-  <link rel="stylesheet" href="styles.css?v=102" />
-  <link rel="stylesheet" href="assets/editorial-concept.css?v=8" />
+  <link rel="stylesheet" href="styles.css?v=105" />
+  <link rel="stylesheet" href="assets/editorial-concept.css?v=15" />
   <link rel="stylesheet" href="assets/nivo.css?v=2" />
-  <link rel="stylesheet" href="assets/app-opals.css?v=2" />
+  <link rel="stylesheet" href="assets/app-opals.css?v=3" />
 
   <script type="application/ld+json">
   {
@@ -354,35 +354,35 @@
       <div class="app-screen-rail" tabindex="0" role="region" aria-label="App screenshots. Scroll horizontally to explore all eight screens.">
         <button class="app-screen-card" type="button" data-app-screen="Home">
           <span class="app-screen-label"><b>Your day</b><span>01</span></span>
-          <img src="assets/screens/nivo-home.png" width="393" height="852" loading="lazy" alt="Home: Nivo, this week’s progress, and the next step for Learn guitar." />
+          <span class="phone"><img src="assets/screens/nivo-home.png" width="393" height="852" loading="lazy" alt="Home: Nivo, this week’s progress, and the next step for Learn guitar." /></span>
         </button>
         <button class="app-screen-card" type="button" data-app-screen="New goal">
           <span class="app-screen-label"><b>A new goal</b><span>02</span></span>
-          <img src="assets/screens/nivo-new-goal.png" width="393" height="852" loading="lazy" alt="New goal: Run my first 5K with the Fitness category selected." />
+          <span class="phone"><img src="assets/screens/nivo-new-goal.png" width="393" height="852" loading="lazy" alt="New goal: Run my first 5K with the Fitness category selected." /></span>
         </button>
         <button class="app-screen-card" type="button" data-app-screen="Log an action">
           <span class="app-screen-label"><b>One small action</b><span>03</span></span>
-          <img src="assets/screens/nivo-log-action.png" width="393" height="852" loading="lazy" alt="Log Action: practiced guitar for 15 minutes, today, with three stars of effort." />
+          <span class="phone"><img src="assets/screens/nivo-log-action.png" width="393" height="852" loading="lazy" alt="Log Action: practiced guitar for 15 minutes, today, with three stars of effort." /></span>
         </button>
         <button class="app-screen-card" type="button" data-app-screen="Rest day">
           <span class="app-screen-label"><b>Room to rest</b><span>04</span></span>
-          <img src="assets/screens/nivo-rest.png" width="393" height="852" loading="lazy" alt="Rest day logged, with the streak still intact." />
+          <span class="phone"><img src="assets/screens/nivo-rest.png" width="393" height="852" loading="lazy" alt="Rest day logged, with the streak still intact." /></span>
         </button>
         <button class="app-screen-card" type="button" data-app-screen="Store">
           <span class="app-screen-label"><b>Something for Nivo</b><span>05</span></span>
-          <img src="assets/screens/nivo-store.png" width="393" height="852" loading="lazy" alt="Store: streak freezes, hats, and scarves to buy with earned Krill." />
+          <span class="phone"><img src="assets/screens/nivo-store.png" width="393" height="852" loading="lazy" alt="Store: streak freezes, hats, and scarves to buy with earned Krill." /></span>
         </button>
         <button class="app-screen-card" type="button" data-app-screen="Trophy Shelf">
           <span class="app-screen-label"><b>Your Trophy Shelf</b><span>06</span></span>
-          <img src="assets/screens/current-achievements.jpg?v=2" width="393" height="852" loading="lazy" alt="Achievements: four finished goals represented by their unique opals." />
+          <span class="phone"><img src="assets/screens/current-achievements.jpg?v=2" width="393" height="852" loading="lazy" alt="Achievements: four finished goals represented by their unique opals." /></span>
         </button>
         <button class="app-screen-card" type="button" data-app-screen="A finished goal">
           <span class="app-screen-label"><b>A goal, kept forever</b><span>07</span></span>
-          <img src="assets/screens/current-gem-detail.jpg?v=2" width="393" height="852" loading="lazy" alt="Cook 20 meals: its collected opal, completion date, and earned Krill." />
+          <span class="phone"><img src="assets/screens/current-gem-detail.jpg?v=2" width="393" height="852" loading="lazy" alt="Cook 20 meals: its collected opal, completion date, and earned Krill." /></span>
         </button>
         <button class="app-screen-card" type="button" data-app-screen="Profile">
           <span class="app-screen-label"><b>The bigger picture</b><span>08</span></span>
-          <img src="assets/screens/nivo-profile.png" width="393" height="852" loading="lazy" alt="Profile: Nivo, level progress, and a weekly activity chart." />
+          <span class="phone"><img src="assets/screens/nivo-profile.png" width="393" height="852" loading="lazy" alt="Profile: Nivo, level progress, and a weekly activity chart." /></span>
         </button>
       </div>
       <p class="app-gallery-note">Actual app screens · Sample goals shown <span aria-hidden="true">↔</span></p>
@@ -391,7 +391,7 @@
 
   <dialog class="app-screen-dialog" id="app-screen-dialog" aria-labelledby="app-screen-dialog-title">
     <div class="app-screen-dialog-head"><h2 id="app-screen-dialog-title">Inside Nivolo</h2><button type="button" data-close-screen aria-label="Close screenshot">×</button></div>
-    <img width="393" height="852" alt="" />
+    <span class="phone"><img width="393" height="852" alt="" /></span>
   </dialog>
 
   <section class="section" id="features">
@@ -648,7 +648,7 @@
             <img class="collector-icon collector-icon--snowy" src="assets/icons/snowy.png" width="180" height="180" loading="lazy" alt="" />
             <img class="collector-icon collector-icon--party" src="assets/icons/party.png" width="180" height="180" loading="lazy" alt="" />
             <img class="collector-icon collector-icon--gold" src="assets/icons/gold.png" width="180" height="180" loading="lazy" alt="" />
-            <span class="collector-krill"><img src="assets/krill-token.png" width="32" height="32" loading="lazy" alt="" />2× Krill</span>
+            <span class="collector-krill"><img src="assets/krill-token.png" width="30" height="30" alt="" />2× Krill</span>
           </div>
           <div class="collector-price-area">
             <div class="collector-billing" role="group" aria-label="Nivolo Plus billing period" hidden>
