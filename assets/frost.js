@@ -481,6 +481,46 @@
 
   /* ── Thawing an icon ──────────────────────────────────────────────── */
 
+  // Blaze's first breath of warmth: three small flames, released once
+  // while the ice opens. Their own layer survives the shelf's final fade.
+  function revealBlaze(s) {
+    if (!s.img || !s.img.el.animate || !/\/blaze\.png(?:\?|$)/.test(s.img.el.getAttribute("src"))) return;
+    if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    var burst = document.createElement("span");
+    burst.className = "frost-blaze-reveal";
+    burst.setAttribute("aria-hidden", "true");
+    burst.style.left = (s.img.x + s.img.w / 2) + "px";
+    burst.style.top = (s.img.y + 4) + "px";
+    pane.appendChild(burst);
+    var flights = [
+      { x: -11, dx: -22, rise: 38, delay: 130, size: 0.8 },
+      { x: 0, dx: 2, rise: 53, delay: 210, size: 1 },
+      { x: 11, dx: 23, rise: 42, delay: 290, size: 0.85 }
+    ];
+    var remaining = flights.length;
+    flights.forEach(function (f) {
+      var flame = document.createElement("span");
+      flame.className = "frost-blaze-flame";
+      flame.innerHTML = '<svg viewBox="0 0 16 24" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+        '<path d="M8 1C10 7 15 10 15 16A7 7 0 0 1 1 16C1 12 4 9 5 6C5 10 7 11 8 1Z" fill="#F88B27"/>' +
+        '<path d="M8 9C9 13 12 15 12 18A4 4 0 0 1 4 18C4 15 7 13 8 9Z" fill="#FFD16A"/>' +
+        '<path d="M8 15C9 17 10 18 10 20A2 2 0 0 1 6 20C6 18 7 17 8 15Z" fill="#FFF2C5"/>' +
+        '</svg>';
+      burst.appendChild(flame);
+      var turn = f.x < 0 ? -12 : 12;
+      var animation = flame.animate([
+        { opacity: 0, transform: "translate(" + f.x + "px, 5px) scale(0.25)", offset: 0 },
+        { opacity: 1, transform: "translate(" + (f.x * 1.25) + "px, -7px) rotate(" + turn + "deg) scale(" + f.size + ")", offset: 0.2 },
+        { opacity: 0.9, transform: "translate(" + f.dx + "px, " + (-f.rise * 0.65) + "px) rotate(" + (-turn / 2) + "deg) scale(" + (f.size * 0.85) + ")", offset: 0.65 },
+        { opacity: 0, transform: "translate(" + (f.dx + 3) + "px, " + (-f.rise) + "px) scale(0.2)", offset: 1 }
+      ], { duration: 1000, delay: f.delay, easing: "ease-out", fill: "both" });
+      // Clean up on completion or cancellation; no invisible particles
+      // or animation loops remain after this one-shot reaction.
+      function clear() { if (--remaining === 0) burst.remove(); }
+      animation.finished.then(clear, clear);
+    });
+  }
+
   var thaws = [];
   function thawItem(i, ox, oy, quiet) {
     var s = state[i];
@@ -489,6 +529,7 @@
     s.thawedAt = Date.now();
     thawedCount++;
     items[i].classList.add("is-thawed");
+    revealBlaze(s);
     var r = s.rect;
     if (ox == null) { ox = r.x + 30; oy = r.y + r.h / 2; } // from the icon outward
     var far = Math.sqrt(Math.pow(Math.max(ox - r.x, r.x + r.w - ox), 2) +
@@ -577,7 +618,7 @@
   }
 
   function kick() {
-    if (!raf && !done) { last = 0; raf = requestAnimationFrame(tick); }
+    if (!raf && (!done || thaws.length)) { last = 0; raf = requestAnimationFrame(tick); }
   }
   function tick(now) {
     raf = 0;
