@@ -131,13 +131,26 @@
     for (var k = 0; k < cells.length; k++) cells[k] = 1;
   }
 
-  function roundRect(c, x, y, w, h, r) {
+  // Match CSS superellipse(2): |x/r|^4 + |y/r|^4 = 1.
+  // Cache one quarter so animation frames only scale/translate its points.
+  var cornerPoints = [];
+  for (var sample = 0; sample <= 24; sample++) {
+    var angle = sample / 24 * Math.PI / 2;
+    cornerPoints.push([Math.sqrt(Math.sin(angle)), Math.sqrt(Math.cos(angle))]);
+  }
+  function continuousRect(c, x, y, w, h, r) {
+    r = Math.max(0, Math.min(r, w / 2, h / 2));
     c.beginPath();
     c.moveTo(x + r, y);
-    c.arcTo(x + w, y, x + w, y + h, r);
-    c.arcTo(x + w, y + h, x, y + h, r);
-    c.arcTo(x, y + h, x, y, r);
-    c.arcTo(x, y, x + w, y, r);
+    for (var corner = 0; corner < 4; corner++) {
+      for (var point = 0; point < cornerPoints.length; point++) {
+        var s = cornerPoints[point][0] * r, t = cornerPoints[point][1] * r;
+        if (corner === 0) c.lineTo(x + w - r + s, y + r - t);
+        else if (corner === 1) c.lineTo(x + w - r + t, y + h - r + s);
+        else if (corner === 2) c.lineTo(x + r - s, y + h - r + t);
+        else c.lineTo(x + r - t, y + r - s);
+      }
+    }
     c.closePath();
   }
 
@@ -158,7 +171,7 @@
     ctx.globalCompositeOperation = "source-over";
     ctx.clearRect(0, 0, W, H);
     ctx.save();
-    roundRect(ctx, 0.5, 0.5, W - 1, H - 1, RADIUS);
+    continuousRect(ctx, 0.5, 0.5, W - 1, H - 1, RADIUS);
     ctx.clip();
 
     // The body: pale glacier blue, a shade deeper toward the foot.
@@ -181,7 +194,7 @@
     writing();
     ctx.restore();
 
-    roundRect(ctx, 0.5, 0.5, W - 1, H - 1, RADIUS);
+    continuousRect(ctx, 0.5, 0.5, W - 1, H - 1, RADIUS);
     ctx.strokeStyle = "rgba(20, 112, 159, 0.16)";
     ctx.lineWidth = 1;
     ctx.stroke();
@@ -231,7 +244,7 @@
     ctx.shadowOffsetX = 4000 * dpr;
     ctx.fillStyle = "#000";
     var hh = l.h * (l.head ? 0.5 : 0.4);
-    roundRect(ctx, l.x - 4000, l.y + (l.h - hh) / 2, l.w, hh, hh / 2);
+    continuousRect(ctx, l.x - 4000, l.y + (l.h - hh) / 2, l.w, hh, hh / 2);
     ctx.fill();
     ctx.restore();
   }
@@ -243,7 +256,7 @@
     ctx.shadowBlur = 26 * dpr;
     ctx.lineWidth = 30;
     ctx.strokeStyle = "rgba(255, 255, 255, 0.85)";
-    roundRect(ctx, -14, -14, W + 28, H + 28, RADIUS + 14);
+    continuousRect(ctx, -14, -14, W + 28, H + 28, RADIUS + 14);
     ctx.stroke();
     ctx.restore();
   }
@@ -492,7 +505,7 @@
       var p = Math.min(1, (now - t.t0) / 560), e = 1 - Math.pow(1 - p, 3);
       var R = Math.max(2, t.far * e);
       ctx.save();
-      roundRect(ctx, r.x - 6, r.y - 6, r.w + 12, r.h + 12, 16);
+      continuousRect(ctx, r.x - 6, r.y - 6, r.w + 12, r.h + 12, 16);
       ctx.clip();
       ctx.globalCompositeOperation = "destination-out";
       var g = ctx.createRadialGradient(t.x, t.y, R * 0.6, t.x, t.y, R);
@@ -509,7 +522,7 @@
         ctx.shadowColor = "#000";
         ctx.shadowBlur = 10 * dpr;
         ctx.fillStyle = "#000";
-        roundRect(ctx, r.x - 1, r.y - 1, r.w + 2, r.h + 2, 12);
+        continuousRect(ctx, r.x - 1, r.y - 1, r.w + 2, r.h + 2, 12);
         ctx.fill();
         ctx.restore();
         clearCells(r);
@@ -631,7 +644,7 @@
   function drawFx(now) {
     clearFx();
     fxc.save();
-    roundRect(fxc, 0, 0, W, H, RADIUS);
+    continuousRect(fxc, 0, 0, W, H, RADIUS);
     fxc.clip();
     if (heat.on && FINE && thawedCount < items.length) {
       var r = BRUSH * 1.6 * (0.97 + 0.03 * Math.sin(now / 240));
@@ -903,7 +916,7 @@
       ctx.shadowColor = "#000";
       ctx.shadowBlur = 10 * dpr;
       ctx.fillStyle = "#000";
-      roundRect(ctx, s.rect.x - 1, s.rect.y - 1, s.rect.w + 2, s.rect.h + 2, 12);
+      continuousRect(ctx, s.rect.x - 1, s.rect.y - 1, s.rect.w + 2, s.rect.h + 2, 12);
       ctx.fill();
       ctx.restore();
       clearCells(s.rect);

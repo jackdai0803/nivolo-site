@@ -18,6 +18,8 @@ Static site for nivolo.app, served by Cloudflare (wrangler.jsonc).
   `assets/device-iphone16-screen-mask.svg` is the real framebuffer
   contour that clips the screenshot. `.phone` in styles.css ties them
   together; wrap a screenshot in `<span class="phone">` to frame it.
-- Corners follow the app: squircle (`corner-shape`) everywhere, with
-  `corner-shape: round` written next to any pill/circle/organic
-  `border-radius`.
+- Corners use `corner-shape: superellipse(2)` on all UI, including
+  navigation, buttons, pills and badges. Only true circles, illustration
+  shapes and particles opt into `corner-shape: round`. The frost canvas
+  uses the same fourth-power formula; regenerate the phone chassis with
+  `node tools/generate-phone-frame.mjs` after changing its geometry.
