@@ -481,14 +481,6 @@
   line-height: 1;
 }
 
-.editorial-status-dot {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: #3bcf7a;
-  box-shadow: 0 0 0 3px rgba(59, 207, 122, .14);
-}
-
 .editorial-proof {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
