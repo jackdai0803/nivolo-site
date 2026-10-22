@@ -1,0 +1,42 @@
+// Cloudflare hosting for nivolo.app. The site is plain static files; this
+// tells Cloudflare which folder to serve and on which addresses.
+// Publish with tools/deploy.sh — it fills ./dist from the latest commit.
+{
+  "name": "nivolo-site",
+  "main": "./worker/index.js",
+  "compatibility_date": "2026-09-01",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"],
+    // /privacy and /privacy.html both work; unknown paths get 404.html.
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  },
+  "kv_namespaces": [
+    {
+      "binding": "LAUNCH_SIGNUPS",
+      "id": "bb8bc71f74bf4a0ebf3a503145d3a06b"
+    }
+  ],
+  "ratelimits": [
+    {
+      "name": "SIGNUP_LIMITER",
+      "namespace_id": "2603",
+      "simple": { "limit": 5, "period": 60 }
+    }
+  ],
+  "send_email": [
+    {
+      "name": "NOTIFY_SIGNUP",
+      "destination_address": "jackdai259@gmail.com"
+    }
+  ],
+  // One public address only: no *.workers.dev copy, no preview links.
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [
+    { "pattern": "nivolo.app/*", "zone_name": "nivolo.app" },
+    { "pattern": "www.nivolo.app/*", "zone_name": "nivolo.app" }
+  ]
+}

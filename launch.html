@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Get one launch email — Nivolo</title>
+  <meta name="description" content="Join Nivolo's launch list and get one email when the cozy iPhone habit app is ready." />
+  <link rel="canonical" href="https://nivolo.app/launch.html" />
+  <meta name="theme-color" content="#F2F1EE" />
+  <link rel="manifest" href="site.webmanifest" />
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png?v=5" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png?v=5" />
+  <link rel="icon" type="image/png" sizes="48x48" href="assets/favicon-48.png?v=5" />
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon.png?v=5" />
+  <link rel="apple-touch-icon" href="assets/app-icon.png" />
+  <link rel="stylesheet" href="assets/fonts.css?v=5" />
+  <link rel="stylesheet" href="styles.css?v=103" />
+  <link rel="stylesheet" href="assets/nivo.css?v=2" />
+</head>
+<body class="launch-body">
+  <a class="skip-link" href="#main">Skip to form</a>
+
+  <nav>
+    <div class="nav-pill launch-nav">
+      <a class="logo" href="index.html"><span class="logo-mark"><img src="assets/nivo-mark.png?v=1" width="128" height="128" alt="" /></span>nivolo</a>
+      <a class="launch-back" href="index.html"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 5-7 7 7 7M5 12h14" /></svg><span>Back to the app</span></a>
+    </div>
+  </nav>
+
+  <main id="main" tabindex="-1" class="launch-page">
+    <section class="launch-card" aria-labelledby="launch-title">
+      <div class="launch-art" aria-hidden="true">
+        <span class="launch-orbit launch-orbit--one"></span>
+        <span class="launch-orbit launch-orbit--two"></span>
+        <span class="site-nivo" data-nivo aria-hidden="true"><svg viewBox="160 170 970 970"><image href="assets/nivo-body.png" width="1254" height="1254" /></svg></span>
+        <span class="launch-art-note">Nivo is waiting too.</span>
+      </div>
+
+      <div class="launch-copy">
+        <p class="section-kicker">One email. That&rsquo;s it.</p>
+        <h1 id="launch-title">Know when Nivolo <em>lands.</em></h1>
+        <p class="launch-lede">Leave your email and we&rsquo;ll send one note when the iPhone app is ready. No newsletter, no weekly drip.</p>
+
+        <form class="launch-form" id="launchForm" action="/api/launch-alert" method="post">
+          <div class="launch-field">
+            <label for="launchEmail">Email address</label>
+            <input id="launchEmail" name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" maxlength="254" placeholder="you@example.com" required />
+          </div>
+          <div class="launch-honeypot" aria-hidden="true">
+            <label for="launchCompany">Company</label>
+            <input id="launchCompany" name="company" type="text" autocomplete="off" tabindex="-1" />
+          </div>
+          <button class="btn-dark launch-submit" id="launchSubmit" type="submit">
+            <span>Email me when it&rsquo;s out</span>
+            <span aria-hidden="true">→</span>
+          </button>
+          <p class="launch-status" id="launchStatus" role="status" aria-live="polite"></p>
+        </form>
+
+        <div class="launch-success" id="launchSuccess" hidden tabindex="-1">
+          <span class="launch-success-mark" aria-hidden="true">✓</span>
+          <div>
+            <h2>You&rsquo;re on the little list.</h2>
+            <p>We&rsquo;ll send one email when Nivolo is ready for your iPhone.</p>
+          </div>
+        </div>
+
+        <p class="launch-fineprint">Your address is used only for the launch note. Ask <a href="mailto:support@nivolo.app">support@nivolo.app</a> to remove it anytime. <a href="privacy.html#website">Privacy</a></p>
+      </div>
+    </section>
+  </main>
+
+  <script src="assets/launch.js?v=1" defer></script>
+  <script type="module" src="assets/nivo.js?v=1"></script>
+</body>
+</html>

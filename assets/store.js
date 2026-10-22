@@ -1,8 +1,8 @@
 /* The launch destination lives here, and only here.
 
-   While APP_STORE_URL is empty, every "get the app" spot opens a drafted
-   email to support@nivolo.app asking for a launch alert. That gives an
-   interested visitor a real action without collecting addresses on-site.
+   While APP_STORE_URL is empty, every "get the app" spot opens the launch
+   list page. That page stores the visitor's email in Cloudflare and sends a
+   notification through the verified Nivolo support email setup.
 
    The day the app is available for pre-order or download, paste its App
    Store address between the quotes below. Every launch-alert link then
@@ -10,7 +10,7 @@
 
    Example:  var APP_STORE_URL = "https://apps.apple.com/app/id0000000000"; */
 var APP_STORE_URL = "";
-var LAUNCH_ALERT_URL = "mailto:support@nivolo.app?subject=Nivolo%20launch%20alert&body=Please%20email%20me%20when%20Nivolo%20is%20available.%0A";
+var LAUNCH_ALERT_URL = "launch.html";
 
 (function () {
   "use strict";
@@ -24,7 +24,10 @@ var LAUNCH_ALERT_URL = "mailto:support@nivolo.app?subject=Nivolo%20launch%20aler
     while (soon.firstChild) link.appendChild(soon.firstChild);
     // Each spot carries both its pre-launch and App Store labels.
     var label = link.querySelector("[data-live]");
-    if (label) label.textContent = label.getAttribute(APP_STORE_URL ? "data-live" : "data-soon");
+    if (label) {
+      var nextLabel = label.getAttribute(APP_STORE_URL ? "data-live" : "data-soon");
+      if (nextLabel) label.textContent = nextLabel;
+    }
     soon.parentNode.replaceChild(link, soon);
   }
 })();

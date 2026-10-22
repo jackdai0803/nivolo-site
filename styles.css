@@ -64,6 +64,7 @@
   --radius-sm: 12px;
   --radius: 20px;
   --radius-lg: 28px;
+  --radius-device-screen: 36px;
   --radius-icon: 22.5%;
   --radius-pill: 999px;
   /* Type: eight sizes and nothing between. 12 eyebrow, 14 meta, 16 body,
@@ -87,7 +88,31 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
-html { scroll-behavior: smooth; }
+/* Apple-style continuous corners. `border-radius` remains the fallback for
+   browsers that do not yet support CSS corner shaping; current browsers use
+   a superellipse, so the curve eases into each straight edge instead of
+   joining it as a quarter-circle. Pills and true circles stay round. */
+@supports (corner-shape: squircle) {
+  :where(
+    .hero-proof, .hero-proof-screen, .hero-proof-screen img,
+    .pit-icon img, .pit-icon.is-sinking::after,
+    .panel, .ui-card, .ui-flame, .ui-banner,
+    .shop-card, .shop-thumb, .stat-line, .gem-slot,
+    .trophy-preview, .trophy-gem, .trophy-slot,
+    .widget-card, .widget-flame, .icon-swatches img,
+    .page .card, .page--lost .lost-icon,
+    .phone, .phone picture, .phone img,
+    .ios-home, .ios-widget, .ios-apps img, .ios-dock img, .ios-dock,
+    .step, .privacy-panel, .plan,
+    .lore-card, .lore-ic, .lore-more > summary,
+    .lore-mini li, .lore-mini img, .frost
+  ) {
+    corner-shape: squircle;
+  }
+}
+
+html { scroll-behavior: smooth; scroll-padding-top: 96px; }
+[id] { scroll-margin-top: 96px; }
 
 body {
   background: var(--paper);
@@ -164,36 +189,41 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
   font-size: 18px; font-weight: 800; letter-spacing: -0.03em;
   color: var(--ink);
 }
-/* Face only, no tile — the same treatment as the favicon, so the tab and
-   the navbar carry one mark instead of two. */
+/* The approved full Nivo is a transparent mark beside the wordmark. */
 .logo-mark {
-  width: 34px; flex-shrink: 0;
+  width: 34px; height: 34px; flex-shrink: 0;
   display: grid; place-items: center;
 }
-/* A line drawn round the face itself, not a tile round its box: the mark
-   is mostly white and the navbar is white, so without it the head
-   dissolves into the pill and only the eyes read. The line is sand, not
-   ink — black read as a hard cartoon border against the paper palette and
-   fought the eyes for attention. Sand sits close enough to the paper that
-   it never registers as a border; it just stops the head bleeding into
-   the pill, and the eyes stay the only dark thing in the mark.
-   Eight stacked drop-shadows are the only way to stroke a PNG's alpha —
-   four cardinal at full weight, four diagonal a shade shorter so the
-   corners don't bulge. Keep the colour opaque: stacked translucent
-   shadows compound where they overlap and the ring goes blotchy. No soft
-   shadow under it — a shadow behind a stroke only muddies its edge. */
 .logo-mark img {
-  display: block; width: 100%; height: auto;
-  filter:
-    drop-shadow(1.3px 0 0 var(--edge-line)) drop-shadow(-1.3px 0 0 var(--edge-line))
-    drop-shadow(0 1.3px 0 var(--edge-line)) drop-shadow(0 -1.3px 0 var(--edge-line))
-    drop-shadow(1px 1px 0 var(--edge-line)) drop-shadow(-1px 1px 0 var(--edge-line))
-    drop-shadow(1px -1px 0 var(--edge-line)) drop-shadow(-1px -1px 0 var(--edge-line));
+  display: block; width: 100%; height: 100%;
+  object-fit: contain;
 }
 .logo:hover { text-decoration: none; }
 .nav-links { display: flex; align-items: center; gap: 22px; font-size: 14px; font-weight: 600; }
 .nav-links a { color: var(--ink-2); }
-.nav-links a:hover { color: var(--ink); text-decoration: none; }
+.nav-links .nav-plain {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 10px;
+  border-radius: var(--radius-pill);
+  transition: color 180ms ease, background-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+.nav-links .nav-plain:hover,
+.nav-links .nav-plain:focus-visible {
+  color: #0B4A6B;
+  background: var(--blue-soft);
+  box-shadow: 0 2px 0 rgba(15, 95, 136, 0.18);
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+.nav-links .nav-plain:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+}
+.nav-links .nav-plain:active {
+  transform: translateY(0) scale(0.97);
+  box-shadow: none;
+}
 .nav-cta {
   background: var(--ice); color: var(--ice-ink) !important;
   padding: 9px 18px; border-radius: var(--radius-pill); font-weight: 600; font-size: 14px;
@@ -293,6 +323,63 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
 .btn-ghost:hover { border-color: var(--ink); background: rgba(22, 23, 26, 0.04); text-decoration: none; }
 .hero-note { margin-top: clamp(10px, 1.6vh, 18px); font-size: 14px; line-height: 20px; color: var(--ink-3); }
 
+/* A real screen appears before the playful icon shelf. Visitors understand
+   the product first, then get the character moment. The screenshot is
+   intentionally cropped like a magazine product detail rather than shown as
+   a second full-size phone. */
+.hero-proof {
+  max-width: 680px;
+  min-height: 220px;
+  margin: clamp(26px, 4vh, 40px) auto 0;
+  display: grid;
+  grid-template-columns: 174px minmax(0, 1fr);
+  gap: 30px;
+  align-items: center;
+  padding: 18px 34px 0 18px;
+  text-align: left;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+.hero-proof-screen {
+  position: relative;
+  align-self: end;
+  height: 202px;
+  overflow: hidden;
+  padding: 6px 6px 0;
+  border-radius: 24px 24px 0 0;
+  background: linear-gradient(165deg, #39445A, #141B29 62%);
+  box-shadow: var(--shadow-lg);
+}
+.hero-proof-screen::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  border: 4px solid #17191D;
+  border-bottom: 0;
+  border-radius: 24px 24px 0 0;
+  corner-shape: squircle;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.24);
+  pointer-events: none;
+}
+.hero-proof-screen picture, .hero-proof-screen img { display: block; width: 100%; height: auto; }
+.hero-proof-screen img { border-radius: 19px 19px 0 0; }
+.hero-proof-copy { padding-bottom: 18px; }
+.hero-proof-copy .section-kicker { margin-bottom: 8px; }
+.hero-proof-copy h2 {
+  font-family: var(--font-rounded);
+  font-size: 26px;
+  line-height: 1.16;
+  letter-spacing: -0.018em;
+  margin-bottom: 9px;
+}
+.hero-proof-copy p { color: var(--ink-2); font-size: 15px; line-height: 22px; margin-bottom: 12px; }
+.hero-proof-copy a { font-size: 14px; font-weight: 700; color: var(--ink); }
+.hero-proof + .icon-pit { margin-top: 34px; }
+
 /* ── Icon floe (physics intro) ── */
 .icon-pit {
   position: relative;
@@ -322,8 +409,11 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
   z-index: 3;
   will-change: transform;
   pointer-events: none;
-  filter: drop-shadow(0 8px 14px rgba(24, 52, 76, 0.26));
-  transition: opacity 0.18s linear, filter 0.35s ease;
+  border-radius: var(--radius-icon);
+  /* These are square app-icon tiles, so a box shadow looks the same as the
+     old drop-shadow without re-filtering the PNG while it moves. */
+  box-shadow: 0 8px 14px rgba(24, 52, 76, 0.26);
+  transition: opacity 0.18s linear, box-shadow 0.35s ease;
 }
 /* Underwater. The blur is driven by depth (--sink-blur, set per frame by
    the sinking pass) so the icon softens as it thins — and opacity leaves
@@ -331,17 +421,17 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
    frame, and a transition chasing that lags ~.09 behind, which is exactly
    the ghost that used to get cut off mid-fade. */
 .pit-icon.is-sinking {
-  filter: drop-shadow(0 8px 14px rgba(0, 24, 70, 0.38))
-    saturate(var(--sink-sat, 0.85)) brightness(var(--sink-dim, 0.88)) blur(var(--sink-blur, 0px));
+  box-shadow: 0 8px 14px rgba(0, 24, 70, 0.38);
+  filter: saturate(var(--sink-sat, 0.85)) brightness(var(--sink-dim, 0.88)) blur(var(--sink-blur, 0px));
   /* No transition: the sinking pass writes every one of these values fresh
      each frame, so a transition has nothing to smooth and everything to
-     re-interpolate — a blurred, drop-shadowed element re-rasterised twice
+     re-interpolate — a blurred, shadowed element re-rasterised twice
      over. The ramps are already frame-rate smooth on their own. */
   transition: none;
 }
 /* The blue the water leaves behind. `color` keeps the icon's own light and
    shading and takes only its hue, so a swimmer goes blue-dark rather than
-   painted-over — and the drop-shadow above isolates the blend, so it stops
+   painted-over — and the filter above isolates the blend, so it stops
    at the icon's edge instead of tinting the sea. Silhouette is the img's:
    same box, same radius. */
 .pit-icon.is-sinking::after {
@@ -425,8 +515,6 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
 .pit-icon img {
   display: block; width: 100%; height: 100%;
   border-radius: var(--radius-icon);
-  outline: 1px solid rgba(22, 23, 26, 0.08);
-  outline-offset: -1px;
   /* The give springs drive this element's transform every frame (the
      wrapper's belongs to the render loop). The fold is a real 3D
      rotation, so keep the back face out of it. */
@@ -435,19 +523,19 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
 }
 /* Held: it lifts toward the viewer and throws a longer, softer shadow —
    the transform half of that is the give system's `hold` easing. */
-.pit-icon.held { filter: drop-shadow(0 18px 26px rgba(24, 52, 76, 0.34)); z-index: 6; }
+.pit-icon.held { box-shadow: 0 18px 26px rgba(24, 52, 76, 0.34); z-index: 6; }
 /* The pour starts just above the stage, already in view, so an icon has
    nowhere to arrive from: it fades up as it is let go. Only the physics
    path adds the class, and that path does not run under reduced motion. */
 .pit-icon.pour-in { animation: pourIn 240ms cubic-bezier(0.22, 1, 0.36, 1) backwards; }
 @keyframes pourIn { from { opacity: 0; } }
 /* A landing squeezes the shadow shut under the icon and lets it back out
-   as the weight settles. No fill mode: the base filter takes over again
+   as the weight settles. No fill mode: the base shadow takes over again
    cleanly, including for an icon that goes on to sink. */
 .pit-icon.thud { animation: iconThud 0.44s cubic-bezier(0.2, 0.75, 0.3, 1); }
 @keyframes iconThud {
-  0% { filter: drop-shadow(0 2px 4px rgba(24, 52, 76, 0.5)); }
-  100% { filter: drop-shadow(0 8px 14px rgba(24, 52, 76, 0.26)); }
+  0% { box-shadow: 0 2px 4px rgba(24, 52, 76, 0.5); }
+  100% { box-shadow: 0 8px 14px rgba(24, 52, 76, 0.26); }
 }
 /* ── Snow give on impact ── */
 .snow-divot {
@@ -765,6 +853,38 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
 .gem--purple { background: linear-gradient(160deg, #D8C6FF, #8B5CF6 55%, #5B34B5); box-shadow: var(--shadow-md); }
 .gem--green  { background: linear-gradient(160deg, #A8F0CF, #1FA55A 55%, #10683A); box-shadow: var(--shadow-md); }
 
+/* Code-native Trophy Shelf preview. It stays current even while the app
+   screenshots are being refreshed. */
+.trophy-preview {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 38px;
+  border-radius: var(--radius-lg);
+  background: var(--tint-slate);
+  color: #17344A;
+  box-shadow: inset 0 0 0 1px rgba(22, 23, 26, 0.06);
+}
+.trophy-preview-head { display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+.trophy-preview-head small { display: block; font: 500 12px/18px var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: #315C75; }
+.trophy-preview-head b { display: block; font: 700 24px/30px var(--font-rounded); letter-spacing: -0.016em; }
+.trophy-count { padding: 6px 11px; border-radius: var(--radius-pill); background: rgba(255, 255, 255, 0.68); font-size: 13px; font-weight: 700; white-space: nowrap; }
+.trophy-gems { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 30px 0 24px; }
+.trophy-gem, .trophy-slot { aspect-ratio: 1; display: grid; place-items: center; border-radius: var(--radius-sm); }
+.trophy-gem { position: relative; background: rgba(255, 255, 255, 0.72); box-shadow: var(--shadow-sm); }
+.trophy-gem::after {
+  content: "";
+  width: 42%; aspect-ratio: 1;
+  clip-path: polygon(50% 0%, 92% 24%, 92% 76%, 50% 100%, 8% 76%, 8% 24%);
+  filter: drop-shadow(0 6px 7px rgba(25, 47, 67, 0.22));
+}
+.trophy-gem--blue::after { background: linear-gradient(145deg, #BCEBFF, #2E9FE6 58%, #165F99); }
+.trophy-gem--gold::after { background: linear-gradient(145deg, #FFF0A8, #E7A90F 58%, #8A5D00); }
+.trophy-gem--purple::after { background: linear-gradient(145deg, #E3D8FF, #8060CF 58%, #4A3295); }
+.trophy-gem--green::after { background: linear-gradient(145deg, #B5F0D2, #27996A 58%, #126140); }
+.trophy-slot { border: 1px dashed rgba(23, 52, 74, 0.28); color: #315C75; font-size: 24px; }
+.trophy-preview > p { color: #315C75; font-size: 14px; line-height: 21px; }
+.trophy-preview > p b { color: #17344A; }
+
 /* Bars */
 .bars-card { padding: 20px; }
 .bars { display: flex; align-items: flex-end; gap: 9px; height: 110px; margin-bottom: 8px; }
@@ -876,8 +996,9 @@ footer {
   display: block;
   margin: 54px 0 22px;
   font-family: var(--font-display);
-  font-size: min(20vw, 236px);
+  font-size: min(13.8vw, 190px);
   font-weight: 800; letter-spacing: -0.045em; line-height: 0.82;
+  white-space: nowrap;
   color: #EFEDE8;
   text-align: center; white-space: nowrap;
   user-select: none;
@@ -1027,6 +1148,209 @@ footer {
 }
 .page .anchor { scroll-margin-top: 90px; }
 
+/* ── Launch list ─────────────────────────────────────────────────────
+   A single-purpose page: one promise, one field, one clear result. The
+   split card gives Nivo a little character moment without competing with
+   the form, then folds into one column on a phone. */
+.launch-body { min-height: 100vh; min-height: 100svh; }
+.launch-nav { justify-content: space-between; }
+.launch-back {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 44px; padding: 10px 16px;
+  border: 1px solid rgba(15, 95, 136, 0.12);
+  border-radius: var(--radius-pill);
+  background: #EAF3F7; color: #244D63;
+  font-size: 14px; line-height: 20px; font-weight: 650; white-space: nowrap;
+  box-shadow: 0 2px 0 rgba(15, 95, 136, 0.12);
+  transition: background-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+.launch-back svg { flex: 0 0 18px; }
+.launch-back:hover { background: #DBEBF3; text-decoration: none; }
+.launch-back:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
+.launch-back:active { transform: translateY(2px); box-shadow: none; }
+@media (prefers-reduced-motion: reduce) {
+  .launch-back { transition: none; }
+  .launch-back:active { transform: none; }
+}
+.launch-page {
+  width: min(100% - 32px, 960px);
+  min-height: calc(100vh - 96px);
+  min-height: calc(100svh - 96px);
+  margin: 0 auto;
+  display: grid;
+  place-items: center;
+  padding: 52px 0 72px;
+}
+.launch-card {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(280px, 0.9fr) minmax(360px, 1.1fr);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: #fff;
+  box-shadow: var(--shadow-lg);
+}
+.launch-art {
+  position: relative;
+  min-height: 540px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  padding: 52px;
+  background:
+    radial-gradient(circle at 50% 38%, rgba(255, 255, 255, 0.9), transparent 33%),
+    linear-gradient(155deg, var(--tint-ice-2), var(--tint-ice));
+}
+.launch-art::after {
+  content: "";
+  position: absolute;
+  left: -10%; right: -10%; bottom: -68px;
+  height: 176px;
+  border-radius: 50% 50% 0 0;
+  background: rgba(255, 255, 255, 0.48);
+  transform: rotate(-4deg);
+}
+.launch-art img {
+  position: relative;
+  z-index: 2;
+  width: min(100%, 290px);
+  height: auto;
+  display: block;
+  border-radius: var(--radius-icon);
+  filter: drop-shadow(0 26px 28px rgba(23, 52, 74, 0.2));
+}
+.launch-orbit {
+  position: absolute;
+  border: 1px solid rgba(20, 112, 159, 0.18);
+  border-radius: 50%;
+}
+.launch-orbit--one { width: 330px; height: 330px; }
+.launch-orbit--two { width: 430px; height: 430px; opacity: 0.62; }
+.launch-art-note {
+  position: absolute;
+  z-index: 3;
+  left: 28px; bottom: 24px;
+  padding: 7px 12px;
+  border: 1px solid rgba(22, 23, 26, 0.08);
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.76);
+  color: #315C75;
+  font-size: 12px;
+  font-weight: 700;
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.launch-copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 64px 58px;
+}
+.launch-copy .section-kicker { margin-bottom: 14px; }
+.launch-copy h1 {
+  max-width: 10ch;
+  margin-bottom: 18px;
+  font-family: var(--font-serif);
+  font-size: clamp(40px, 5vw, 56px);
+  font-weight: 500;
+  line-height: 0.98;
+  letter-spacing: -0.025em;
+}
+.launch-copy h1 em { font-weight: inherit; }
+.launch-lede { max-width: 430px; color: var(--ink-2); font-size: 16px; line-height: 26px; }
+.launch-form { margin-top: 30px; }
+.launch-field label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 700;
+}
+.launch-field input {
+  width: 100%;
+  height: 54px;
+  padding: 0 17px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--paper);
+  color: var(--ink);
+  font: 400 16px/1 var(--font-display);
+  outline: none;
+  transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+.launch-field input::placeholder { color: #777B80; }
+.launch-field input:focus {
+  border-color: var(--cyan);
+  background: #fff;
+  box-shadow: 0 0 0 4px var(--blue-soft);
+}
+.launch-submit {
+  width: 100%;
+  min-height: 54px;
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 0;
+  font: 700 16px/1 var(--font-display);
+}
+.launch-submit:disabled { cursor: wait; opacity: 0.7; transform: none; }
+.launch-honeypot {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  white-space: nowrap !important;
+}
+.launch-status { min-height: 20px; margin-top: 9px; color: var(--ink-3); font-size: 13px; line-height: 20px; }
+.launch-status.is-error { color: #A33731; }
+.launch-success {
+  margin-top: 30px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid rgba(15, 122, 84, 0.2);
+  border-radius: var(--radius);
+  background: var(--green-soft);
+  outline: none;
+}
+.launch-success[hidden] { display: none; }
+.launch-success-mark {
+  width: 34px; height: 34px;
+  flex: 0 0 34px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  background: var(--green);
+  color: #fff;
+  font-weight: 800;
+}
+.launch-success h2 { margin: 1px 0 4px; font: 700 18px/24px var(--font-rounded); }
+.launch-success p { color: var(--ink-2); font-size: 14px; line-height: 20px; }
+.launch-fineprint { margin-top: 16px; color: var(--ink-3); font-size: 12px; line-height: 18px; }
+.launch-fineprint a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+
+@media (max-width: 760px) {
+  .launch-page { width: min(100% - 24px, 540px); padding: 28px 0 48px; }
+  .launch-card { grid-template-columns: 1fr; border-radius: var(--radius); }
+  .launch-art { min-height: 190px; padding: 18px 80px; }
+  .launch-art img { width: 170px; }
+  .launch-orbit--one { width: 220px; height: 220px; }
+  .launch-orbit--two { width: 300px; height: 300px; }
+  .launch-art-note { left: 18px; bottom: 14px; }
+  .launch-copy { padding: 36px 24px 30px; }
+  .launch-copy h1 { max-width: 11ch; font-size: 42px; }
+  .launch-form { margin-top: 24px; }
+}
+
+@media (max-width: 480px) {
+  .launch-back { padding-inline: 12px; gap: 6px; font-size: 13px; }
+  .launch-page { min-height: auto; }
+}
+
 /* 404 — one centred message and a way home. */
 .page--lost { text-align: center; padding-top: 96px; }
 .page--lost .lost-icon {
@@ -1066,19 +1390,46 @@ footer {
 .phone-stage .float-chip { z-index: 2; }
 .phone {
   position: relative;
+  isolation: isolate;
   width: min(280px, 74vw);
+  /* Exact screen proportion from Xcode's installed iPhone 16 Pro Max
+     framebuffer mask. The sensor-bar asset is deliberately not layered in. */
+  aspect-ratio: 1320 / 2868;
   margin: 0 auto;
-  padding: 9px;
-  border-radius: var(--radius-lg);
-  background: linear-gradient(165deg, #39445A, #141B29 62%);
-  /* The whole screenshot, to its bottom edge, standing on the page: it used
-     to fade out below the middle, which made a real screen read as a
-     mock-up. */
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.10) inset, var(--shadow-lg);
+  filter: drop-shadow(0 24px 30px rgba(22, 23, 26, 0.13)) drop-shadow(0 4px 7px rgba(22, 23, 26, 0.08));
 }
-.phone picture, .phone img {
-  display: block; width: 100%; height: auto;
-  border-radius: var(--radius);
+.phone::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  box-sizing: border-box;
+  border: 5px solid #17191D;
+  border-radius: 54px;
+  corner-shape: squircle;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.22),
+    0 0 0 1px rgba(22, 23, 26, 0.16);
+  pointer-events: none;
+}
+.phone picture {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  display: block;
+  overflow: hidden;
+  border-radius: 0;
+  background: #000;
+  /* Converted from the real framebufferMask PDF in Xcode's installed
+     iPhone 16 Pro Max Simulator profile. This is the Apple contour only. */
+  -webkit-mask: url("assets/device-iphone16-screen-mask.svg") center / 100% 100% no-repeat;
+  mask: url("assets/device-iphone16-screen-mask.svg") center / 100% 100% no-repeat;
+}
+.phone img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 /* The home-screen feature uses the same arch + phone treatment as every
@@ -1088,7 +1439,7 @@ footer {
   position: relative;
   aspect-ratio: 640 / 1387;
   overflow: hidden;
-  border-radius: var(--radius);
+  border-radius: var(--radius-device-screen);
   padding: 18% 7% 8%;
   color: #fff;
   background:
@@ -1275,14 +1626,14 @@ footer {
    an animation, not a transition, so once it has played their own hover
    transforms and transitions are exactly as they were. (translateY(0), not
    none: the blocks keep the stacking context they have always had.) */
-.reveal {
+.reveal-ready .reveal {
   opacity: 0; transform: translateY(16px);
   transition: opacity 500ms cubic-bezier(0.22, 1, 0.36, 1), transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
 }
-.reveal.in { opacity: 1; transform: translateY(0); }
-.reveal[data-stagger] { opacity: 1; transform: translateY(0); transition: none; }
-.reveal[data-stagger] > * { opacity: 0; }
-.reveal[data-stagger].in > * {
+.reveal-ready .reveal.in { opacity: 1; transform: translateY(0); }
+.reveal-ready .reveal[data-stagger] { opacity: 1; transform: translateY(0); transition: none; }
+.reveal-ready .reveal[data-stagger] > * { opacity: 0; }
+.reveal-ready .reveal[data-stagger].in > * {
   opacity: 1;
   animation: revealRise 500ms cubic-bezier(0.22, 1, 0.36, 1) var(--d, 0ms) backwards;
 }
@@ -1322,7 +1673,22 @@ footer {
   .hero h1 { margin-bottom: 14px; }
   .hero-sub { margin-bottom: clamp(12px, 2.4vh, 20px); margin-bottom: clamp(12px, 2.4svh, 20px); }
   .hero-note { margin-top: clamp(8px, 1.4vh, 12px); margin-top: clamp(8px, 1.4svh, 12px); }
-  .icon-pit { margin-top: clamp(4px, calc(9vh - 56px), 20px); margin-top: clamp(4px, calc(9svh - 56px), 20px); }
+  .hero-proof {
+    min-height: 174px;
+    grid-template-columns: 104px minmax(0, 1fr);
+    gap: 15px;
+    margin-top: 22px;
+    padding: 14px 15px 0 14px;
+    border-radius: var(--radius);
+  }
+  .hero-proof-screen { height: 160px; padding: 4px 4px 0; border-radius: 18px 18px 0 0; }
+  .hero-proof-screen img { border-radius: 15px 15px 0 0; }
+  .hero-proof-copy { padding-bottom: 13px; }
+  .hero-proof-copy .section-kicker { display: none; }
+  .hero-proof-copy h2 { font-size: 19px; line-height: 23px; margin-bottom: 7px; }
+  .hero-proof-copy p { font-size: 13px; line-height: 19px; margin-bottom: 8px; }
+  .hero-proof-copy a { font-size: 13px; }
+  .hero-proof + .icon-pit { margin-top: 18px; }
   .pit-stage { height: 300px; }
   :root { --section-pad: 80px; }
   .cta { padding: 80px 0; }
@@ -1332,15 +1698,24 @@ footer {
   .phone-stage { padding: 18px 0 0; }
   .privacy-panel { padding: 36px 22px; }
   .plan { padding: 28px 22px; }
+  .trophy-preview { padding: 26px 20px; }
+  .trophy-preview-head b { font-size: 20px; line-height: 26px; }
+  .trophy-gems { gap: 8px; margin: 24px 0 20px; }
+  .lore-more > summary { padding: 16px; gap: 14px; }
+  .lore-more > summary small { font-size: 13px; line-height: 18px; }
   .faq summary { font-size: 18px; line-height: 26px; }
   .pit-hint, .pit-call { top: 12px; bottom: auto; }
   .plan-alt[aria-hidden] { display: none; } /* stacked: nothing to line up with */
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
+  .nav-links .nav-plain { transition: none; }
+  .nav-links .nav-plain:hover,
+  .nav-links .nav-plain:focus-visible,
+  .nav-links .nav-plain:active { transform: none; }
   .kicker-chip .dot, .float-chip { animation: none; }
-  .reveal { opacity: 1; transform: none; transition: none; }
-  .reveal[data-stagger] > *, .reveal[data-stagger].in > * { opacity: 1; animation: none; }
+  .reveal-ready .reveal { opacity: 1; transform: none; transition: none; }
+  .reveal-ready .reveal[data-stagger] > *, .reveal-ready .reveal[data-stagger].in > * { opacity: 1; animation: none; }
 }
 
 /* ── The floe. ?variant=zerog is the one alternative left ── */
@@ -1499,6 +1874,39 @@ footer {
   padding-top: 34px;
   border-top: 1px solid var(--line);
 }
+.lore-more > summary {
+  max-width: 620px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 18px 20px;
+  text-align: left;
+  list-style: none;
+  cursor: pointer;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+.lore-more > summary::-webkit-details-marker { display: none; }
+.lore-more > summary b { display: block; font: 700 18px/24px var(--font-rounded); }
+.lore-more > summary small { display: block; margin-top: 3px; color: var(--ink-3); font-size: 14px; line-height: 20px; }
+.lore-more > summary:focus-visible { outline: 2px solid var(--cyan); outline-offset: 4px; }
+.lore-more-toggle {
+  flex: 0 0 auto;
+  width: 32px; height: 32px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  background: var(--tint-ice);
+  color: #0B4A6B;
+  font-size: 22px;
+  line-height: 1;
+  transition: transform 0.25s ease;
+}
+.lore-more[open] .lore-more-toggle { transform: rotate(45deg); }
+.lore-more-body { padding-top: 10px; }
 .lore-more .lore-tier { margin: 0 0 24px; }
 .lore-mini {
   list-style: none;

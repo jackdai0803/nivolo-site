@@ -192,7 +192,9 @@
     }
     // The size at which the shelf the floe was given is the shelf it can
     // hold — see holds() above.
-    return Math.round(Math.max(30, sizeFor(s.w, ROSTER.length)));
+    // Let each face read a little more clearly without changing how many
+    // characters the responsive shelf chooses to show.
+    return Math.round(Math.max(30, sizeFor(s.w, ROSTER.length) * 1.1));
   }
 
   /* Build the floe from static segments matching the painted ice, plus the
@@ -1046,8 +1048,13 @@
   var dragConstraint = null;
   var dragMeta = null; // { startX, startY, t, item }
 
-  function stagePoint(clientX, clientY) {
-    var r = stage.getBoundingClientRect();
+  // Reading a bounding box forces the browser to finish any pending layout.
+  // Cache it for the lifetime of one drag instead of doing that work on every
+  // mouse/touch move; the page cannot scroll while an icon is held anyway.
+  var dragStageRect = null;
+  function stagePoint(clientX, clientY, fresh) {
+    var r = fresh || !dragStageRect ? stage.getBoundingClientRect() : dragStageRect;
+    dragStageRect = r;
     return { x: clientX - r.left, y: clientY - r.top };
   }
 
@@ -1074,8 +1081,10 @@
       bodyB: body,
       pointB: local,
       length: 0,
-      stiffness: 0.1,
-      damping: 0.18,
+      // Still springy, but tight enough that the icon no longer trails a
+      // finger by a visible beat on 60/120Hz phones.
+      stiffness: 0.28,
+      damping: 0.30,
     });
     Composite.add(engine.world, dragConstraint);
     Matter.Sleeping.set(body, false);
@@ -1132,6 +1141,7 @@
     Composite.remove(engine.world, dragConstraint);
     dragConstraint = null;
     dragMeta = null;
+    dragStageRect = null;
     stage.classList.remove("dragging");
     // A throw is allowed to outrun a fall for a moment (see TOSS_CAP).
     var thrown = iconForBody(meta && meta.body);
@@ -1165,7 +1175,7 @@
   stage.addEventListener("mousedown", function (e) {
     e.preventDefault(); // play area — never start a text selection here
     sfx.arm();
-    if (startDrag(stagePoint(e.clientX, e.clientY), e)) {
+    if (startDrag(stagePoint(e.clientX, e.clientY, true), e)) {
       var stop = function (pt) {
         endDrag(pt);
         window.removeEventListener("mousemove", onMove);
@@ -1190,7 +1200,7 @@
   stage.addEventListener("touchstart", function (e) {
     var t = e.touches[0];
     sfx.arm();
-    startDrag(stagePoint(t.clientX, t.clientY), e);
+    startDrag(stagePoint(t.clientX, t.clientY, true), e);
   }, { passive: false });
   stage.addEventListener("touchmove", function (e) {
     if (!dragConstraint) return;
@@ -1282,10 +1292,17 @@
       // Swimmers rock and drift on the way down (sinkingPass sets .sway).
       // It is paint-only on purpose: a sinking body has its collisions
       // masked off, so nothing downstream has to agree with the offset.
-      it.el.style.transform =
-        "translate(" + (x - half + (sw ? sw.x : 0)).toFixed(1) + "px," +
-        (y - half).toFixed(1) + "px) rotate(" +
+      // translate3d keeps moving tiles on their compositor layers. Skip an
+      // unchanged write entirely: once most of the pile is asleep, a falling
+      // or dragged icon should not make the browser revisit all 27 tiles.
+      var nextTransform =
+        "translate3d(" + (x - half + (sw ? sw.x : 0)).toFixed(1) + "px," +
+        (y - half).toFixed(1) + "px,0) rotate(" +
         (a + (sw ? sw.r : 0)).toFixed(3) + "rad)";
+      if (nextTransform !== it.lastTransform) {
+        it.lastTransform = nextTransform;
+        it.el.style.transform = nextTransform;
+      }
     }
   }
 

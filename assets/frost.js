@@ -27,6 +27,8 @@
   if (!ctx || !fxc) return;
 
   var FINE = !!(window.matchMedia && matchMedia("(hover: hover) and (pointer: fine)").matches);
+  var hint = document.querySelector("[data-frost-hint]");
+  if (hint && FINE) hint.textContent = "Linger over the ice or click to thaw it. Click a revealed icon to explore its world.";
   var RADIUS = 20;               // the pane's corner, matches .frost (--radius) in styles.css
   var CELL = 10;                 // coverage grid, CSS px per cell
   var BRUSH = FINE ? 58 : 50;    // radius of the warmth
