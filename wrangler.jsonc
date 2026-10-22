@@ -8,11 +8,13 @@
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",
-    "run_worker_first": ["/api/*"],
+    "run_worker_first": true,
     // /privacy and /privacy.html both work; unknown paths get 404.html.
     "html_handling": "auto-trailing-slash",
     "not_found_handling": "404-page"
   },
+  // Temporary pause. Set to "false" and deploy when the site is ready again.
+  "vars": { "SITE_OFFLINE": "true" },
   "kv_namespaces": [
     {
       "binding": "LAUNCH_SIGNUPS",

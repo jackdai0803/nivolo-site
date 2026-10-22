@@ -1,4 +1,21 @@
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const OFFLINE_PAGE = `<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Nivolo — Back soon</title>
+<style>html{color-scheme:light}body{margin:0;min-height:100svh;display:grid;place-items:center;background:#f2f1ee;color:#163c2e;font-family:system-ui,-apple-system,sans-serif}main{max-width:480px;padding:40px 24px;text-align:center}p{font-size:16px;line-height:1.6;color:#526258}h1{margin:24px 0 16px;font-size:clamp(32px,7vw,48px);letter-spacing:-.045em;line-height:1.12}.brand{font-size:18px;font-weight:800;letter-spacing:-.04em;color:#163c2e}</style></head>
+<body><main><p class="brand">Nivolo</p><h1>We'll be back soon.</h1><p>We're making a few changes.<br>Thanks for stopping by.</p></main></body></html>`;
+
+function offlineResponse(request) {
+  const api = new URL(request.url).pathname.startsWith("/api/");
+  return new Response(request.method === "HEAD" ? null : api ? JSON.stringify({ error: "site_temporarily_offline" }) : OFFLINE_PAGE, {
+    status: 503,
+    headers: {
+      "Content-Type": api ? "application/json; charset=utf-8" : "text/html; charset=utf-8",
+      "Cache-Control": "no-store",
+      "Retry-After": "3600",
+      "X-Content-Type-Options": "nosniff",
+    },
+  });
+}
 const json = (body, status = 200) => new Response(JSON.stringify(body), {
   status,
   headers: {
@@ -88,6 +105,7 @@ async function handleLaunchSignup(request, env, ctx) {
 
 export default {
   async fetch(request, env, ctx) {
+    if (env.SITE_OFFLINE === "true") return offlineResponse(request);
     const url = new URL(request.url);
     if (url.pathname === "/api/early-supporter/status") {
       if (request.method !== "GET") return new Response(null, { status: 405, headers: { Allow: "GET" } });
