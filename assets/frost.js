@@ -521,6 +521,150 @@
     });
   }
 
+  // Small, one-shot reactions share timing and cleanup; the artwork and
+  // movement come from each icon's story. Blaze keeps its approved flames.
+  var REVEAL_ART = {
+    tape: '<rect x="3" y="5" width="18" height="14" rx="4" fill="#D9B88B"/><rect x="9" y="8" width="6" height="8" rx="1.5" fill="#F5DFC2"/><path d="M6 10v1m0 3v1m12-5v1m0 3v1" stroke="#9D7854" stroke-width="1.5" stroke-linecap="round"/>',
+    z: '<path d="M6 6h12L6 18h12" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>',
+    orbit: '<circle cx="12" cy="12" r="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="18" cy="7" r="2.5" fill="currentColor"/>',
+    drop: '<path d="M12 2C10 7 5 12 5 16a7 7 0 0 0 14 0c0-4-5-9-7-14Z" fill="currentColor"/><path d="M8 15c-1 2 0 4 2 4" fill="none" stroke="#E9F8FF" stroke-width="1.6" stroke-linecap="round"/>',
+    bubble: '<circle cx="12" cy="12" r="8" fill="currentColor" fill-opacity=".22" stroke="currentColor" stroke-width="1.5"/><path d="M8 8l1-1" stroke="#F5FFE1" stroke-width="2" stroke-linecap="round"/>',
+    ring: '<circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/>',
+    confetti: '<path d="M8 3h8v18H8z" fill="currentColor"/>',
+    puff: '<path d="M6 18a5 5 0 0 1-1-10 6 6 0 0 1 11-2 6 6 0 0 1 2 12Z" fill="currentColor" fill-opacity=".7"/>',
+    star: '<path d="m12 1 3.2 7 7.8 1-5.7 5.3 1.5 7.7-6.8-3.8L5.2 22l1.5-7.7L1 9l7.8-1Z" fill="currentColor"/><path d="m12 5 1.8 4-4 1Z" fill="#FFF5CB" fill-opacity=".8"/>',
+    dot: '<circle cx="12" cy="12" r="4" fill="currentColor"/>',
+    wisp: '<path d="M6 22c-7-9 14-9 8-17-2-3-6-2-5 0 2 4 12 1 10 9-1 5-8 5-7 8Z" fill="currentColor" fill-opacity=".6"/>',
+    eye: '<ellipse cx="12" cy="12" rx="9" ry="7" fill="#FFFEFA" stroke="#9CABC0" stroke-width="1"/><ellipse cx="13" cy="12" rx="4" ry="5" fill="#34475B"/><circle cx="14" cy="10" r="1.5" fill="#FFFEFA"/>',
+    coin: '<ellipse cx="12" cy="12" rx="8" ry="10" fill="#D99A2B"/><ellipse cx="10.5" cy="11" rx="7" ry="9" fill="#F8CF64"/><ellipse cx="10.5" cy="11" rx="4.5" ry="6.5" fill="none" stroke="#FFF1AE" stroke-width="1.5"/><path d="m11 6-3 6h4l-2 4" fill="none" stroke="#C68A24" stroke-width="1.4" stroke-linejoin="round"/>',
+    ribbon: '<path d="M6 2h12l-3 12 3 8-6-3-6 3 3-8Z" fill="currentColor"/><path d="M12 3v13" stroke="#FFF0C4" stroke-width="1.5" stroke-opacity=".7"/>',
+    lens: '<circle cx="10" cy="10" r="6.5" fill="#CAE9EE" fill-opacity=".6" stroke="#9C7547" stroke-width="2.5"/><path d="m15 15 6 6" stroke="#6B5746" stroke-width="4" stroke-linecap="round"/><path d="m7 8 2-2" stroke="#FAFEFF" stroke-width="2" stroke-linecap="round"/>',
+    pixel: '<path d="M2 7h13v4h7v6H9v-4H2Z" fill="currentColor"/>',
+    question: '<path d="M7 8a5 5 0 0 1 10 0c0 3-5 3-5 7m0 4v1" fill="none" stroke="currentColor" stroke-width="2.7" stroke-linecap="round"/>'
+  };
+  var REVEALS = {
+    repair: { art: "tape", colors: ["#D9B88B"], count: 3, motion: "rise", w: 17, h: 14 },
+    sleepy: { art: "z", colors: ["#8A85BF", "#A59AD3"], count: 3, motion: "sleep", w: 13, h: 13 },
+    upside_down: { art: "orbit", colors: ["#63A9C4", "#B387C5"], count: 3, motion: "orbit", w: 13, h: 13, pose: "roll" },
+    rainy: { art: "drop", colors: ["#69ACC8", "#88C6DC"], count: 5, motion: "rain", w: 8, h: 13 },
+    sick: { art: "bubble", colors: ["#9DBB68", "#B6C981"], count: 3, motion: "sigh", w: 17, h: 17 },
+    revived: { art: "ring", colors: ["#66BFA0", "#8BD8B3"], count: 3, motion: "pulse", w: 18, h: 18, pose: "hop" },
+    party: { art: "confetti", colors: ["#BA83DE", "#E5B650", "#70B7C8", "#EB8EAA"], count: 7, motion: "confetti", w: 7, h: 11 },
+    squished: { art: "puff", colors: ["#BC99B9", "#D7B2C7"], count: 3, motion: "puff", w: 16, h: 13, pose: "squash" },
+    starstruck: { art: "star", colors: ["#EDB744", "#F6CD6B"], count: 3, motion: "stars", w: 14, h: 14 },
+    bored: { art: "dot", colors: ["#8A8D96"], count: 3, motion: "bored", w: 11, h: 11, pose: "tilt" },
+    ghost: { art: "wisp", colors: ["#9EADE0", "#B9B5E2"], count: 3, motion: "ghost", w: 17, h: 22, pose: "float" },
+    peekaboo: { art: "eye", colors: ["#9CABC0"], count: 2, motion: "peek", w: 14, h: 12, pose: "peek" },
+    gold: { art: "coin", colors: ["#F8CF64"], count: 3, motion: "coins", w: 13, h: 16 },
+    champion: { art: "ribbon", colors: ["#E0AF47", "#D58BA3", "#EBC66C"], count: 3, motion: "ribbons", w: 11, h: 20, pose: "hop" },
+    detective: { art: "lens", colors: ["#9C7547"], count: 1, motion: "search", w: 23, h: 23, pose: "tilt" },
+    glitch: { art: "pixel", colors: ["#65BECB", "#D38CBF", "#A29CDB"], count: 6, motion: "glitch", w: 14, h: 8, pose: "glitch" },
+    coming_soon: { art: "question", colors: ["#A5A4AD", "#BCB6C4"], count: 3, motion: "mystery", w: 12, h: 16 }
+  };
+
+  function revealFrames(kind, n, count) {
+    var u = count === 1 ? 0 : n / (count - 1) * 2 - 1;
+    var x = u * 12, dx = u * 27, y = -36 - (n % 2) * 12;
+    var turn = u * 18, endTurn = -turn / 2, scale = 0.8 + (n % 3) * 0.1;
+    var middleY = y * 0.6, startY = 5, endY = y;
+    if (kind === "rain") { startY = -29 - (n % 2) * 8; middleY = -6; endY = 27; dx = x + 5; turn = endTurn = -8; }
+    if (kind === "confetti" || kind === "ribbons" || kind === "coins") {
+      middleY = -35 - (n % 2) * 8; endY = 13; turn = u * 80; endTurn = u * 160 + 25;
+    }
+    if (kind === "puff") { startY = 17; middleY = 12; endY = 17; dx = (u || 0.6) * 37; scale = 1.3; }
+    if (kind === "bored") { startY = -7; middleY = -13; endY = -9; dx = x; scale = 1; }
+    if (kind === "sleep") { dx = x + 12; endY = y - 8; turn = -8; endTurn = 8; }
+    if (kind === "sigh") { dx = u * 31; middleY = -8; endY = -25; scale = 1.1; }
+    if (kind === "ghost") { dx = x + (n % 2 ? -10 : 10); endY = y - 12; turn = u * 10; }
+    if (kind === "mystery") { endY = -32; scale = 0.8; }
+    if (kind === "stars") { turn = u * 50; endTurn = u * 90; }
+    function at(px, py, r, s) { return "translate(" + px + "px," + py + "px) rotate(" + r + "deg) scale(" + s + ")"; }
+    if (kind === "orbit") return [
+      { opacity: 0, transform: at(u * 20, 12, 0, 0.3) },
+      { opacity: 1, transform: at(u * 26, -15, 60, 1), offset: 0.3 },
+      { opacity: 0.8, transform: at(-u * 18, -32, 150, 0.9), offset: 0.7 },
+      { opacity: 0, transform: at(-u * 23, -12, 230, 0.2) }
+    ];
+    if (kind === "pulse") return [
+      { opacity: 0, transform: at(0, 15, 0, 0.6) },
+      { opacity: 0.75, transform: at(0, 15, 0, 1.2), offset: 0.25 },
+      { opacity: 0, transform: at(0, 15, 0, 3.2) }
+    ];
+    if (kind === "peek") return [
+      { opacity: 0, transform: at(u * 8, 12, u * 12, 0.3) },
+      { opacity: 1, transform: at(u * 24, 5, u * 12, 1), offset: 0.3 },
+      { opacity: 1, transform: at(u * 24, -3, -u * 8, 1), offset: 0.65 },
+      { opacity: 0, transform: at(u * 11, 12, 0, 0.3) }
+    ];
+    if (kind === "search") return [
+      { opacity: 0, transform: at(-22, -6, -25, 0.6) },
+      { opacity: 1, transform: at(-18, -28, -15, 1), offset: 0.25 },
+      { opacity: 1, transform: at(20, -23, 20, 1), offset: 0.65 },
+      { opacity: 0, transform: at(23, -32, 25, 0.65) }
+    ];
+    if (kind === "glitch") return [
+      { opacity: 0, transform: at(x, 10 - n * 6, 0, 0.8) },
+      { opacity: 1, transform: at(dx, 7 - n * 6, 0, 1.2), offset: 0.2 },
+      { opacity: 0.25, transform: at(-dx, 4 - n * 6, 0, 0.7), offset: 0.45 },
+      { opacity: 0.9, transform: at(dx + 8, 1 - n * 6, 0, 1), offset: 0.7 },
+      { opacity: 0, transform: at(-dx, -n * 6, 0, 0.4) }
+    ];
+    return [
+      { opacity: 0, transform: at(x, startY, 0, 0.25) },
+      { opacity: 1, transform: at(x * 1.25, (startY + middleY) / 2, turn, scale), offset: 0.2 },
+      { opacity: 0.85, transform: at(dx, middleY, turn / 2, scale), offset: 0.65 },
+      { opacity: 0, transform: at(dx + 3, endY, endTurn, scale * 0.3) }
+    ];
+  }
+
+  var REVEAL_POSES = {
+    roll: ["rotate(-24deg) scale(.9)", "rotate(18deg) scale(1.06)", "rotate(-5deg)", "none"],
+    hop: ["translateY(3px) scale(.93)", "translateY(-7px) scale(1.05)", "translateY(1px) scale(.98)", "none"],
+    squash: ["scale(.95)", "translateY(4px) scale(1.22,.72)", "translateY(-3px) scale(.9,1.12)", "none"],
+    tilt: ["rotate(-4deg)", "rotate(6deg)", "rotate(-2deg)", "none"],
+    float: ["translateY(2px)", "translateY(-7px)", "translateY(-3px)", "none"],
+    peek: ["translateY(6px) scale(.8)", "translateY(-4px) scale(1.06)", "translateY(1px)", "none"],
+    glitch: ["translateX(-3px)", "translateX(3px)", "translateX(-1px)", "none"]
+  };
+  function revealIcon(s) {
+    if (!s.img || !s.img.el.animate) return;
+    if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    var match = s.img.el.getAttribute("src").match(/\/([^/]+)\.png(?:\?|$)/);
+    var id = match && match[1];
+    if (id === "blaze") { revealBlaze(s); return; }
+    var effect = REVEALS[id];
+    if (!effect) return;
+    var burst = document.createElement("span");
+    burst.className = "frost-icon-reveal";
+    burst.setAttribute("aria-hidden", "true");
+    burst.setAttribute("data-icon", id);
+    burst.style.left = (s.img.x + s.img.w / 2) + "px";
+    burst.style.top = (s.img.y + 4) + "px";
+    pane.appendChild(burst);
+    var remaining = effect.count;
+    for (var n = 0; n < effect.count; n++) {
+      var particle = document.createElement("span");
+      particle.className = "frost-reveal-particle";
+      particle.style.width = effect.w + "px";
+      particle.style.height = effect.h + "px";
+      particle.style.left = (-effect.w / 2) + "px";
+      particle.style.top = (-effect.h * 0.7) + "px";
+      particle.style.color = effect.colors[n % effect.colors.length];
+      particle.innerHTML = '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">' + REVEAL_ART[effect.art] + '</svg>';
+      burst.appendChild(particle);
+      var animation = particle.animate(revealFrames(effect.motion, n, effect.count), {
+        duration: effect.motion === "glitch" ? 750 : 1000,
+        delay: 130 + n * (effect.motion === "pulse" ? 150 : 65),
+        easing: effect.motion === "glitch" ? "steps(2, end)" : "ease-out", fill: "both"
+      });
+      function clear() { if (--remaining === 0) burst.remove(); }
+      animation.finished.then(clear, clear);
+    }
+    if (effect.pose) s.img.el.animate(REVEAL_POSES[effect.pose].map(function (transform) {
+      return { transform: transform };
+    }), { duration: 850, delay: 100, easing: effect.pose === "glitch" ? "steps(2, end)" : "ease-in-out" });
+  }
+
   var thaws = [];
   function thawItem(i, ox, oy, quiet) {
     var s = state[i];
@@ -529,7 +673,7 @@
     s.thawedAt = Date.now();
     thawedCount++;
     items[i].classList.add("is-thawed");
-    revealBlaze(s);
+    revealIcon(s);
     var r = s.rect;
     if (ox == null) { ox = r.x + 30; oy = r.y + r.h / 2; } // from the icon outward
     var far = Math.sqrt(Math.pow(Math.max(ox - r.x, r.x + r.w - ox), 2) +
