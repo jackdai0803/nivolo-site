@@ -4,12 +4,12 @@ Static site for nivolo.app, served by Cloudflare (wrangler.jsonc).
 
 ## Workflow
 
-- **Always take changes live** (Jack's standing instruction): commit
-  straight to `main`, push, then run `tools/deploy.sh` — it publishes
-  what is COMMITTED, builds `dist/` with `tools/build.mjs`, and runs
-  `wrangler deploy`. In an environment without `CLOUDFLARE_API_TOKEN`,
-  wrangler cannot authenticate: still push `main`, then say the deploy
-  itself is pending.
+- **Commit straight to `main` and push** (Jack's standing instruction) —
+  no feature branches, no PRs. Jack then deploys from his Mac with
+  `tools/deploy.sh` (it publishes what is COMMITTED, builds `dist/`
+  with `tools/build.mjs`, and runs `wrangler deploy`). Cloud sessions
+  deliberately have no Cloudflare token, so don't try to deploy from
+  one: push `main` and remind Jack to run the deploy.
 - Bump the `?v=` query on a stylesheet's `<link>` tags in every HTML
   page whenever that stylesheet changes, or visitors keep the cached
   one.
