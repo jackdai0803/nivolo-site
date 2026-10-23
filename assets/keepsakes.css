@@ -5,14 +5,15 @@
 .keepsakes-head p, .keepsakes-note { color: #5b6168; font-size: 14px; line-height: 1.6; margin: 0; }
 .keepsakes-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
 .keepsake-card { display: grid; grid-template-columns: 88px minmax(0, 1fr); align-items: center; gap: 16px; padding: 22px 18px; border: 1px solid rgba(22,23,26,.13); border-radius: var(--radius-lg); background: #fff; }
-.keepsake-card img { display: block; width: 88px; height: 88px; border-radius: 24%; }
+.keepsake-card > img { display: block; width: 88px; height: 88px; border-radius: 24%; }
 .keepsake-card h4 { margin: 0 0 6px; font: 800 21px/1.15 var(--font-display); letter-spacing: -.025em; }
 .keepsake-card p { margin: 0 0 10px; font-size: 12px; line-height: 1.55; color: #5b6168; }
-.keepsake-price { display: inline-block; font-size: 12px; font-weight: 650; color: #365569; }
+.keepsake-price { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 650; color: #365569; }
+.keepsake-price img { display: block; width: 20px; height: 20px; object-fit: contain; }
 .keepsakes-note { margin-top: 14px; font-size: 12px; }
 @media (max-width: 960px) {
   .keepsake-card { grid-template-columns: 1fr; text-align: center; padding: 22px 16px; }
-  .keepsake-card img { margin: 0 auto; }
+  .keepsake-card > img { margin: 0 auto; }
 }
 @media (max-width: 600px) {
   .keepsakes-grid { grid-template-columns: minmax(0, 1fr); gap: 12px; }
