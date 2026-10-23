@@ -13,8 +13,8 @@
     "html_handling": "auto-trailing-slash",
     "not_found_handling": "404-page"
   },
-  // Temporary pause. Set to "false" and deploy when the site is ready again.
-  "vars": { "SITE_OFFLINE": "true" },
+  // Set to "true" and deploy to temporarily pause the public site.
+  "vars": { "SITE_OFFLINE": "false" },
   "kv_namespaces": [
     {
       "binding": "LAUNCH_SIGNUPS",
