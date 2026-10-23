@@ -345,7 +345,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: clamp(4px, .8vw, 12px);
+  gap: .24em;
   margin: 0;
   color: #173b54;
   font-family: var(--font-display);
@@ -663,7 +663,6 @@
   .editorial-sticker {
     left: 7%;
     top: 42%;
-    gap: 8px;
     font-size: clamp(43px, 15vw, 64px);
     line-height: .88;
   }
