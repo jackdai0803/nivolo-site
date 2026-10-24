@@ -56,6 +56,7 @@
   <link rel="stylesheet" href="assets/app-opals.css?v=3" />
   <link rel="stylesheet" href="assets/early-supporter.css?v=1" />
   <link rel="stylesheet" href="assets/keepsakes.css?v=2" />
+  <link rel="stylesheet" href="assets/krill.css?v=1" />
 
   <script type="application/ld+json">
   {
@@ -430,22 +431,30 @@
         <div class="split-copy">
           <p class="section-kicker">Krill &amp; Nivo</p>
           <h3>Make showing up feel good.</h3>
-          <p>Every action earns Krill for Nivo's wardrobe and useful streak supplies. The reward follows the habit instead of distracting from it.</p>
+          <p>Turn your progress into personal rewards, a new app icon, or a little streak protection. Every so often, a rare Krill might find you along the way.</p>
           <ul>
-            <li>Earn Krill for actions and milestones</li>
-            <li>Dress Nivo in the shop</li>
-            <li>Unlock new icons as your journey grows</li>
+            <li>Create your own rewards and earn your way there</li>
+            <li>A glowing Deep-Sea look with Nivolo Plus</li>
+            <li>Rare Pearl Aurora discoveries on every plan</li>
           </ul>
         </div>
         <div class="split-visual">
-          <div class="phone-stage phone-stage--gold">
-            <span class="float-chip"><span class="coin"></span>+10</span>
-            <div class="phone">
-              <picture>
-                <img src="assets/screens/nivo-store.png" width="393" height="852" loading="lazy" decoding="async"
-                     alt="The Nivolo store, with a streak freeze and outfits to buy with Krill." />
-              </picture>
-            </div>
+          <div class="krill-family" id="krill" aria-label="Meet the Krill">
+            <article class="krill-specimen">
+              <img src="assets/krill-token.png?v=2" width="512" height="512" alt="Amber Krill with two curved antennae" loading="lazy" />
+              <div><h4>Amber</h4><p>Your everyday little reward.</p></div>
+              <span class="krill-tag">Everyday</span>
+            </article>
+            <article class="krill-specimen krill-specimen--deepsea">
+              <img src="assets/krill-deepsea.png" width="512" height="512" alt="Dark midnight Krill with a cyan glow" loading="lazy" />
+              <div><h4>Deep-Sea</h4><p>A little light from the depths.</p></div>
+              <span class="krill-tag">Nivolo Plus</span>
+            </article>
+            <article class="krill-specimen krill-specimen--pearl">
+              <img src="assets/krill-pearl.png" width="512" height="512" alt="Pearl-white Krill with mint and lavender accents" loading="lazy" />
+              <div><h4>Pearl Aurora</h4><p>A rare discovery for everyone.</p></div>
+              <span class="krill-tag">Rare</span>
+            </article>
           </div>
         </div>
       </div>
@@ -505,15 +514,15 @@
         <div class="keepsakes-grid">
           <article class="keepsake-card">
             <img src="assets/icons/porcelain.png" width="256" height="256" alt="Nivo with cobalt blue floral patterns on white porcelain" loading="lazy" />
-            <div><h4>Porcelain</h4><p>Blue blooms. A familiar little face.</p><span class="keepsake-price">300 <img src="assets/krill-token.png" width="20" height="20" alt="Krill" /></span></div>
+            <div><h4>Porcelain</h4><p>Blue blooms. A familiar little face.</p><span class="keepsake-price">300 <img src="assets/krill-token.png?v=2" width="20" height="20" alt="Krill" /></span></div>
           </article>
           <article class="keepsake-card">
             <img src="assets/icons/jade.png" width="256" height="256" alt="Nivo in forest green with flowing jade bands" loading="lazy" />
-            <div><h4>Jade</h4><p>A little green keepsake for the everyday.</p><span class="keepsake-price">500 <img src="assets/krill-token.png" width="20" height="20" alt="Krill" /></span></div>
+            <div><h4>Jade</h4><p>A little green keepsake for the everyday.</p><span class="keepsake-price">500 <img src="assets/krill-token.png?v=2" width="20" height="20" alt="Krill" /></span></div>
           </article>
           <article class="keepsake-card">
             <img src="assets/icons/kintsugi.png" width="256" height="256" alt="Nivo on charcoal with gold repair lines" loading="lazy" />
-            <div><h4>Kintsugi</h4><p>Every golden line is part of the story.</p><span class="keepsake-price">800 <img src="assets/krill-token.png" width="20" height="20" alt="Krill" /></span></div>
+            <div><h4>Kintsugi</h4><p>Every golden line is part of the story.</p><span class="keepsake-price">800 <img src="assets/krill-token.png?v=2" width="20" height="20" alt="Krill" /></span></div>
           </article>
         </div>
         <p class="keepsakes-note">Unlock in the app with earned Krill. Yours to keep.</p>
@@ -685,7 +694,7 @@
             <img class="collector-icon collector-icon--snowy" src="assets/icons/snowy.png" width="180" height="180" loading="lazy" alt="" />
             <img class="collector-icon collector-icon--party" src="assets/icons/party.png" width="180" height="180" loading="lazy" alt="" />
             <img class="collector-icon collector-icon--gold" src="assets/icons/gold.png" width="180" height="180" loading="lazy" alt="" />
-            <span class="collector-krill"><img src="assets/krill-token.png" width="30" height="30" alt="" />2× Krill</span>
+            <span class="collector-krill"><img src="assets/krill-deepsea.png" width="30" height="30" alt="" />2× Krill</span>
           </div>
           <div class="collector-price-area">
             <div class="collector-billing" role="group" aria-label="Nivolo Plus billing period" hidden>
@@ -700,6 +709,7 @@
           <ul class="collector-benefits">
             <li><span class="collector-check" aria-hidden="true">✦</span>Everything in Free</li>
             <li><span class="collector-check" aria-hidden="true">✓</span>Double Krill on every finish</li>
+            <li><span class="collector-check" aria-hidden="true">✓</span>Exclusive Deep-Sea Krill appearance</li>
             <li><span class="collector-check" aria-hidden="true">✓</span>All streak and mood icons, from day one</li>
             <li><span class="collector-check" aria-hidden="true">✓</span>A streak freeze every day</li>
           </ul>
