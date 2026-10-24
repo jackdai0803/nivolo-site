@@ -16,3 +16,9 @@
   .krill-specimen h4 { font-size: 21px; margin-top: 22px; }
   .krill-tag { position: absolute; top: 13px; right: 15px; font-size: 9px; }
 }
+
+/* The optional Plus mascot appears beside the benefits it belongs to. */
+.collector-nivo-deepsea { display: block; width: 218px; height: 218px; object-fit: contain; }
+.collector-art--plus .collector-krill { bottom: -7px; left: auto; right: 0; font-size: 16px; padding: 8px 12px 8px 8px; transform: rotate(-5deg); }
+.collector-nivo-caption { margin: 18px 0 16px; max-width: 340px; color: #c1d6e1; font-size: 13px; line-height: 1.6; }
+@media (max-width: 380px) { .collector-art--plus .collector-krill { right: -8px; font-size: 14px; } }
