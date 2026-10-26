@@ -6,6 +6,19 @@
     zh: { goal: '预览新目标', action: '预览记录行动', gem: '转动目标宝石', previous: '上一张应用截图', next: '下一张应用截图', browse: '浏览应用截图', progress: '应用截图浏览进度' },
   };
   const t = (key) => copy[document.documentElement.lang.startsWith('zh') ? 'zh' : 'en'][key];
+  Object.assign(copy.en, {
+    screens: 'Explore all eight app screens', collection: 'Explore the full collection',
+    kindTitle: 'Room for real life.', kindBody: 'Planned rest days and a free weekly freeze keep your streak safe when life gets in the way.',
+    krill: 'Meet the Krill', private: 'Private by design.', account: 'No cloud account. No ad trackers.',
+    data: 'How AI and icon checks use data', questions: 'More questions', rewards: 'Rewards',
+  });
+  Object.assign(copy.zh, {
+    screens: '查看全部八张应用截图', collection: '探索完整收藏',
+    kindTitle: '为生活留点余地。', kindBody: '提前安排休息日，每周还有一次免费的连续记录冻结，在忙碌时守护你的坚持。',
+    krill: '认识磷虾', private: '隐私，融入设计。', account: '无需云端账户，没有广告追踪。',
+    data: 'AI 和图标检查如何使用数据', questions: '更多问题', rewards: '奖励',
+  });
+  document.querySelectorAll('[data-site-copy]').forEach((element) => { element.textContent = t(element.dataset.siteCopy); });
   const reactions = new Map();
   const react = (element, frames, options = {}) => {
     if (!element || reducedMotion.matches) return;
@@ -85,6 +98,7 @@
       rail.scrollBy({ left: (index ? 1 : -1) * stride, behavior: reducedMotion.matches ? 'instant' : 'smooth' });
     }));
     rail.addEventListener('scroll', queueRail, { passive: true });
+    rail.closest('details')?.addEventListener('toggle', queueRail);
     addEventListener('resize', queueRail);
     updateRail();
   }

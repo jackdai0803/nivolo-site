@@ -51,7 +51,7 @@
     @font-face { font-family: 'Inter Fallback'; src: local('Arial'); size-adjust: 106.7%; ascent-override: 90.79%; descent-override: 22.61%; line-gap-override: 0%; }
   </style>
   <link rel="stylesheet" href="styles.css?v=114" />
-  <link rel="stylesheet" href="assets/editorial-concept.css?v=19" />
+  <link rel="stylesheet" href="assets/editorial-concept.css?v=20" />
   <link rel="stylesheet" href="assets/nivo.css?v=3" />
   <link rel="stylesheet" href="assets/app-opals.css?v=3" />
   <link rel="stylesheet" href="assets/early-supporter.css?v=1" />
@@ -76,7 +76,7 @@
   }
   </script>
 </head>
-<body>
+<body class="short-home">
   <a class="skip-link" href="#main">Skip to content</a>
 
   <nav>
@@ -118,10 +118,7 @@
       </a>
       <div class="editorial-filterset">
         <a class="editorial-filter" href="#how">How it works</a>
-        <a class="editorial-filter" href="#inside-app">Inside the app</a>
-        <a class="editorial-filter" href="#features">Kinder streaks</a>
-        <a class="editorial-filter" href="#features">Rest days</a>
-        <a class="editorial-filter" href="#frozen-collection">Meet Nivo</a>
+        <a class="editorial-filter" href="#collection" data-site-copy="rewards">Rewards</a>
         <a class="editorial-filter" href="#privacy">Private</a>
         <a class="editorial-filter" href="#pricing">Free to start</a>
       </div>
@@ -348,16 +345,13 @@
           <p>Finish the goal and it becomes a one-of-a-kind gem on your shelf — proof you saw it through.</p>
         </li>
       </ol>
-    </div>
-  </section>
-
-  <section class="section app-gallery-section" id="inside-app" aria-labelledby="inside-app-title">
-    <div class="wrap">
-      <div class="section-head reveal">
-        <p class="section-kicker">Inside Nivolo</p>
-        <h2 class="section-title" id="inside-app-title">A little look inside.</h2>
-        <p class="section-sub">The real app, from your first goal to the gem you keep. Tap a screen for a closer look.</p>
+      <div class="compact-benefits" id="features">
+        <span aria-hidden="true">❄</span>
+        <div><h3 data-site-copy="kindTitle">Room for real life.</h3><p data-site-copy="kindBody">Planned rest days and a free weekly freeze keep your streak safe when life gets in the way.</p></div>
       </div>
+      <details class="compact-disclosure app-gallery-section" id="inside-app">
+        <summary><span data-site-copy="screens">Explore all eight app screens</span><span class="disclosure-plus" aria-hidden="true">+</span></summary>
+        <div class="disclosure-body">
       <div class="app-screen-rail" tabindex="0" role="region" aria-label="App screenshots. Scroll horizontally to explore all eight screens.">
         <button class="app-screen-card" type="button" data-app-screen="Home">
           <span class="app-screen-label"><b>Your day</b><span>01</span></span>
@@ -393,101 +387,16 @@
         </button>
       </div>
       <p class="app-gallery-note">Actual app screens · Sample goals shown <span aria-hidden="true">↔</span></p>
+        </div>
+      </details>
     </div>
   </section>
+
 
   <dialog class="app-screen-dialog" id="app-screen-dialog" aria-labelledby="app-screen-dialog-title">
     <div class="app-screen-dialog-head"><h2 id="app-screen-dialog-title">Inside Nivolo</h2><button type="button" data-close-screen aria-label="Close screenshot">×</button></div>
     <span class="phone"><img width="393" height="852" alt="" /></span>
   </dialog>
-
-  <section class="section" id="features">
-    <div class="wrap">
-      <div class="section-head feature-chapter-head reveal" data-stagger="60">
-        <p class="section-kicker">What's inside</p>
-        <h2 class="section-title">Small steps.<br />Gentle <span class="section-nivo-mark section-nivo-mark--tilt"><img src="assets/logo-face.webp" width="136" height="74" alt="Nivo" /></span> momentum.<br />Real proof.</h2>
-        <p class="section-sub">Nivolo keeps the daily action simple, makes room for real life, and turns finished goals into something you can keep.</p>
-      </div>
-
-      <div class="feature split reveal" data-stagger="60">
-        <div class="split-copy">
-          <p class="section-kicker">A kinder streak</p>
-          <h3>Keep going without pretending life is perfect.</h3>
-          <p>Log one useful action at a time. Rest days and automatic freezes protect the rhythm when work, travel, or a hard Tuesday gets in the way.</p>
-          <ul>
-            <li>One clear next step on the home screen</li>
-            <li>Planned rest days keep the streak safe</li>
-            <li>A free weekly freeze applies automatically</li>
-          </ul>
-        </div>
-        <div class="split-visual">
-          <div class="phone-stage phone-stage--blue">
-            <div class="phone">
-              <picture>
-                <img src="assets/screens/nivo-rest.png" width="393" height="852" loading="lazy" decoding="async"
-                     alt="Nivolo confirming a logged rest day while keeping the streak intact." />
-              </picture>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="feature split split--flip reveal" data-stagger="60">
-        <div class="split-copy">
-          <p class="section-kicker">Krill &amp; Nivo</p>
-          <h3>Make showing up feel good.</h3>
-          <p>Turn your progress into personal rewards, a new app icon, or a little streak protection. Every so often, a rare Krill might find you along the way.</p>
-          <ul>
-            <li>Create your own rewards and earn your way there</li>
-            <li>A glowing Deep-Sea look with Nivolo Plus</li>
-            <li>Rare Pearl Aurora discoveries on every plan</li>
-          </ul>
-        </div>
-        <div class="split-visual">
-          <div class="krill-family" id="krill" aria-label="Meet the Krill">
-            <article class="krill-specimen">
-              <img src="assets/krill-token.png?v=2" width="512" height="512" alt="Amber Krill with two curved antennae" loading="lazy" />
-              <div><h4>Amber</h4><p>Your everyday little reward.</p></div>
-              <span class="krill-tag">Everyday</span>
-            </article>
-            <article class="krill-specimen krill-specimen--deepsea">
-              <img src="assets/krill-deepsea.png" width="512" height="512" alt="Dark midnight Krill with a cyan glow" loading="lazy" />
-              <div><h4>Deep-Sea</h4><p>A little light from the depths.</p></div>
-              <span class="krill-tag">Nivolo Plus</span>
-            </article>
-            <article class="krill-specimen krill-specimen--pearl">
-              <img src="assets/krill-pearl.png" width="512" height="512" alt="Pearl-white Krill with mint and lavender accents" loading="lazy" />
-              <div><h4>Pearl Aurora</h4><p>A rare discovery for everyone.</p></div>
-              <span class="krill-tag">Rare</span>
-            </article>
-          </div>
-        </div>
-      </div>
-
-      <div class="feature split reveal" data-stagger="60">
-        <div class="split-copy">
-          <p class="section-kicker">The Trophy Shelf</p>
-          <h3>Keep proof of what you finished.</h3>
-          <p>A completed goal becomes a one-of-a-kind gem. Season by season, the shelf turns small daily actions into a record you can actually see.</p>
-          <ul>
-            <li>A unique gem for every finished goal</li>
-            <li>Season in Review gathers the story</li>
-            <li>Widgets keep today's progress close</li>
-          </ul>
-        </div>
-        <div class="split-visual">
-          <div class="phone-stage phone-stage--opals">
-            <div class="app-opal-float app-opal-float--one" aria-hidden="true" data-app-opal data-opal-goal="gx3" data-opal-texture="bands" data-opal-size="84"></div>
-            <div class="app-opal-float app-opal-float--two" aria-hidden="true" data-app-opal data-opal-goal="gx4" data-opal-texture="rings" data-opal-size="100"></div>
-            <div class="phone">
-              <picture><img src="assets/screens/current-achievements.jpg?v=2" width="393" height="852" loading="lazy" decoding="async" alt="Nivolo’s actual Achievements screen with four collected opals and goals still forming." /></picture>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </section>
 
   <section class="section lore" id="collection">
     <div class="wrap">
@@ -533,6 +442,9 @@
         <p class="keepsakes-note">Unlock in the app with earned Krill. Yours to keep.</p>
       </section>
 
+      <details class="compact-disclosure collection-disclosure" id="full-collection">
+        <summary><span data-site-copy="collection">Explore the full collection</span><span class="disclosure-plus" aria-hidden="true">+</span></summary>
+        <div class="disclosure-body">
       <div class="lore-tier reveal">
         <p class="lore-tier-label">Start here</p>
         <p class="lore-tier-note">The ones you'll meet in your first week or two</p>
@@ -636,27 +548,41 @@
         <p class="lore-more-note">A growing collection, with more to discover. <b>What each one takes is something you find out in the app.</b></p>
         </div>
       </div>
+
+          <div class="compact-krill"><h3 data-site-copy="krill">Meet the Krill</h3>
+          <div class="krill-family" id="krill" aria-label="Meet the Krill">
+            <article class="krill-specimen">
+              <img src="assets/krill-token.png?v=2" width="512" height="512" alt="Amber Krill with two curved antennae" loading="lazy" />
+              <div><h4>Amber</h4><p>Your everyday little reward.</p></div>
+              <span class="krill-tag">Everyday</span>
+            </article>
+            <article class="krill-specimen krill-specimen--deepsea">
+              <img src="assets/krill-deepsea.png" width="512" height="512" alt="Dark midnight Krill with a cyan glow" loading="lazy" />
+              <div><h4>Deep-Sea</h4><p>A little light from the depths.</p></div>
+              <span class="krill-tag">Nivolo Plus</span>
+            </article>
+            <article class="krill-specimen krill-specimen--pearl">
+              <img src="assets/krill-pearl.png" width="512" height="512" alt="Pearl-white Krill with mint and lavender accents" loading="lazy" />
+              <div><h4>Pearl Aurora</h4><p>A rare discovery for everyone.</p></div>
+              <span class="krill-tag">Rare</span>
+            </article>
+          </div>
+          </div>
+        </div>
+      </details>
     </div>
   </section>
 
-  <section class="section privacy-section midnight-chapter" id="privacy">
+  <aside class="compact-privacy midnight-chapter" id="privacy">
     <div class="wrap">
-      <div class="privacy-panel reveal" data-stagger="60">
-        <div class="privacy-copy">
-          <p class="section-kicker">Yours alone</p>
-          <h2 class="section-title">Controlled by you.<br />Private <span class="midnight-nivo"><img src="assets/logo-face.webp" width="136" height="74" alt="Nivo" /></span> by design.</h2>
+      <div class="compact-privacy-heading"><h2 data-site-copy="private">Private by design.</h2><span data-site-copy="account">No cloud account. No ad trackers.</span></div>
           <p>Your goals, streaks, Krill, gems and local profile live on your iPhone, not in a Nivolo account or user database.</p>
-          <p class="privacy-fine">An AI plan sends the goal text you choose to submit. Plus weekly insights can send summary counts automatically. A random app ID also checks your Early Supporter icon; your profile stays on your phone. <a href="privacy.html">Read the privacy policy</a>.</p>
-        </div>
-        <ul class="privacy-list">
-          <li><b>No cloud account</b><span>Your profile stays on this iPhone</span></li>
-          <li><b>On your device</b><span>Included in your normal iPhone backup</span></li>
-          <li><b>No analytics or ad trackers</b><span>We can't see how you use it</span></li>
-          <li><b>AI plans are your choice</b><span>Plus insights use weekly summary counts</span></li>
-        </ul>
-      </div>
+      <details class="privacy-disclosure">
+        <summary data-site-copy="data">How AI and icon checks use data</summary>
+        <p class="privacy-fine">An AI plan sends the goal text you choose to submit. Plus weekly insights can send summary counts automatically. A random app ID also checks your Early Supporter icon; your profile stays on your phone. <a href="privacy.html">Read the privacy policy</a>.</p>
+      </details>
     </div>
-  </section>
+  </aside>
 
   <section class="section collector-pricing" id="pricing" aria-labelledby="pricing-title">
     <div class="wrap">
@@ -765,12 +691,16 @@
           <p>Yes, and there are no ads. Every core habit feature — unlimited goals, streaks, freezes, rest days, Krill, gems, Season in Review and the widget — is free. Nivolo Plus adds AI planning and insights, faster collecting, the full icon set and a daily freeze.</p>
         </details>
         <details>
-          <summary>Is there an Android version?</summary>
-          <p>Not yet. Nivolo is iPhone-only for now.</p>
-        </details>
-        <details>
           <summary>What languages does it support?</summary>
           <p>Nivolo supports 14 languages: English, Simplified Chinese, Spanish, French, German, Japanese, Brazilian Portuguese, Italian, Korean, Dutch, Indonesian, Vietnamese, Hindi, and Traditional Chinese. Pick yours during setup and switch any time in Settings.</p>
+        </details>
+      </div>
+      <details class="compact-disclosure faq-disclosure">
+        <summary><span data-site-copy="questions">More questions</span><span class="disclosure-plus" aria-hidden="true">+</span></summary>
+        <div class="faq disclosure-body">
+        <details>
+          <summary>Is there an Android version?</summary>
+          <p>Not yet. Nivolo is iPhone-only for now.</p>
         </details>
         <details>
           <summary>Will I get nagged with notifications?</summary>
@@ -780,7 +710,8 @@
           <summary>What if I switch phones?</summary>
           <p>Your data is included in your standard iPhone backup, so restoring a backup to a new phone brings Nivolo with it.</p>
         </details>
-      </div>
+        </div>
+      </details>
     </div>
   </section>
 
@@ -877,9 +808,14 @@
     // first paint. Re-apply deep links once the layout has settled.
     const settleHash = () => {
       if (!location.hash) return;
-      const target = document.querySelector(location.hash);
-      if (target) target.scrollIntoView({ block: "start" });
+      const target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+      if (target) {
+        let node = target;
+        while (node) { if (node.tagName === "DETAILS") node.open = true; node = node.parentElement; }
+        target.scrollIntoView({ block: "start" });
+      }
     };
+    addEventListener("hashchange", settleHash);
     addEventListener("load", () => {
       settleHash();
       setTimeout(settleHash, 500);
@@ -891,7 +827,7 @@
   <script src="assets/early-supporter.js?v=1" defer></script>
   <script src="assets/frost.js?v=4" defer></script>
   <script src="assets/app-opals.js?v=2" defer></script>
-  <script src="assets/editorial-concept.js?v=6" defer></script>
+  <script src="assets/editorial-concept.js?v=7" defer></script>
   <script type="module" src="assets/nivo.js?v=2"></script>
 </body>
 </html>
