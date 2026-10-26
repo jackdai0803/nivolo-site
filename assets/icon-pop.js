@@ -62,7 +62,7 @@
   };
   var NEW_ICONS = { "early-supporter": true, porcelain: true, jade: true, kintsugi: true };
   function iconSrc(id, large) {
-    if (id === "jade" || id === "porcelain" || id === "kintsugi") return "assets/charms/" + id + (large ? "-lg" : "") + ".jpg";
+    if (NEW_ICONS[id]) return "assets/charms/" + id + (large ? "-lg" : "") + ".jpg";
     return "assets/icons-3d/" + id + (large ? "-lg" : "") + (NEW_ICONS[id] ? ".jpg" : ".webp");
   }
 
@@ -143,6 +143,7 @@
     '    <div class="ipop-face ipop-back"><div><h3></h3><p></p></div></div>' +
     '    <span class="ipop-eyelet" aria-hidden="true"></span>' +
     '    <img class="ipop-cord" src="assets/charms/jade-cord.svg" alt="" aria-hidden="true" />' +
+    '    <img class="ipop-halo" src="assets/charms/early-supporter-halo.svg" alt="" aria-hidden="true" />' +
     '  </div></div></div>' +
     '  <div class="ipop-shadow"></div>' +
     '  <p class="ipop-hint">Drag to turn it over in your hands &middot; tap to flip</p>' +
@@ -151,7 +152,7 @@
 
   var tile = overlay.querySelector(".ipop-tile");
   var suspension = overlay.querySelector(".ipop-suspension");
-  var pendant = false, ceramic = false, collectible = false;
+  var pendant = false, ceramic = false, hatchling = false, collectible = false;
   var swing = 0, swingVelocity = 0, swingTarget = 0;
   var front = overlay.querySelector(".ipop-front");
   var sceneEl = overlay.querySelector(".ipop-scene");
@@ -315,8 +316,8 @@
         // Small fixed steps keep the damped swing stable after a slow frame.
         var steps = Math.ceil(dt / 8), step = dt / steps / (1000 / 60);
         for (var n = 0; n < steps; n++) {
-          swingVelocity += -swing * 0.018 * step;
-          swingVelocity *= Math.pow(ceramic ? 0.95 : 0.975, step);
+          swingVelocity += -swing * (hatchling ? 0.03 : 0.018) * step;
+          swingVelocity *= Math.pow(hatchling ? 0.96 : ceramic ? 0.95 : 0.975, step);
           swing += swingVelocity * step;
         }
       }
@@ -425,17 +426,19 @@
   function openFor(id, name, story) {
     pendant = id === "jade";
     ceramic = id === "porcelain" || id === "kintsugi";
-    collectible = pendant || ceramic;
+    hatchling = id === "early-supporter";
+    collectible = pendant || ceramic || hatchling;
     overlay.classList.toggle("is-pendant", pendant);
     overlay.classList.toggle("is-porcelain", id === "porcelain");
     overlay.classList.toggle("is-kintsugi", id === "kintsugi");
+    overlay.classList.toggle("is-hatchling", hatchling);
     swing = collectible && !reduceMotion ? (ceramic ? -2 : -3) : 0;
     swingVelocity = swingTarget = 0;
     suspension.style.transform = "rotateZ(" + swing + "deg)";
     if (collectible) {
       tile.tabIndex = 0;
       tile.setAttribute("role", "button");
-      tile.setAttribute("aria-label", ceramic ? "Flip " + name + " medallion to read its story" : "Flip Jade pendant to read its story");
+      tile.setAttribute("aria-label", hatchling ? "Flip Early Supporter egg to read its story" : ceramic ? "Flip " + name + " medallion to read its story" : "Flip Jade pendant to read its story");
     } else {
       tile.removeAttribute("tabindex");
       tile.removeAttribute("role");
@@ -443,6 +446,7 @@
     }
     overlay.querySelector(".ipop-hint").textContent = pendant
       ? "Drag to turn · release to sway · tap to flip"
+      : hatchling ? "Drag to turn · release to wobble · tap to flip"
       : ceramic ? "Drag to turn · release to settle · tap to flip"
       : "Drag to turn it over in your hands · tap to flip";
     if (closeCleanupTimer !== null) {
@@ -515,7 +519,9 @@
       overlay.classList.remove("scene-instant");
     }
     overlay.querySelector(".ipop-back h3").textContent = name;
-    overlay.querySelector(".ipop-back p").textContent = story;
+    overlay.querySelector(".ipop-back p").textContent = hatchling
+      ? "The first 20. You were here when Nivolo first hatched."
+      : story;
     tintFor(id, function (c) {
       tile.style.setProperty("--tint-dark", mix(c, 0.62));
       tile.style.setProperty("--tint-deep", mix(c, 0.30));

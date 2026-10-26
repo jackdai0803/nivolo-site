@@ -2623,6 +2623,45 @@ footer {
   outline: 2px solid #f4d58e; outline-offset: 10px; border-radius: 45%; corner-shape: round;
 }
 .is-kintsugi .ipop-shadow { width: calc(var(--ipop-tile) * .7); opacity: .65; }
+/* Early Supporter hatches from a cream shell, with a separate gold halo. */
+.ipop-halo { display: none; }
+.is-hatchling .ipop-dialog {
+  --ipop-tile: min(300px, 72vw, 38vh);
+  --ipop-radius: 0px;
+  --ipop-lift: calc(var(--ipop-tile) * .022);
+  --ipop-depth-size: calc(var(--ipop-tile) * .395);
+}
+.is-hatchling .ipop-stage {
+  height: calc(var(--ipop-tile) + 120px); padding-top: 40px;
+}
+.is-hatchling .ipop-suspension { transform-origin: 50% 88%; }
+.is-hatchling .ipop-face, .is-hatchling .ipop-slice {
+  corner-shape: round;
+  -webkit-mask: url("assets/charms/early-supporter-mask.svg") center / 100% 100% no-repeat;
+  mask: url("assets/charms/early-supporter-mask.svg") center / 100% 100% no-repeat;
+}
+.is-hatchling .ipop-slice {
+  background: linear-gradient(#54735b, #153e30 58%, #ccb779 67%, #f5e8ce 74%, #c6ae82);
+}
+.is-hatchling .ipop-front { background-color: #143d2d; }
+.is-hatchling .ipop-face::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: url("assets/charms/early-supporter-rim.svg") center / 100% 100% no-repeat;
+}
+.is-hatchling .ipop-halo {
+  display: block; position: absolute; width: 62%; height: 23%; left: 19%; top: -19%;
+  transform: translateZ(calc(var(--ipop-lift) + 2px));
+}
+.is-hatchling .ipop-back {
+  border: 0; padding: 23% 19% 17%;
+  background: radial-gradient(ellipse at 35% 25%, #fff9e8, #f2e5c9 65%, #d4bd8e);
+}
+.is-hatchling .ipop-back h3 { color: #214a39; font-size: clamp(18px, 5vw, 24px); }
+.is-hatchling .ipop-back p { color: #6d5a34; font-size: clamp(12px, 3.4vw, 14px); }
+.is-hatchling .ipop-tile:focus-visible {
+  outline: 2px solid #ffe6a1; outline-offset: 10px; border-radius: 45%; corner-shape: round;
+}
+.is-hatchling .ipop-shadow { width: calc(var(--ipop-tile) * .65); opacity: .55; }
 /* Scenes run from midnight ice to a pale noon sky, so plain grey type is
    legible over some and gone over others. The hint carries its own dark
    lozenge — the same shape the pit hint uses, in the popup's material —
