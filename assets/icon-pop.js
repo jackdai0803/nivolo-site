@@ -25,7 +25,7 @@
     return { wide: "assets/scenes/" + id + ".webp?v=2", effect: effect };
   }
   function keepsakeScene(id, effect) {
-    return { wide: "assets/scenes/" + id + ".jpg?v=1", effect: effect };
+    return { wide: "assets/scenes/" + id + ".jpg?v=2", effect: effect };
   }
   var SCENES = {
     "early-supporter": keepsakeScene("early-supporter", "halo"),
