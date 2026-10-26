@@ -52,7 +52,7 @@
   </style>
   <link rel="stylesheet" href="styles.css?v=110" />
   <link rel="stylesheet" href="assets/editorial-concept.css?v=18" />
-  <link rel="stylesheet" href="assets/nivo.css?v=2" />
+  <link rel="stylesheet" href="assets/nivo.css?v=3" />
   <link rel="stylesheet" href="assets/app-opals.css?v=3" />
   <link rel="stylesheet" href="assets/early-supporter.css?v=1" />
   <link rel="stylesheet" href="assets/keepsakes.css?v=2" />
@@ -99,12 +99,17 @@
 
     <div class="editorial-lockup" id="editorial-title" aria-label="Nivolo">
       <span>Nivolo</span>
-      <span class="editorial-lockup-mark" aria-hidden="true">
+      <button class="editorial-lockup-mark nivo-play" type="button" data-nivo-play aria-label="Nivo" disabled>
         <span class="site-nivo" data-nivo aria-hidden="true"><svg viewBox="160 170 970 970"><image href="assets/nivo-body.png" width="1254" height="1254" /></svg></span>
-      </span>
+      </button>
     </div>
 
     <p class="editorial-sub">A clear path from intention to progress.</p>
+
+    <div class="nivo-play-controls" data-nivo-controls hidden>
+      <span data-nivo-hint aria-hidden="true"></span>
+      <button type="button" class="nivo-sound" data-nivo-sound aria-pressed="false"><span aria-hidden="true">♪</span> <span data-nivo-sound-label></span></button>
+    </div>
 
     <div class="editorial-filterbar" aria-label="Explore Nivolo">
       <a class="editorial-filter editorial-filter--lead" href="#how">
@@ -886,7 +891,7 @@
   <script src="assets/early-supporter.js?v=1" defer></script>
   <script src="assets/frost.js?v=4" defer></script>
   <script src="assets/app-opals.js?v=2" defer></script>
-  <script src="assets/editorial-concept.js?v=4" defer></script>
-  <script type="module" src="assets/nivo.js?v=1"></script>
+  <script src="assets/editorial-concept.js?v=5" defer></script>
+  <script type="module" src="assets/nivo.js?v=2"></script>
 </body>
 </html>

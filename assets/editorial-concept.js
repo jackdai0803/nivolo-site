@@ -1,21 +1,6 @@
 (() => {
   // A few short reactions keep the opening playful without a permanent loop.
   const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
-  const lockup = document.querySelector(".editorial-lockup");
-  const mascot = lockup?.querySelector(".editorial-lockup-mark");
-  let greeting;
-  const greet = () => {
-    if (!mascot || reducedMotion.matches || greeting?.playState === "running") return;
-    greeting = mascot.animate([
-      { translate: "0 0", rotate: "0deg", scale: "1" },
-      { translate: "0 3px", rotate: "-7deg", scale: "1.08 .92", offset: .18 },
-      { translate: "0 -12px", rotate: "8deg", scale: ".96 1.04", offset: .46 },
-      { translate: "0 1px", rotate: "-3deg", scale: "1.03 .97", offset: .76 },
-      { translate: "0 0", rotate: "0deg", scale: "1" },
-    ], { duration: 680, easing: "ease-out" });
-  };
-  lockup?.addEventListener("pointerenter", greet);
-
   const feature = document.querySelector(".editorial-feature");
   const finePointer = matchMedia("(hover: hover) and (pointer: fine)");
   let motionFrame = 0;
@@ -66,7 +51,6 @@
   reducedMotion.addEventListener("change", () => {
     resetScene();
     if (reducedMotion.matches) {
-      greeting?.cancel();
       arrivals.forEach((animation) => animation.cancel());
       arrivals.clear();
     }

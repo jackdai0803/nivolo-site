@@ -10,6 +10,67 @@
   border-radius: 0;
   transform: translateY(.01em);
 }
+.nivo-play {
+  appearance: none;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  min-width: 44px;
+  min-height: 44px;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  isolation: isolate;
+}
+.nivo-play:disabled { cursor: default; }
+.nivo-play::before {
+  content: '';
+  position: absolute;
+  inset: -10%;
+  z-index: -1;
+  border-radius: 50%;
+  corner-shape: round;
+  background: radial-gradient(circle, #d7edf3 0%, #d7edf300 70%);
+  opacity: 0;
+  scale: .8;
+  transition: opacity 180ms ease, scale 400ms cubic-bezier(.2,.8,.2,1.4);
+}
+.nivo-play:hover::before, .nivo-play:focus-visible::before, .nivo-play.is-delighted::before { opacity: 1; scale: 1.25; }
+.nivo-play:focus-visible { outline: 3px solid #267492; outline-offset: 10px; border-radius: 30%; }
+.nivo-play .site-nivo { transform-origin: 50% 85%; transition: transform 100ms ease-out; }
+.nivo-play:active .site-nivo { transform: translateY(5px) scale(1.14, .84) rotate(-4deg); }
+.nivo-play-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  min-height: 36px;
+  margin-top: 14px;
+  color: #65727a;
+  font: 500 12px/1.5 var(--font-body);
+}
+.nivo-play-controls[hidden] { display: none; }
+.nivo-sound {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: #4e6672;
+  font: inherit;
+  cursor: pointer;
+}
+.nivo-sound:hover, .nivo-sound[aria-pressed='true'] { background: #e1edf1; color: #173d52; }
+.nivo-sound:focus-visible { outline: 2px solid #267492; outline-offset: 3px; }
+.editorial-hero:has(.nivo-play-controls:not([hidden])) .editorial-filterbar { margin-top: clamp(28px, 3vw, 44px); }
+@media (prefers-reduced-motion: reduce) {
+  .nivo-play .site-nivo, .nivo-play::before { transition: none; }
+  .nivo-play:active .site-nivo { transform: none; }
+}
 /* Keep the full flipper silhouette clear of the little card's icon frame. */
 .editorial-mini-face--nivo { background: none; border-radius: 0; overflow: visible; }
 .editorial-mini-face--nivo .site-nivo { width: calc(100% + 6px); }
