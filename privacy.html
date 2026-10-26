@@ -47,14 +47,14 @@
 
   <main id="main" tabindex="-1" class="page">
     <h1>Privacy Policy</h1>
-    <p class="updated">Last updated: October 22, 2026 · Applies to the Nivolo iOS app and nivolo.app</p>
+    <p class="updated">Last updated: October 26, 2026 · Applies to the Nivolo iOS app and nivolo.app</p>
 
     <p class="lede">Nivolo is a habit and goal app built to be private by default. It has no cloud account system, analytics, advertising, or trackers. Almost everything you create lives only on your iPhone. This policy explains the exceptions in detail — what leaves your device, when, who processes it, how long it is kept, and what you can ask us to do about it.</p>
 
     <div class="card">
       <p><strong>The short version</strong></p>
-      <p>Your goals, actions, streaks, Krill, gems, name, birthday and any email you enter <strong>inside the app</strong> are stored on your device only and are never sent to us.</p>
-      <p>Two optional features — an <strong>AI goal plan</strong> and an <strong>AI weekly insight</strong> — send only the information needed for the request when you explicitly tap to use them. Requests are tied to a random app ID rather than to your identity. Section 3 explains exactly how this works.</p>
+      <p>Your goals, actions, streaks, Krill, gems, name, birthday and any email you enter <strong>inside the app</strong> are stored on your device. Goal text and your reason are sent only if you tap to draft an AI plan; your name, birthday and in-app email are not sent to us.</p>
+      <p>The <strong>AI goal plan</strong> sends what you enter when you request a draft. For Plus members with at least five logged actions, the <strong>AI weekly insight</strong> can send summary counts automatically when the app opens or the language changes, if it has no saved result for that week and language. Requests use a random app ID rather than your name or email. Section 3 explains exactly how this works.</p>
       <p>If you voluntarily join the website launch list, we keep the email address you submit only long enough to send the one launch message. We do not run analytics, ads, or trackers, and we do not sell personal information.</p>
       <p>The app also uses a random app ID to check the limited Early Supporter icon. Our server keeps a hash for each of its first 20 owners; the app and website show only the total owner count.</p>
     </div>
@@ -64,7 +64,7 @@
       <ol>
         <li><a href="#who">1. Who we are</a></li>
         <li><a href="#device">2. Data that stays on your device</a></li>
-        <li><a href="#ai">3. Data sent when you use AI features</a></li>
+        <li><a href="#ai">3. Data sent for AI features</a></li>
         <li><a href="#processors">4. Third parties we rely on</a></li>
         <li><a href="#never">5. What we never do</a></li>
         <li><a href="#permissions">6. Permissions the app requests</a></li>
@@ -88,7 +88,7 @@
     <p>This policy covers the Nivolo iOS app and the website at nivolo.app. It does not cover Apple's own services (the App Store, iCloud Backup, Apple ID), which are governed by Apple's privacy policy.</p>
 
     <h2 id="device" class="anchor">2. Data that stays on your device</h2>
-    <p>Nivolo does not create a cloud account. Its onboarding and profile screens create a local identity on your iPhone only. Everything below is written to the app sandbox or an App Group container shared with the Nivolo home-screen widget and is <strong>never transmitted to us</strong>:</p>
+    <p>Nivolo does not create a cloud account. Its onboarding and profile screens create a local identity on your iPhone only. The information below is stored in the app sandbox or an App Group container shared with the Nivolo home-screen widget. The AI exceptions are described in section 3: goal text and your reason leave the device only when you request a plan, and Plus weekly summary counts can be sent automatically.</p>
 
     <div class="table-scroll">
       <table>
@@ -109,8 +109,8 @@
 
     <p>Because this data lives on your device, it is included in your normal iPhone backup (iCloud or a computer), where it is handled under Apple's backup and encryption terms. Deleting the app deletes this data from your device; a backup you have already made may still contain a copy until that backup is deleted or overwritten.</p>
 
-    <h2 id="ai" class="anchor">3. Data sent when you use AI features</h2>
-    <p>Nivolo has two optional AI features. They are part of the Nivolo Plus membership, and anyone can try the plan drafter a couple of times for free. Neither runs on its own — each one sends data only at the moment you tap to use it. Requests go over an encrypted HTTPS connection to our own server at <code>api.nivolo.app</code> (a Cloudflare Worker), carrying a short-lived token derived from the random app ID described above.</p>
+    <h2 id="ai" class="anchor">3. Data sent for AI features</h2>
+    <p>Nivolo has two AI features. They are part of the Nivolo Plus membership, and anyone can try the plan drafter a couple of times for free. The plan drafter sends data only when you tap to request it. For eligible Plus members, the weekly insight can run automatically as described below. Requests go over an encrypted HTTPS connection to our own server at <code>api.nivolo.app</code> (a Cloudflare Worker), carrying a short-lived token derived from the random app ID described above.</p>
 
     <h3>AI goal plan</h3>
     <p>When you ask Nivolo to draft a plan for a goal, the following is sent:</p>
@@ -123,7 +123,7 @@
     <p>This text is used once, to generate that plan, and is returned to your device. Please avoid typing anything you would not want processed by a third-party AI provider — health details, financial details, or other people's personal information — into a goal you send to the AI. Writing goals by hand instead sends nothing at all.</p>
 
     <h3>AI weekly insight</h3>
-    <p>The weekly "Nivo's take" card (Nivolo Plus) sends <strong>aggregate numbers only</strong> — never your goal text or your name. Specifically: your current streak length, how many actions you logged this week and last week, your most active weekday, how many goals are active, how many goals you completed this week, your total Krill earned, and your language setting, together with the signed subscription record described above.</p>
+    <p>For Plus members with at least five logged actions, Nivolo automatically requests a weekly "Nivo's take" insight when the app opens or the language changes, if it has not already saved an insight for that week and language. This sends <strong>summary counts only</strong> — never your goal text or your name. Specifically: your current streak length, how many actions you logged this week and last week, your most active weekday, how many goals are active, how many goals you completed this week, your total Krill earned, and your language setting, together with the signed subscription record described above. The result is saved on your device.</p>
 
     <h3>What our server keeps</h3>
     <p>Our server does not store your goal text, does not log request bodies, and does not build a profile. It keeps only the small counters needed to stop abuse and to apply the free and Plus allowances (see <a href="#retention">retention</a>):</p>
@@ -192,7 +192,7 @@
     <p><strong>Rating prompt.</strong> The app may occasionally ask you to rate it using Apple's standard review prompt. Apple handles that entirely; we receive no information about whether or how you responded.</p>
 
     <h2 id="purchases" class="anchor">7. Purchases and memberships</h2>
-    <p>All in-app purchases and subscriptions are processed by Apple through your Apple ID. We never see or handle your name, card number, billing address, or any other payment detail. Apple tells the app only whether an entitlement is active, and that answer is stored on your device.</p>
+    <p>All in-app purchases and subscriptions are processed by Apple through your Apple ID. We never see or handle your name, card number or billing address. The app receives subscription details from Apple to unlock Plus features. When a Plus member uses an AI plan or receives a weekly AI insight, the app sends Apple's signed subscription record to our server for verification, as described in section 3; the server does not keep the record.</p>
     <p>Restoring purchases uses your Apple ID through Apple's servers. Managing or cancelling a subscription happens in your Apple ID settings, not with us. Refunds are handled by Apple.</p>
 
     <h2 id="retention" class="anchor">8. How long data is kept</h2>
@@ -235,7 +235,7 @@
       <li><strong>Access and portability</strong> — app data is already in your possession, visible in the app. For a launch-list address, email us from that address and we can confirm the record we hold.</li>
       <li><strong>Correction</strong> — you can edit or remove app profile details directly in the app; email us to correct a launch-list address.</li>
       <li><strong>Deletion</strong> — deleting the app removes everything it stored. Email us from a launch-list address to have that record deleted. Our fair-use counters are keyed to a random ID, an IP address or a transaction identifier that we cannot link to you; most expire within days.</li>
-      <li><strong>Objection and restriction</strong> — simply do not use the AI features, and nothing at all is transmitted.</li>
+      <li><strong>Objection and restriction</strong> — you can avoid sending goal text by not requesting an AI plan. The Early Supporter check still sends a random app ID when a real iPhone opens the app online. Eligible Plus members receive automatic weekly AI insights, and there is currently no separate in-app switch for them. Contact us to discuss an objection or restriction request.</li>
       <li><strong>Withdrawing consent</strong> — turn off notifications or motion access in iOS Settings, or ask us to remove your launch-list email, at any time.</li>
       <li><strong>Complaint</strong> — you may lodge a complaint with your local data protection authority. We would appreciate the chance to address it first.</li>
     </ul>
@@ -245,7 +245,7 @@
     <p>For California residents under the CCPA/CPRA, and residents of other US states with comparable laws: in the last twelve months we have collected the categories of <em>identifiers</em> (a voluntarily submitted launch-list email, a randomly generated app identifier, and an IP address held for short-lived rate limits), <em>user content</em> (the goal text you choose to submit to an AI feature), and <em>commercial information</em> (whether an Apple purchase is active, and — for Plus members using AI — Apple's signed subscription record, checked and then discarded). These are collected for the business purposes described in this policy and are not retained beyond the periods in section 8.</p>
     <ul>
       <li>We have <strong>not sold or shared</strong> personal information, and we do not use personal information for cross-context behavioral advertising. We do not knowingly sell the personal information of anyone under 16.</li>
-      <li>We do not collect sensitive personal information or use it to infer characteristics.</li>
+      <li>We do not ask you to submit sensitive personal information. If you include sensitive details in an AI goal request, they are processed to generate the requested plan as described in section 3.</li>
       <li>You have the right to know, delete, and correct, and to not be discriminated against for exercising those rights. We offer no financial incentives for data.</li>
       <li>You may use an authorized agent to submit a request. Email us at the address below.</li>
     </ul>
