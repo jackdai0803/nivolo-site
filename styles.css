@@ -2430,6 +2430,10 @@ footer {
   display: grid; place-items: center;
   perspective: calc(var(--ipop-tile) * 4.09);
 }
+.ipop-suspension {
+  width: var(--ipop-tile); height: var(--ipop-tile);
+  transform-style: preserve-3d;
+}
 .ipop-tile {
   position: relative; width: var(--ipop-tile); height: var(--ipop-tile);
   transform-style: preserve-3d;
@@ -2488,6 +2492,65 @@ footer {
   background: radial-gradient(ellipse, rgba(0,0,0,.55), transparent 70%);
   filter: blur(3px);
 }
+/* Jade's circular stone and cord share the same turn, while their parent
+   swings from the top of the loop. Other icons retain their tile geometry. */
+.ipop-cord, .ipop-eyelet { display: none; }
+.is-pendant .ipop-dialog {
+  --ipop-tile: min(300px, 68vw, 34vh);
+  --ipop-radius: 50%;
+  --ipop-lift: calc(var(--ipop-tile) * 0.019);
+  --ipop-depth-size: calc(var(--ipop-tile) * 0.34);
+}
+.is-pendant .ipop-stage {
+  height: calc(var(--ipop-tile) * 1.66);
+  padding-top: calc(var(--ipop-tile) * 0.51);
+}
+.is-pendant .ipop-suspension {
+  transform-origin: 50% -43%;
+}
+.is-pendant .ipop-tile { transform-origin: 50% 12%; }
+.is-pendant .ipop-face, .is-pendant .ipop-slice {
+  corner-shape: round;
+  /* A real opening through every layer, not a dark circle painted on top. */
+  -webkit-mask-image: radial-gradient(circle at 50% 12%, transparent calc(var(--ipop-tile) * .033), #000 calc(var(--ipop-tile) * .036));
+  mask-image: radial-gradient(circle at 50% 12%, transparent calc(var(--ipop-tile) * .033), #000 calc(var(--ipop-tile) * .036));
+}
+.is-pendant .ipop-slice {
+  background: linear-gradient(125deg, #b7e6b2, #60a777 18%, #216c4d 52%, #91cb91 85%, #cde9b8);
+}
+.is-pendant .ipop-front::after {
+  content: ""; position: absolute; inset: 0;
+  border-radius: 50%; corner-shape: round; pointer-events: none;
+  box-shadow: inset 2px 3px 3px #ecffd691, inset -3px -3px 5px #073e3766,
+    inset 0 0 0 2px #c5ecae73;
+  background: linear-gradient(125deg, #e5ffcc26, transparent 35%, transparent 65%, #dbffc419);
+}
+.is-pendant .ipop-back {
+  background: radial-gradient(ellipse at 30% 20%, #5eaa79, #267456 50%, #104e3e);
+  border: 2px solid #bce7ae80;
+  box-shadow: inset 1px 2px 8px #d3ffc650, inset -2px -3px 9px #073c3690;
+  padding: 20%;
+}
+.is-pendant .ipop-back h3 { color: #ecf9d7; font-size: clamp(18px, 5vw, 24px); }
+.is-pendant .ipop-back p { color: #e0eed2; font-size: clamp(12px, 3.4vw, 14px); }
+.is-pendant .ipop-cord {
+  display: block; position: absolute;
+  width: 36%; height: 72%; left: 32%; top: -54.5%;
+  overflow: visible;
+  transform: translateZ(calc(var(--ipop-lift) + 1px));
+}
+.is-pendant .ipop-eyelet {
+  display: block; position: absolute; left: 45.9%; top: 7.9%;
+  width: 8.2%; height: 8.2%; border-radius: 50%; corner-shape: round;
+  border: 2px solid #bfe7a58c;
+  box-shadow: 0 1px 1px #e6ffd591;
+  transform: translateZ(calc(var(--ipop-lift) + .5px));
+  pointer-events: none;
+}
+.is-pendant .ipop-tile:focus-visible {
+  outline: 2px solid #f1edce; outline-offset: 10px; border-radius: 50%; corner-shape: round;
+}
+.is-pendant .ipop-shadow { width: calc(var(--ipop-tile) * .7); opacity: .65; }
 /* Scenes run from midnight ice to a pale noon sky, so plain grey type is
    legible over some and gone over others. The hint carries its own dark
    lozenge — the same shape the pit hint uses, in the popup's material —

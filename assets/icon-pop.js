@@ -62,6 +62,7 @@
   };
   var NEW_ICONS = { "early-supporter": true, porcelain: true, jade: true, kintsugi: true };
   function iconSrc(id, large) {
+    if (id === "jade") return "assets/charms/jade" + (large ? "-lg" : "") + ".jpg";
     return "assets/icons-3d/" + id + (large ? "-lg" : "") + (NEW_ICONS[id] ? ".jpg" : ".webp");
   }
 
@@ -136,17 +137,21 @@
     '</div>' +
     '<div class="ipop-dialog" role="dialog" aria-modal="true" aria-label="Icon detail">' +
     '  <button class="ipop-close" type="button" aria-label="Close">&times;</button>' +
-    '  <div class="ipop-stage"><div class="ipop-tile">' +
+    '  <div class="ipop-stage"><div class="ipop-suspension"><div class="ipop-tile">' +
     '    <div class="ipop-face ipop-front"><img alt="" /></div>' +
     '    <div class="ipop-face ipop-plate" hidden><img alt="" /></div>' +
     '    <div class="ipop-face ipop-back"><div><h3></h3><p></p></div></div>' +
-    '  </div></div>' +
+    '    <span class="ipop-eyelet" aria-hidden="true"></span>' +
+    '    <img class="ipop-cord" src="assets/charms/jade-cord.svg" alt="" aria-hidden="true" />' +
+    '  </div></div></div>' +
     '  <div class="ipop-shadow"></div>' +
     '  <p class="ipop-hint">Drag to turn it over in your hands &middot; tap to flip</p>' +
     "</div>";
   document.body.appendChild(overlay);
 
   var tile = overlay.querySelector(".ipop-tile");
+  var suspension = overlay.querySelector(".ipop-suspension");
+  var pendant = false, swing = 0, swingVelocity = 0, swingTarget = 0;
   var front = overlay.querySelector(".ipop-front");
   var sceneEl = overlay.querySelector(".ipop-scene");
   var sceneImg = sceneEl.querySelector("img");
@@ -262,7 +267,7 @@
     var s = document.createElement("div");
     s.className = "ipop-slice";
     // keyed off the CSS knob, so the slab thickens with the tile
-    s.style.transform = "translateZ(calc(var(--ipop-tile) * " + z.toFixed(6) + "))";
+    s.style.transform = "translateZ(calc(var(--ipop-depth-size, var(--ipop-tile)) * " + z.toFixed(6) + "))";
     tile.insertBefore(s, front);
   }
   // current tile size in px, for the few places that need a real number
@@ -298,8 +303,23 @@
     } else {
       var tx = base.x + follow.x, ty = base.y + follow.y;
       var k = 1 - Math.pow(1 - EASE, dt / (1000 / 60));
-      cur.x += (tx - cur.x) * k;
-      cur.y += (ty - cur.y) * k;
+      cur.x += (tx - cur.x) * (reduceMotion ? 1 : k);
+      cur.y += (ty - cur.y) * (reduceMotion ? 1 : k);
+    }
+    if (pendant && !reduceMotion) {
+      if (down) {
+        swingVelocity = (swingTarget - swing) * 0.2;
+        swing = swingTarget;
+      } else {
+        // Small fixed steps keep the damped swing stable after a slow frame.
+        var steps = Math.ceil(dt / 8), step = dt / steps / (1000 / 60);
+        for (var n = 0; n < steps; n++) {
+          swingVelocity += -swing * 0.018 * step;
+          swingVelocity *= Math.pow(0.975, step);
+          swing += swingVelocity * step;
+        }
+      }
+      suspension.style.transform = "rotateZ(" + swing.toFixed(3) + "deg)";
     }
     tile.style.transform = "rotateX(" + cur.x + "deg) rotateY(" + cur.y + "deg)";
     if (sceneActive) {
@@ -341,7 +361,9 @@
   function pt(e) { return e.touches ? e.touches[0] : e; }
   var dragJustEnded = false;
   function start(e) {
+    if (e.button != null && e.button !== 0) return;
     down = true; moved = false; dragJustEnded = false;
+    swingTarget = swing;
     var p = pt(e);
     sx = p.clientX; sy = p.clientY; baseX = base.x; baseY = base.y;
     tile.classList.add("dragging");
@@ -354,16 +376,17 @@
     if (Math.abs(dx) > 4 || Math.abs(dy) > 4) moved = true;
     base.y = baseY + dx * 0.6;
     base.x = Math.max(-70, Math.min(70, baseX - dy * 0.6));
+    if (pendant) swingTarget = Math.max(-12, Math.min(12, dx * 0.06));
     if (e.cancelable) e.preventDefault();
   }
-  function end() {
+  function end(cancelled) {
     if (!down) return;
     down = false;
     tile.classList.remove("dragging");
     if (moved) dragJustEnded = true;
     var nearest = Math.round(base.y / 180) * 180;
     var offBy = Math.abs(base.y - nearest);
-    if (!moved) {
+    if (!moved && cancelled !== true) {
       // tap: land on a face, never the edge — square-on flips over,
       // side-on goes to whichever face is closest
       base.y = offBy < 45 ? nearest + 180 : nearest;
@@ -372,6 +395,12 @@
       // never rest edge-on: the slab degenerates to hairlines there
       base.y = nearest;
     }
+    if (pendant) {
+      base.y = Math.round(base.y / 180) * 180;
+      base.x = 0;
+      follow.x = follow.y = 0;
+      if (!moved && cancelled !== true && !reduceMotion) swingVelocity += 0.45;
+    }
   }
   tile.addEventListener("mousedown", start);
   window.addEventListener("mousemove", move);
@@ -379,11 +408,37 @@
   tile.addEventListener("touchstart", start, { passive: true });
   tile.addEventListener("touchmove", move, { passive: false });
   tile.addEventListener("touchend", end);
+  tile.addEventListener("touchcancel", function () { end(true); });
+  window.addEventListener("blur", function () { end(true); });
+  tile.addEventListener("keydown", function (e) {
+    if (!pendant || (e.key !== "Enter" && e.key !== " ")) return;
+    e.preventDefault();
+    base.y = Math.round(base.y / 180) * 180 + 180;
+    base.x = follow.x = follow.y = 0;
+    if (!reduceMotion) swingVelocity += 0.45;
+  });
   tile.addEventListener("dragstart", function (e) { e.preventDefault(); });
 
   /* ── open / close ── */
   var lastFocus = null;
   function openFor(id, name, story) {
+    pendant = id === "jade";
+    overlay.classList.toggle("is-pendant", pendant);
+    swing = pendant && !reduceMotion ? -3 : 0;
+    swingVelocity = swingTarget = 0;
+    suspension.style.transform = "rotateZ(" + swing + "deg)";
+    if (pendant) {
+      tile.tabIndex = 0;
+      tile.setAttribute("role", "button");
+      tile.setAttribute("aria-label", "Flip Jade pendant to read its story");
+    } else {
+      tile.removeAttribute("tabindex");
+      tile.removeAttribute("role");
+      tile.removeAttribute("aria-label");
+    }
+    overlay.querySelector(".ipop-hint").textContent = pendant
+      ? "Drag to turn · release to sway · tap to flip"
+      : "Drag to turn it over in your hands · tap to flip";
     if (closeCleanupTimer !== null) {
       clearTimeout(closeCleanupTimer);
       closeCleanupTimer = null;
@@ -403,7 +458,7 @@
        of the tile sitting empty while it downloads. */
     tile.classList.remove("icon-ready");
     tile.classList.remove("icon-instant");
-    front.style.backgroundImage = 'url("assets/icons/' + id + '.png")';
+    front.style.backgroundImage = 'url("' + (pendant ? iconSrc(id, false) : 'assets/icons/' + id + '.png') + '")';
     img.onload = function () { tile.classList.add("icon-ready"); };
     if (layered) {
       setSrc(img, layered.bg);
@@ -470,6 +525,8 @@
     overlay.querySelector(".ipop-close").focus();
   }
   function close() {
+    down = false;
+    tile.classList.remove("dragging");
     // scene-ready stays on through the fade-out: dropping it here would snap
     // an instant-revealed background away while the icon was still leaving
     overlay.classList.remove("open");

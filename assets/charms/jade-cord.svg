@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 160" fill="none">
+  <defs>
+    <linearGradient id="rope" x1="23" y1="0" x2="56" y2="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#c7b78d"/><stop offset=".4" stop-color="#fff5d5"/><stop offset=".7" stop-color="#eee0b8"/><stop offset="1" stop-color="#baaa80"/>
+    </linearGradient>
+  </defs>
+  <path d="M39 148C29 119 17 72 23 34C26 7 48 3 55 28C67 69 46 112 40 143" stroke="#756c50" stroke-opacity=".25" stroke-width="9" stroke-linecap="round"/>
+  <path d="M39 148C29 119 17 72 23 34C26 7 48 3 55 28C67 69 46 112 40 143" stroke="url(#rope)" stroke-width="7" stroke-linecap="round"/>
+  <path d="M39 148C29 119 17 72 23 34C26 7 48 3 55 28C67 69 46 112 40 143" stroke="#fff8df" stroke-opacity=".65" stroke-width="6" stroke-dasharray="1 4"/>
+  <path d="M33 119C47 113 51 123 35 129C27 133 32 139 44 135M33 122L46 132M32 128L44 137" stroke="#b6a57b" stroke-width="8" stroke-linecap="round"/>
+  <path d="M33 118C47 112 51 122 35 128C27 132 32 138 44 134M33 121L46 131M32 127L44 136" stroke="url(#rope)" stroke-width="6" stroke-linecap="round"/>
+</svg>
