@@ -2589,6 +2589,40 @@ footer {
   outline: 2px solid #b9d5ff; outline-offset: 10px; border-radius: 50%; corner-shape: round;
 }
 .is-porcelain .ipop-shadow { width: calc(var(--ipop-tile) * .7); opacity: .5; }
+/* Kintsugi shares the ceramic handling, with an asymmetric repaired shape. */
+.is-kintsugi .ipop-dialog {
+  --ipop-radius: 0px;
+  --ipop-lift: calc(var(--ipop-tile) * .016);
+  --ipop-depth-size: calc(var(--ipop-tile) * .285);
+}
+.is-kintsugi .ipop-suspension { transform-origin: 50% 50%; }
+.is-kintsugi .ipop-face, .is-kintsugi .ipop-slice {
+  corner-shape: round;
+  -webkit-mask: url("assets/charms/kintsugi-mask.svg") center / 100% 100% no-repeat;
+  mask: url("assets/charms/kintsugi-mask.svg") center / 100% 100% no-repeat;
+}
+.is-kintsugi .ipop-slice {
+  background: linear-gradient(135deg, #7d766a, #343335 25%, #1b1c20 55%, #a28b5a 88%, #383431);
+}
+.is-kintsugi .ipop-front { background-color: #212226; }
+.is-kintsugi .ipop-face::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: url("assets/charms/kintsugi-rim.svg") center / 100% 100% no-repeat;
+}
+.is-kintsugi .ipop-back {
+  -webkit-mask-image: url("assets/charms/kintsugi-mask-back.svg");
+  mask-image: url("assets/charms/kintsugi-mask-back.svg");
+  border: 0; padding: 22%;
+  background: url("assets/charms/kintsugi-back-seams.svg") center / 100% 100% no-repeat,
+    radial-gradient(ellipse at 30% 20%, #45413d, #26262a 55%, #1b1d21);
+}
+.is-kintsugi .ipop-back::after { transform: scaleX(-1); }
+.is-kintsugi .ipop-back h3 { color: #f4d58e; font-size: clamp(18px, 5vw, 24px); }
+.is-kintsugi .ipop-back p { color: #eee5d1; font-size: clamp(12px, 3.4vw, 14px); }
+.is-kintsugi .ipop-tile:focus-visible {
+  outline: 2px solid #f4d58e; outline-offset: 10px; border-radius: 45%; corner-shape: round;
+}
+.is-kintsugi .ipop-shadow { width: calc(var(--ipop-tile) * .7); opacity: .65; }
 /* Scenes run from midnight ice to a pale noon sky, so plain grey type is
    legible over some and gone over others. The hint carries its own dark
    lozenge — the same shape the pit hint uses, in the popup's material —

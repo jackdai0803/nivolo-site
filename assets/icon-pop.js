@@ -62,7 +62,7 @@
   };
   var NEW_ICONS = { "early-supporter": true, porcelain: true, jade: true, kintsugi: true };
   function iconSrc(id, large) {
-    if (id === "jade" || id === "porcelain") return "assets/charms/" + id + (large ? "-lg" : "") + ".jpg";
+    if (id === "jade" || id === "porcelain" || id === "kintsugi") return "assets/charms/" + id + (large ? "-lg" : "") + ".jpg";
     return "assets/icons-3d/" + id + (large ? "-lg" : "") + (NEW_ICONS[id] ? ".jpg" : ".webp");
   }
 
@@ -424,17 +424,18 @@
   var lastFocus = null;
   function openFor(id, name, story) {
     pendant = id === "jade";
-    ceramic = id === "porcelain";
+    ceramic = id === "porcelain" || id === "kintsugi";
     collectible = pendant || ceramic;
     overlay.classList.toggle("is-pendant", pendant);
-    overlay.classList.toggle("is-porcelain", ceramic);
+    overlay.classList.toggle("is-porcelain", id === "porcelain");
+    overlay.classList.toggle("is-kintsugi", id === "kintsugi");
     swing = collectible && !reduceMotion ? (ceramic ? -2 : -3) : 0;
     swingVelocity = swingTarget = 0;
     suspension.style.transform = "rotateZ(" + swing + "deg)";
     if (collectible) {
       tile.tabIndex = 0;
       tile.setAttribute("role", "button");
-      tile.setAttribute("aria-label", ceramic ? "Flip Porcelain medallion to read its story" : "Flip Jade pendant to read its story");
+      tile.setAttribute("aria-label", ceramic ? "Flip " + name + " medallion to read its story" : "Flip Jade pendant to read its story");
     } else {
       tile.removeAttribute("tabindex");
       tile.removeAttribute("role");
