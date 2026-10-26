@@ -1,5 +1,4 @@
-/* Phantom-editorial exploration. Loaded after the production stylesheet so
-   this duplicate can be judged without changing the live Nivolo source. */
+/* Nivolo's editorial layout and playful, restrained interactions. */
 
 /* Collector pricing: the selected visual direction, scoped to this section. */
 .collector-pricing .section-title {
@@ -105,7 +104,7 @@
 .editorial-hero {
   width: min(100%, 1440px);
   margin: 0 auto;
-  padding: clamp(64px, 9vw, 132px) 28px 0;
+  padding: clamp(64px, 6vw, 88px) 28px 0;
   text-align: center;
 }
 
@@ -129,7 +128,7 @@
   align-items: center;
   justify-content: center;
   gap: clamp(14px, 2.2vw, 28px);
-  margin: clamp(42px, 7vw, 82px) auto 16px;
+  margin: clamp(38px, 4.5vw, 60px) auto 16px;
   color: #173d52;
   font-family: var(--font-display);
   font-size: clamp(58px, 10vw, 150px);
@@ -178,7 +177,7 @@
   align-items: start;
   gap: 28px;
   max-width: 1240px;
-  margin: clamp(74px, 10vw, 132px) auto 46px;
+  margin: clamp(50px, 5vw, 72px) auto 38px;
 }
 
 .editorial-filterset {
@@ -224,6 +223,50 @@
   padding-inline: 20px;
   background: rgba(255, 255, 255, 0.6);
   border-color: rgba(22, 23, 26, 0.07);
+}
+
+/* Small, tactile colour accents keep the calm ice-blue palette feeling alive. */
+.editorial-filter--lead {
+  background: #dceff6;
+  border-color: #c4dfe9;
+  color: #173d52;
+  box-shadow: 0 3px 0 #b7d3df;
+}
+.editorial-filterset .editorial-filter:nth-child(5) { background: #e6e2f4; color: #41395e; }
+.editorial-filterset .editorial-filter:last-child { background: #e3edd7; color: #354b25; }
+.editorial-filter:active {
+  transform: translateY(2px) scale(.97);
+  box-shadow: 0 1px 0 #b7d3df;
+}
+.editorial-lockup-mark { position: relative; }
+.editorial-lockup-mark::after {
+  content: "";
+  position: absolute;
+  top: 6%;
+  right: -10%;
+  width: 19%;
+  aspect-ratio: 1;
+  background: #dfb94b;
+  clip-path: polygon(50% 0, 63% 36%, 100% 50%, 63% 63%, 50% 100%, 37% 63%, 0 50%, 37% 36%);
+  transform: rotate(12deg);
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .editorial-orb, .editorial-ribbon { transition: translate 350ms ease-out; }
+  .editorial-orb--one, .editorial-ribbon--two {
+    translate: calc(var(--scene-x, 0px) * -1) calc(var(--scene-y, 0px) * -1);
+  }
+  .editorial-orb--two, .editorial-ribbon--one {
+    translate: var(--scene-x, 0px) var(--scene-y, 0px);
+  }
+  .editorial-orb--three {
+    translate: calc(var(--scene-x, 0px) * 1.5) calc(var(--scene-y, 0px) * 1.5);
+  }
+  .editorial-filter { transition-timing-function: cubic-bezier(.2,.8,.25,1.4); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .editorial-filter { transition: none; }
+  .editorial-filter:hover, .editorial-filter:focus-visible, .editorial-filter:active { transform: none; }
 }
 
 .editorial-feature {

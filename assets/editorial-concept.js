@@ -1,4 +1,78 @@
 (() => {
+  // A few short reactions keep the opening playful without a permanent loop.
+  const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
+  const lockup = document.querySelector(".editorial-lockup");
+  const mascot = lockup?.querySelector(".editorial-lockup-mark");
+  let greeting;
+  const greet = () => {
+    if (!mascot || reducedMotion.matches || greeting?.playState === "running") return;
+    greeting = mascot.animate([
+      { translate: "0 0", rotate: "0deg", scale: "1" },
+      { translate: "0 3px", rotate: "-7deg", scale: "1.08 .92", offset: .18 },
+      { translate: "0 -12px", rotate: "8deg", scale: ".96 1.04", offset: .46 },
+      { translate: "0 1px", rotate: "-3deg", scale: "1.03 .97", offset: .76 },
+      { translate: "0 0", rotate: "0deg", scale: "1" },
+    ], { duration: 680, easing: "ease-out" });
+  };
+  lockup?.addEventListener("pointerenter", greet);
+
+  const feature = document.querySelector(".editorial-feature");
+  const finePointer = matchMedia("(hover: hover) and (pointer: fine)");
+  let motionFrame = 0;
+  let bounds;
+  let x = 0;
+  let y = 0;
+  const resetScene = () => {
+    cancelAnimationFrame(motionFrame);
+    motionFrame = 0;
+    bounds = null;
+    feature?.style.removeProperty("--scene-x");
+    feature?.style.removeProperty("--scene-y");
+  };
+  feature?.addEventListener("pointerenter", () => {
+    if (!reducedMotion.matches && finePointer.matches) bounds = feature.getBoundingClientRect();
+  });
+  feature?.addEventListener("pointermove", (event) => {
+    if (reducedMotion.matches || !finePointer.matches) return;
+    if (!bounds) bounds = feature.getBoundingClientRect();
+    x = Math.max(-1, Math.min(1, (event.clientX - bounds.left) / bounds.width * 2 - 1));
+    y = Math.max(-1, Math.min(1, (event.clientY - bounds.top) / bounds.height * 2 - 1));
+    if (!motionFrame) motionFrame = requestAnimationFrame(() => {
+      feature.style.setProperty("--scene-x", `${x * 14}px`);
+      feature.style.setProperty("--scene-y", `${y * 10}px`);
+      motionFrame = 0;
+    });
+  });
+  feature?.addEventListener("pointerleave", resetScene);
+  addEventListener("resize", resetScene);
+  addEventListener("scroll", resetScene, { passive: true });
+  const arrivals = new Set();
+  if (feature) {
+    const arrival = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      if (!reducedMotion.matches) feature.querySelectorAll(".editorial-sticker span").forEach((sticker, index) => {
+        const animation = sticker.animate([
+          { scale: ".88", rotate: "-5deg" },
+          { scale: "1.04", rotate: "2deg", offset: .65 },
+          { scale: "1", rotate: "0deg" },
+        ], { duration: 620, delay: index * 100, easing: "cubic-bezier(.2,.8,.2,1)" });
+        arrivals.add(animation);
+        animation.onfinish = () => arrivals.delete(animation);
+      });
+      arrival.disconnect();
+    }, { threshold: .3 });
+    arrival.observe(feature);
+  }
+  reducedMotion.addEventListener("change", () => {
+    resetScene();
+    if (reducedMotion.matches) {
+      greeting?.cancel();
+      arrivals.forEach((animation) => animation.cancel());
+      arrivals.clear();
+    }
+  });
+  finePointer.addEventListener("change", resetScene);
+
   const pricing = document.querySelector(".collector-pricing");
   if (pricing) {
     const billing = pricing.querySelector(".collector-billing");
