@@ -2196,6 +2196,33 @@ footer {
 }
 .ipop-effects[data-effect="stars"] i { background: #ffd35a; box-shadow: 0 0 16px rgba(255,174,50,.62); }
 .ipop-effects[data-effect="sparkles"] i { background: #c8ffcb; box-shadow: 0 0 16px rgba(100,255,175,.62); }
+.ipop-effects[data-effect="halo"] i,
+.ipop-effects[data-effect="kintsugi"] i {
+  width: 5px; height: 5px;
+  border-radius: 50%; corner-shape: round;
+  background: #ffda70;
+  box-shadow: 0 0 14px rgba(255,190,65,.8);
+  animation: ipop-twinkle var(--dur) ease-in-out var(--delay) infinite;
+}
+.ipop-effects[data-effect="kintsugi"] i {
+  width: 3px; height: 11px;
+  border-radius: var(--radius-pill);
+  rotate: 38deg;
+}
+.ipop-effects[data-effect="porcelain"] i {
+  width: 7px; height: 11px;
+  border-radius: 80% 0 80% 0;
+  background: rgba(32,83,177,.76);
+  box-shadow: 0 0 9px rgba(90,140,220,.22);
+  animation: ipop-fall var(--dur) ease-in-out var(--delay) infinite;
+}
+.ipop-effects[data-effect="jade"] i {
+  width: 16vw; height: 3vw;
+  border-radius: 50%; corner-shape: round;
+  background: rgba(176,255,205,.22);
+  filter: blur(13px);
+  animation: ipop-drift 11s ease-in-out var(--delay) infinite alternate;
+}
 .ipop-effects[data-effect="hearts"] i {
   width: calc(15px * var(--scale)); height: calc(15px * var(--scale));
   background: rgba(255,129,169,.76);

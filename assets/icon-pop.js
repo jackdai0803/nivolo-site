@@ -24,7 +24,14 @@
   function scene(id, effect) {
     return { wide: "assets/scenes/" + id + ".webp?v=2", effect: effect };
   }
+  function keepsakeScene(id, effect) {
+    return { wide: "assets/scenes/" + id + ".jpg?v=1", effect: effect };
+  }
   var SCENES = {
+    "early-supporter": keepsakeScene("early-supporter", "halo"),
+    porcelain: keepsakeScene("porcelain", "porcelain"),
+    jade: keepsakeScene("jade", "jade"),
+    kintsugi: keepsakeScene("kintsugi", "kintsugi"),
     classic: scene("classic", "aurora"),
     grumpy: scene("grumpy", "pressure"),
     snowy: scene("snowy", "snow"),
@@ -53,6 +60,10 @@
     glitch: scene("glitch", "glitch"),
     coming_soon: scene("coming_soon", "fog"),
   };
+  var NEW_ICONS = { "early-supporter": true, porcelain: true, jade: true, kintsugi: true };
+  function iconSrc(id, large) {
+    return "assets/icons-3d/" + id + (large ? "-lg" : "") + (NEW_ICONS[id] ? ".jpg" : ".webp");
+  }
 
   /* The artwork is a wide vista; on a portrait phone a cover-crop would show
      only its empty middle, so a taller cut of the same scene is used there. */
@@ -101,7 +112,7 @@
       cb(c);
     };
     img.onerror = function () { cb([43, 52, 70]); };
-    img.src = "assets/icons-3d/" + id + ".webp";
+    img.src = iconSrc(id, false);
   }
   function mix(c, f) { return "rgb(" + c.map(function (v) { return Math.round(v * f); }).join(",") + ")"; }
   function lift(c, f) { return "rgb(" + c.map(function (v) { return Math.round(v + (255 - v) * f); }).join(",") + ")"; }
@@ -189,10 +200,9 @@
       entry.img.onload = entry.img.onerror = function () { entry.ready = true; };
       if (hires) {
         entry.img.sizes = Math.round(tilePx()) + "px";
-        entry.img.srcset = "assets/icons-3d/" + b + ".webp 512w, " +
-          "assets/icons-3d/" + b + "-lg.webp 1024w";
+        entry.img.srcset = iconSrc(b, false) + " 512w, " + iconSrc(b, true) + " 1024w";
       }
-      entry.img.src = "assets/icons-3d/" + b + ".webp";
+      entry.img.src = iconSrc(b, false);
     });
   }
 
@@ -224,6 +234,7 @@
      giving every scene its own motion language. */
   var EFFECT_COUNTS = {
     snow: 20, rain: 22, embers: 14, confetti: 18, coins: 9,
+    halo: 12, porcelain: 14, jade: 9, kintsugi: 12,
     twinkles: 12, stars: 12, sparkles: 14, hearts: 10,
     bubbles: 10, dust: 9, drips: 10, stitches: 8,
     glitch: 8, search: 3, speed: 9, ribbons: 4,
@@ -382,8 +393,8 @@
     var img = front.querySelector("img");
     var layered = LAYERED[id];
     function setSrc(el, base) {
-      el.src = "assets/icons-3d/" + base + ".webp";
-      el.srcset = "assets/icons-3d/" + base + ".webp 512w, assets/icons-3d/" + base + "-lg.webp 1024w";
+      el.src = iconSrc(base, false);
+      el.srcset = iconSrc(base, false) + " 512w, " + iconSrc(base, true) + " 1024w";
       el.sizes = Math.round(tilePx()) + "px";
     }
     /* The collection thumbnail is the same artwork at 160px and is already
@@ -517,19 +528,13 @@
   window.addEventListener("orientationchange", repickScene);
 
   /* ── wire up the collection ── */
-  var items = document.querySelectorAll(
-    "#collection .lore-card, #collection .lore-mini li"
-  );
   var warmQueue = [];
-  Array.prototype.forEach.call(items, function (el) {
-    var img = el.querySelector("img");
-    var head = el.querySelector("h3");
-    var para = el.querySelector("p");
+  function attachPreview(el, buttonHost, img, head, para) {
     if (!img || !head || !para) return;
-    var m = (img.getAttribute("src") || "").match(/([a-z_]+)\.png$/);
+    var m = (img.getAttribute("src") || "").match(/([a-z_-]+)\.png$/);
     if (!m) return;
     var id = m[1];
-    el.classList.add("ipop-source");
+    buttonHost.classList.add("ipop-source");
     /* A real button, laid over the whole card: the card stays an article
        (or a list item) with its heading and its story, and the thing that
        opens it is something a keyboard and a screen reader already know
@@ -538,7 +543,7 @@
     opener.type = "button";
     opener.className = "ipop-open";
     opener.setAttribute("aria-label", "View " + head.textContent + " up close");
-    el.appendChild(opener);
+    buttonHost.appendChild(opener);
     function go() { openFor(id, head.textContent, para.textContent); }
     /* fetch this one's art and environment the moment there is any hint of
        intent, so by the time the click lands the pixels are already there */
@@ -549,10 +554,18 @@
     el.addEventListener("touchstart", prime, { passive: true });
     opener.addEventListener("click", go);
     warmQueue.push(id);
+  }
+  var supporter = document.querySelector("#collection .early-supporter");
+  if (supporter) attachPreview(supporter, supporter.querySelector(".early-supporter-art"), supporter.querySelector(".early-supporter-art img"), supporter.querySelector("h3"), supporter.querySelector(".early-supporter-copy > p:not(.early-supporter-kicker)"));
+  Array.prototype.forEach.call(document.querySelectorAll("#collection .keepsake-card"), function (el) {
+    attachPreview(el, el, el.querySelector("img"), el.querySelector("h4"), el.querySelector("p"));
+  });
+  Array.prototype.forEach.call(document.querySelectorAll("#collection .lore-card, #collection .lore-mini li"), function (el) {
+    attachPreview(el, el, el.querySelector("img"), el.querySelector("h3"), el.querySelector("p"));
   });
 
-  /* Scenes and 512px tile art together are ~1.2MB of small WebP, so once the
-     collection is in reach they are warmed quietly in the background, a few
+  /* Once the collection is in reach, scenes and tile art are warmed quietly
+     in the background, a few
      at a time, well behind anything the page still needs. Taps get the same
      instant open as hovers this way, since a finger never announces itself
      early. The 1024px masters stay out of the bulk pass — they are three
