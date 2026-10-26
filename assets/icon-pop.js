@@ -62,7 +62,7 @@
   };
   var NEW_ICONS = { "early-supporter": true, porcelain: true, jade: true, kintsugi: true };
   function iconSrc(id, large) {
-    if (id === "jade") return "assets/charms/jade" + (large ? "-lg" : "") + ".jpg";
+    if (id === "jade" || id === "porcelain") return "assets/charms/" + id + (large ? "-lg" : "") + ".jpg";
     return "assets/icons-3d/" + id + (large ? "-lg" : "") + (NEW_ICONS[id] ? ".jpg" : ".webp");
   }
 
@@ -151,7 +151,8 @@
 
   var tile = overlay.querySelector(".ipop-tile");
   var suspension = overlay.querySelector(".ipop-suspension");
-  var pendant = false, swing = 0, swingVelocity = 0, swingTarget = 0;
+  var pendant = false, ceramic = false, collectible = false;
+  var swing = 0, swingVelocity = 0, swingTarget = 0;
   var front = overlay.querySelector(".ipop-front");
   var sceneEl = overlay.querySelector(".ipop-scene");
   var sceneImg = sceneEl.querySelector("img");
@@ -306,7 +307,7 @@
       cur.x += (tx - cur.x) * (reduceMotion ? 1 : k);
       cur.y += (ty - cur.y) * (reduceMotion ? 1 : k);
     }
-    if (pendant && !reduceMotion) {
+    if (collectible && !reduceMotion) {
       if (down) {
         swingVelocity = (swingTarget - swing) * 0.2;
         swing = swingTarget;
@@ -315,7 +316,7 @@
         var steps = Math.ceil(dt / 8), step = dt / steps / (1000 / 60);
         for (var n = 0; n < steps; n++) {
           swingVelocity += -swing * 0.018 * step;
-          swingVelocity *= Math.pow(0.975, step);
+          swingVelocity *= Math.pow(ceramic ? 0.95 : 0.975, step);
           swing += swingVelocity * step;
         }
       }
@@ -376,7 +377,7 @@
     if (Math.abs(dx) > 4 || Math.abs(dy) > 4) moved = true;
     base.y = baseY + dx * 0.6;
     base.x = Math.max(-70, Math.min(70, baseX - dy * 0.6));
-    if (pendant) swingTarget = Math.max(-12, Math.min(12, dx * 0.06));
+    if (collectible) swingTarget = Math.max(-12, Math.min(12, dx * (ceramic ? 0.04 : 0.06)));
     if (e.cancelable) e.preventDefault();
   }
   function end(cancelled) {
@@ -395,7 +396,7 @@
       // never rest edge-on: the slab degenerates to hairlines there
       base.y = nearest;
     }
-    if (pendant) {
+    if (collectible) {
       base.y = Math.round(base.y / 180) * 180;
       base.x = 0;
       follow.x = follow.y = 0;
@@ -411,7 +412,7 @@
   tile.addEventListener("touchcancel", function () { end(true); });
   window.addEventListener("blur", function () { end(true); });
   tile.addEventListener("keydown", function (e) {
-    if (!pendant || (e.key !== "Enter" && e.key !== " ")) return;
+    if (!collectible || (e.key !== "Enter" && e.key !== " ")) return;
     e.preventDefault();
     base.y = Math.round(base.y / 180) * 180 + 180;
     base.x = follow.x = follow.y = 0;
@@ -423,14 +424,17 @@
   var lastFocus = null;
   function openFor(id, name, story) {
     pendant = id === "jade";
+    ceramic = id === "porcelain";
+    collectible = pendant || ceramic;
     overlay.classList.toggle("is-pendant", pendant);
-    swing = pendant && !reduceMotion ? -3 : 0;
+    overlay.classList.toggle("is-porcelain", ceramic);
+    swing = collectible && !reduceMotion ? (ceramic ? -2 : -3) : 0;
     swingVelocity = swingTarget = 0;
     suspension.style.transform = "rotateZ(" + swing + "deg)";
-    if (pendant) {
+    if (collectible) {
       tile.tabIndex = 0;
       tile.setAttribute("role", "button");
-      tile.setAttribute("aria-label", "Flip Jade pendant to read its story");
+      tile.setAttribute("aria-label", ceramic ? "Flip Porcelain medallion to read its story" : "Flip Jade pendant to read its story");
     } else {
       tile.removeAttribute("tabindex");
       tile.removeAttribute("role");
@@ -438,6 +442,7 @@
     }
     overlay.querySelector(".ipop-hint").textContent = pendant
       ? "Drag to turn · release to sway · tap to flip"
+      : ceramic ? "Drag to turn · release to settle · tap to flip"
       : "Drag to turn it over in your hands · tap to flip";
     if (closeCleanupTimer !== null) {
       clearTimeout(closeCleanupTimer);
@@ -458,7 +463,7 @@
        of the tile sitting empty while it downloads. */
     tile.classList.remove("icon-ready");
     tile.classList.remove("icon-instant");
-    front.style.backgroundImage = 'url("' + (pendant ? iconSrc(id, false) : 'assets/icons/' + id + '.png') + '")';
+    front.style.backgroundImage = 'url("' + (collectible ? iconSrc(id, false) : 'assets/icons/' + id + '.png') + '")';
     img.onload = function () { tile.classList.add("icon-ready"); };
     if (layered) {
       setSrc(img, layered.bg);
