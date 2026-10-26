@@ -1,6 +1,99 @@
 (() => {
   // A few short reactions keep the opening playful without a permanent loop.
   const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
+  const copy = {
+    en: { goal: 'Preview a new goal', action: 'Preview logging an action', gem: 'Give the goal gem a spin', previous: 'Previous app screen', next: 'Next app screen', browse: 'Browse app screens', progress: 'Progress through app screenshots' },
+    zh: { goal: '预览新目标', action: '预览记录行动', gem: '转动目标宝石', previous: '上一张应用截图', next: '下一张应用截图', browse: '浏览应用截图', progress: '应用截图浏览进度' },
+  };
+  const t = (key) => copy[document.documentElement.lang.startsWith('zh') ? 'zh' : 'en'][key];
+  const reactions = new Map();
+  const react = (element, frames, options = {}) => {
+    if (!element || reducedMotion.matches) return;
+    reactions.get(element)?.cancel();
+    const animation = element.animate(frames, { duration: 500, easing: 'cubic-bezier(.2,.8,.2,1)', ...options });
+    reactions.set(element, animation);
+    animation.onfinish = () => reactions.delete(element);
+  };
+
+  // The illustrations are useful entry points, with plain artwork as fallback.
+  document.querySelectorAll('.step-art').forEach((art, index) => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = `${art.className} step-play`;
+    button.setAttribute('aria-label', t(['goal', 'action', 'gem'][index]));
+    while (art.firstChild) button.appendChild(art.firstChild);
+    [...button.children].forEach((child) => child.setAttribute('aria-hidden', 'true'));
+    const cue = document.createElement('span');
+    cue.className = 'step-play-cue';
+    cue.setAttribute('aria-hidden', 'true');
+    cue.textContent = index === 2 ? '↻' : '↗';
+    button.appendChild(cue);
+    if (index < 2) button.dataset.appScreen = t(index === 0 ? 'goal' : 'action');
+    else button.addEventListener('click', () => {
+      react(button.querySelector('[data-app-opal]'), [
+        { rotate: '0deg', scale: '1' },
+        { rotate: '-18deg', scale: '.92', offset: .15 },
+        { rotate: '335deg', scale: '1.16', offset: .72 },
+        { rotate: '360deg', scale: '1' },
+      ], { duration: 850 });
+      button.querySelectorAll('.step-spark').forEach((spark) => react(spark, [
+        { scale: '1', opacity: .65 }, { scale: '1.7', opacity: 1, offset: .5 }, { scale: '1', opacity: .65 },
+      ], { duration: 700 }));
+      // Colour remains a response when reduced motion is enabled.
+      button.classList.toggle('is-polished');
+    });
+    art.replaceWith(button);
+  });
+
+  const rail = document.querySelector('.app-screen-rail');
+  if (rail) {
+    const controls = document.createElement('div');
+    controls.className = 'gallery-controls';
+    controls.setAttribute('role', 'group');
+    controls.setAttribute('aria-label', t('browse'));
+    const previous = document.createElement('button');
+    const next = document.createElement('button');
+    [previous, next].forEach((button, index) => {
+      button.type = 'button';
+      button.className = 'gallery-arrow';
+      button.setAttribute('aria-label', t(index ? 'next' : 'previous'));
+      button.innerHTML = `<span aria-hidden="true">${index ? '→' : '←'}</span>`;
+    });
+    const track = document.createElement('div');
+    track.className = 'gallery-track';
+    track.setAttribute('role', 'progressbar');
+    track.setAttribute('aria-label', t('progress'));
+    track.setAttribute('aria-valuemin', '0');
+    track.setAttribute('aria-valuemax', '100');
+    track.innerHTML = '<span></span>';
+    controls.append(track, previous, next);
+    rail.after(controls);
+    let railFrame = 0;
+    const updateRail = () => {
+      railFrame = 0;
+      const max = rail.scrollWidth - rail.clientWidth;
+      const progress = max > 0 ? Math.max(0, Math.min(1, rail.scrollLeft / max)) : 1;
+      track.style.setProperty('--gallery-progress', progress);
+      track.setAttribute('aria-valuenow', String(Math.round(progress * 100)));
+      previous.disabled = rail.scrollLeft < 2;
+      next.disabled = rail.scrollLeft >= max - 2;
+    };
+    const queueRail = () => { if (!railFrame) railFrame = requestAnimationFrame(updateRail); };
+    [previous, next].forEach((button, index) => button.addEventListener('click', () => {
+      const cards = rail.querySelectorAll('.app-screen-card');
+      const stride = cards[1].offsetLeft - cards[0].offsetLeft;
+      rail.scrollBy({ left: (index ? 1 : -1) * stride, behavior: reducedMotion.matches ? 'instant' : 'smooth' });
+    }));
+    rail.addEventListener('scroll', queueRail, { passive: true });
+    addEventListener('resize', queueRail);
+    updateRail();
+  }
+
+  document.querySelectorAll('.faq details').forEach((detail) => {
+    detail.addEventListener('toggle', () => {
+      if (detail.open) react(detail.querySelector('p'), [{ opacity: .25, translate: '0 -5px' }, { opacity: 1, translate: '0 0' }], { duration: 240 });
+    });
+  });
   const feature = document.querySelector(".editorial-feature");
   const finePointer = matchMedia("(hover: hover) and (pointer: fine)");
   let motionFrame = 0;
@@ -51,6 +144,8 @@
   reducedMotion.addEventListener("change", () => {
     resetScene();
     if (reducedMotion.matches) {
+      reactions.forEach((animation) => animation.cancel());
+      reactions.clear();
       arrivals.forEach((animation) => animation.cancel());
       arrivals.clear();
     }
@@ -66,6 +161,7 @@
     const options = billing.querySelectorAll("[data-billing-period]");
     options.forEach((button) => {
       button.addEventListener("click", () => {
+        if (button.getAttribute('aria-pressed') === 'true') return;
         const yearly = button.dataset.billingPeriod === "yearly";
         options.forEach((option) => option.setAttribute("aria-pressed", String(option === button)));
         price.textContent = yearly ? "$29.99" : "$4.99";
@@ -73,6 +169,7 @@
         note.textContent = yearly
           ? "About $2.50/month · billed yearly · USD"
           : "Or $29.99 a year · save 50% · USD";
+        react(price, [{ scale: '.92', opacity: .5 }, { scale: '1.04', opacity: 1, offset: .65 }, { scale: '1', opacity: 1 }]);
       });
     });
     billing.hidden = false;
@@ -89,6 +186,7 @@
         image.alt = source.alt;
         title.textContent = button.dataset.appScreen;
         screenDialog.showModal();
+        react(screenDialog, [{ opacity: 0, scale: '.94', translate: '0 16px' }, { opacity: 1, scale: '1', translate: '0 0' }], { duration: 320 });
       });
     });
     screenDialog.querySelector("[data-close-screen]").addEventListener("click", () => screenDialog.close());

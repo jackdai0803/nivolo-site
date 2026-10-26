@@ -1501,3 +1501,105 @@ body.nav-on-midnight nav .nav-cta.is-soon {
     opacity: 1;
   }
 }
+
+/* Tactile exploration throughout the page. */
+.step-play {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+.step-play.step-art--gem { display: grid; }
+.step-play-cue {
+  position: absolute;
+  z-index: 4;
+  top: 14px;
+  right: 14px;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid #ffffff9c;
+  border-radius: 50%;
+  background: #ffffffc9;
+  color: #173d52;
+  font: 24px/1 var(--font-body);
+  box-shadow: 0 3px 0 #173d521c;
+  transition: transform 260ms cubic-bezier(.2,.8,.2,1.4);
+}
+.step-play:focus-visible { outline: 3px solid #267492; outline-offset: 5px; }
+.step-play:active .step-play-cue { transform: translateY(3px) scale(.92); }
+.step-play.is-polished { box-shadow: inset 0 0 0 3px #fff1b9; }
+.step-play .step-app-screen { transition: translate 400ms cubic-bezier(.2,.8,.2,1.2); }
+.step-play [data-app-opal] { transform-origin: center; }
+
+.app-screen-card {
+  padding: 16px 14px 22px;
+  border: 1px solid #c9dfe5;
+  border-radius: 25px;
+  background: #e2eef2;
+  box-shadow: 0 4px 0 #c2d5dd;
+  transition: background 180ms ease, box-shadow 180ms ease;
+}
+.app-screen-card:nth-child(3n + 2) { background: #eae6f1; border-color: #dcd5e7; box-shadow: 0 4px 0 #d4cede; }
+.app-screen-card:nth-child(3n) { background: #e8eddd; border-color: #d9e0cd; box-shadow: 0 4px 0 #d0d9c2; }
+.app-screen-card:active { box-shadow: 0 1px 0 #b7cbd4; }
+.app-screen-label { min-height: 34px; margin: 0 2px 15px; }
+.app-screen-label b { max-width: 160px; line-height: 1.25; }
+.app-screen-label > span { color: #526773; }
+.app-screen-card:focus-visible { border-radius: 25px; outline-offset: 3px; }
+.app-screen-card .phone { transition: transform 350ms cubic-bezier(.2,.8,.2,1.3), filter 250ms ease; }
+.gallery-controls { display: flex; align-items: center; gap: 10px; padding: 0 6px; }
+.app-screen-rail:has(+ .gallery-controls) { scrollbar-width: none; }
+.app-screen-rail:has(+ .gallery-controls)::-webkit-scrollbar { display: none; }
+.app-gallery-section:has(.gallery-controls) .app-gallery-note > span { display: none; }
+.gallery-arrow, .step-play-cue { corner-shape: round; }
+.gallery-track { height: 5px; flex: 1; max-width: 240px; margin-right: auto; border-radius: 20px; overflow: hidden; background: #dce4e6; }
+.gallery-track > span { display: block; width: 100%; height: 100%; border-radius: inherit; background: #346d85; transform: scaleX(var(--gallery-progress, 0)); transform-origin: left; }
+.gallery-arrow { display: grid; place-items: center; width: 48px; height: 48px; border: 1px solid #c2d9e3; border-radius: 50%; background: #e2f1f6; color: #173d52; box-shadow: 0 3px 0 #aecbd7; font: 24px/1 var(--font-body); cursor: pointer; transition: transform 160ms ease, background 160ms ease, box-shadow 160ms ease; }
+.gallery-arrow:hover:not(:disabled) { background: #f4fbfe; transform: translateY(-2px); box-shadow: 0 5px 0 #aecbd7; }
+.gallery-arrow:active:not(:disabled) { transform: translateY(3px); box-shadow: none; }
+.gallery-arrow:disabled { opacity: .35; cursor: default; box-shadow: none; }
+.gallery-arrow:focus-visible { outline: 3px solid #267492; outline-offset: 4px; }
+
+.keepsake-card > img, .lore-card .lore-ic { transition: transform 360ms cubic-bezier(.2,.8,.2,1.4), filter 250ms ease; }
+.keepsake-card:focus-within > img, .lore-card:focus-within .lore-ic { transform: translateY(-6px) rotate(-5deg); filter: drop-shadow(0 12px 8px #173d5229); }
+.keepsake-card:active > img, .lore-card:active .lore-ic { transform: translateY(2px) scale(.94); }
+.collector-price strong { display: inline-block; transform-origin: left center; }
+.collector-billing button { transition: color 160ms ease, background 160ms ease, transform 160ms cubic-bezier(.2,.8,.2,1.4); }
+.collector-billing button:active { transform: scale(.92); }
+.faq summary { transition: color 160ms ease; }
+.faq summary:hover { opacity: 1; color: #267492; }
+.faq details[open] summary { color: #267492; }
+.faq summary::after { transition: transform 250ms cubic-bezier(.2,.8,.2,1.3), background 180ms ease; }
+.faq summary:active::after { scale: .86; }
+a.nav-cta, a.btn-light, a.btn-moonlit { transition: transform 180ms cubic-bezier(.2,.8,.2,1.3), box-shadow 180ms ease, background-color 180ms ease; }
+a.nav-cta:active, a.btn-light:active, a.btn-moonlit:active { transform: translateY(3px) scale(.98); }
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .step-play:hover .step-app-screen { translate: 0 -8px; }
+  .step-play:hover .step-play-cue { transform: rotate(-12deg) scale(1.08); }
+  .keepsake-card:hover > img, .lore-card:hover .lore-ic { transform: translateY(-6px) rotate(-5deg); filter: drop-shadow(0 12px 8px #173d5229); }
+  .keepsake-card:nth-child(even):hover > img, .lore-card:nth-child(even):hover .lore-ic { transform: translateY(-6px) rotate(5deg); }
+  .app-screen-card:hover .phone { transform: translateY(-7px) rotate(-1.5deg); }
+  .app-screen-card:nth-child(even):hover .phone { transform: translateY(-7px) rotate(1.5deg); }
+  #features .phone-stage .phone { transition: translate 450ms cubic-bezier(.2,.8,.2,1.2); }
+  #features .phone-stage:hover .phone { translate: 0 -9px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .step-play-cue, .step-play .step-app-screen, .app-screen-card, .app-screen-card .phone, .gallery-arrow,
+  .keepsake-card > img, .lore-card .lore-ic, .collector-billing button, .faq summary::after,
+  a.nav-cta, a.btn-light, a.btn-moonlit { transition: none; }
+  .step-play:active .step-play-cue, .gallery-arrow:hover:not(:disabled), .gallery-arrow:active:not(:disabled),
+  .app-screen-card:hover .phone, .app-screen-card:active .phone,
+  .keepsake-card:focus-within > img, .lore-card:focus-within .lore-ic,
+  .keepsake-card:active > img, .lore-card:active .lore-ic, .collector-billing button:active,
+  a.nav-cta:active, a.btn-light:active, a.btn-moonlit:active { transform: none; }
+  .faq summary:active::after { scale: 1; }
+}
