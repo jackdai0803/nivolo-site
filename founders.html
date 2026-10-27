@@ -8,8 +8,8 @@
   <meta name="description" content="Twenty little worlds with Nivo. Explore the Founder’s Edition collection of ceramic-mosaic paintings." />
   <link rel="icon" href="assets/favicon-32.png?v=5" />
   <link rel="stylesheet" href="assets/fonts.css" />
-  <link rel="stylesheet" href="assets/founders-gallery.css?v=4" />
-  <script src="assets/founders-gallery.js?v=5" defer></script>
+  <link rel="stylesheet" href="assets/founders-gallery.css?v=5" />
+  <script src="assets/founders-gallery.js?v=6" defer></script>
 </head>
 <body class="founders-page">
   <a class="founder-skip" href="#paintings" data-founder-copy="skip">Skip to paintings</a>
@@ -175,7 +175,13 @@
     <footer class="founder-footer"><p data-founder-copy="footer">Small steps. Beautiful places. A beginning worth keeping.</p><a href="index.html#collection" data-founder-copy="more">Explore Nivolo’s other keepsakes →</a></footer>
   </main>
   <dialog class="founder-viewer" aria-labelledby="painting-title" aria-describedby="painting-description">
-    <div class="founder-viewer-top"><span class="founder-viewer-edition" data-founder-copy="edition">The Founder’s Edition</span><button class="founder-control founder-close" type="button" data-founder-label="close" aria-label="Close painting" autofocus>×</button></div>
+    <div class="founder-viewer-top">
+      <span class="founder-viewer-edition" data-founder-copy="edition">The Founder’s Edition</span>
+      <div class="founder-viewer-tools">
+        <button id="painting-flip" type="button" aria-controls="painting-story" aria-expanded="false" data-founder-copy="readNote" hidden>View back ↻</button>
+        <button class="founder-control founder-close" type="button" data-founder-label="close" aria-label="Close painting" autofocus>×</button>
+      </div>
+    </div>
     <div class="founder-stage"><div class="founder-frame">
       <div class="founder-front"><img id="painting-image" width="1536" height="1024" alt="" draggable="false" /></div>
       <article class="founder-story" id="painting-story" aria-labelledby="painting-story-title" hidden>
@@ -194,7 +200,6 @@
       <div class="founder-pagination"><button class="founder-control" type="button" data-direction="-1" data-founder-label="previous" aria-label="Previous painting">←</button><span id="painting-position"></span><button class="founder-control" type="button" data-direction="1" data-founder-label="next" aria-label="Next painting">→</button></div>
     </div>
     <div class="founder-viewer-actions">
-      <button id="painting-flip" type="button" aria-controls="painting-story" aria-expanded="false" data-founder-copy="readNote" hidden>Read Nivo’s note ↻</button>
       <a class="founder-back" id="painting-download" href="assets/founders/01.webp" download="nivolo-founders-01.webp" data-founder-copy="save">Save painting</a>
       <span id="painting-save-status" role="status"></span>
     </div>
