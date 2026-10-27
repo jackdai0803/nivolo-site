@@ -31,6 +31,15 @@
     pageTitle: ['Founder’s Gallery — Nivolo', '创始珍藏画廊 — Nivolo'],
     allPaintings: ['The twenty paintings', '二十幅珍藏画作'],
     save: ['Save painting', '保存画作'],
+    readNote: ['Read Nivo’s note ↻', '阅读 Nivo 的手记 ↻'],
+    seeFront: ['Return to painting ↻', '返回画作正面 ↻'],
+    journal: ['From Nivo’s travel journal', '摘自 Nivo 的旅行手记'],
+    firstLight: ['The First Light', '初光'],
+    storyOpening: ['I came to the lake before sunrise, carrying one small star. For a while, the water held more light than the sky.', '日出之前，我带着一颗小星星来到湖边。有那么一会儿，湖水里的光比天空还多。'],
+    storyEnding: ['I kept the mountains quiet and let the green ribbons wander. The little star was the last thing I painted—something warm to carry into a new beginning.', '我让群山静静地待着，让绿色的光带自由游走。那颗小星星是我最后画上的——带着这一点温暖，走向新的开始。'],
+    artCredit: ['Created by Jack with AI-assisted artwork. Nivo is our fictional painter.', '由 Jack 借助 AI 创作。Nivo 是我们的虚构画家。'],
+    saving: ['Preparing signed painting…', '正在准备签名画作…'],
+    saveFailed: ['Could not save. Please try again.', '保存失败，请重试。'],
     home: ['Nivolo home', 'Nivolo 首页'],
   };
   const t = (key) => copy[key][zh ? 1 : 0];
@@ -71,6 +80,10 @@
   const image = document.getElementById('painting-image');
   const frame = viewer.querySelector('.founder-frame');
   const stage = viewer.querySelector('.founder-stage');
+  const front = viewer.querySelector('.founder-front');
+  const story = document.getElementById('painting-story');
+  const flip = document.getElementById('painting-flip');
+  const download = document.getElementById('painting-download');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const controls = [...viewer.querySelectorAll('[data-direction]')];
   let current = 0;
@@ -79,6 +92,26 @@
   let pointer;
   let raf = 0;
   let pendingTilt;
+  let showingStory = false;
+  let turnAnimation;
+  function showStory(show, animate = false) {
+    showingStory = show;
+    front.hidden = show;
+    story.hidden = !show;
+    viewer.classList.toggle('is-reading', show);
+    viewer.setAttribute('aria-labelledby', show ? 'painting-story-title' : 'painting-title');
+    if (show) viewer.removeAttribute('aria-describedby');
+    else viewer.setAttribute('aria-describedby', 'painting-description');
+    flip.setAttribute('aria-expanded', String(show));
+    flip.textContent = t(show ? 'seeFront' : 'readNote');
+    turnAnimation?.cancel();
+    resetTilt();
+    if (animate && !reduced.matches) turnAnimation = frame.animate([
+      { opacity: .35, transform: `rotateY(${show ? -10 : 10}deg)` },
+      { opacity: 1, transform: 'rotateY(0deg)' },
+    ], { duration: 340, easing: 'ease-out' });
+  }
+  flip.addEventListener('click', () => showStory(!showingStory, true));
   const resetTilt = () => {
     cancelAnimationFrame(raf);
     raf = 0;
@@ -114,6 +147,8 @@
     if (index < 0 || index >= paintings.length) return;
     current = index;
     const item = paintings[current];
+    showStory(false);
+    flip.hidden = item.id !== '01';
     resetTilt();
     frame.classList.remove('is-glinting');
     image.style.visibility = 'hidden';
@@ -124,12 +159,56 @@
     document.getElementById('painting-place').textContent = localized(item, 'place');
     document.getElementById('painting-description').textContent = localized(item, 'description');
     document.getElementById('painting-position').textContent = `${item.id} / 20`;
-    const download = document.getElementById('painting-download');
     download.href = `assets/founders/${item.id}.webp`;
     download.download = `nivolo-founders-${item.id}.webp`;
     controls[0].disabled = current === 0;
     controls[1].disabled = current === paintings.length - 1;
   }
+  // Export the same signature placement shown on every front, without altering source art.
+  let saving = false;
+  download.addEventListener('click', async (event) => {
+    event.preventDefault();
+    if (saving) return;
+    saving = true;
+    const item = paintings[current];
+    const status = document.getElementById('painting-save-status');
+    status.textContent = t('saving');
+    download.setAttribute('aria-disabled', 'true');
+    try {
+      const art = new Image();
+      const signature = new Image();
+      art.src = `assets/founders/${item.id}.webp`;
+      signature.src = 'assets/nivo-signature-gold.webp';
+      await Promise.all([art.decode(), signature.decode()]);
+      const canvas = document.createElement('canvas');
+      canvas.width = art.naturalWidth;
+      canvas.height = art.naturalHeight;
+      const context = canvas.getContext('2d');
+      context.drawImage(art, 0, 0);
+      const width = canvas.width * .11;
+      const height = width * signature.naturalHeight / signature.naturalWidth;
+      context.shadowColor = '#281f11b3';
+      context.shadowOffsetY = 1;
+      context.shadowBlur = 1;
+      context.drawImage(signature, canvas.width * .96 - width, canvas.height * .96 - height, width, height);
+      const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
+      if (!blob) throw new Error('Image export failed');
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `nivolo-founders-${item.id}-signed.png`;
+      document.body.append(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 60000);
+      status.textContent = '';
+    } catch {
+      status.textContent = t('saveFailed');
+    } finally {
+      saving = false;
+      download.removeAttribute('aria-disabled');
+    }
+  });
   links.forEach((link, index) => link.addEventListener('click', (event) => {
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
     event.preventDefault();
@@ -150,6 +229,7 @@
   }
   viewer.querySelector('.founder-close').addEventListener('click', () => viewer.close());
   viewer.addEventListener('close', () => {
+    showStory(false);
     resetTilt();
     frame.classList.remove('is-glinting');
     document.documentElement.classList.remove('founder-viewer-open');
@@ -175,13 +255,13 @@
   });
   stage.addEventListener('pointerenter', () => { bounds = stage.getBoundingClientRect(); });
   stage.addEventListener('pointerdown', (event) => {
-    if (reduced.matches || !event.isPrimary || event.button !== 0) return;
+    if (reduced.matches || showingStory || !event.isPrimary || event.button !== 0) return;
     bounds = stage.getBoundingClientRect();
     pointer = event.pointerId;
     stage.setPointerCapture(pointer);
   });
   stage.addEventListener('pointermove', (event) => {
-    if (reduced.matches || !bounds || (event.pointerType !== 'mouse' && pointer !== event.pointerId)) return;
+    if (reduced.matches || showingStory || !bounds || (event.pointerType !== 'mouse' && pointer !== event.pointerId)) return;
     const x = Math.max(-1, Math.min(1, (event.clientX - bounds.left) / bounds.width * 2 - 1));
     const y = Math.max(-1, Math.min(1, (event.clientY - bounds.top) / bounds.height * 2 - 1));
     pendingTilt = [-y * 3, x * 3];
