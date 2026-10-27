@@ -624,8 +624,6 @@
     opener.addEventListener("click", go);
     warmQueue.push(id);
   }
-  var supporter = document.querySelector("#collection .early-supporter");
-  if (supporter) attachPreview(supporter, supporter.querySelector(".early-supporter-art"), supporter.querySelector(".early-supporter-art img"), supporter.querySelector("h3"), supporter.querySelector(".early-supporter-copy > p:not(.early-supporter-kicker)"));
   Array.prototype.forEach.call(document.querySelectorAll("#collection .keepsake-card"), function (el) {
     attachPreview(el, el, el.querySelector("img"), el.querySelector("h4"), el.querySelector("p"));
   });

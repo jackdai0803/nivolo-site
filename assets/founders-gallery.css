@@ -1,0 +1,108 @@
+/* The artwork keeps its own ceramic frame; the gallery gives it breathing room. */
+.founders-page { margin: 0; background: #f6f3ec; color: #273c34; font: 15px/1.6 Inter, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+.founders-page *, .founder-feature *, .founder-viewer * { box-sizing: border-box; }
+.founders-page a { color: inherit; text-decoration: none; }
+.founders-page button { font: inherit; }
+.founders-page a:focus-visible, .founder-feature a:focus-visible, .founder-viewer button:focus-visible { outline: 3px solid #5b8370; outline-offset: 6px; }
+.founder-skip { position: fixed; top: -80px; left: 20px; z-index: 10; padding: 12px 20px; background: #fff; }
+.founder-skip:focus { top: 12px; }
+.founder-nav { max-width: 1440px; margin: auto; padding: 28px 48px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #344b3220; }
+.founder-wordmark { display: inline-flex; gap: 9px; align-items: center; font: 750 26px/1 'Inter Tight', sans-serif; letter-spacing: -.06em; }
+.founder-wordmark img { object-fit: contain; }
+.founder-back { font-size: 13px; }
+.founder-back:hover, .founder-footer a:hover { text-decoration: underline; text-underline-offset: 5px; }
+.founder-intro { padding: 85px 24px 66px; text-align: center; }
+.founder-eyebrow { margin: 0 0 23px; color: #746344; font: 600 11px/1.5 Inter, Arial, sans-serif; text-transform: uppercase; letter-spacing: .18em; }
+.founder-intro h1 { margin: 0; font: 400 clamp(48px, 6vw, 80px)/1.02 Newsreader, Georgia, serif; letter-spacing: -.035em; }
+.founder-intro-copy { max-width: 520px; margin: 25px auto 22px; color: #697268; font-size: 15px; }
+.founder-intro-meta { display: flex; justify-content: center; gap: 12px; color: #7b7161; font-size: 11px; letter-spacing: .04em; }
+.founder-collection { max-width: 1440px; padding: 0 48px 80px; margin: auto; }
+.founder-collection-heading { border-top: 1px solid #344b3220; padding: 22px 0 30px; display: flex; justify-content: space-between; align-items: center; gap: 16px; color: #727469; font-size: 12px; }
+.founder-collection-heading p { margin: 0; color: #354839; }
+.founder-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 54px 32px; }
+.founder-card { min-width: 0; }
+.founder-art-link { display: block; position: relative; background: #e8e2d5; box-shadow: 0 8px 18px #443b2520, 0 2px 4px #443b2520; transition: transform 240ms ease, box-shadow 240ms ease; }
+.founder-art-link img { display: block; width: 100%; height: auto; aspect-ratio: 3/2; object-fit: contain; }
+.founder-art-cue { position: absolute; right: 12px; bottom: 12px; display: grid; place-items: center; width: 32px; height: 32px; background: #faf7edee; color: #344b3c; border: 1px solid #fff9; border-radius: 50%; opacity: 0; transform: translateY(4px); transition: opacity 200ms, transform 200ms; }
+.founder-art-link:hover, .founder-art-link:focus-visible { transform: translateY(-4px); box-shadow: 0 14px 24px #443b252b, 0 2px 4px #443b2520; }
+.founder-art-link:hover .founder-art-cue, .founder-art-link:focus-visible .founder-art-cue { opacity: 1; transform: none; }
+.founder-caption { display: flex; justify-content: space-between; align-items: start; gap: 10px; padding-top: 19px; }
+.founder-caption h2 { margin: 0; font: 500 24px/1.12 Newsreader, Georgia, serif; letter-spacing: -.02em; }
+.founder-caption p { margin: 7px 0 0; color: #727469; font-size: 11px; }
+.founder-number { flex: none; color: #8a7c62; font-size: 10px; font-variant-numeric: tabular-nums; padding-top: 4px; letter-spacing: .07em; }
+.founder-footer { text-align: center; margin: 0 24px; padding: 48px 0 60px; border-top: 1px solid #344b3220; }
+.founder-footer p { font: 400 26px/1.3 Newsreader, Georgia, serif; margin: 0 0 18px; }
+.founder-footer a { font-size: 12px; color: #747264; }
+
+/* Homepage invitation, scoped away from existing icon previews. */
+.founder-feature { display: grid; grid-template-columns: 1.4fr 1fr; align-items: center; gap: clamp(28px, 4vw, 62px); margin: 0 0 40px; padding: clamp(24px, 4vw, 48px); background: #f6f3ec; border: 1px solid #ded8c9; border-radius: 22px; }
+.founder-feature-art { display: block; box-shadow: 0 12px 24px #443b2524; transition: transform 250ms ease; }
+.founder-feature-art:hover { transform: translateY(-4px); }
+.founder-feature-art img { display: block; width: 100%; height: auto; }
+.founder-feature .founder-eyebrow { margin: 0 0 20px; }
+.founder-identity { display: flex; align-items: center; gap: 13px; margin-bottom: 25px; text-align: left; }
+.founder-identity img { display: block; width: 56px; height: 56px; flex: none; border-radius: 13px; box-shadow: 0 3px 8px #263d321a; }
+.founder-identity .founder-eyebrow, .founder-feature .founder-identity .founder-eyebrow { margin: 0 0 5px; }
+.founder-icon-label { margin: 0; color: #697268; font: 400 11px/1.5 Inter, Arial, sans-serif; }
+.founder-intro .founder-identity { width: fit-content; margin: 0 auto 30px; }
+.founder-feature h3 { margin: 0 0 20px; color: #273c34; font: 400 clamp(32px, 3.2vw, 48px)/1.05 Newsreader, Georgia, serif; letter-spacing: -.035em; }
+.founder-feature-copy > p:not(.founder-eyebrow):not(.founder-feature-note) { margin: 0; color: #697268; font: 400 14px/1.7 Inter, Arial, sans-serif; }
+.founder-feature-cta { display: inline-flex; align-items: center; gap: 28px; min-height: 48px; margin-top: 26px; padding: 12px 21px; border-radius: 8px; background: #28483b; color: #fff; font: 600 13px/1.5 Inter, Arial, sans-serif; text-decoration: none; transition: background 160ms ease; }
+.founder-feature-cta:hover { background: #3c5c4c; text-decoration: none; }
+.founder-feature .founder-feature-note { margin: 15px 0 0; color: #81765f; font: 400 10px/1.6 Inter, Arial, sans-serif; letter-spacing: .03em; }
+
+/* Native dialog supplies focus containment, Escape, and focus restoration. */
+.founder-viewer { box-sizing: border-box; width: min(1160px, calc(100vw - 48px)); max-width: none; max-height: calc(100dvh - 32px); padding: 22px 36px 18px; border: 1px solid #c4b99c; border-radius: 12px; margin: auto; color: #e9e3d5; background: #1e2c26; overflow: auto; box-shadow: 0 28px 100px #0008; }
+.founder-viewer::backdrop { background: #131b17c9; backdrop-filter: blur(8px); }
+.founder-viewer-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+.founder-viewer-edition { font: 500 10px/1.5 Inter, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #c9bc9d; }
+.founder-control { display: grid; place-items: center; flex: none; width: 44px; height: 44px; padding: 0; border: 1px solid #ddcfac48; border-radius: 50%; color: #eee5d4; background: #ffffff08; cursor: pointer; font: 400 22px/1 Inter, sans-serif; }
+.founder-control:hover { background: #ddcfac22; }
+.founder-control:disabled { opacity: .25; cursor: default; }
+.founder-control:focus-visible { outline-color: #e1c98e; }
+.founder-close { font-size: 26px; }
+.founder-stage { perspective: 1300px; display: flex; justify-content: center; align-items: center; padding: 4px 8px 12px; touch-action: pan-y; }
+.founder-frame { position: relative; max-width: 100%; width: min(100%, calc((100dvh - 305px) * 1.5)); min-width: 0; transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)); transition: transform 180ms ease-out; box-shadow: 0 10px 26px #0007; }
+.founder-frame img { display: block; width: 100%; height: auto; aspect-ratio: 3/2; object-fit: contain; user-select: none; }
+.founder-frame::after { content: ''; position: absolute; inset: 0; pointer-events: none; border: 1px solid #f9e3ac66; opacity: 0; }
+.founder-frame.is-glinting::after { animation: founder-glint 900ms ease-out both; }
+@keyframes founder-glint { 0% { opacity: 0; box-shadow: 0 0 0 #f0cb7600; } 40% { opacity: .8; box-shadow: 0 0 15px #f0cb7638, inset 0 0 8px #f0cb7638; } 100% { opacity: 0; box-shadow: 0 0 0 #f0cb7600; } }
+.founder-viewer-bottom { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding-top: 18px; }
+.founder-viewer-caption { max-width: 760px; }
+.founder-viewer-caption h2 { margin: 7px 0; font: 400 32px/1.1 Newsreader, Georgia, serif; letter-spacing: -.02em; }
+.founder-viewer-caption p { margin: 0; color: #babfb3; font-size: 12px; line-height: 1.6; }
+.founder-viewer-caption #painting-place { color: #c9bc9d; font-size: 10px; letter-spacing: .04em; }
+.founder-pagination { display: flex; flex: none; align-items: center; gap: 14px; }
+.founder-pagination span { font-size: 12px; color: #c9bc9d; font-variant-numeric: tabular-nums; }
+.founder-viewer-hint { margin: 18px 0 0; color: #a2ab9d; font-size: 10px; text-align: center; }
+html.founder-viewer-open { overflow: hidden; }
+@media (max-width: 960px) { .founder-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 760px) {
+  .founder-feature { grid-template-columns: 1fr; gap: 28px; }
+  .founder-viewer { width: calc(100vw - 24px); padding: 16px 18px; }
+  .founder-viewer-bottom { flex-direction: column; align-items: start; gap: 20px; }
+  .founder-pagination { align-self: center; }
+  .founder-frame { width: min(100%, calc((100dvh - 350px) * 1.5)); }
+  .founder-viewer-caption h2 { font-size: 28px; }
+}
+@media (max-width: 600px) {
+  .founder-nav { padding: 22px 20px; }
+  .founder-back { font-size: 11px; }
+  .founder-intro { padding: 56px 24px 42px; }
+  .founder-intro h1 { font-size: clamp(39px, 10vw, 54px); }
+  .founder-intro-copy { font-size: 14px; }
+  .founder-collection { padding: 0 20px 48px; }
+  .founder-collection-heading { flex-direction: column; align-items: start; gap: 5px; padding: 20px 0 24px; }
+  .founder-grid { grid-template-columns: 1fr; gap: 38px; }
+  .founder-art-cue { opacity: 1; transform: none; }
+  .founder-caption { padding-top: 16px; }
+  .founder-footer p { font-size: 23px; }
+}
+@media (max-height: 540px) {
+  .founder-frame { width: min(100%, 560px); }
+  .founder-viewer { max-height: calc(100dvh - 16px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .founder-art-link, .founder-art-cue, .founder-feature-art, .founder-frame { transition: none; transform: none; }
+  .founder-frame.is-glinting::after { animation: none; }
+}
