@@ -56,7 +56,7 @@
       <p>Your goals, actions, streaks, Krill, gems, name, birthday and any email you enter <strong>inside the app</strong> are stored on your device. Goal text and your reason are sent only if you tap to draft an AI plan; your name, birthday and in-app email are not sent to us.</p>
       <p>The <strong>AI goal plan</strong> sends what you enter when you request a draft. For Plus members with at least five logged actions, the <strong>AI weekly insight</strong> can send summary counts automatically when the app opens or the language changes, if it has no saved result for that week and language. Requests use a random app ID rather than your name or email. Section 3 explains exactly how this works.</p>
       <p>If you voluntarily join the website launch list, we keep the email address you submit only long enough to send the one launch message. We do not run analytics, ads, or trackers, and we do not sell personal information.</p>
-      <p>The app also uses a random app ID to check the limited Early Supporter icon. Our server keeps a hash for each of its first 20 owners; the app and website show only the total owner count.</p>
+      <p>The limited Early Supporter icon and numbered painting are for our first 20 verified paying supporters. Our server verifies Apple-signed purchase records and keeps a hash of each winning subscription identifier; the public count contains no personal information.</p>
     </div>
 
     <div class="toc" role="navigation" aria-label="Contents">
@@ -102,7 +102,7 @@
           <tr><td><strong>Collection and cosmetics</strong> — owned items, equipped outfits, worlds, chosen app icon</td><td>Nivo's look and your unlocks.</td></tr>
           <tr><td><strong>Settings</strong> — language (English or 中文), reminder times, notification preferences, sound and haptics</td><td>To keep the app the way you set it.</td></tr>
           <tr><td><strong>Purchase state</strong> — which membership tier is active, as reported by Apple</td><td>To unlock that tier’s features offline.</td></tr>
-          <tr><td><strong>A random app ID</strong> — a UUID generated on your device</td><td>Used to apply AI fair-use limits and check the Early Supporter icon. It is generated randomly and is not derived from your Apple ID, email, name, phone number, or a hardware identifier.</td></tr>
+          <tr><td><strong>A random app ID</strong> — a UUID generated on your device</td><td>Used to apply AI fair-use limits and authenticate requests, including paid Early Supporter checks. It is generated randomly and is not derived from your Apple ID, email, name, phone number, or a hardware identifier.</td></tr>
         </tbody>
       </table>
     </div>
@@ -135,7 +135,7 @@
     </ul>
 
     <h3>Early Supporter icon</h3>
-    <p>On a real iPhone, the app sends its random app ID to our Cloudflare server to check whether it is one of the first 20 installations to open this version online. This happens without using an AI feature. The server stores only a SHA-256 hash of each winning ID and its place from 1 to 20, so a repeat request returns the same award. No name, email, goal text, or Apple ID is attached. The public owner count contains only a number. A launch-list signup does not reserve an icon. The award remains available while its saved installation identity is retained, including through a normal device backup; reinstalling without that saved identity cannot recover it automatically.</p>
+    <p>The Early Supporter icon and one numbered painting are awarded to the first 20 qualifying payments verified by our Cloudflare server, in the order they are received. Any paid membership tier qualifies; free trials, test purchases, Family Sharing access and launch-list signups do not reserve a place. The app sends an Apple-signed purchase record, authenticated with its random installation ID. Apple App Store Server Notifications can also report a payment directly, including when a free trial becomes paid while the app is closed. We verify Apple's signature, the app and product, production environment, purchaser ownership, positive payment amount and absence of a revocation. We keep only a SHA-256 hash of the winning subscription's original transaction identifier and its number from 1 to 20; the same number selects its painting. We do not store your Apple ID, name, email, goals or signed receipt in the award record. Renewals and repeat requests return the same award. The app saves a local copy for offline access; restoring an active winning subscription on another device recovers its number and painting. The keepsake remains after membership expires, and places are never reissued.</p>
 
     <p class="note">If a future version of the app adds a feature that transmits anything else, this policy will be updated before that version ships.</p>
 
@@ -156,7 +156,7 @@
           <tr>
             <td><strong>Cloudflare</strong></td>
             <td>Hosts nivolo.app, our AI server, the Early Supporter record, and the launch list (Workers, Durable Objects, and KV); provides DNS and email routing</td>
-            <td>The AI request contents in transit, your IP address as an ordinary part of making a network connection (and as the key of short-lived rate limits), the fair-use counters described above, the random app ID used to check the Early Supporter icon and the stored hashes of winning IDs, and the email address you voluntarily submit to the launch list.</td>
+            <td>The AI request contents in transit, your IP address as an ordinary part of making a network connection (and as the key of short-lived rate limits), the fair-use counters described above, Apple-signed purchase records used to verify Early Supporter eligibility and the stored hashes of winning subscription identifiers, and the email address you voluntarily submit to the launch list.</td>
           </tr>
           <tr>
             <td><strong>Anthropic</strong> (Claude API)</td>
@@ -209,7 +209,7 @@
           <tr><td>Per-network daily count of new free drafts (keyed by IP address)</td><td>Expires automatically after 2 days.</td></tr>
           <tr><td>Plus daily plan count and weekly insight count (keyed by the subscription's transaction identifier)</td><td>Expire automatically after 2 and 14 days.</td></tr>
           <tr><td>Free-draft record against your random app ID</td><td>Kept while it is needed to apply the free limit. It holds a count and the last couple of session identifiers, nothing else.</td></tr>
-          <tr><td>Early Supporter award</td><td>The hash of each of the 20 winning random IDs and its award number is retained for the lifetime of the reward, so places are never reissued. No personal profile or email is included.</td></tr>
+          <tr><td>Early Supporter award</td><td>The hash of each of the 20 winning subscription identifiers and its award number is retained for the lifetime of the reward, so places are never reissued. No personal profile or email is included.</td></tr>
           <tr><td>Your signed subscription record</td><td>Checked in memory on each request and then discarded; only the transaction identifier is used as a counter key, as above.</td></tr>
           <tr><td>Launch-list email address</td><td>Kept until the launch message is sent, then deleted after any necessary delivery follow-up. You can ask us to remove it at any time.</td></tr>
           <tr><td>Emails you send us for support</td><td>Kept in the developer's mailbox for as long as needed to help you and to keep a record of the conversation; you can ask us to delete the thread.</td></tr>
@@ -235,7 +235,7 @@
       <li><strong>Access and portability</strong> — app data is already in your possession, visible in the app. For a launch-list address, email us from that address and we can confirm the record we hold.</li>
       <li><strong>Correction</strong> — you can edit or remove app profile details directly in the app; email us to correct a launch-list address.</li>
       <li><strong>Deletion</strong> — deleting the app removes everything it stored. Email us from a launch-list address to have that record deleted. Our fair-use counters are keyed to a random ID, an IP address or a transaction identifier that we cannot link to you; most expire within days.</li>
-      <li><strong>Objection and restriction</strong> — you can avoid sending goal text by not requesting an AI plan. The Early Supporter check still sends a random app ID when a real iPhone opens the app online. Eligible Plus members receive automatic weekly AI insights, and there is currently no separate in-app switch for them. Contact us to discuss an objection or restriction request.</li>
+      <li><strong>Objection and restriction</strong> — you can avoid sending goal text by not requesting an AI plan. A paid Early Supporter check sends an Apple-signed purchase record with an authenticated random app ID. Apple can also send signed payment notifications directly. Eligible Plus members receive automatic weekly AI insights, and there is currently no separate in-app switch for them. Contact us to discuss an objection or restriction request.</li>
       <li><strong>Withdrawing consent</strong> — turn off notifications or motion access in iOS Settings, or ask us to remove your launch-list email, at any time.</li>
       <li><strong>Complaint</strong> — you may lodge a complaint with your local data protection authority. We would appreciate the chance to address it first.</li>
     </ul>

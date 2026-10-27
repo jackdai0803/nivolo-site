@@ -6,8 +6,8 @@
   const copy = {
     edition: ['The Founder’s Edition', '创始珍藏系列'],
     iconLabel: ['Early Supporter icon', '早期支持者图标'],
-    featureTitle: ['Twenty originals.\nTwenty first supporters.', '二十幅原创。\n献给最初的二十位支持者。'],
-    featureBody: ['Little worlds to get lost in. Discover twenty ceramic-mosaic paintings, each with a different place, a golden detail, and a familiar little face.', '走进值得流连的小世界。二十幅陶瓷马赛克画作，每幅都有不同的风景、一点金色细节，以及那张熟悉的小脸。'],
+    featureTitle: ['Twenty originals.\nOur first paying supporters.', '二十幅原创。\n献给最初的付费支持者。'],
+    featureBody: ['Our first twenty paying members receive the Early Supporter icon and one numbered ceramic-mosaic painting each. Any paid membership counts. Free trials and launch-list signups do not reserve a place.', '最初二十位付费会员，每人获赠初代支持者图标与一幅编号陶瓷马赛克画作。任何付费会员方案均可。免费试用与加入上线通知名单不占名额。'],
     featureNote: ['The complete collection · 20 paintings', '完整系列 · 二十幅画作'],
     featureAlt: ['Nivo holding a golden star beneath an emerald aurora, in a ceramic mosaic painting', '陶瓷马赛克画中，Nivo 在翡翠色极光下捧着一颗金星'],
     viewCollection: ['View the collection', '欣赏完整系列'],
@@ -15,7 +15,7 @@
     skip: ['Skip to paintings', '跳至画作'],
     back: ['← Back to Nivolo', '← 返回 Nivolo'],
     galleryTitle: ['Twenty little worlds.\nOne small beginning.', '二十个小世界。\n一个小小的开始。'],
-    intro: ['A collection for Nivolo’s first twenty supporters. From familiar shores to faraway mountains, a little Nivo in every scene.', '献给 Nivolo 最初二十位支持者的珍藏。从熟悉的海岸到遥远的山峰，每一处风景都有小小的 Nivo。'],
+    intro: ['One numbered painting and the Early Supporter icon for each of Nivolo’s first twenty paying members. Your supporter number matches your painting. Free trials and launch-list signups do not reserve a place.', '献给 Nivolo 最初二十位付费会员，每人一幅编号画作与初代支持者图标。你的支持者编号对应你的画作编号。免费试用与加入上线通知名单不占名额。'],
     medium: ['Ceramic mosaic', '陶瓷马赛克'],
     twenty: ['20 original artworks', '二十幅原创画作'],
     collection: ['The complete collection', '完整珍藏系列'],
@@ -30,6 +30,7 @@
     view: ['View', '欣赏'],
     pageTitle: ['Founder’s Gallery — Nivolo', '创始珍藏画廊 — Nivolo'],
     allPaintings: ['The twenty paintings', '二十幅珍藏画作'],
+    save: ['Save painting', '保存画作'],
     home: ['Nivolo home', 'Nivolo 首页'],
   };
   const t = (key) => copy[key][zh ? 1 : 0];
@@ -123,6 +124,9 @@
     document.getElementById('painting-place').textContent = localized(item, 'place');
     document.getElementById('painting-description').textContent = localized(item, 'description');
     document.getElementById('painting-position').textContent = `${item.id} / 20`;
+    const download = document.getElementById('painting-download');
+    download.href = `assets/founders/${item.id}.webp`;
+    download.download = `nivolo-founders-${item.id}.webp`;
     controls[0].disabled = current === 0;
     controls[1].disabled = current === paintings.length - 1;
   }
@@ -134,6 +138,16 @@
     document.documentElement.classList.add('founder-viewer-open');
     display(index);
   }));
+  // A winner arrives from their in-app card with their permanent painting ID.
+  // The gallery stays public; this link displays artwork, never grants an award.
+  const assigned = new URLSearchParams(location.search).get('painting');
+  const assignedIndex = paintings.findIndex((item) => item.id === assigned);
+  if (assignedIndex !== -1) {
+    opener = links[assignedIndex];
+    viewer.showModal();
+    document.documentElement.classList.add('founder-viewer-open');
+    display(assignedIndex);
+  }
   viewer.querySelector('.founder-close').addEventListener('click', () => viewer.close());
   viewer.addEventListener('close', () => {
     resetTilt();
