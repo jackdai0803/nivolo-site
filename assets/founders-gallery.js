@@ -34,9 +34,6 @@
     readNote: ['View back ↻', '查看背面 ↻'],
     seeFront: ['View front ↻', '查看正面 ↻'],
     journal: ['From Nivo’s travel journal', '摘自 Nivo 的旅行手记'],
-    firstLight: ['The First Light', '初光'],
-    storyOpening: ['I came to the lake before sunrise, carrying one small star. For a while, the water held more light than the sky.', '日出之前，我带着一颗小星星来到湖边。有那么一会儿，湖水里的光比天空还多。'],
-    storyEnding: ['I kept the mountains quiet and let the green ribbons wander. The little star was the last thing I painted—something warm to carry into a new beginning.', '我让群山静静地待着，让绿色的光带自由游走。那颗小星星是我最后画上的——带着这一点温暖，走向新的开始。'],
     saving: ['Preparing signed painting…', '正在准备签名画作…'],
     saveFailed: ['Could not save. Please try again.', '保存失败，请重试。'],
     home: ['Nivolo home', 'Nivolo 首页'],
@@ -146,8 +143,13 @@
     if (index < 0 || index >= paintings.length) return;
     current = index;
     const item = paintings[current];
-    showStory(false);
-    flip.hidden = item.id !== '01';
+    document.getElementById('painting-story-title').textContent = localized(item, 'title');
+    document.getElementById('painting-story-number').textContent = `${item.id} / 20`;
+    const paragraphs = localized(item, 'story');
+    document.getElementById('painting-story-opening').textContent = paragraphs[0];
+    document.getElementById('painting-story-ending').textContent = paragraphs[1];
+    showStory(showingStory);
+    flip.hidden = false;
     resetTilt();
     frame.classList.remove('is-glinting');
     image.style.visibility = 'hidden';
