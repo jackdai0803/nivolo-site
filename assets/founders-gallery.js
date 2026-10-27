@@ -37,7 +37,6 @@
     firstLight: ['The First Light', '初光'],
     storyOpening: ['I came to the lake before sunrise, carrying one small star. For a while, the water held more light than the sky.', '日出之前，我带着一颗小星星来到湖边。有那么一会儿，湖水里的光比天空还多。'],
     storyEnding: ['I kept the mountains quiet and let the green ribbons wander. The little star was the last thing I painted—something warm to carry into a new beginning.', '我让群山静静地待着，让绿色的光带自由游走。那颗小星星是我最后画上的——带着这一点温暖，走向新的开始。'],
-    artCredit: ['Created by Jack with AI-assisted artwork. Nivo is our fictional painter.', '由 Jack 借助 AI 创作。Nivo 是我们的虚构画家。'],
     saving: ['Preparing signed painting…', '正在准备签名画作…'],
     saveFailed: ['Could not save. Please try again.', '保存失败，请重试。'],
     home: ['Nivolo home', 'Nivolo 首页'],

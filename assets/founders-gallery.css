@@ -90,7 +90,6 @@
 .founder-story h3 { margin: 0 0 22px; font: 400 clamp(30px, 4vw, 46px)/1 Newsreader, Georgia, serif; letter-spacing: -.03em; }
 .founder-story-body p { margin: 0 0 14px; font: 400 clamp(17px, 1.7vw, 21px)/1.5 Newsreader, Georgia, serif; }
 .founder-story .founder-story-signature { display: block; width: 110px; height: auto; aspect-ratio: auto; margin: 20px 0 0 auto; }
-.founder-story-credit { margin: 0; border-top: 1px solid #b79c643d; padding-top: 12px; color: #7c7567; font-size: 9px; line-height: 1.5; }
 .founder-viewer-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 16px; margin-top: 18px; }
 .founder-viewer-actions button { padding: 10px 16px; min-height: 44px; border: 1px solid #c9bc9d66; border-radius: 6px; background: #c9bc9d12; color: #eee5d4; cursor: pointer; }
 .founder-viewer-actions button:hover { background: #c9bc9d29; }
