@@ -11,12 +11,14 @@
     kindTitle: 'Room for real life.', kindBody: 'Planned rest days and a free weekly freeze keep your streak safe when life gets in the way.',
     krill: 'Meet the Krill', private: 'Private by design.', account: 'No cloud account. No ad trackers.',
     data: 'How AI and icon checks use data', questions: 'More questions', rewards: 'Rewards',
+    yearlyNote: 'About $2.50/month · billed yearly · USD', monthlyNote: 'Or $29.99 a year (about $2.50/month) · USD',
   });
   Object.assign(copy.zh, {
     screens: '查看全部八张应用截图', collection: '探索完整收藏',
     kindTitle: '为生活留点余地。', kindBody: '提前安排休息日，每周还有一次免费的连续记录冻结，在忙碌时守护你的坚持。',
     krill: '认识磷虾', private: '隐私，融入设计。', account: '无需云端账户，没有广告追踪。',
     data: 'AI 和图标检查如何使用数据', questions: '更多问题', rewards: '奖励',
+    yearlyNote: '约每月 $2.50 · 按年计费 · 美元', monthlyNote: '或每年 $29.99（约每月 $2.50）· 美元',
   });
   document.querySelectorAll('[data-site-copy]').forEach((element) => { element.textContent = t(element.dataset.siteCopy); });
   const reactions = new Map();
@@ -180,9 +182,7 @@
         options.forEach((option) => option.setAttribute("aria-pressed", String(option === button)));
         price.textContent = yearly ? "$29.99" : "$4.99";
         period.textContent = yearly ? "/ year" : "/ month";
-        note.textContent = yearly
-          ? "About $2.50/month · billed yearly · USD"
-          : "Or $29.99 a year · save 50% · USD";
+        note.textContent = t(yearly ? 'yearlyNote' : 'monthlyNote');
         react(price, [{ scale: '.92', opacity: .5 }, { scale: '1.04', opacity: 1, offset: .65 }, { scale: '1', opacity: 1 }]);
       });
     });

@@ -50,7 +50,7 @@
     @font-face { font-family: 'Newsreader Fallback'; font-style: italic; src: local('Georgia Italic'), local('Georgia-Italic'); size-adjust: 89%; ascent-override: 82.6%; descent-override: 29.8%; line-gap-override: 0%; }
     @font-face { font-family: 'Inter Fallback'; src: local('Arial'); size-adjust: 106.7%; ascent-override: 90.79%; descent-override: 22.61%; line-gap-override: 0%; }
   </style>
-  <link rel="stylesheet" href="styles.css?v=115" />
+  <link rel="stylesheet" href="styles.css?v=116" />
   <link rel="stylesheet" href="assets/contact.css?v=2" />
   <link rel="stylesheet" href="assets/editorial-concept.css?v=20" />
   <link rel="stylesheet" href="assets/nivo.css?v=3" />
@@ -88,8 +88,8 @@
         <a class="nav-plain" href="#pricing">Pricing</a>
         <a class="nav-plain" href="#faq">FAQ</a>
         <a class="nav-plain" href="#contact">Support</a>
-        <!-- assets/store.js uses the launch-alert email until an App Store URL is available. -->
-        <span class="nav-cta is-soon" data-store><span data-live="Get the app" data-soon="Join the launch list">Join the launch list</span></span>
+        <!-- assets/store.js upgrades this launch.html link when an App Store URL is available. -->
+        <a class="nav-cta" data-store href="launch.html"><span data-live="Get the app" data-soon="Join the launch list">Join the launch list</span></a>
       </div>
     </div>
   </nav>
@@ -205,11 +205,11 @@
     <h1>Habits that hold,<br /><em>even when you don&rsquo;t.</em></h1>
     <p class="hero-sub">One small action a day, a free freeze for when life wins, and a penguin who&rsquo;s extremely proud of you.</p>
     <div class="hero-actions">
-      <!-- assets/store.js uses the launch-alert email until an App Store URL is available. -->
-      <span class="btn-dark is-soon" data-store>
+      <!-- assets/store.js upgrades this launch.html link when an App Store URL is available. -->
+      <a class="btn-dark" data-store href="launch.html">
         <svg viewBox="0 0 384 512" fill="currentColor" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
-        <span data-live="Download on the App Store" data-soon="Get one launch email">Get one launch email</span>
-      </span>
+        <span data-live="Download on the App Store" data-soon="Join the launch list">Join the launch list</span>
+      </a>
       <a class="btn-ghost" href="#features">See what's inside</a>
     </div>
     <p class="hero-note">Free at launch · iPhone · English &amp; 中文</p>
@@ -227,84 +227,6 @@
         <p>See the next small step, log it, and keep moving without rebuilding your whole plan.</p>
         <a href="#features">Explore the app <span aria-hidden="true">↓</span></a>
       </div>
-    </div>
-
-    <div class="icon-pit pit--iceberg reveal in" id="iconPit">
-      <div class="pit-stage" id="pitStage">
-        <span class="pit-hint">Go on — grab one.</span>
-        <button class="pit-start" id="pitStart" type="button" hidden>
-          <svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M7 4.2v15.6L20 12z" fill="currentColor"/></svg>
-          Pour in the rest (with sound)
-        </button>
-        <button class="pit-toss" id="pitToss" type="button" hidden>Toss an icon</button>
-        <!-- The picture, named once. Everything drawn inside it (and every icon
-             night.js adds) is hidden from screen readers; the buttons sit
-             outside it so they stay reachable. -->
-        <div class="pit-art" role="img" aria-label="A floating ice shelf piled with Nivo's icons and moods, with more on the way — grab and toss them">
-        <svg class="ocean-water" viewBox="0 0 1200 300" preserveAspectRatio="none" aria-hidden="true">
-          <defs>
-            <linearGradient id="oceanDepth" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#70d0ec" stop-opacity=".94" />
-              <stop offset=".28" stop-color="#4aaedf" stop-opacity=".86" />
-              <stop offset=".55" stop-color="#65add1" stop-opacity=".58" />
-              <stop offset=".78" stop-color="#a7cfdf" stop-opacity=".25" />
-              <stop offset=".9" stop-color="#d8e5e7" stop-opacity=".1" />
-              <stop offset="1" stop-color="#F2F1EE" stop-opacity="0" />
-            </linearGradient>
-          </defs>
-          <path
-            class="ocean-water-shape"
-            fill="url(#oceanDepth)"
-            stroke="rgba(218, 248, 255, .72)"
-            stroke-width="5"
-            vector-effect="non-scaling-stroke"
-            d="M0 15 C92 18 164 5 257 14 C356 23 444 7 546 14 C654 22 741 5 849 14 C958 23 1072 7 1200 15 L1200 300 L0 300 Z"
-          >
-            <animate
-              class="ocean-water-motion"
-              attributeName="d"
-              dur="9.5s"
-              repeatCount="indefinite"
-              calcMode="spline"
-              keyTimes="0; .25; .5; .75; 1"
-              keySplines=".42 0 .58 1; .42 0 .58 1; .42 0 .58 1; .42 0 .58 1"
-              values="
-                M0 15 C92 18 164 5 257 14 C356 23 444 7 546 14 C654 22 741 5 849 14 C958 23 1072 7 1200 15 L1200 300 L0 300 Z;
-                M0 11 C101 3 174 21 270 15 C370 8 455 23 558 13 C664 4 758 21 864 16 C975 10 1080 22 1200 11 L1200 300 L0 300 Z;
-                M0 16 C94 24 180 8 278 13 C380 19 468 3 570 12 C677 22 768 8 876 13 C988 20 1090 4 1200 16 L1200 300 L0 300 Z;
-                M0 12 C103 7 188 22 287 15 C391 6 479 20 582 14 C689 7 784 23 892 14 C1002 5 1101 19 1200 12 L1200 300 L0 300 Z;
-                M0 15 C92 18 164 5 257 14 C356 23 444 7 546 14 C654 22 741 5 849 14 C958 23 1072 7 1200 15 L1200 300 L0 300 Z"
-            />
-          </path>
-        </svg>
-        <svg class="bowl-visual" viewBox="0 0 840 168" preserveAspectRatio="none" aria-hidden="true">
-          <!-- One chunky, outlined illustration instead of a clipped CSS
-               gradient, so the floe speaks the same cartoon language as
-               Nivo's square icon art. -->
-          <path class="berg-body" vector-effect="non-scaling-stroke" d="M28 9C101 2 160 7 224 15C297 24 352 28 421 29C495 23 557 17 626 11C699 4 764 2 812 10L800 61L780 80L736 92L691 112L618 111L571 138L506 134L451 160L398 151L346 164L292 143L235 139L196 121L133 116L94 95L58 86L42 61L28 9Z" />
-
-          <path class="berg-facet berg-facet--left" vector-effect="non-scaling-stroke" d="M42 61L183 76L292 143L235 139L196 121L133 116L94 95L58 86L42 61Z" />
-          <path class="berg-facet berg-facet--middle" vector-effect="non-scaling-stroke" d="M183 76L421 79L451 160L398 151L346 164L292 143L183 76Z" />
-          <path class="berg-facet berg-facet--right" vector-effect="non-scaling-stroke" d="M421 79L659 75L736 92L691 112L618 111L571 138L506 134L451 160L421 79Z" />
-          <path class="berg-facet berg-facet--edge" vector-effect="non-scaling-stroke" d="M659 75L800 61L780 80L736 92L659 75Z" />
-
-          <path class="berg-snow" vector-effect="non-scaling-stroke" d="M28 9C101 2 160 7 224 15C297 24 352 28 421 29C495 23 557 17 626 11C699 4 764 2 812 10L806 43C752 47 697 51 635 55C565 60 500 65 421 67C342 65 273 61 208 56C142 51 86 47 34 42L28 9Z" />
-          <path class="berg-snow-shadow" d="M56 31C121 29 177 34 237 40C305 47 358 51 421 52C488 49 546 44 609 39C671 34 727 30 784 30L782 42C730 46 681 50 625 54C555 59 492 63 421 65C350 63 285 59 218 54C154 49 101 45 48 41L56 31Z" />
-          <path class="berg-shine" d="M109 19C145 17 174 19 205 23" />
-          <path class="berg-shine" d="M665 20C706 15 739 15 767 17" />
-        </svg>
-        </div>
-        <button class="pit-sound" id="pitSound" type="button" aria-label="Toggle icon sound effects" hidden>
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M11 5 6.5 9H3v6h3.5L11 19z" fill="currentColor" stroke="none"/>
-          <path class="snd-waves" d="M15.5 9.5a4 4 0 0 1 0 5"/>
-          <path class="snd-waves" d="M18 7a8 8 0 0 1 0 10"/>
-          <line class="snd-slash" x1="15" y1="9.5" x2="20.5" y2="14.5"/>
-          <line class="snd-slash" x1="20.5" y1="9.5" x2="15" y2="14.5"/>
-        </svg>
-      </button>
-      </div>
-      <p class="pit-caption"><b>A whole shelf of Nivo</b> — icons and moods you earn in the app by actually showing up, with more on the way.</p>
     </div>
   </header>
 
@@ -455,63 +377,63 @@
 
       <div class="lore-grid reveal" data-stagger="50">
         <article class="lore-card">
-          <img class="lore-ic" src="assets/icons/classic.png" alt="" loading="lazy" />
+          <img class="lore-ic" src="assets/icons/classic.png" alt="" loading="lazy" width="160" height="160" />
           <div>
             <h3>Classic</h3>
             <p>The first Nivo. The same face he had on day one — and the one waiting whenever you come back.</p>
           </div>
         </article>
         <article class="lore-card">
-          <img class="lore-ic" src="assets/icons/waiting.png" alt="" loading="lazy" />
+          <img class="lore-ic" src="assets/icons/waiting.png" alt="" loading="lazy" width="160" height="160" />
           <div>
             <h3>Waiting</h3>
             <p>By the door with his coat on since the moment you woke up. Nivo is nothing if not eager.</p>
           </div>
         </article>
         <article class="lore-card">
-          <img class="lore-ic" src="assets/icons/grumpy.png" alt="" loading="lazy" />
+          <img class="lore-ic" src="assets/icons/grumpy.png" alt="" loading="lazy" width="160" height="160" />
           <div>
             <h3>Grumpy</h3>
             <p>Some mornings the habit wins and the mood doesn't. He turns up anyway, and he'd like that noted.</p>
           </div>
         </article>
         <article class="lore-card">
-          <img class="lore-ic" src="assets/icons/relieved.png" alt="" loading="lazy" />
+          <img class="lore-ic" src="assets/icons/relieved.png" alt="" loading="lazy" width="160" height="160" />
           <div>
             <h3>Relieved</h3>
             <p>The exhale that comes a few mornings in, when showing up stops feeling like a decision.</p>
           </div>
         </article>
         <article class="lore-card">
-          <img class="lore-ic" src="assets/icons/focused.png" alt="" loading="lazy" />
+          <img class="lore-ic" src="assets/icons/focused.png" alt="" loading="lazy" width="160" height="160" />
           <div>
             <h3>Focused</h3>
             <p>Nothing exists but the next small thing. Nivo is extremely busy and would rather not be disturbed.</p>
           </div>
         </article>
         <article class="lore-card">
-          <img class="lore-ic" src="assets/icons/snowy.png" alt="" loading="lazy" />
+          <img class="lore-ic" src="assets/icons/snowy.png" alt="" loading="lazy" width="160" height="160" />
           <div>
             <h3>Snowy</h3>
             <p>Arrives after your first proper week. Nivo swears it always snows right before something starts to stick.</p>
           </div>
         </article>
         <article class="lore-card">
-          <img class="lore-ic" src="assets/icons/love.png" alt="" loading="lazy" />
+          <img class="lore-ic" src="assets/icons/love.png" alt="" loading="lazy" width="160" height="160" />
           <div>
             <h3>Love</h3>
             <p>Somewhere in that first week a habit stops being a chore and starts being yours. He felt it before you did.</p>
           </div>
         </article>
         <article class="lore-card">
-          <img class="lore-ic" src="assets/icons/melting.png" alt="" loading="lazy" />
+          <img class="lore-ic" src="assets/icons/melting.png" alt="" loading="lazy" width="160" height="160" />
           <div>
             <h3>Melting</h3>
             <p>The face of a streak that nearly went. A freeze went off in the night, and he's still dripping with relief.</p>
           </div>
         </article>
         <article class="lore-card">
-          <img class="lore-ic" src="assets/icons/turbo.png" alt="" loading="lazy" />
+          <img class="lore-ic" src="assets/icons/turbo.png" alt="" loading="lazy" width="160" height="160" />
           <div>
             <h3>Turbo</h3>
             <p>Past a certain point the momentum starts pushing you along. Nivo suggests holding on to something.</p>
@@ -528,24 +450,24 @@
         </div>
         <div class="frost" id="frost">
         <ul class="lore-mini">
-          <li><img src="assets/icons/repair.png" alt="" loading="lazy" /><div><h3>Repair</h3><p>Tape, patience and a second chance. Broken streaks are fixable.</p></div></li>
-          <li><img src="assets/icons/sleepy.png" alt="" loading="lazy" /><div><h3>Sleepy</h3><p>Caught before sunrise. He didn't think anyone else was up either.</p></div></li>
-          <li><img src="assets/icons/upside_down.png" alt="" loading="lazy" /><div><h3>Upside Down</h3><p>Nivo keeps strange hours too. It all makes more sense after midnight.</p></div></li>
-          <li><img src="assets/icons/blaze.png" alt="" loading="lazy" /><div><h3>Blaze</h3><p>Carried up out of the old fire under the ice. It finds the ones who don't cool off.</p></div></li>
-          <li><img src="assets/icons/rainy.png" alt="" loading="lazy" /><div><h3>Rainy</h3><p>Grey days count double. This one's for the people who showed up anyway.</p></div></li>
-          <li><img src="assets/icons/sick.png" alt="" loading="lazy" /><div><h3>Sick</h3><p>Everyone goes under sometimes. This one shows up for the getting back out.</p></div></li>
-          <li><img src="assets/icons/revived.png" alt="" loading="lazy" /><div><h3>Revived</h3><p>Everyone thought that streak was gone. Then it stood back up.</p></div></li>
-          <li><img src="assets/icons/party.png" alt="" loading="lazy" /><div><h3>Party</h3><p>He's held that confetti since the day you set the goal. Finishing it opens his hands.</p></div></li>
-          <li><img src="assets/icons/squished.png" alt="" loading="lazy" /><div><h3>Squished</h3><p>A whole day's worth in one go. Regrets nothing, cannot move.</p></div></li>
-          <li><img src="assets/icons/starstruck.png" alt="" loading="lazy" /><div><h3>Starstruck</h3><p>He looked at what you'd built and forgot how to blink.</p></div></li>
-          <li><img src="assets/icons/bored.png" alt="" loading="lazy" /><div><h3>Bored</h3><p>He's done this so many times he could do it asleep. That's the point.</p></div></li>
-          <li><img src="assets/icons/ghost.png" alt="" loading="lazy" /><div><h3>Ghost</h3><p>A long stretch of quiet, faithful days leaves something behind.</p></div></li>
-          <li><img src="assets/icons/peekaboo.png" alt="" loading="lazy" /><div><h3>Peekaboo</h3><p>Hiding behind the ice a good while, seeing if you'd keep coming back.</p></div></li>
-          <li><img src="assets/icons/gold.png" alt="" loading="lazy" /><div><h3>Golden</h3><p>Deep under the shelf there's a seam of gold. Almost nobody walks that far.</p></div></li>
-          <li><img src="assets/icons/champion.png" alt="" loading="lazy" /><div><h3>Champion</h3><p>There's a shelf in the ice for the very consistent. He won't come down.</p></div></li>
-          <li><img src="assets/icons/detective.png" alt="" loading="lazy" /><div><h3>Detective</h3><p>A hundred small clues about who you are. He's read every one.</p></div></li>
-          <li><img src="assets/icons/glitch.png" alt="" loading="lazy" /><div><h3>Glitch</h3><p>You went so far the ice started skipping. Almost nobody sees this one.</p></div></li>
-          <li class="lore-mini--soon"><img src="assets/icons/coming_soon.png" alt="" loading="lazy" /><div><h3>?</h3><p>A few more are still being drawn. You'll meet them when they're ready.</p></div></li>
+          <li><img src="assets/icons/repair.png" alt="" loading="lazy" width="160" height="160" /><div><h3>Repair</h3><p>Tape, patience and a second chance. Broken streaks are fixable.</p></div></li>
+          <li><img src="assets/icons/sleepy.png" alt="" loading="lazy" width="160" height="160" /><div><h3>Sleepy</h3><p>Caught before sunrise. He didn't think anyone else was up either.</p></div></li>
+          <li><img src="assets/icons/upside_down.png" alt="" loading="lazy" width="160" height="160" /><div><h3>Upside Down</h3><p>Nivo keeps strange hours too. It all makes more sense after midnight.</p></div></li>
+          <li><img src="assets/icons/blaze.png" alt="" loading="lazy" width="160" height="160" /><div><h3>Blaze</h3><p>Carried up out of the old fire under the ice. It finds the ones who don't cool off.</p></div></li>
+          <li><img src="assets/icons/rainy.png" alt="" loading="lazy" width="160" height="160" /><div><h3>Rainy</h3><p>Grey days count double. This one's for the people who showed up anyway.</p></div></li>
+          <li><img src="assets/icons/sick.png" alt="" loading="lazy" width="160" height="160" /><div><h3>Sick</h3><p>Everyone goes under sometimes. This one shows up for the getting back out.</p></div></li>
+          <li><img src="assets/icons/revived.png" alt="" loading="lazy" width="160" height="160" /><div><h3>Revived</h3><p>Everyone thought that streak was gone. Then it stood back up.</p></div></li>
+          <li><img src="assets/icons/party.png" alt="" loading="lazy" width="160" height="160" /><div><h3>Party</h3><p>He's held that confetti since the day you set the goal. Finishing it opens his hands.</p></div></li>
+          <li><img src="assets/icons/squished.png" alt="" loading="lazy" width="160" height="160" /><div><h3>Squished</h3><p>A whole day's worth in one go. Regrets nothing, cannot move.</p></div></li>
+          <li><img src="assets/icons/starstruck.png" alt="" loading="lazy" width="160" height="160" /><div><h3>Starstruck</h3><p>He looked at what you'd built and forgot how to blink.</p></div></li>
+          <li><img src="assets/icons/bored.png" alt="" loading="lazy" width="160" height="160" /><div><h3>Bored</h3><p>He's done this so many times he could do it asleep. That's the point.</p></div></li>
+          <li><img src="assets/icons/ghost.png" alt="" loading="lazy" width="160" height="160" /><div><h3>Ghost</h3><p>A long stretch of quiet, faithful days leaves something behind.</p></div></li>
+          <li><img src="assets/icons/peekaboo.png" alt="" loading="lazy" width="160" height="160" /><div><h3>Peekaboo</h3><p>Hiding behind the ice a good while, seeing if you'd keep coming back.</p></div></li>
+          <li><img src="assets/icons/gold.png" alt="" loading="lazy" width="160" height="160" /><div><h3>Golden</h3><p>Deep under the shelf there's a seam of gold. Almost nobody walks that far.</p></div></li>
+          <li><img src="assets/icons/champion.png" alt="" loading="lazy" width="160" height="160" /><div><h3>Champion</h3><p>There's a shelf in the ice for the very consistent. He won't come down.</p></div></li>
+          <li><img src="assets/icons/detective.png" alt="" loading="lazy" width="160" height="160" /><div><h3>Detective</h3><p>A hundred small clues about who you are. He's read every one.</p></div></li>
+          <li><img src="assets/icons/glitch.png" alt="" loading="lazy" width="160" height="160" /><div><h3>Glitch</h3><p>You went so far the ice started skipping. Almost nobody sees this one.</p></div></li>
+          <li class="lore-mini--soon"><img src="assets/icons/coming_soon.png" alt="" loading="lazy" width="160" height="160" /><div><h3>?</h3><p>A few more are still being drawn. You'll meet them when they're ready.</p></div></li>
         </ul>
         </div>
         <p class="lore-more-note">A growing collection, with more to discover. <b>What each one takes is something you find out in the app.</b></p>
@@ -632,11 +554,11 @@
           <div class="collector-price-area">
             <div class="collector-billing" role="group" aria-label="Nivolo Plus billing period" hidden>
               <button type="button" data-billing-period="monthly" aria-pressed="true">Monthly</button>
-              <button type="button" data-billing-period="yearly" aria-pressed="false">Yearly <span>−50%</span></button>
+              <button type="button" data-billing-period="yearly" aria-pressed="false">Yearly</button>
             </div>
             <div aria-live="polite" aria-atomic="true">
               <p class="collector-price"><strong data-plus-price>$4.99</strong><span data-plus-period>/ month</span></p>
-              <p class="collector-price-note" data-plus-price-note>Or $29.99 a year · save 50% · USD</p>
+              <p class="collector-price-note" data-plus-price-note>Or $29.99 a year (about $2.50/month) · USD</p>
             </div>
           </div>
           <ul class="collector-benefits">
@@ -667,6 +589,7 @@
               <li>AI goal-plan drafts and weekly insights</li>
               <li>New icons and worlds reach you first</li>
             </ul>
+            <!-- TODO: Confirm trial eligibility for each billing plan in App Store Connect before specifying which plans qualify. -->
             <p>Nivolo Plus starts with a 7-day free trial. Cancel any time from your Apple ID settings.</p>
           </div>
         </div>
@@ -738,11 +661,11 @@
       <div class="closing reveal" data-stagger="60">
         <h2>Your first goal takes <em>30&nbsp;seconds.</em></h2>
         <div class="closing-act">
-          <!-- assets/store.js uses the launch-alert email until an App Store URL is available. -->
-          <span class="btn-light is-soon" data-store>
+          <!-- assets/store.js upgrades this launch.html link when an App Store URL is available. -->
+          <a class="btn-light" data-store href="launch.html">
             <svg viewBox="0 0 384 512" fill="currentColor" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
-            <span data-live="Download on the App Store" data-soon="Get one launch email">Get one launch email</span>
-          </span>
+            <span data-live="Download on the App Store" data-soon="Join the launch list">Join the launch list</span>
+          </a>
           <p class="closing-note">Free &middot; No cloud account required</p>
         </div>
       </div>
@@ -771,8 +694,8 @@
           </div>
           <div class="footer-col">
             <h3>Get it</h3>
-            <!-- assets/store.js uses the launch-alert email until an App Store URL is available. -->
-            <span class="is-soon" data-store><span data-live="App Store" data-soon="Join the launch list">Join the launch list</span></span>
+            <!-- assets/store.js upgrades this launch.html link when an App Store URL is available. -->
+            <a data-store href="launch.html"><span data-live="App Store" data-soon="Join the launch list">Join the launch list</span></a>
           </div>
         </div>
       </div>
@@ -847,7 +770,7 @@
   <script src="assets/founders-gallery.js?v=7" defer></script>
   <script src="assets/frost.js?v=4" defer></script>
   <script src="assets/app-opals.js?v=2" defer></script>
-  <script src="assets/editorial-concept.js?v=7" defer></script>
-  <script type="module" src="assets/nivo.js?v=2"></script>
+  <script src="assets/editorial-concept.js?v=8" defer></script>
+  <script type="module" src="assets/nivo.js?v=3"></script>
 </body>
 </html>

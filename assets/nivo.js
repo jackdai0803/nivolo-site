@@ -1,8 +1,8 @@
 import { createRig, idleAt, neutralPose, celebrationAt, CELEBRATION_MS } from './nivo-rig.js';
 
 const strings = {
-  en: { squish: 'Give Nivo a little squish', hint: 'Go on, give Nivo a squish.', again: 'One more? Nivo thinks so.', off: 'Sound off', on: 'Sound on' },
-  zh: { squish: '轻轻捏一下 Nivo', hint: '来，轻轻捏一下 Nivo。', again: '再来一次？Nivo 也这么想。', off: '声音已关闭', on: '声音已开启' },
+  en: { squish: 'Give Nivo a little squish', hint: 'Go on, give Nivo a squish.', again: 'One more? Nivo thinks so.', off: 'Sound: off', on: 'Sound: on' },
+  zh: { squish: '轻轻捏一下 Nivo', hint: '来，轻轻捏一下 Nivo。', again: '再来一次？Nivo 也这么想。', off: '声音：关', on: '声音：开' },
 };
 const t = (key) => strings[document.documentElement.lang.startsWith('zh') ? 'zh' : 'en'][key];
 const controls = document.querySelector('[data-nivo-controls]');

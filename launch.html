@@ -14,7 +14,7 @@
   <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon.png?v=5" />
   <link rel="apple-touch-icon" href="assets/app-icon.png" />
   <link rel="stylesheet" href="assets/fonts.css?v=5" />
-  <link rel="stylesheet" href="styles.css?v=115" />
+  <link rel="stylesheet" href="styles.css?v=116" />
   <link rel="stylesheet" href="assets/nivo.css?v=3" />
 </head>
 <body class="launch-body">
@@ -51,10 +51,15 @@
             <input id="launchCompany" name="company" type="text" autocomplete="off" tabindex="-1" />
           </div>
           <button class="btn-dark launch-submit" id="launchSubmit" type="submit">
-            <span>Email me when it&rsquo;s out</span>
+            <span data-launch-copy="join">Join the launch list</span>
             <span aria-hidden="true">→</span>
           </button>
           <p class="launch-status" id="launchStatus" role="status" aria-live="polite"></p>
+          <div class="launch-help" id="launchHelp" hidden>
+            <p><span data-launch-copy="help">Need a hand?</span> <a href="mailto:support@nivolo.app">support@nivolo.app</a></p>
+            <button class="launch-text-action" id="launchCopy" type="button" data-launch-copy="copy">Copy address</button>
+            <p class="launch-copy-status" id="launchCopyStatus" role="status" aria-live="polite"></p>
+          </div>
         </form>
 
         <div class="launch-success" id="launchSuccess" hidden tabindex="-1">
@@ -62,6 +67,12 @@
           <div>
             <h2>You&rsquo;re on the little list.</h2>
             <p>We&rsquo;ll send one email when Nivolo is ready for your iPhone.</p>
+            <p class="launch-saved-email" id="launchSavedEmail" hidden></p>
+            <div class="launch-success-actions">
+              <a href="index.html" data-launch-copy="back">Back to Nivolo</a>
+              <button class="launch-text-action" id="launchEdit" type="button" data-launch-copy="another" hidden>Use another email</button>
+            </div>
+            <p class="launch-removal" id="launchRemoval" hidden><span data-launch-copy="remove">To remove a previous address, email</span> <a href="mailto:support@nivolo.app?subject=Remove%20my%20launch-list%20address">support@nivolo.app</a>.</p>
           </div>
         </div>
 
@@ -70,7 +81,7 @@
     </section>
   </main>
 
-  <script src="assets/launch.js?v=1" defer></script>
-  <script type="module" src="assets/nivo.js?v=2"></script>
+  <script src="assets/launch.js?v=2" defer></script>
+  <script type="module" src="assets/nivo.js?v=3"></script>
 </body>
 </html>

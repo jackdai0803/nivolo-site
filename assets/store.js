@@ -14,20 +14,18 @@ var LAUNCH_ALERT_URL = "launch.html";
 
 (function () {
   "use strict";
-  var destination = APP_STORE_URL || LAUNCH_ALERT_URL;
   var spots = document.querySelectorAll("[data-store]");
   for (var i = 0; i < spots.length; i++) {
-    var soon = spots[i];
-    var link = document.createElement("a");
-    link.href = destination;
-    link.className = soon.className.replace(/\bis-soon\b/, "").replace(/\s+/g, " ").trim();
-    while (soon.firstChild) link.appendChild(soon.firstChild);
+    var link = spots[i];
+    // HTML already supplies a working launch link, even without JavaScript.
+    // Preserve absolute fallbacks on the 404 page (which can be nested).
+    link.href = APP_STORE_URL || link.getAttribute("href") || LAUNCH_ALERT_URL;
+    link.classList.remove("is-soon");
     // Each spot carries both its pre-launch and App Store labels.
     var label = link.querySelector("[data-live]");
     if (label) {
       var nextLabel = label.getAttribute(APP_STORE_URL ? "data-live" : "data-soon");
       if (nextLabel) label.textContent = nextLabel;
     }
-    soon.parentNode.replaceChild(link, soon);
   }
 })();

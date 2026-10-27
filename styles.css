@@ -364,320 +364,6 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
 }
 .hero-proof-copy p { color: var(--ink-2); font-size: 15px; line-height: 22px; margin-bottom: 12px; }
 .hero-proof-copy a { font-size: 14px; font-weight: 700; color: var(--ink); }
-.hero-proof + .icon-pit { margin-top: 34px; }
-
-/* ── Icon floe (physics intro) ── */
-.icon-pit {
-  position: relative;
-  max-width: var(--w-wide);
-  margin: clamp(0px, calc(22vh - 196px), 72px) auto 0;
-  margin-top: clamp(0px, calc(22svh - 196px), 72px);
-  user-select: none;
-  -webkit-user-select: none;
-}
-.pit-stage {
-  position: relative;
-  height: 420px;
-  /* A swipe that starts here still scrolls the page. night.js cancels the
-     touch only when it lands on an icon, so grabbing one never scrolls and
-     everything else does — `none` made the whole hero a dead zone. */
-  touch-action: pan-y;
-  cursor: grab;
-}
-.pit-stage.dragging { cursor: grabbing; }
-/* The picture's label lives on this box (role="img"); it is the same box as
-   the stage and takes no clicks, so the water and ice sit exactly where
-   they did. */
-.pit-art { position: absolute; inset: 0; pointer-events: none; }
-/* The floe, painted. Physics walls in night.js match it. */
-.pit-icon {
-  position: absolute; top: 0; left: 0;
-  z-index: 3;
-  will-change: transform;
-  pointer-events: none;
-  border-radius: var(--radius-icon);
-  /* These are square app-icon tiles, so a box shadow looks the same as the
-     old drop-shadow without re-filtering the PNG while it moves. */
-  box-shadow: 0 8px 14px rgba(24, 52, 76, 0.26);
-  transition: opacity 0.18s linear, box-shadow 0.35s ease;
-}
-/* Underwater. The blur is driven by depth (--sink-blur, set per frame by
-   the sinking pass) so the icon softens as it thins — and opacity leaves
-   the transition list here on purpose: the pass writes a new alpha every
-   frame, and a transition chasing that lags ~.09 behind, which is exactly
-   the ghost that used to get cut off mid-fade. */
-.pit-icon.is-sinking {
-  box-shadow: 0 8px 14px rgba(0, 24, 70, 0.38);
-  filter: saturate(var(--sink-sat, 0.85)) brightness(var(--sink-dim, 0.88)) blur(var(--sink-blur, 0px));
-  /* No transition: the sinking pass writes every one of these values fresh
-     each frame, so a transition has nothing to smooth and everything to
-     re-interpolate — a blurred, shadowed element re-rasterised twice
-     over. The ramps are already frame-rate smooth on their own. */
-  transition: none;
-}
-/* The blue the water leaves behind. `color` keeps the icon's own light and
-   shading and takes only its hue, so a swimmer goes blue-dark rather than
-   painted-over — and the filter above isolates the blend, so it stops
-   at the icon's edge instead of tinting the sea. Silhouette is the img's:
-   same box, same radius. */
-.pit-icon.is-sinking::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: var(--radius-icon);
-  background: #1a5b98;
-  mix-blend-mode: color;
-  opacity: var(--sink-tint, 0);
-  pointer-events: none;
-}
-.water-splash {
-  position: absolute;
-  z-index: 5;
-  width: 78px;
-  height: 44px;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-}
-.water-splash::before,
-.water-splash::after {
-  content: "";
-  position: absolute;
-  left: 50%; bottom: 1px;
-  width: 62px; height: 15px;
-  border: 2px solid rgba(174, 239, 255, 0.86);
-  border-left-color: transparent;
-  border-right-color: transparent;
-  border-radius: 50%; corner-shape: round;
-  transform: translateX(-50%) scale(0.35);
-  animation: splash-ripple 0.78s ease-out forwards;
-}
-.water-splash::after {
-  width: 42px; height: 10px;
-  opacity: 0.58;
-  animation-delay: 0.08s;
-}
-.water-splash i {
-  position: absolute;
-  left: 50%; bottom: 9px;
-  width: 5px; height: 8px;
-  border-radius: 55% 55% 62% 62%; corner-shape: round;
-  background: linear-gradient(180deg, #d8f8ff, #58c6eb);
-  box-shadow: 0 0 9px rgba(118, 221, 249, 0.38);
-  opacity: 0;
-  transform: translate(-50%, 0) scale(0.5);
-  animation: splash-drop 0.7s cubic-bezier(0.18, 0.72, 0.28, 1) var(--delay, 0s) forwards;
-}
-@keyframes splash-ripple {
-  0% { opacity: 0.92; transform: translateX(-50%) scale(0.35); }
-  65% { opacity: 0.58; }
-  100% { opacity: 0; transform: translateX(-50%) scale(1.4); }
-}
-@keyframes splash-drop {
-  0% { opacity: 0; transform: translate(-50%, 2px) scale(0.45); }
-  12% { opacity: 0.96; }
-  100% { opacity: 0; transform: translate(calc(-50% + var(--dx)), var(--dy)) scale(var(--drop-scale)); }
-}
-/* Air off a swimmer. Same vocabulary as the splash droplets — translucent
-   fill, brighter rim — but rising and slow. It sits under the icons so a
-   bubble never crosses a face, and above the floe so it reads as water. */
-.sink-bubble {
-  position: absolute;
-  z-index: 2;
-  border-radius: 50%; corner-shape: round;
-  background: rgba(216, 248, 255, 0.34);
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  animation: bubble-rise var(--life, 1.7s) cubic-bezier(0.35, 0.1, 0.5, 1) forwards;
-}
-@keyframes bubble-rise {
-  0% { transform: translate(-50%, -50%) scale(0.55); }
-  100% {
-    transform: translate(calc(-50% + var(--drift, 0px)), calc(-50% + var(--rise, -55px))) scale(1.25);
-    opacity: 0;
-  }
-}
-@media (prefers-reduced-motion: reduce) { .sink-bubble { display: none; } }
-.pit-icon img {
-  display: block; width: 100%; height: 100%;
-  border-radius: var(--radius-icon);
-  /* The give springs drive this element's transform every frame (the
-     wrapper's belongs to the render loop). The fold is a real 3D
-     rotation, so keep the back face out of it. */
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-}
-/* Held: it lifts toward the viewer and throws a longer, softer shadow —
-   the transform half of that is the give system's `hold` easing. */
-.pit-icon.held { box-shadow: 0 18px 26px rgba(24, 52, 76, 0.34); z-index: 6; }
-/* The pour starts just above the stage, already in view, so an icon has
-   nowhere to arrive from: it fades up as it is let go. Only the physics
-   path adds the class, and that path does not run under reduced motion. */
-.pit-icon.pour-in { animation: pourIn 240ms cubic-bezier(0.22, 1, 0.36, 1) backwards; }
-@keyframes pourIn { from { opacity: 0; } }
-/* A landing squeezes the shadow shut under the icon and lets it back out
-   as the weight settles. No fill mode: the base shadow takes over again
-   cleanly, including for an icon that goes on to sink. */
-.pit-icon.thud { animation: iconThud 0.44s cubic-bezier(0.2, 0.75, 0.3, 1); }
-@keyframes iconThud {
-  0% { box-shadow: 0 2px 4px rgba(24, 52, 76, 0.5); }
-  100% { box-shadow: 0 8px 14px rgba(24, 52, 76, 0.26); }
-}
-/* ── Snow give on impact ── */
-.snow-divot {
-  position: absolute;
-  z-index: 2;
-  height: 15px;
-  transform: translate(-50%, -50%);
-  border-radius: 50%; corner-shape: round;
-  background: radial-gradient(ellipse at 50% 50%,
-    rgba(74, 138, 194, 0.58) 0%, rgba(146, 202, 234, 0.3) 50%,
-    rgba(255, 255, 255, 0.26) 68%, transparent 80%);
-  pointer-events: none;
-  animation: snowDivot 0.95s ease-out forwards;
-}
-@keyframes snowDivot {
-  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.45, 0.35); }
-  16% { opacity: 1; transform: translate(-50%, -50%) scale(1, 1); }
-  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.16, 0.8); }
-}
-.snow-puff {
-  position: absolute;
-  z-index: 4;
-  pointer-events: none;
-}
-.snow-puff i {
-  position: absolute;
-  left: 0; top: 0;
-  width: 5px; height: 5px;
-  border-radius: 50%; corner-shape: round;
-  background: #fff;
-  box-shadow: 0 1px 3px rgba(24, 52, 76, 0.22);
-  opacity: 0;
-  animation: snowFlake 0.62s cubic-bezier(0.2, 0.7, 0.3, 1) var(--delay, 0s) forwards;
-}
-@keyframes snowFlake {
-  0% { opacity: 0; transform: translate(0, 0) scale(0.55); }
-  18% { opacity: 1; }
-  100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0.85); }
-}
-/* Bottom-left corner of the stage, opposite the sound toggle. */
-.pit-hint, .pit-call {
-  position: absolute; left: 14px; bottom: 18px;
-  font-size: 14px; font-weight: 600; color: var(--ink-3);
-  background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-pill);
-  padding: 6px 14px; white-space: nowrap;
-  opacity: 0; transition: opacity 0.6s ease 1.6s;
-  pointer-events: none;
-  /* Above the icons (the bob wrapper is z 2): one falling past, or the
-     top of a tall pile, goes behind the pill instead of over its words. */
-  z-index: 7;
-}
-.icon-pit.ready .pit-hint { opacity: 1; }
-.icon-pit.touched .pit-hint { opacity: 0; transition-delay: 0s; }
-/* Audio is locked until the visitor interacts, so the pour waits and asks
-   for the tap that unlocks it. Own class, not a .pit-hint modifier: the
-   hint's ready/touched rules would fight this one's fade. Same slot
-   though, so the grab hint holds back while this is up. */
-.pit-call {
-  display: inline-flex; align-items: center; gap: 7px;
-  color: var(--ink-2);
-  border-color: var(--line-strong);
-  box-shadow: var(--shadow-sm);
-  transition: opacity 0.45s ease;
-}
-.pit-call.in { opacity: 1; }
-.pit-call svg { color: var(--cyan); flex: none; }
-.icon-pit.calling .pit-hint { opacity: 0; transition-delay: 0s; }
-/* The pour button sits on the front edge of the floe. A small pile is
-   already resting above it; the click unlocks sound and pours the rest. */
-.pit-start {
-  position: absolute; left: 50%; bottom: 112px;
-  z-index: 6;
-  translate: -50% 0;
-  display: inline-flex; align-items: center; gap: 9px;
-  min-height: 44px; padding: 0 20px 0 16px;
-  font: inherit; font-size: 14px; font-weight: 600; line-height: 1;
-  color: var(--ink); white-space: nowrap;
-  background: var(--card);
-  border: 1px solid var(--line-strong); border-radius: var(--radius-pill);
-  box-shadow: var(--shadow-md);
-  cursor: pointer;
-  opacity: 0; pointer-events: none;
-  transition: opacity 240ms cubic-bezier(0.22, 1, 0.36, 1), transform 0.2s ease, border-color 0.2s ease;
-}
-.pit-start[hidden] { display: none; }
-.pit-start.in { opacity: 1; pointer-events: auto; }
-.pit-start svg { color: var(--cyan); flex: none; }
-.pit-start:hover { transform: translateY(-2px); border-color: var(--ink); }
-.pit-start:active { transform: translateY(0); }
-.pit-start:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
-@media (max-width: 640px) {
-  .pit-start { bottom: 74px; }
-}
-/* The keyboard's way to play: beside the sound toggle, out of sight until
-   it has keyboard focus (a mouse or a finger can simply grab an icon). */
-.pit-toss {
-  position: absolute; right: 68px; bottom: 14px; z-index: 6;
-  min-height: 42px; padding: 0 16px;
-  font: inherit; font-size: 14px; font-weight: 600; line-height: 1;
-  color: var(--ink); white-space: nowrap;
-  background: var(--card);
-  border: 1px solid var(--line-strong); border-radius: var(--radius-pill);
-  box-shadow: var(--shadow-md);
-  cursor: pointer;
-  opacity: 0; pointer-events: none;
-  transition: opacity 0.15s ease;
-}
-.pit-toss[hidden] { display: none; }
-.pit-toss:focus-visible { opacity: 1; pointer-events: auto; outline: 2px solid var(--cyan); outline-offset: 3px; }
-/* Sound toggle — bottom-right of the stage, outside the bowl */
-.pit-sound {
-  position: absolute;
-  right: 14px; bottom: 14px;
-  z-index: 6;
-  width: 42px; height: 42px;
-  display: grid; place-items: center;
-  padding: 0;
-  border-radius: 50%;
-  color: var(--ink-2);
-  background: rgba(255, 255, 255, 0.85);
-  border: 1px solid var(--line);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  cursor: pointer;
-  transition: color 0.2s, border-color 0.2s, transform 0.15s;
-}
-.pit-sound[hidden] { display: none; }
-.pit-sound:hover { color: var(--ink); border-color: var(--line-strong); transform: scale(1.08); }
-.pit-sound:active { transform: scale(0.96); }
-.pit-sound .snd-slash { display: none; }
-.pit-sound.muted .snd-waves { display: none; }
-.pit-sound.muted .snd-slash { display: initial; }
-.pit-sound.muted { color: var(--ink-3); }
-/* Name chip that pops when you tap an icon */
-.pit-name {
-  position: absolute;
-  transform: translate(-50%, -130%) scale(0.6);
-  font-size: 14px; font-weight: 600; color: var(--ink);
-  background: #fff;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-pill); padding: 5px 13px;
-  pointer-events: none; opacity: 0; white-space: nowrap;
-  box-shadow: var(--shadow-md);
-}
-.pit-name.pop { animation: namePop 1.5s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
-@keyframes namePop {
-  0% { opacity: 0; transform: translate(-50%, -110%) scale(0.6); }
-  12% { opacity: 1; transform: translate(-50%, -150%) scale(1); }
-  78% { opacity: 1; transform: translate(-50%, -160%) scale(1); }
-  100% { opacity: 0; transform: translate(-50%, -180%) scale(0.9); }
-}
-.pit-caption {
-  text-align: center; font-size: 14px; line-height: 20px; color: var(--ink-3);
-  padding: 18px 24px 0;
-}
-.pit-caption b { color: var(--ink-2); font-weight: 600; }
 
 /* ── Sections ── */
 .section { padding: var(--section-pad) 0; }
@@ -1316,6 +1002,29 @@ footer {
 }
 .launch-success h2 { margin: 1px 0 4px; font: 700 18px/24px var(--font-rounded); }
 .launch-success p { color: var(--ink-2); font-size: 14px; line-height: 20px; }
+.launch-help { margin-top: 12px; color: var(--ink-2); font-size: 14px; line-height: 20px; }
+.launch-help a, .launch-success a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.launch-text-action {
+  min-height: 44px;
+  padding: 8px 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: 600 14px/20px var(--font-display);
+  text-align: left;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.launch-text-action:focus-visible, .launch-success a:focus-visible, .launch-help a:focus-visible {
+  outline: 2px solid var(--cyan); outline-offset: 4px; border-radius: var(--radius-xs);
+}
+.launch-copy-status { color: var(--ink-3); font-size: 12px; line-height: 20px; }
+.launch-saved-email { margin-top: 8px; overflow-wrap: anywhere; }
+.launch-success > div { min-width: 0; }
+.launch-success-actions { display: flex; flex-wrap: wrap; align-items: center; column-gap: 20px; margin-top: 12px; }
+.launch-success-actions a { display: inline-flex; align-items: center; min-height: 44px; font-size: 14px; font-weight: 600; }
+.launch-success .launch-removal { margin-top: 8px; font-size: 12px; line-height: 18px; }
 .launch-fineprint { margin-top: 16px; color: var(--ink-3); font-size: 12px; line-height: 18px; }
 .launch-fineprint a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 
@@ -1683,8 +1392,6 @@ footer {
   .hero-proof-copy h2 { font-size: 19px; line-height: 23px; margin-bottom: 7px; }
   .hero-proof-copy p { font-size: 13px; line-height: 19px; margin-bottom: 8px; }
   .hero-proof-copy a { font-size: 13px; }
-  .hero-proof + .icon-pit { margin-top: 18px; }
-  .pit-stage { height: 300px; }
   :root { --section-pad: 80px; }
   .cta { padding: 80px 0; }
   .closing { grid-template-columns: 1fr; gap: 26px; padding-top: 32px; }
@@ -1699,7 +1406,6 @@ footer {
   .lore-more > summary { padding: 16px; gap: 14px; }
   .lore-more > summary small { font-size: 13px; line-height: 18px; }
   .faq summary { font-size: 18px; line-height: 26px; }
-  .pit-hint, .pit-call { top: 12px; bottom: auto; }
   .plan-alt[aria-hidden] { display: none; } /* stacked: nothing to line up with */
 }
 @media (prefers-reduced-motion: reduce) {
@@ -1711,108 +1417,6 @@ footer {
   .kicker-chip .dot, .float-chip { animation: none; }
   .reveal-ready .reveal { opacity: 1; transform: none; transition: none; }
   .reveal-ready .reveal[data-stagger] > *, .reveal-ready .reveal[data-stagger].in > * { opacity: 1; animation: none; }
-}
-
-/* ── The floe. ?variant=zerog is the one alternative left ── */
-.pit-bob { position: absolute; inset: 0; z-index: 2; }
-/* Two swells and it rests: an endless loop under the headline keeps
-   pulling the eye off the words. */
-.pit--iceberg .pit-bob { animation: berg-bob 7.5s ease-in-out 2; }
-@keyframes berg-bob {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  30% { transform: translateY(-5px) rotate(0.25deg); }
-  65% { transform: translateY(3px) rotate(-0.2deg); }
-}
-.pit--iceberg .bowl-visual {
-  position: absolute;
-  pointer-events: none;
-  left: 50%; bottom: -13px;
-  /* --berg-sink is driven by night.js: the floe rides lower as the
-     colony piles on, and dips when something lands hard. The waterline
-     does not move, which is what makes the berg read as loaded. */
-  transform: translateX(-50%) translateY(var(--berg-sink, 0px));
-  z-index: 1;
-  width: min(840px, 90%);
-  height: 168px;
-  overflow: visible;
-  filter: drop-shadow(0 18px 0 rgba(39, 104, 143, 0.12)) drop-shadow(0 24px 24px rgba(30, 86, 124, 0.22));
-}
-.pit--iceberg .berg-body {
-  fill: #58B3DE;
-  stroke: #123A57;
-  stroke-width: 8px;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-.pit--iceberg .berg-facet {
-  stroke: #236D9B;
-  stroke-width: 5px;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-.pit--iceberg .berg-facet--left { fill: #7CCDF0; }
-.pit--iceberg .berg-facet--middle { fill: #4BA7D6; }
-.pit--iceberg .berg-facet--right { fill: #378CC1; }
-.pit--iceberg .berg-facet--edge { fill: #65BCE3; }
-.pit--iceberg .berg-snow {
-  fill: #F8FDFF;
-  stroke: #123A57;
-  stroke-width: 7px;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-.pit--iceberg .berg-snow-shadow { fill: #D8F1FB; }
-.pit--iceberg .berg-shine {
-  fill: none;
-  stroke: #FFFFFF;
-  stroke-width: 5px;
-  stroke-linecap: round;
-  opacity: 0.95;
-}
-.pit--iceberg .ocean-water {
-  position: absolute;
-  left: 50%; bottom: -180px;
-  z-index: 0;
-  /* The shape is stroked all the way round, so its sides and its lower
-     edge were pale lines too: one down each edge of the screen and one
-     straight through the caption. A little wider than the screen puts the
-     sides out of sight; the clip takes the lower edge and leaves the
-     waterline, and the glow above it, alone. */
-  width: 100%; height: 300px;
-  transform: translateX(-50%);
-  overflow: visible;
-  clip-path: inset(-80px 0 4px 0);
-  pointer-events: none;
-}
-.pit--iceberg .ocean-water-shape {
-  filter: drop-shadow(0 -8px 18px rgba(112, 202, 235, 0.24));
-}
-/* The phone composition stays tucked into the hero gutter. On a laptop,
-   the sea becomes the wide establishing layer: the floe and physics keep
-   their 1120px stage, while only the painted water reaches both edges. */
-@media (min-width: 641px) {
-  .pit--iceberg .ocean-water { width: 100vw; }
-}
-.pit--zerog .bowl-visual { display: none; }
-.pit-lines { position: absolute; inset: 0; pointer-events: none; }
-/* The water runs 180px below the stage (150px on a phone); the caption
-   starts 24px under where it ends. */
-.pit--iceberg .pit-caption { padding-top: 204px; }
-@media (max-width: 640px) {
-  .pit--iceberg .bowl-visual { width: 94%; height: 136px; bottom: -21px; }
-  .pit--iceberg .ocean-water { height: 240px; bottom: -150px; }
-  .pit--iceberg .pit-caption { padding-top: 174px; }
-}
-/* Scrolled away: nothing here is being looked at, so nothing here should
-   be asking for frames. night.js sets this from the same observer that
-   parks the sim. */
-.icon-pit.out-of-view .pit-bob { animation-play-state: paused; }
-.icon-pit.out-of-view .ocean-water { visibility: hidden; }
-@media (prefers-reduced-motion: reduce) {
-  .pit--iceberg .pit-bob { animation: none; }
-  .snow-divot, .snow-puff { display: none; }
-  /* (the water's <animate> is stopped by night.js: CSS cannot pause SMIL) */
-  .water-splash i { display: none; }
 }
 
 /* ── Icon lore / collection ── */
