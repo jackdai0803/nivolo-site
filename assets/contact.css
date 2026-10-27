@@ -33,12 +33,48 @@
 .page .contact-card { margin: 26px 0 38px; padding: 28px; }
 .page .contact-card p { margin-bottom: 0; }
 .page .contact-card .contact-note { font-size: 13px; }
+.contact-dialog {
+  position: fixed; inset: 0;
+  width: min(460px, calc(100% - 32px)); max-height: calc(100dvh - 48px);
+  margin: auto; padding: 36px 28px 20px;
+  border: 1px solid var(--line); border-radius: var(--radius-lg);
+  background: var(--paper); color: var(--ink);
+  box-shadow: var(--shadow-lg);
+}
+.contact-dialog[open] { animation: contact-open 180ms ease-out; }
+.contact-dialog::backdrop { background: rgba(22, 23, 26, .42); }
+.contact-dialog h2 { padding-right: 16px; font: 500 30px/1.15 var(--font-serif); text-wrap: balance; }
+.contact-choice-body { margin-top: 14px; color: var(--ink-2); font-size: 15px; }
+.contact-close {
+  position: absolute; top: 8px; right: 8px; display: grid; place-items: center;
+  width: 44px; height: 44px; border: 0; border-radius: var(--radius-sm);
+  background: transparent; color: var(--ink-2); font-size: 26px; cursor: pointer;
+}
+.contact-close:hover { background: var(--paper-3); }
+.contact-options { display: grid; gap: 10px; margin: 24px 0; }
+.contact-option {
+  display: block; width: 100%; min-height: 48px; padding: 12px 16px;
+  border: 1px solid var(--line-strong); border-radius: var(--radius-sm);
+  background: var(--paper-2); color: var(--ink);
+  text-align: center; font: 600 15px/24px var(--font-body); cursor: pointer;
+}
+.contact-option:hover { background: var(--tint-ice-2); text-decoration: none; }
+.contact-address {
+  width: 100%; padding: 8px; border: 0; border-radius: var(--radius-xs);
+  background: transparent; color: var(--ink); text-align: center;
+  font: 400 16px/24px var(--font-body);
+}
+.contact-copy { margin-top: 8px; background: var(--tint-ice-2); }
+.contact-copy-status { min-height: 22px; margin-top: 12px; color: var(--ink-2); font-size: 13px; text-align: center; }
+.contact-dialog :is(a, button, input):focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
+@keyframes contact-open { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 @media (max-width: 540px) {
   .contact-section { padding-bottom: 48px; }
   .contact-card { padding: 26px 24px; }
   .contact-actions { align-items: flex-start; flex-direction: column; gap: 18px; }
 }
 @media (prefers-reduced-motion: reduce) {
+  .contact-dialog[open] { animation: none; }
   .contact-send { transition: none; }
   .contact-send:active { transform: none; }
 }
