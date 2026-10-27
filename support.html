@@ -28,6 +28,7 @@
   <link rel="apple-touch-icon" href="assets/app-icon.png" />
   <link rel="stylesheet" href="assets/fonts.css?v=5" />
   <link rel="stylesheet" href="styles.css?v=115" />
+  <link rel="stylesheet" href="assets/contact.css?v=1" />
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -49,10 +50,15 @@
     <h1>Support</h1>
     <p class="updated">We're happy to help.</p>
 
-    <div class="card">
-      <p>Questions, feedback, or something not working? Email us and we'll get back to you as soon as we can — usually within a couple of days.</p>
-      <p style="margin-top: 12px;"><strong><a href="mailto:support@nivolo.app">support@nivolo.app</a></strong></p>
-    </div>
+    <section class="contact-card" id="contact" aria-labelledby="contact-title">
+      <h2 id="contact-title" data-contact-copy="title">Questions or concerns?</h2>
+      <p data-contact-copy="body">Something not working, a question on your mind, or an idea to share? We&rsquo;d love to hear from you.</p>
+      <div class="contact-actions">
+        <a class="contact-send" data-contact-email href="mailto:support@nivolo.app?subject=Nivolo%20%E2%80%94%20questions%20or%20concerns"><span data-contact-copy="send">Email us</span><span aria-hidden="true">↗</span></a>
+        <a class="contact-email" href="mailto:support@nivolo.app">support@nivolo.app</a>
+      </div>
+      <p class="contact-note" data-contact-copy="note">Opens your email app. Your message goes directly to Nivolo&rsquo;s developer.</p>
+    </section>
 
     <h2>Common questions</h2>
 
@@ -103,5 +109,6 @@
 
   <!-- No ?v= on purpose: this is the one file edited at launch, and it should be the only edit. -->
   <script src="assets/store.js" defer></script>
+  <script src="assets/contact.js?v=1" defer></script>
 </body>
 </html>

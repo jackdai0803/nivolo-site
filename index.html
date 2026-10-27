@@ -51,6 +51,7 @@
     @font-face { font-family: 'Inter Fallback'; src: local('Arial'); size-adjust: 106.7%; ascent-override: 90.79%; descent-override: 22.61%; line-gap-override: 0%; }
   </style>
   <link rel="stylesheet" href="styles.css?v=115" />
+  <link rel="stylesheet" href="assets/contact.css?v=1" />
   <link rel="stylesheet" href="assets/editorial-concept.css?v=20" />
   <link rel="stylesheet" href="assets/nivo.css?v=3" />
   <link rel="stylesheet" href="assets/app-opals.css?v=3" />
@@ -717,6 +718,21 @@
     </div>
   </section>
 
+  <section class="contact-section" id="contact" aria-labelledby="contact-title">
+    <div class="wrap">
+      <div class="contact-card">
+        <p class="section-kicker" data-contact-copy="kicker">A little help</p>
+        <h2 id="contact-title" data-contact-copy="title">Questions or concerns?</h2>
+        <p data-contact-copy="body">Something not working, a question on your mind, or an idea to share? We&rsquo;d love to hear from you.</p>
+        <div class="contact-actions">
+          <a class="contact-send" data-contact-email href="mailto:support@nivolo.app?subject=Nivolo%20%E2%80%94%20questions%20or%20concerns"><span data-contact-copy="send">Email us</span><span aria-hidden="true">↗</span></a>
+          <a class="contact-email" href="mailto:support@nivolo.app">support@nivolo.app</a>
+        </div>
+        <p class="contact-note" data-contact-copy="note">Opens your email app. Your message goes directly to Nivolo&rsquo;s developer.</p>
+      </div>
+    </div>
+  </section>
+
   <section class="cta">
     <div class="wrap">
       <div class="closing reveal" data-stagger="60">
@@ -749,6 +765,7 @@
           </div>
           <div class="footer-col">
             <h3>Help</h3>
+            <a href="#contact" data-contact-copy="contact">Contact us</a>
             <a href="support.html">Support</a>
             <a href="privacy.html">Privacy Policy</a>
           </div>
@@ -825,6 +842,7 @@
   </script>
   <!-- No ?v= on purpose: this is the one file edited at launch, and it should be the only edit. -->
   <script src="assets/store.js" defer></script>
+  <script src="assets/contact.js?v=1" defer></script>
   <script src="assets/icon-pop.js?v=26" defer></script>
   <script src="assets/founders-gallery.js?v=7" defer></script>
   <script src="assets/frost.js?v=4" defer></script>
