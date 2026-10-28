@@ -7,6 +7,7 @@
   };
   const t = (key) => copy[document.documentElement.lang.startsWith('zh') ? 'zh' : 'en'][key];
   Object.assign(copy.en, {
+    menu: 'Menu', navFeatures: 'Features', navPricing: 'Pricing', navFaq: 'FAQ', navSupport: 'Support',
     screens: 'Explore all eight app screens', collection: 'Explore the full collection',
     kindTitle: 'Room for real life.', kindBody: 'Planned rest days and a free weekly freeze keep your streak safe when life gets in the way.',
     krill: 'Meet the Krill', private: 'Private by design.', account: 'No cloud account. No ad trackers.',
@@ -14,6 +15,7 @@
     yearlyNote: 'About $2.50/month · billed yearly · USD', monthlyNote: 'Or $29.99 a year (about $2.50/month) · USD',
   });
   Object.assign(copy.zh, {
+    menu: '菜单', navFeatures: '功能', navPricing: '价格', navFaq: '常见问题', navSupport: '支持',
     screens: '查看全部八张应用截图', collection: '探索完整收藏',
     kindTitle: '为生活留点余地。', kindBody: '提前安排休息日，每周还有一次免费的连续记录冻结，在忙碌时守护你的坚持。',
     krill: '认识磷虾', private: '隐私，融入设计。', account: '无需云端账户，没有广告追踪。',
@@ -21,6 +23,19 @@
     yearlyNote: '约每月 $2.50 · 按年计费 · 美元', monthlyNote: '或每年 $29.99（约每月 $2.50）· 美元',
   });
   document.querySelectorAll('[data-site-copy]').forEach((element) => { element.textContent = t(element.dataset.siteCopy); });
+  const phoneMenu = document.querySelector('.phone-menu');
+  const phoneLayout = matchMedia('(max-width: 760px)');
+  phoneMenu?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => { phoneMenu.open = false; }));
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && phoneMenu?.open) {
+      phoneMenu.open = false;
+      phoneMenu.querySelector('summary').focus();
+    }
+  });
+  document.addEventListener('click', (event) => {
+    if (phoneMenu?.open && !phoneMenu.contains(event.target)) phoneMenu.open = false;
+  });
+  phoneLayout.addEventListener('change', () => { if (phoneMenu) phoneMenu.open = false; });
   const reactions = new Map();
   const react = (element, frames, options = {}) => {
     if (!element || reducedMotion.matches) return;
