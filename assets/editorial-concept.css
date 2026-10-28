@@ -392,10 +392,10 @@
   margin: 0;
   color: #173b54;
   font-family: var(--font-display);
-  font-size: clamp(48px, 8.2vw, 126px);
-  font-weight: 800;
-  letter-spacing: -0.075em;
-  line-height: .82;
+  font-size: clamp(44px, 7.2vw, 110px);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
   transform: rotate(-3deg);
 }
 
@@ -1706,7 +1706,7 @@ a.nav-cta:active, a.btn-light:active, a.btn-moonlit:active { transform: translat
   .short-home .editorial-filter { min-height: 44px; padding: 10px; font-size: 13px; line-height: 1.3; }
 
   .short-home .editorial-feature { display: flex; flex-direction: column; gap: 22px; min-height: 0; padding: 28px 20px 22px; border-radius: 26px; }
-  .short-home .editorial-sticker { position: relative; top: auto; left: auto; order: 0; align-self: center; max-width: 100%; gap: .2em; font-size: clamp(32px, 9.1vw, 60px); line-height: .95; transform: rotate(-2deg); }
+  .short-home .editorial-sticker { position: relative; top: auto; left: auto; order: 0; align-self: center; max-width: 100%; gap: .2em; font-size: clamp(32px, 9.1vw, 60px); line-height: 1.05; transform: rotate(-2deg); }
   .short-home .editorial-sticker span { max-width: 100%; padding: .1em .13em; }
   .short-home .editorial-sticker span:nth-child(2) { margin-left: 0; }
   .short-home .editorial-feature-copy { order: 1; text-align: center; }
@@ -1757,4 +1757,21 @@ a.nav-cta:active, a.btn-light:active, a.btn-moonlit:active { transform: translat
 }
 @media (prefers-reduced-motion: reduce) {
   .short-home .editorial-scene { animation: none; }
+}
+
+/* Carry the Balanced wordmark's weight and spacing through display headings. */
+.short-home .section-title--with-nivo,
+.short-home .collector-pricing .section-title,
+.short-home .steps .step h3,
+.short-home .collector-plan-heading h3,
+.short-home .collector-details-grid h3,
+.short-home .compact-benefits h3,
+.short-home .compact-privacy h2,
+.short-home .keepsakes-head h3,
+.short-home .keepsake-card h4,
+.short-home .compact-krill > h3,
+.short-home .krill-specimen h4,
+.short-home .collector-price strong {
+  font-weight: 600;
+  letter-spacing: -.025em;
 }
