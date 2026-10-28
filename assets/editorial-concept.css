@@ -132,9 +132,9 @@
   color: #173d52;
   font-family: var(--font-display);
   font-size: clamp(58px, 10vw, 150px);
-  font-weight: 700;
-  letter-spacing: -0.072em;
-  line-height: 0.9;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
   white-space: nowrap;
 }
 
@@ -567,7 +567,6 @@
 @media (max-width: 860px) {
   .editorial-lockup {
     gap: 12px;
-    letter-spacing: -0.06em;
   }
 
   .editorial-lockup-mark {
@@ -634,7 +633,6 @@
     gap: 8px 10px;
     margin-top: 38px;
     font-size: clamp(48px, 18vw, 72px);
-    line-height: .86;
     white-space: normal;
   }
 
