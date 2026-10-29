@@ -268,8 +268,10 @@
   for (var z = -DEPTH / 2; z <= DEPTH / 2 + 0.000001; z += STEP) {
     var s = document.createElement("div");
     s.className = "ipop-slice";
-    // A soft light band across the thickness rounds the ceramic edge.
-    s.style.setProperty("--glaze-band", (12 + 22 * Math.cos(z / (DEPTH / 2) * Math.PI / 2)).toFixed(1) + "%");
+    // The middle of the ceramic rim swells slightly, meeting each face flush.
+    var rim = Math.sqrt(Math.max(0, 1 - Math.pow(z / (DEPTH / 2), 2)));
+    s.style.setProperty("--glaze-round", (1 + rim * .018).toFixed(5));
+    s.style.setProperty("--glaze-band", (18 + 8 * rim).toFixed(1) + "%");
     // keyed off the CSS knob, so the slab thickens with the tile
     s.style.transform = "translateZ(calc(var(--ipop-depth-size, var(--ipop-tile)) * " + z.toFixed(6) + "))";
     tile.insertBefore(s, front);
