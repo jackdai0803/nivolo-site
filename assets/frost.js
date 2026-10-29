@@ -1,16 +1,7 @@
-/* Frost — the rare end of the collection starts frozen in.
-   Jack's torch idea, turned round to fit the brand. In Nivolo ice is the
-   thing that protects you (the streak freeze, "habits that hold"), and a
-   melting face is a streak that nearly went, so nothing here burns. The
-   visitor's own warmth thaws the shelf: a cursor that lingers, a finger
-   held on the glass, a tap on one icon. That is how these icons unlock in
-   the app too, by showing up. What melts stays melted.
-
-   Only this shelf is frozen. Headlines, features and pricing are never
-   behind it, because nothing a visitor needs in order to decide should be,
-   and a phone has no cursor to hover with. The content stays in the DOM
-   the whole time, so screen readers and search see all of it; the ice is
-   a canvas on top, aria-hidden. Reduced motion, or no canvas: no ice. */
+/* The rare collection sits in individual ice blocks. A straight wooden-handled
+   pick follows the mouse; a press shows a fracture, and a click releases chips.
+   Hover never reveals content. Touch scrolling and cancelled presses do nothing.
+   Reduced motion and unavailable canvas leave the collection directly accessible. */
 (function () {
   "use strict";
 
@@ -29,24 +20,17 @@
   var FINE = !!(window.matchMedia && matchMedia("(hover: hover) and (pointer: fine)").matches);
   var hint = document.querySelector("[data-frost-hint]");
   var copy = {
-    en: { hint: "Tap an ice block to reveal an icon. Tap again to explore its world.", all: "Thaw all", count: "{n} of {total} revealed", done: "All {total} revealed. Discover how to earn them in the app." },
-    zh: { hint: "轻点冰块，揭晓图标。再次轻点，探索它的世界。", all: "全部融化", count: "已揭晓 {n} / {total}", done: "已揭晓全部 {total} 个。在 App 中发现它们的解锁方式。" }
+    en: { hint: "Tap an ice block to reveal an icon. Tap again to explore its world.", all: "Reveal all", count: "{n} of {total} revealed", done: "All {total} revealed. Discover how to earn them in the app." },
+    zh: { hint: "轻点冰块，揭晓图标。再次轻点，探索它的世界。", all: "全部揭晓", count: "已揭晓 {n} / {total}", done: "已揭晓全部 {total} 个。在 App 中发现它们的解锁方式。" }
   };
   function t(key) {
     return copy[document.documentElement.lang.indexOf("zh") === 0 ? "zh" : "en"][key]
       .replace("{n}", thawedCount).replace("{total}", items.length);
   }
   if (hint) hint.textContent = t("hint");
-  var RADIUS = 20;               // the pane's corner, matches .frost (--radius) in styles.css
-  var CELL = 10;                 // coverage grid, CSS px per cell
-  var BRUSH = FINE ? 58 : 50;    // radius of the warmth
-  var FX_M = 72;                 // the fx canvas overhangs the ice so the torch
-                                 // isn't sliced off at the pane's edge
-  var THAW_AT = 0.62;            // an icon lets go once ~40% of its ice is gone —
-                                 // by then it already looks clear to the eye
+  var FX_M = 72; // Room for the falling chips, outside the shelf.
 
   var dpr = 1, W = 0, H = 0, lastW = 0;
-  var cells = null, cols = 0, rows = 0;
   var state = items.map(function () { return { thawed: false, rect: null, img: null, lines: [] }; });
   var thawedCount = 0, touched = false, done = false;
 
@@ -57,17 +41,12 @@
   pane.appendChild(ice);
   pane.appendChild(fx);
   pane.classList.add("is-frozen");
-  // A mouse gets the torch as its cursor, over the ice only. Phones keep
-  // the finger as the warmth — a torch drawn under a fingertip is hidden.
-  if (FINE) pane.classList.add("has-torch");
-  // The torch is the cursor, so it lives where a cursor does: a small
-  // fixed canvas on <body>, above every section, icon and stacking
-  // context on the page. Drawn inside the pane it could be painted over.
-  var TW = 92, TH = 104, HX = 36, HY = 46; // canvas size, hotspot (flame) inside it
+  // The tip is the pointer hotspot. The handle stays above-left of it.
+  var TW = 100, TH = 100, HX = 76, HY = 78;
   var tcv = null, tctx = null;
   if (FINE) {
     tcv = document.createElement("canvas");
-    tcv.className = "frost-torch";
+    tcv.className = "frost-pick";
     tcv.setAttribute("aria-hidden", "true");
     tctx = tcv.getContext("2d");
     document.body.appendChild(tcv);
@@ -134,10 +113,7 @@
       tcv.style.width = TW + "px"; tcv.style.height = TH + "px";
       tctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
-    cols = Math.ceil(W / CELL);
-    rows = Math.ceil(H / CELL);
-    cells = new Float32Array(cols * rows);
-    for (var k = 0; k < cells.length; k++) cells[k] = 1;
+
   }
 
   // Match CSS superellipse(2): |x/r|^4 + |y/r|^4 = 1.
@@ -224,19 +200,23 @@
   }
 
   // A short branching fracture appears exactly where the block was tapped.
-  function fracture(s, x, y) {
+  function fracture(c, s, x, y, reach) {
     var r = s.rect, rnd = seeded(Math.round(x + y));
-    ctx.save();
-    continuousRect(ctx, r.x + 2, r.y + 2, r.w - 4, r.h - 7, 20); ctx.clip();
-    ctx.lineCap = "round";
-    for (var i = 0; i < 5; i++) {
-      var a = i * Math.PI * 2 / 5 + rnd() * .45;
-      var len = 23 + rnd() * 26, mx = x + Math.cos(a) * len * .45, my = y + Math.sin(a) * len * .45;
-      var ex = x + Math.cos(a + .2) * len, ey = y + Math.sin(a + .2) * len;
-      line([x, y, mx, my, ex, ey], "rgba(63,126,156,.35)", 2.5, 1);
-      line([x, y, mx, my, ex, ey], "rgba(255,255,255,.95)", 1.2, 0);
+    c.save();
+    continuousRect(c, r.x + 2, r.y + 2, r.w - 4, r.h - 7, 20); c.clip();
+    c.lineCap = "round";
+    for (var i = 0; i < 7; i++) {
+      var a = i * Math.PI * 2 / 7 + rnd() * .3;
+      var len = reach * (.7 + rnd() * .3);
+      var mx = x + Math.cos(a) * len * .45, my = y + Math.sin(a) * len * .45;
+      var ex = x + Math.cos(a + .15) * len, ey = y + Math.sin(a + .15) * len;
+      c.beginPath(); c.moveTo(x, y); c.lineTo(mx, my); c.lineTo(ex, ey);
+      c.strokeStyle = "rgba(63,126,156,.45)"; c.lineWidth = 3; c.stroke();
+      c.strokeStyle = "rgba(255,255,255,.95)"; c.lineWidth = 1.3; c.stroke();
+      c.beginPath(); c.moveTo(mx, my); c.lineTo(mx + Math.cos(a + .7) * len * .2, my + Math.sin(a + .7) * len * .2);
+      c.lineWidth = .8; c.stroke();
     }
-    ctx.restore();
+    c.restore();
   }
 
   // Draw the bar far off to the left and keep only its shadow: a blurred
@@ -253,141 +233,6 @@
     ctx.fill();
     ctx.restore();
   }
-
-  function line(pts, color, width, dy) {
-    ctx.beginPath();
-    ctx.moveTo(pts[0], pts[1] + dy);
-    for (var i = 2; i < pts.length; i += 2) ctx.lineTo(pts[i], pts[i + 1] + dy);
-    ctx.strokeStyle = color;
-    ctx.lineWidth = width;
-    ctx.stroke();
-  }
-
-  /* ── Melting ──────────────────────────────────────────────────────── */
-
-  function melt(x, y, r, s) {
-    ctx.save();
-    ctx.globalCompositeOperation = "destination-out";
-    var g = ctx.createRadialGradient(x, y, 0, x, y, r);
-    g.addColorStop(0, "rgba(0,0,0," + s + ")");
-    g.addColorStop(0.5, "rgba(0,0,0," + s * 0.75 + ")");
-    g.addColorStop(1, "rgba(0,0,0,0)");
-    ctx.fillStyle = g;
-    ctx.fillRect(x - r, y - r, r * 2, r * 2);
-    ctx.restore();
-    // Mirror the same falloff into the coverage grid, so thawing can be
-    // judged without reading pixels back (the icons taint the canvas).
-    var c0 = Math.max(0, Math.floor((x - r) / CELL)), c1 = Math.min(cols - 1, Math.floor((x + r) / CELL));
-    var r0 = Math.max(0, Math.floor((y - r) / CELL)), r1 = Math.min(rows - 1, Math.floor((y + r) / CELL));
-    for (var cy = r0; cy <= r1; cy++) {
-      for (var cx = c0; cx <= c1; cx++) {
-        var dx = (cx + 0.5) * CELL - x, dy = (cy + 0.5) * CELL - y;
-        var d = Math.sqrt(dx * dx + dy * dy) / r;
-        if (d >= 1) continue;
-        var a = d < 0.5 ? s * (1 - 0.5 * d) : s * 1.5 * (1 - d);
-        cells[cy * cols + cx] *= 1 - a;
-      }
-    }
-  }
-
-  // Two offset blobs per stamp so the thawed edge comes out ragged, the
-  // way frost actually retreats, instead of a row of perfect circles.
-  function stamp(x, y, r, s) {
-    touched = true;
-    melt(x, y, r, s);
-    melt(x + (Math.random() - 0.5) * r * 0.55, y + (Math.random() - 0.5) * r * 0.55,
-         r * (0.55 + Math.random() * 0.3), s * 0.6);
-    if (Math.random() < 0.3 * Math.min(1, s * 4)) bead(x, y, r);
-  }
-
-  // Condensation beads along the thaw line. source-atop lands them only
-  // on ice that is still there, and later warmth wipes them with it.
-  function bead(x, y, r) {
-    var ang = Math.random() * 6.2832, dist = r * (0.78 + Math.random() * 0.22);
-    var bx = x + Math.cos(ang) * dist, by = y + Math.sin(ang) * dist;
-    var br = 1.1 + Math.random() * 1.6;
-    ctx.save();
-    ctx.globalCompositeOperation = "source-atop";
-    ctx.fillStyle = "rgba(92, 134, 160, 0.30)";
-    ctx.beginPath(); ctx.arc(bx, by, br, 0, 6.2832); ctx.fill();
-    ctx.fillStyle = "rgba(255, 255, 255, 0.95)";
-    ctx.beginPath(); ctx.arc(bx - br * 0.35, by - br * 0.35, br * 0.38, 0, 6.2832); ctx.fill();
-    ctx.restore();
-  }
-
-  function frostLeft(r) {
-    var c0 = Math.max(0, Math.floor(r.x / CELL)), c1 = Math.min(cols - 1, Math.floor((r.x + r.w) / CELL));
-    var r0 = Math.max(0, Math.floor(r.y / CELL)), r1 = Math.min(rows - 1, Math.floor((r.y + r.h) / CELL));
-    var sum = 0, n = 0;
-    for (var cy = r0; cy <= r1; cy++) for (var cx = c0; cx <= c1; cx++) { sum += cells[cy * cols + cx]; n++; }
-    return n ? sum / n : 0;
-  }
-  function clearCells(r) {
-    var c0 = Math.max(0, Math.floor((r.x - 4) / CELL)), c1 = Math.min(cols - 1, Math.floor((r.x + r.w + 4) / CELL));
-    var r0 = Math.max(0, Math.floor((r.y - 4) / CELL)), r1 = Math.min(rows - 1, Math.floor((r.y + r.h + 4) / CELL));
-    for (var cy = r0; cy <= r1; cy++) for (var cx = c0; cx <= c1; cx++) cells[cy * cols + cx] = 0;
-  }
-
-  // Any icon under the warmth that is mostly clear lets go of the rest.
-  function check(x, y, r) {
-    state.forEach(function (s, i) {
-      if (s.thawed) return;
-      var q = s.rect;
-      if (x + r < q.x || x - r > q.x + q.w || y + r < q.y || y - r > q.y + q.h) return;
-      if (frostLeft(q) < THAW_AT) thawItem(i, x, y);
-    });
-  }
-
-  /* ── Drips ────────────────────────────────────────────────────────── */
-
-  var drips = [];
-  function spawnDrip(x, y, r) {
-    if (drips.length > 5) return;
-    var ang = Math.PI / 2 + (Math.random() - 0.5) * 1.1;
-    var dx = x + Math.cos(ang) * r * 0.82, dy = y + Math.sin(ang) * r * 0.82;
-    var c = Math.floor(dx / CELL), rw = Math.floor(dy / CELL);
-    if (c < 0 || c >= cols || rw < 0 || rw >= rows || cells[rw * cols + c] < 0.35) return;
-    drips.push({ x: dx, y: dy, px: dx, py: dy, v: 18, run: 0, max: 16 + Math.random() * 44,
-                 w: 2.2 + Math.random() * 1.4, hold: 0 });
-  }
-  function stepDrips(dt) {
-    for (var k = drips.length - 1; k >= 0; k--) {
-      var d = drips[k];
-      if (d.run < d.max) {
-        var step = d.v * dt / 1000;
-        d.v = Math.max(8, d.v * (1 - dt / 900));   // a bead on glass stalls as it runs
-        d.y += step;
-        d.x += (Math.random() - 0.5) * 0.5;
-        d.run += step;
-        // Only lay trail once the bead has moved its own width: a slow
-        // bead re-stroking the same pixels every frame stacks the erase
-        // up until it cuts clean through after all.
-        if (d.y - d.py < d.w) continue;
-        // A run of water thins the frost and wets it; it never cuts
-        // clean through, or it would expose a sliver of the text below.
-        ctx.save();
-        ctx.lineCap = "butt";
-        ctx.globalCompositeOperation = "destination-out";
-        ctx.strokeStyle = "rgba(0,0,0,0.16)";
-        ctx.lineWidth = d.w;
-        ctx.beginPath(); ctx.moveTo(d.px, d.py); ctx.lineTo(d.x, d.y); ctx.stroke();
-        ctx.globalCompositeOperation = "source-atop";
-        ctx.strokeStyle = "rgba(84, 126, 152, 0.10)";
-        ctx.beginPath(); ctx.moveTo(d.px, d.py); ctx.lineTo(d.x, d.y); ctx.stroke();
-        ctx.strokeStyle = "rgba(255, 255, 255, 0.35)";
-        ctx.lineWidth = d.w * 0.35;
-        ctx.beginPath(); ctx.moveTo(d.px - d.w * 0.25, d.py); ctx.lineTo(d.x - d.w * 0.25, d.y); ctx.stroke();
-        ctx.restore();
-        d.px = d.x; d.py = d.y;
-      } else {
-        d.hold += dt;
-        if (d.hold > 700) drips.splice(k, 1);
-      }
-    }
-    return drips.length > 0;
-  }
-
-  /* ── Thawing an icon ──────────────────────────────────────────────── */
 
   // Blaze's first breath of warmth: three small flames, released once
   // while the ice opens. Their own layer survives the shelf's final fade.
@@ -573,450 +418,221 @@
     }), { duration: 850, delay: 100, easing: effect.pose === "glitch" ? "steps(2, end)" : "ease-in-out" });
   }
 
-  var thaws = [];
-  function thawItem(i, ox, oy, quiet) {
+  var breaks = [], raf = 0, press = null, mouseAt = null, hovered = -1;
+  var pointerAt = 0, cancelledTap = false, recoilAt = 0;
+  var audio = null;
+  var soundButton = document.querySelector("[data-nivo-sound]");
+  function soundEnabled() {
+    return soundButton && soundButton.getAttribute("aria-pressed") === "true" && !document.hidden;
+  }
+  function sound(kind) {
+    if (!soundEnabled()) return;
+    try {
+      var Audio = window.AudioContext || window.webkitAudioContext;
+      if (!Audio) return;
+      if (!audio || audio.state === "closed") audio = new Audio();
+      if (audio.state !== "running") { audio.resume().catch(function () {}); return; }
+      var now = audio.currentTime, gain = audio.createGain(), source;
+      if (kind === "crack") {
+        var buffer = audio.createBuffer(1, Math.round(audio.sampleRate * .085), audio.sampleRate);
+        var data = buffer.getChannelData(0), last = 0;
+        for (var i = 0; i < data.length; i++) { last = (last + (Math.random() * 2 - 1) * .2) / 1.2; data[i] = last; }
+        source = audio.createBufferSource(); source.buffer = buffer;
+      } else {
+        source = audio.createOscillator(); source.type = "sine";
+        source.frequency.setValueAtTime(kind === "tick" ? 1600 : 1175, now);
+        source.frequency.exponentialRampToValueAtTime(kind === "tick" ? 750 : 1568, now + .12);
+      }
+      var length = kind === "chime" ? .22 : kind === "tick" ? .035 : .085;
+      gain.gain.setValueAtTime(0, now);
+      gain.gain.linearRampToValueAtTime(kind === "crack" ? .2 : .035, now + .003);
+      gain.gain.exponentialRampToValueAtTime(.0001, now + length);
+      source.connect(gain); gain.connect(audio.destination);
+      source.start(now); source.stop(now + length);
+      source.onended = function () { source.disconnect(); gain.disconnect(); };
+    } catch (e) { /* Optional sound must never delay the reveal. */ }
+  }
+  if (soundButton) soundButton.addEventListener("click", function () {
+    setTimeout(function () { if (!soundEnabled() && audio) { audio.close().catch(function () {}); audio = null; } }, 0);
+  });
+
+  function revealItem(i, ox, oy, quiet) {
     var s = state[i];
     if (s.thawed) return;
     if (!near) arrive();
-    touched = true;
-    s.thawed = true;
-    s.thawedAt = Date.now();
-    thawedCount++;
-    items[i].classList.add("is-thawing");
-    setTimeout(function () {
-      items[i].classList.remove("is-thawing");
-      items[i].classList.add("is-thawed");
-      revealIcon(s);
-      if (!quiet) drip();
-    }, 280);
     var r = s.rect;
-    if (ox == null) { ox = s.img ? s.img.x + s.img.w / 2 : r.x + 30; oy = r.y + r.h / 2; } // from the icon outward
-    fracture(s, ox, oy);
-    var far = Math.sqrt(Math.pow(Math.max(ox - r.x, r.x + r.w - ox), 2) +
-                        Math.pow(Math.max(oy - r.y, r.y + r.h - oy), 2));
-    thaws.push({ i: i, x: ox, y: oy, t0: 0, far: far + 16 });
-    updateCount();
-    kick();
+    if (!r || !r.w || !r.h) return;
+    touched = true; s.thawed = true; thawedCount++;
+    if (ox == null) { ox = s.img ? s.img.x + s.img.w / 2 : r.x + r.w / 2; oy = r.y + r.h / 2; }
+    ox = Math.max(r.x + 8, Math.min(r.x + r.w - 8, ox));
+    oy = Math.max(r.y + 8, Math.min(r.y + r.h - 8, oy));
+    fracture(ctx, s, ox, oy, Math.max(r.w, r.h));
+    // Retain this block's actual ice texture, then split it into eight pieces.
+    var shell = document.createElement("canvas");
+    shell.width = Math.ceil(r.w * dpr); shell.height = Math.ceil(r.h * dpr);
+    shell.getContext("2d").drawImage(ice, r.x * dpr, r.y * dpr, r.w * dpr, r.h * dpr, 0, 0, shell.width, shell.height);
+    var cx = ox - r.x, cy = oy - r.y;
+    var edge = [[0,0],[r.w*.5,0],[r.w,0],[r.w,r.h*.5],[r.w,r.h],[r.w*.5,r.h],[0,r.h],[0,r.h*.5]];
+    var pieces = edge.map(function (a, n) {
+      var b = edge[(n + 1) % edge.length], px = (cx + a[0] + b[0]) / 3, py = (cy + a[1] + b[1]) / 3;
+      var dx = px - cx, dy = py - cy, distance = Math.max(1, Math.hypot(dx,dy));
+      return { points: [[cx,cy],a,b], x:px, y:py, vx:dx/distance*(24+n%3*7), vy:dy/distance*22-13, spin:(n%2?1:-1)*(.12+n*.015) };
+    });
+    breaks.push({ i:i, shell:shell, rect:{x:r.x,y:r.y,w:r.w,h:r.h}, pieces:pieces, start:performance.now(), quiet:quiet, released:false });
+    items[i].classList.add("is-breaking");
+    recoilAt = performance.now();
+    if (!quiet) sound("crack");
+    updateCount(); placePick(); kick();
   }
-  function stepThaws(now) {
-    for (var k = thaws.length - 1; k >= 0; k--) {
-      var t = thaws[k], r = state[t.i].rect;
-      if (!t.t0) t.t0 = now;
-      var p = Math.min(1, Math.max(0, now - t.t0 - 90) / 680), e = 1 - Math.pow(1 - p, 3);
-      var R = Math.max(2, t.far * e);
-      ctx.save();
-      continuousRect(ctx, r.x - 6, r.y - 6, r.w + 12, r.h + 12, 16);
-      ctx.clip();
-      ctx.globalCompositeOperation = "destination-out";
-      var g = ctx.createRadialGradient(t.x, t.y, R * 0.6, t.x, t.y, R);
-      g.addColorStop(0, "rgba(0,0,0,0.85)");
-      g.addColorStop(1, "rgba(0,0,0,0)");
-      ctx.fillStyle = g;
-      ctx.fillRect(r.x - 6, r.y - 6, r.w + 12, r.h + 12);
-      ctx.restore();
-      if (p >= 1) {
-        // Finish with a soft-edged clear, outside the clip so the edge
-        // feathers into the ice around it instead of stopping dead.
-        ctx.save();
-        ctx.globalCompositeOperation = "destination-out";
-        ctx.shadowColor = "#000";
-        ctx.shadowBlur = 10 * dpr;
-        ctx.fillStyle = "#000";
-        continuousRect(ctx, r.x - 1, r.y - 1, r.w + 2, r.h + 2, 12);
-        ctx.fill();
-        ctx.restore();
-        clearCells(r);
-        thaws.splice(k, 1);
-      }
-    }
-    return thaws.length > 0;
-  }
-
-  // The site already has a water sound: the iceberg's two-note drip.
-  // night.js owns arming and the mute toggle, so this just asks it.
-  function drip() {
-    var n = window.__nivolo;
-    if (n && n.sfx && n.sfx.plop) { try { n.sfx.plop(0.3); } catch (e) {} }
-  }
-
   function updateCount() {
-    countEl.textContent = t("count");
-    if (thawedCount === items.length) finish();
+    countEl.textContent = t(thawedCount === items.length ? "done" : "count");
+    if (thawedCount === items.length) {
+      done = true; allBtn.hidden = true; bar.classList.add("is-done");
+      pane.classList.remove("is-frozen", "is-picking");
+    }
   }
-  function finish() {
-    if (done) return;
-    done = true;
-    allBtn.hidden = true;
-    bar.classList.add("is-done");
-    countEl.textContent = t("done");
-    pane.classList.remove("is-frozen");
-    // Let the last thaw finish, then fade the canvases out and drop them.
-    setTimeout(function () {
-      pane.classList.add("is-clear");
-      setTimeout(function () {
-        cancelAnimationFrame(raf);
-        if (ice.parentNode) ice.parentNode.removeChild(ice);
-        if (fx.parentNode) fx.parentNode.removeChild(fx);
-        if (tcv && tcv.parentNode) tcv.parentNode.removeChild(tcv);
-      }, 900);
-    }, 850);
-  }
-
-  /* ── The warmth ───────────────────────────────────────────────────── */
-
-  var heat = { on: false, x: 0, y: 0, dwell: 0, acc: 0 };
-  var raf = 0, last = 0, pointerAt = 0;
-  var torch = { px: 0, vx: 0, ember: 0, steam: 0 };
-  var bits = [];      // embers off the flame, steam off the ice
-  var mouseAt = null; // last client position, to re-aim after a scroll
-
-  function clearFx() { fxc.clearRect(-FX_M, -FX_M, W + FX_M * 2, H + FX_M * 2); }
-  function frostAt(x, y) {
-    var c = Math.floor(x / CELL), r = Math.floor(y / CELL);
-    return c < 0 || r < 0 || c >= cols || r >= rows ? 0 : cells[r * cols + c];
-  }
-
-  function kick() {
-    if (!raf && (!done || thaws.length)) { last = 0; raf = requestAnimationFrame(tick); }
-  }
+  function kick() { if (!raf) raf = requestAnimationFrame(tick); }
   function tick(now) {
     raf = 0;
-    // A second tick in the same frame (see the end of tick) would see
-    // zero elapsed time; skip it rather than divide by it.
-    if (last && now - last < 1) { if (!raf) raf = requestAnimationFrame(tick); return; }
-    var dt = last ? Math.min(50, now - last) : 16.7;
-    last = now;
-    var busy = false;
-    if (heat.on && thawedCount < items.length) {
-      // A still cursor or a held finger keeps radiating, and the patch
-      // under it widens the longer it stays.
-      heat.dwell = Math.min(1, heat.dwell + dt / 900);
-      var r = BRUSH * (1 + 0.35 * heat.dwell);
-      // Jittered, so thousands of tiny erases on one spot don't quantise
-      // into visible concentric rings (8-bit alpha bands otherwise).
-      stamp(heat.x + (Math.random() - 0.5) * 8, heat.y + (Math.random() - 0.5) * 8,
-            r * (0.86 + Math.random() * 0.28), 0.05 * dt / 16.7);
-      heat.acc += dt;
-      if (heat.acc > 420) { heat.acc = 0; spawnDrip(heat.x, heat.y, r); }
-      check(heat.x, heat.y, r);
-      busy = true;
-      if (FINE) {
-        var mvx = (heat.x - torch.px) * 16.7 / dt;
-        torch.px = heat.x;
-        torch.vx += (mvx - torch.vx) * 0.2;
-        if (!isFinite(torch.vx)) torch.vx = 0; // one bad frame must not snuff the torch for good
-        // Ice under the flame gives off steam; the flame throws the odd ember.
-        torch.steam += dt;
-        if (torch.steam > 95 && frostAt(heat.x, heat.y) > 0.12) {
-          torch.steam = 0;
-          bits.push({ steam: true, x: heat.x + (Math.random() - 0.5) * 22, y: heat.y + (Math.random() - 0.5) * 12,
-                      vx: (Math.random() - 0.5) * 10, vy: -(22 + Math.random() * 14),
-                      r0: 4 + Math.random() * 3, r1: 14 + Math.random() * 8, age: 0, life: 1000 + Math.random() * 400 });
-        }
-        torch.ember += dt * (1 + Math.min(2, Math.abs(torch.vx) / 8));
-        if (torch.ember > 230) {
-          torch.ember = Math.random() * 120;
-          bits.push({ steam: false, x: heat.x - 3 + (Math.random() - 0.5) * 5, y: heat.y - 10,
-                      vx: (Math.random() - 0.5) * 16 - torch.vx * 0.6, vy: -(34 + Math.random() * 26),
-                      r0: 0.8 + Math.random() * 0.8, age: 0, life: 650 + Math.random() * 450 });
-        }
+    fxc.clearRect(-FX_M, -FX_M, W + FX_M * 2, H + FX_M * 2);
+    if (press && !state[press.i].thawed) fracture(fxc, state[press.i], press.x, press.y, 42);
+    for (var k = breaks.length - 1; k >= 0; k--) {
+      var br = breaks[k], elapsed = now - br.start, r = br.rect;
+      if (elapsed < 95) continue; // Let the fracture register before it separates.
+      if (!br.released) {
+        br.released = true;
+        ctx.clearRect(r.x, r.y, r.w, r.h);
+        items[br.i].classList.remove("is-breaking");
+        items[br.i].classList.add("is-thawed");
+        revealIcon(state[br.i]);
+        if (!br.quiet) sound("chime");
       }
+      var p = Math.min(1, (elapsed - 95) / 520);
+      if (p === 1) { breaks.splice(k,1); continue; }
+      br.pieces.forEach(function (piece) {
+        fxc.save();
+        fxc.globalAlpha = Math.pow(1-p, 1.25);
+        fxc.translate(r.x + piece.x + piece.vx * p, r.y + piece.y + piece.vy * p + 50*p*p);
+        fxc.rotate(piece.spin*p); fxc.scale(1-.12*p,1-.12*p);
+        fxc.translate(-piece.x,-piece.y);
+        fxc.beginPath();
+        piece.points.forEach(function (point,n) { if (!n) fxc.moveTo(point[0],point[1]); else fxc.lineTo(point[0],point[1]); });
+        fxc.closePath(); fxc.clip();
+        fxc.drawImage(br.shell,0,0,r.w,r.h);
+        fxc.restore();
+      });
     }
-    if (stepDrips(dt)) busy = true;
-    if (stepThaws(now)) busy = true;
-    for (var k = bits.length - 1; k >= 0; k--) {
-      var b = bits[k];
-      b.age += dt;
-      if (b.age >= b.life) { bits.splice(k, 1); continue; }
-      b.x += b.vx * dt / 1000;
-      b.y += b.vy * dt / 1000;
-      if (b.steam) b.vy *= 1 - dt / 2600; // steam slows as it spreads
+    paintPick(now);
+    if (breaks.length || (recoilAt && now - recoilAt < 220)) kick();
+    else if (done) {
+      ice.remove(); fx.remove(); if (tcv) tcv.remove();
     }
-    if (bits.length) busy = true;
-    drawFx(now);
-    // thawItem() inside this tick may already have called kick(); never
-    // queue a second frame on top of it
-    if (busy) { if (!raf) raf = requestAnimationFrame(tick); }
-    else { clearFx(); placeTorch(); }
   }
 
-  // The warm light itself, on its own canvas so it never marks the ice.
-  function drawFx(now) {
-    clearFx();
-    fxc.save();
-    continuousRect(fxc, 0, 0, W, H, RADIUS);
-    fxc.clip();
-    if (heat.on && FINE && thawedCount < items.length) {
-      var r = BRUSH * 1.6 * (0.97 + 0.03 * Math.sin(now / 240));
-      var g = fxc.createRadialGradient(heat.x, heat.y, 0, heat.x, heat.y, r);
-      g.addColorStop(0, "rgba(255, 186, 104, 0.20)");
-      g.addColorStop(0.45, "rgba(255, 198, 138, 0.08)");
-      g.addColorStop(1, "rgba(255, 210, 160, 0)");
-      fxc.fillStyle = g;
-      fxc.fillRect(heat.x - r, heat.y - r, r * 2, r * 2);
-    }
-    drips.forEach(function (d) {
-      var a = d.run < d.max ? 1 : Math.max(0, 1 - d.hold / 700);
-      var br = d.w * 0.95;
-      fxc.fillStyle = "rgba(88, 132, 158, " + (0.22 * a) + ")";
-      fxc.beginPath(); fxc.arc(d.x, d.y, br, 0, 6.2832); fxc.fill();
-      fxc.fillStyle = "rgba(255, 255, 255, " + (0.9 * a) + ")";
-      fxc.beginPath(); fxc.arc(d.x - br * 0.3, d.y - br * 0.35, br * 0.4, 0, 6.2832); fxc.fill();
-    });
-    fxc.restore();
-    bits.forEach(function (b) { if (b.steam) puff(b); });
-    bits.forEach(function (b) { if (!b.steam) ember(b); });
-    paintTorch(now);
+  function placePick() {
+    var visible = !!(tcv && mouseAt && hovered >= 0 && !state[hovered].thawed && !done);
+    pane.classList.toggle("is-picking",visible);
+    if (!tcv) return;
+    tcv.classList.toggle("on",visible);
+    if (visible) tcv.style.transform = "translate3d("+(mouseAt.x-HX)+"px,"+(mouseAt.y-HY)+"px,0)";
   }
-
-  function torchLit() { return !!(tcv && heat.on && mouseAt && !done); }
-  function placeTorch() {
-    if (!torchLit()) { tcv && tcv.classList.remove("on"); return; }
-    tcv.style.transform = "translate3d(" + (mouseAt.x - HX) + "px," + (mouseAt.y - HY) + "px,0)";
-    tcv.classList.add("on");
+  function paintPick(now) {
+    placePick();
+    if (!tcv || !tcv.classList.contains("on")) return;
+    tctx.clearRect(0,0,TW,TH);
+    var rebound = recoilAt ? Math.max(0,1-(now-recoilAt)/220) : 0;
+    drawPick(tctx,HX,HY,press ? .94 : 1,rebound);
   }
-  function paintTorch(now) {
-    placeTorch();
-    if (!torchLit()) return;
-    tctx.clearRect(0, 0, TW, TH);
-    drawTorch(tctx, HX, HY, now);
-  }
-
-  function puff(b) {
-    var p = b.age / b.life;
-    var a = (p < 0.18 ? p / 0.18 : 1 - (p - 0.18) / 0.82) * 0.42;
-    var r = b.r0 + (b.r1 - b.r0) * Math.sqrt(p);
-    var g = fxc.createRadialGradient(b.x, b.y, 0, b.x, b.y, r);
-    g.addColorStop(0, "rgba(255, 255, 255, " + a + ")");
-    g.addColorStop(0.55, "rgba(246, 250, 252, " + a * 0.55 + ")");
-    g.addColorStop(0.85, "rgba(190, 210, 222, " + a * 0.12 + ")");
-    g.addColorStop(1, "rgba(190, 210, 222, 0)");
-    fxc.fillStyle = g;
-    fxc.fillRect(b.x - r, b.y - r, r * 2, r * 2);
-  }
-  function ember(b) {
-    var p = b.age / b.life;
-    fxc.fillStyle = "rgba(247, 172, 64, " + (1 - p) * 0.95 + ")";
-    fxc.beginPath(); fxc.arc(b.x, b.y, b.r0 * (1 - p * 0.5), 0, 6.2832); fxc.fill();
-  }
-
-  /* ── The torch ──────────────────────────────────────────────────────
-     Drawn, not a cursor image: a CSS cursor can't flicker, lean into the
-     motion or steam, and it is capped at a size that reads as a sticker.
-     The hotspot is the flame — that is where the ice melts. The handle
-     trails down-right like an arrow pointer, tilts a little with speed,
-     and the flame always burns straight up, leaning away from the move.
-     Flat and rounded, in the style of Nivo's icons; the wrap under the
-     head is the brand ice blue. */
-  function drawTorch(c, x, y, now) {
-    var vx = torch.vx;
-    var tilt = 0.52 + Math.max(-0.28, Math.min(0.28, vx * 0.012));
-    var hx = x + 1, hy = y + 9; // centre of the head, just under the flame
-    var L = 36;
-
-    c.save();
-    c.translate(hx, hy);
-    c.rotate(-tilt);
-    c.shadowColor = "rgba(22, 23, 26, 0.26)";
-    c.shadowBlur = 6 * dpr;
-    c.shadowOffsetX = 2 * dpr;
-    c.shadowOffsetY = 4 * dpr;
-    // handle: a tapered, rounded dowel, lit from the left
-    var hg = c.createLinearGradient(-3.5, 0, 3.5, 0);
-    hg.addColorStop(0, "#C08D5E");
-    hg.addColorStop(0.45, "#9A6841");
-    hg.addColorStop(1, "#6A4429");
-    c.fillStyle = hg;
-    c.beginPath();
-    c.moveTo(-3.3, 2);
-    c.lineTo(3.3, 2);
-    c.lineTo(2.5, L - 2.5);
-    c.quadraticCurveTo(0, L + 1, -2.5, L - 2.5);
-    c.closePath();
-    c.fill();
-    c.shadowColor = "transparent";
-    // the wrap
-    var wg = c.createLinearGradient(-4, 0, 4, 0);
-    wg.addColorStop(0, "#2A93C6");
-    wg.addColorStop(1, "#0E5578");
-    c.fillStyle = wg;
-    c.beginPath();
-    c.moveTo(-4, 5); c.lineTo(4, 3.6); c.lineTo(4, 9.2); c.lineTo(-4, 10.6);
-    c.closePath();
-    c.fill();
-    c.strokeStyle = "rgba(255, 255, 255, 0.28)";
-    c.lineWidth = 0.8;
-    c.beginPath(); c.moveTo(-3.6, 7.2); c.lineTo(3.6, 5.9); c.stroke();
-    // the head: a small iron cup
-    var mg = c.createLinearGradient(-6, 0, 6, 0);
-    mg.addColorStop(0, "#6B727B");
-    mg.addColorStop(0.5, "#444A52");
-    mg.addColorStop(1, "#2B2F35");
-    c.fillStyle = mg;
-    c.beginPath();
-    c.moveTo(-6.2, -5.5);
-    c.lineTo(6.2, -5.5);
-    c.lineTo(3.8, 3);
-    c.lineTo(-3.8, 3);
-    c.closePath();
-    c.fill();
-    c.fillStyle = "rgba(255, 255, 255, 0.30)";
-    c.fillRect(-6.2, -5.5, 12.4, 1.1);
+  function drawPick(c,x,y,scale,rebound) {
+    c.save(); c.translate(x,y); c.rotate(-.67-rebound*.12); c.scale(scale,scale);
+    c.shadowColor="rgba(24,46,58,.2)"; c.shadowBlur=5*dpr; c.shadowOffsetY=3*dpr;
+    var wood=c.createLinearGradient(-11,0,11,0);
+    wood.addColorStop(0,"#ba7840"); wood.addColorStop(.35,"#f1c18b"); wood.addColorStop(.65,"#e2a364"); wood.addColorStop(1,"#ac6c36");
+    c.fillStyle=wood; continuousRect(c,-11,-70,22,39,11); c.fill();
+    c.shadowColor="transparent";
+    c.strokeStyle="rgba(124,70,30,.18)"; c.lineWidth=.7;
+    [-5,0,5].forEach(function (gx) { c.beginPath(); c.moveTo(gx,-63); c.quadraticCurveTo(gx-2,-49,gx+1,-37); c.stroke(); });
+    var blue=c.createLinearGradient(-10,0,10,0);
+    blue.addColorStop(0,"#479fc4"); blue.addColorStop(.45,"#b5ecff"); blue.addColorStop(1,"#4294bc");
+    c.fillStyle=blue; continuousRect(c,-10,-35,20,7,3); c.fill();
+    var metal=c.createLinearGradient(-10,0,10,0);
+    metal.addColorStop(0,"#788791"); metal.addColorStop(.32,"#eef4f7"); metal.addColorStop(.55,"#bcc9d1"); metal.addColorStop(.78,"#f7fbfc"); metal.addColorStop(1,"#84959f");
+    c.fillStyle=metal; c.beginPath(); c.moveTo(-9,-28); c.lineTo(9,-28);
+    c.lineTo(6,-18); c.lineTo(1.2,-1); c.quadraticCurveTo(0,1,-1.2,-1); c.lineTo(-6,-18); c.closePath(); c.fill();
+    c.strokeStyle="rgba(62,85,98,.3)"; c.lineWidth=.7; c.stroke();
+    c.beginPath(); c.moveTo(-6,-18); c.lineTo(6,-18); c.stroke();
     c.restore();
-
-    // flame base: the top of the cup, in page space
-    var bx = hx - 5.5 * Math.sin(tilt), by = hy - 5.5 * Math.cos(tilt);
-    var f = Math.sin(now / 67) * 0.5 + Math.sin(now / 41 + 1.3) * 0.3 + Math.sin(now / 113 + 2) * 0.2;
-    var h = 21 + 2.6 * f;
-    var w = 10.5 + 1.2 * Math.sin(now / 53 + 0.7);
-    var lean = Math.max(-7, Math.min(7, -vx * 0.35)) + 1.3 * Math.sin(now / 97);
-
-    var halo = c.createRadialGradient(bx + lean * 0.4, by - h * 0.4, 0, bx + lean * 0.4, by - h * 0.4, 22);
-    halo.addColorStop(0, "rgba(255, 196, 96, 0.38)");
-    halo.addColorStop(1, "rgba(255, 196, 96, 0)");
-    c.fillStyle = halo;
-    c.fillRect(bx - 30, by - h - 20, 60, h + 44);
-
-    flame(c, bx, by, w, h, lean, "rgba(236, 118, 42, 0.92)", "rgba(244, 150, 52, 0.95)");
-    flame(c, bx, by - 0.5, w * 0.66, h * 0.7, lean * 0.75, "rgba(246, 176, 58, 1)", "rgba(250, 206, 84, 1)");
-    flame(c, bx, by - 1, w * 0.34, h * 0.38, lean * 0.45, "rgba(255, 240, 196, 1)", "rgba(255, 250, 232, 1)");
   }
-  function flame(c, bx, by, w, h, lean, tip, base) {
-    var g = c.createLinearGradient(0, by - h, 0, by + w * 0.2);
-    g.addColorStop(0, tip);
-    g.addColorStop(1, base);
-    c.fillStyle = g;
-    c.beginPath();
-    c.moveTo(bx + lean, by - h);
-    c.bezierCurveTo(bx + w * 0.18 + lean * 0.55, by - h * 0.55, bx + w * 0.62, by - h * 0.1, bx, by + w * 0.22);
-    c.bezierCurveTo(bx - w * 0.62, by - h * 0.1, bx - w * 0.18 + lean * 0.55, by - h * 0.55, bx + lean, by - h);
-    c.fill();
-  }
-
   function local(e) {
     var r = pane.getBoundingClientRect();
-    return { x: e.clientX - r.left, y: e.clientY - r.top };
+    return { x:e.clientX-r.left, y:e.clientY-r.top };
   }
-
-  // Moving warmth melts along its whole path, not just where the events
-  // happened to land.
-  function sweep(x0, y0, x1, y1) {
-    var dx = x1 - x0, dy = y1 - y0, dist = Math.sqrt(dx * dx + dy * dy);
-    if (dist < 1) return;
-    var n = Math.min(40, Math.ceil(dist / (BRUSH * 0.3)));
-    for (var k = 1; k <= n; k++) stamp(x0 + dx * k / n, y0 + dy * k / n, BRUSH, 0.08);
-    check(x1, y1, BRUSH);
-    if (dist > 4) heat.dwell *= 0.85;
-  }
-
-  function onMove(e) {
-    if (done) return;
-    var p = local(e);
-    if (e.pointerType === "mouse") {
-      mouseAt = { x: e.clientX, y: e.clientY };
-      if (heat.on) sweep(heat.x, heat.y, p.x, p.y);
-      else torch.px = p.x;
-      heat.on = true;
-    } else if (heat.on) {
-      sweep(heat.x, heat.y, p.x, p.y);
-    } else {
-      return;
-    }
-    heat.x = p.x; heat.y = p.y;
-    if (tcv) placeTorch(); // move it on the event itself, not a frame later
-    kick();
-  }
-  pane.addEventListener("pointerenter", onMove);
-  pane.addEventListener("pointermove", onMove);
-  pane.addEventListener("pointerleave", function (e) {
-    if (e.pointerType === "mouse") { heat.on = false; mouseAt = null; kick(); }
-  });
-  // Scrolling moves the ice under a still mouse without a pointermove, so
-  // re-aim the torch from the last known cursor position (without melting
-  // a streak along the way).
-  window.addEventListener("scroll", function () {
-    if (!heat.on || !mouseAt || done) return;
-    var r = pane.getBoundingClientRect();
-    var x = mouseAt.x - r.left, y = mouseAt.y - r.top;
-    if (x < 0 || y < 0 || x > r.width || y > r.height) { heat.on = false; kick(); return; }
-    heat.x = x; heat.y = y; torch.px = x;
-    kick();
-  }, { passive: true });
-  pane.addEventListener("pointerdown", function (e) {
-    pointerAt = Date.now();
-    if (done) return;
-    var pressed = indexOf(e.target);
-    if (pressed >= 0 && !state[pressed].thawed) {
-      var point = local(e);
-      fracture(state[pressed], point.x, point.y);
-    }
-    if (e.pointerType === "mouse") return;
-    // A finger held on the ice melts it; the moment it drags, the page
-    // scrolls as normal and pointercancel ends the warmth.
-    var p = local(e);
-    heat.on = true; heat.x = p.x; heat.y = p.y; heat.dwell = 0; heat.acc = 0;
-    kick();
-  });
-  function lift(e) { if (e.pointerType !== "mouse") heat.on = false; }
-  pane.addEventListener("pointerup", lift);
-  pane.addEventListener("pointercancel", lift);
-
   function indexOf(target) {
-    var li = target && target.closest ? target.closest(".lore-mini > li") : null;
+    var li=target && target.closest ? target.closest(".lore-mini > li") : null;
     return li ? items.indexOf(li) : -1;
   }
-  // Clicking a frozen icon thaws it; the next click opens it. Capture
-  // phase, so icon-pop's own click handler never sees the first one.
-  // A press that did the thawing (a finger held on the ice, a mouse held
-  // down while it melted) doesn't also open the icon on release.
-  pane.addEventListener("click", function (e) {
-    var i = indexOf(e.target);
-    if (i < 0) return;
-    if (state[i].thawed) {
-      if (state[i].thawedAt >= pointerAt) { e.stopPropagation(); e.preventDefault(); }
-      else { heat.on = false; kick(); } // the popup opens over it; put the torch out
-      return;
-    }
-    e.stopPropagation();
-    e.preventDefault();
-    var p = local(e);
-    thawItem(i, p.x, p.y);
-  }, true);
-  // Keyboard users are never kept waiting: tabbing onto an icon thaws it.
-  // A click also focuses the item, so ignore focus that follows a pointer.
-  pane.addEventListener("focusin", function (e) {
-    if (Date.now() - pointerAt < 600) return;
-    var i = indexOf(e.target);
-    if (i >= 0) thawItem(i, null, null, true);
-  });
-
-  /* Everything still frozen, cleared the way the shelf is read: row by
-     row, left to right, 40ms apart. Each icon keeps its own fracture,
-     melt and reveal sequence. */
-  function thawAll() {
-    var order = [];
-    state.forEach(function (s, i) { if (!s.thawed) order.push(i); });
-    order.sort(function (a, b) {
-      var ra = state[a].rect, rb = state[b].rect;
-      if (!ra || !rb) return a - b;
-      return Math.abs(ra.y - rb.y) > 8 ? ra.y - rb.y : ra.x - rb.x;
-    });
-    order.forEach(function (i, n) {
-      setTimeout(function () { thawItem(i, null, null, n % 3 !== 0); }, 40 * n);
-    });
+  function onMove(e) {
+    if (press && Math.hypot(e.clientX-press.clientX,e.clientY-press.clientY)>10) cancelPress();
+    if (e.pointerType !== "mouse") return;
+    mouseAt={x:e.clientX,y:e.clientY}; hovered=indexOf(e.target);
+    paintPick(performance.now());
   }
-  allBtn.addEventListener("click", thawAll);
+  function cancelPress() { if (!press) return; cancelledTap=true; press=null; kick(); }
+  pane.addEventListener("pointerenter",onMove);
+  pane.addEventListener("pointermove",onMove);
+  pane.addEventListener("pointerleave",function () { mouseAt=null; hovered=-1; cancelPress(); placePick(); });
+  pane.addEventListener("pointerdown",function (e) {
+    pointerAt=Date.now(); cancelledTap=false;
+    if (!e.isPrimary || e.button!==0 || done) return;
+    var i=indexOf(e.target); if(i<0 || state[i].thawed) return;
+    if (!near) arrive();
+    var p=local(e);
+    press={i:i,x:p.x,y:p.y,clientX:e.clientX,clientY:e.clientY};
+    onMove(e); sound("tick"); kick();
+  });
+  window.addEventListener("pointerup",function () { if (press) { press=null; kick(); } });
+  pane.addEventListener("pointercancel",cancelPress);
+  window.addEventListener("blur",function () { cancelPress(); mouseAt=null; hovered=-1; placePick(); });
+  window.addEventListener("scroll",function () {
+    cancelPress();
+    if (!mouseAt || done) return;
+    hovered=indexOf(document.elementFromPoint(mouseAt.x,mouseAt.y));
+    paintPick(performance.now());
+  },{passive:true});
+  pane.addEventListener("click",function (e) {
+    var i=indexOf(e.target); if(i<0) return;
+    if(cancelledTap && e.detail!==0) { cancelledTap=false; e.preventDefault(); e.stopPropagation(); return; }
+    if(state[i].thawed) { hovered=-1; placePick(); return; }
+    e.preventDefault(); e.stopPropagation();
+    var p=e.detail===0 ? {x:null,y:null} : local(e);
+    revealItem(i,p.x,p.y);
+  },true);
+  // Keyboard focus uncovers the icon; its button continues to open the detail.
+  pane.addEventListener("focusin",function (e) {
+    if(Date.now()-pointerAt<600) return;
+    var i=indexOf(e.target); if(i>=0) revealItem(i,null,null,true);
+  });
+  allBtn.addEventListener("click",function () {
+    // This is the fast path for people who want to browse, without a wall of effects.
+    if(!near) arrive();
+    breaks=[]; press=null;
+    state.forEach(function(s,i) { s.thawed=true; items[i].classList.remove("is-breaking"); });
+    thawedCount=items.length; ctx.clearRect(0,0,W,H);
+    updateCount(); placePick(); kick();
+  });
 
   /* ── Build, and rebuild when the layout moves ─────────────────────── */
 
-  // A rebuild refreezes anything half-melted but keeps every icon that
-  // already thawed — the page never takes back what was uncovered.
+  // Resizing preserves all revealed icons; old flying fragments can be discarded.
   function build() {
+    breaks = []; press = null;
     measure();
     size();
     paint();
-    state.forEach(function (s) {
+    state.forEach(function (s, i) {
       if (!s.thawed) return;
+      items[i].classList.remove("is-breaking");
+      items[i].classList.add("is-thawed");
       ctx.save();
       ctx.globalCompositeOperation = "destination-out";
       ctx.shadowColor = "#000";
@@ -1025,7 +641,6 @@
       continuousRect(ctx, s.rect.x - 1, s.rect.y - 1, s.rect.w + 2, s.rect.h + 2, 12);
       ctx.fill();
       ctx.restore();
-      clearCells(s.rect);
     });
     lastW = W;
   }
@@ -1055,7 +670,7 @@
   }
 
   // Touch uses the same explicit tap-to-reveal as desktop. Normal page
-  // scrolling remains available; Thaw all is the immediate alternative.
+  // scrolling remains available; Reveal all is the immediate alternative.
 
   // Fonts and lazy icons land after the first paint and move the text and
   // colour blooms. Repaint for them only while the ice is untouched — and
