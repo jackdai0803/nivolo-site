@@ -9,6 +9,15 @@
   var list = pane && pane.querySelector(".lore-mini");
   var items = list ? Array.prototype.slice.call(list.children) : [];
   if (!items.length) return;
+  // The same app artwork sits under a website-only ceramic finish.
+  items.forEach(function (li) {
+    var img = li.querySelector("img");
+    if (!img || img.parentElement.classList.contains("frost-ceramic")) return;
+    var shell = document.createElement("span");
+    shell.className = "frost-ceramic";
+    img.parentNode.insertBefore(shell, img);
+    shell.appendChild(img);
+  });
   if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
   var ice = document.createElement("canvas");
@@ -413,7 +422,7 @@
       function clear() { if (--remaining === 0) burst.remove(); }
       animation.finished.then(clear, clear);
     }
-    if (effect.pose) s.img.el.animate(REVEAL_POSES[effect.pose].map(function (transform) {
+    if (effect.pose) s.img.el.parentElement.animate(REVEAL_POSES[effect.pose].map(function (transform) {
       return { transform: transform };
     }), { duration: 850, delay: 100, easing: effect.pose === "glitch" ? "steps(2, end)" : "ease-in-out" });
   }

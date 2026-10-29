@@ -1645,6 +1645,40 @@ footer {
   .frost { margin-bottom: 14px; }
 }
 
+/* Ceramic is a presentation finish: the original icon pixels stay intact. */
+.frost-ceramic {
+  position: relative; display: block; flex: 0 0 48px;
+  width: 48px; height: 48px; border-radius: var(--radius-icon);
+  box-shadow: 0 3px 2px -1px rgba(27, 44, 56, .22), 0 7px 10px -5px rgba(27, 44, 56, .3);
+}
+.frost .frost-ceramic img { display: block; width: 100%; height: 100%; box-shadow: none; }
+.frost-ceramic::after,
+.is-glazed .ipop-front::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 80% 24% at var(--glaze-x, 25%) var(--glaze-y, 7%), rgba(255, 249, 237, .38), rgba(255, 249, 237, .12) 42%, transparent 75%),
+    radial-gradient(ellipse 65% 18% at 78% 98%, rgba(210, 236, 249, .2), transparent 76%);
+  box-shadow: inset 0 2px 3px -1px rgba(255, 251, 242, .66), inset 1px 0 2px rgba(255, 255, 255, .12), inset 0 -3px 4px -1px rgba(24, 39, 50, .23);
+}
+.frost .lore-mini li.is-thawed img { animation: none; }
+.frost .lore-mini li.is-thawed .frost-ceramic { animation: thaw-in .7s cubic-bezier(.2,.8,.3,1); }
+.frost .lore-mini li:active img { transform: none; }
+.frost .lore-mini li:active .frost-ceramic { transform: scale(.95); }
+.is-glazed .ipop-front::after {
+  box-shadow:
+    inset 0 7px 10px -5px rgba(255, 249, 235, .7),
+    inset 4px 0 8px -6px rgba(255, 255, 255, .5),
+    inset 0 -11px 14px -8px rgba(17, 35, 49, .34),
+    inset -4px 0 9px -6px rgba(17, 35, 49, .16);
+}
+.is-glazed .ipop-slice {
+  background: linear-gradient(175deg, var(--tint-dark, #465766), var(--tint-deep, #243443) 65%, var(--tint-dark, #465766));
+}
+@media (prefers-reduced-motion: reduce) {
+  .frost .lore-mini li.is-thawed .frost-ceramic { animation: none; }
+}
+
 /* ── Icon popup (3D tile) ── */
 .ipop-overlay {
   position: fixed; inset: 0; z-index: 90;

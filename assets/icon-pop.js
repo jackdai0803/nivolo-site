@@ -324,6 +324,11 @@
       suspension.style.transform = "rotateZ(" + swing.toFixed(3) + "deg)";
     }
     tile.style.transform = "rotateX(" + cur.x + "deg) rotateY(" + cur.y + "deg)";
+    // A broad reflected light shifts gently as the glazed surface turns.
+    if (!collectible) {
+      tile.style.setProperty("--glaze-x", (25 - Math.max(-40, Math.min(40, cur.y)) * .3).toFixed(1) + "%");
+      tile.style.setProperty("--glaze-y", (7 + Math.max(-30, Math.min(30, cur.x)) * .2).toFixed(1) + "%");
+    }
     if (sceneActive) {
       // The environment drifts opposite the tile at a much lower rate,
       // creating depth without making the backdrop feel attached to the cursor.
@@ -428,6 +433,7 @@
     ceramic = id === "porcelain" || id === "kintsugi";
     hatchling = id === "early-supporter";
     collectible = pendant || ceramic || hatchling;
+    overlay.classList.toggle("is-glazed", !collectible);
     overlay.classList.toggle("is-pendant", pendant);
     overlay.classList.toggle("is-porcelain", id === "porcelain");
     overlay.classList.toggle("is-kintsugi", id === "kintsugi");
