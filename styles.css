@@ -1675,12 +1675,38 @@ footer {
     inset 0 -7px 10px -6px rgba(17, 35, 49, .26),
     inset -4px 0 9px -6px rgba(17, 35, 49, .12);
 }
+.is-glazed .ipop-dialog {
+  --ipop-radius: calc(var(--ipop-tile) * .29);
+  --ipop-depth-size: calc(var(--ipop-tile) * .40);
+  --ipop-lift: calc(var(--ipop-tile) * .022);
+  --pebble-light:
+    radial-gradient(ellipse 75% 28% at var(--glaze-x, 25%) var(--glaze-y, 7%), #fff7e566, #fff7e518 45%, transparent 76%),
+    radial-gradient(ellipse 70% 20% at 75% 95%, #d6efff26, transparent 75%),
+    radial-gradient(ellipse 80% 85% at 50% 40%, transparent 55%, #0c25332e 100%);
+}
+.is-glazed .ipop-face, .is-glazed .ipop-slice { corner-shape: round; }
 .is-glazed .ipop-slice {
   scale: var(--glaze-round, 1);
-  background:
-    linear-gradient(135deg, rgba(255, 253, 245, .72), transparent 24% 63%, rgba(31, 48, 58, .22)),
-    color-mix(in srgb, var(--glaze-body, #9cb7c6), #fffaf0 var(--glaze-band, 25%));
-  box-shadow: inset 0 1px 2px rgba(255, 255, 255, .28), inset 0 -2px 3px rgba(27, 44, 56, .14);
+  background-image: linear-gradient(135deg, #fff9e81a, transparent 36% 65%, #10202f26), var(--pebble-art);
+  background-position: center; background-size: 100% 100%;
+  box-shadow: none;
+}
+.ipop-dome { display: none; }
+.is-glazed .ipop-dome {
+  --contour-size: calc(var(--ipop-tile) * (1 - var(--dome-trim) * 2));
+  display: block; position: absolute; left: 50%; top: 50%;
+  width: var(--contour-size); height: var(--contour-size);
+  margin-left: calc(var(--contour-size) / -2); margin-top: calc(var(--contour-size) / -2);
+  border-radius: calc(var(--ipop-tile) * var(--dome-corner));
+  overflow: hidden; corner-shape: round;
+  background-image: var(--pebble-light), var(--pebble-art);
+  background-position: center; background-size: var(--ipop-tile) var(--ipop-tile);
+  transform: translateZ(calc(var(--ipop-lift) + var(--ipop-tile) * .022 * var(--dome-rise)));
+  backface-visibility: hidden; pointer-events: none;
+}
+.is-glazed .ipop-front::after {
+  background-image: var(--pebble-light);
+  box-shadow: inset 0 1px 2px #fff9ed24, inset 0 -2px 4px #142f4226;
 }
 .is-glazed .ipop-back {
   border: 0;

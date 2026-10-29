@@ -276,6 +276,18 @@
     s.style.transform = "translateZ(calc(var(--ipop-depth-size, var(--ipop-tile)) * " + z.toFixed(6) + "))";
     tile.insertBefore(s, front);
   }
+  // Shallow contour layers carry the same artwork across a convex front.
+  // The image stays aligned; only each layer's visible contour and height change.
+  for (var ring = 1; ring < 32; ring++) {
+    var dome = document.createElement("div");
+    dome.className = "ipop-dome";
+    dome.setAttribute("aria-hidden", "true");
+    var rise = ring / 32;
+    dome.style.setProperty("--dome-trim", ((1 - Math.sqrt(1 - rise)) / 2).toFixed(5));
+    dome.style.setProperty("--dome-corner", Math.max(0, .29 - (1 - Math.sqrt(1 - rise)) / 2).toFixed(5));
+    dome.style.setProperty("--dome-rise", rise.toFixed(5));
+    tile.insertBefore(dome, front);
+  }
   // current tile size in px, for the few places that need a real number
   function tilePx() { return tile.offsetWidth || BASE; }
 
@@ -467,6 +479,7 @@
     overlay.classList.remove("scene-instant");
     var img = front.querySelector("img");
     var layered = LAYERED[id];
+    if (!collectible) tile.style.setProperty("--pebble-art", 'url("' + iconSrc(layered ? layered.bg : id, true) + '")');
     function setSrc(el, base) {
       el.src = iconSrc(base, false);
       el.srcset = iconSrc(base, false) + " 512w, " + iconSrc(base, true) + " 1024w";
