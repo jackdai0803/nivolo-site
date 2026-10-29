@@ -2284,6 +2284,53 @@ footer {
   outline: 2px solid #f4d58e; outline-offset: 10px; border-radius: 45%; corner-shape: round;
 }
 .is-kintsugi .ipop-shadow { width: calc(var(--ipop-tile) * .7); opacity: .65; }
+/* Shared light direction and a softly rounded rim, with each keepsake's own material. */
+:is(.is-pendant, .is-porcelain, .is-kintsugi) .ipop-slice {
+  scale: calc(1 + (var(--glaze-round, 1) - 1) * .45);
+}
+:is(.is-pendant, .is-porcelain, .is-kintsugi) .ipop-face::before {
+  content: ""; position: absolute; inset: 0; z-index: 1;
+  border-radius: inherit; pointer-events: none;
+  background:
+    radial-gradient(ellipse 68% 23% at var(--glaze-x, 25%) var(--glaze-y, 7%), rgba(255, 253, 240, .48), rgba(255, 253, 240, .1) 45%, transparent 76%),
+    radial-gradient(ellipse 52% 16% at 78% 95%, rgba(220, 235, 246, .16), transparent 78%);
+}
+:is(.is-pendant, .is-porcelain, .is-kintsugi) .ipop-back::before {
+  background:
+    radial-gradient(ellipse 68% 23% at calc(100% - var(--glaze-x, 25%)) var(--glaze-y, 7%), rgba(255, 253, 240, .42), transparent 76%),
+    radial-gradient(ellipse 52% 16% at 22% 95%, rgba(220, 235, 246, .12), transparent 78%);
+}
+:is(.is-pendant, .is-porcelain, .is-kintsugi) .ipop-face::after { z-index: 2; }
+:is(.is-pendant, .is-porcelain, .is-kintsugi) .ipop-back > div { position: relative; z-index: 3; }
+.is-pendant .ipop-face::before { opacity: .65; }
+.is-pendant .ipop-slice {
+  background:
+    linear-gradient(135deg, #e3f7d76b, transparent 30% 66%, #063b3538),
+    color-mix(in srgb, #388368, #bfe0ac var(--glaze-band, 22%));
+}
+.is-pendant .ipop-front::after {
+  box-shadow: inset 1px 2px 4px #ecffd670, inset -2px -3px 6px #073e3747;
+  background: linear-gradient(125deg, #e5ffcc12, transparent 38% 70%, #dbffc410);
+}
+.is-pendant .ipop-back {
+  border: 1px solid #bce7ae38;
+  box-shadow: inset 1px 2px 7px #d3ffc640, inset -2px -3px 8px #073c365c;
+}
+.is-porcelain .ipop-slice {
+  background:
+    linear-gradient(135deg, #fffef4a8, transparent 30% 66%, #728bab2e),
+    color-mix(in srgb, #d4dfeb, #fffdf4 var(--glaze-band, 22%));
+}
+.is-porcelain .ipop-back {
+  background: radial-gradient(circle, #fffdf5 58.8%, #7f9ac5 59.3%, #fffdf5 59.8%, #dae3ef 84%, #fffdf5 98%);
+}
+.is-kintsugi .ipop-face::before { opacity: .42; }
+.is-kintsugi .ipop-slice {
+  background:
+    linear-gradient(135deg, #e2ceb340, transparent 30% 66%, #080d1738),
+    color-mix(in srgb, #26272b, #706759 var(--glaze-band, 22%));
+}
+
 /* Early Supporter hatches from a cream shell, with a separate gold halo. */
 .ipop-halo { display: none; }
 .is-hatchling .ipop-dialog {

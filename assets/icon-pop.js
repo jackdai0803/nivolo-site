@@ -329,7 +329,7 @@
     }
     tile.style.transform = "rotateX(" + cur.x + "deg) rotateY(" + cur.y + "deg)";
     // A broad reflected light shifts gently as the glazed surface turns.
-    if (!collectible) {
+    if (!hatchling) {
       tile.style.setProperty("--glaze-x", (25 - Math.sin(cur.y * Math.PI / 180) * 18).toFixed(1) + "%");
       tile.style.setProperty("--glaze-y", (7 + Math.sin(cur.x * Math.PI / 180) * 8).toFixed(1) + "%");
     }
