@@ -1796,7 +1796,7 @@ a.nav-cta:active, a.btn-light:active, a.btn-moonlit:active { transform: translat
   height: .62em;
   overflow: hidden;
   margin: 38px 0 0;
-  font-size: min(35vw, 410px);
+  font-size: 35vw;
   line-height: 1;
   letter-spacing: -.055em;
   text-align: center;
@@ -1824,7 +1824,7 @@ a.nav-cta:active, a.btn-light:active, a.btn-moonlit:active { transform: translat
   .home-footer .footer-col h3 { margin-bottom: 8px; }
   .home-footer .footer-col a { min-height: 44px; display: flex; align-items: center; }
   .home-footer .footer-col:last-child { grid-column: 1 / -1; justify-items: start; }
-  .home-footer .footer-word { margin-top: 28px; font-size: 32vw; }
+  .home-footer .footer-word { margin-top: 28px; }
   .home-footer .footer-base { margin-top: 32px; gap: 12px; }
 }
 @media (prefers-reduced-motion: reduce) {
