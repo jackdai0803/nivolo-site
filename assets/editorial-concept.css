@@ -1756,6 +1756,82 @@ a.nav-cta:active, a.btn-light:active, a.btn-moonlit:active { transform: translat
   .short-home .editorial-scene { animation: none; }
 }
 
+/* A quieter sign-off: readable navigation above a spacious brand signature. */
+.home-footer { padding: 64px 0 0; background: #151719; }
+.home-footer .footer-inner { gap: 48px; }
+.home-footer .footer-tag {
+  max-width: 340px;
+  font-size: clamp(26px, 2.6vw, 34px);
+  line-height: 1.16;
+  letter-spacing: -.025em;
+}
+.home-footer .footer-tag em { color: #b9ced6; }
+.home-footer .footer-cols { gap: clamp(32px, 4vw, 64px); }
+.home-footer .footer-col { gap: 2px; }
+.home-footer .footer-col h3 { margin-bottom: 13px; font-size: 10px; letter-spacing: .14em; color: #a1a8ab; }
+.home-footer .footer-col a { padding-block: 6px; line-height: 1.5; color: #d1d3d2; transition: color 150ms ease; }
+.home-footer .footer-col a:hover { color: #fff; }
+.home-footer .footer-col .footer-download {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 22px;
+  min-height: 44px;
+  margin-top: 1px;
+  padding: 11px 16px;
+  border-radius: 12px;
+  background: #d1e5ed;
+  color: #203944;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background 150ms ease, transform 100ms ease;
+}
+.home-footer .footer-col .footer-download:hover { background: #e4f2f6; color: #203944; }
+.home-footer .footer-download:active { transform: scale(.97); }
+.home-footer a:focus-visible { outline: 2px solid #d1e5ed; outline-offset: 5px; }
+.home-footer .footer-word {
+  display: block;
+  /* The box ends partway through the glyphs, exactly at the page edge. */
+  height: .62em;
+  overflow: hidden;
+  margin: 38px 0 0;
+  font-size: min(35vw, 410px);
+  line-height: 1;
+  letter-spacing: -.055em;
+  text-align: center;
+}
+.home-footer .footer-col .footer-domain {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 400;
+  font-style: italic;
+  margin-top: 10px;
+  justify-self: start;
+  color: #b9ced6;
+}
+.home-footer .footer-base { margin-top: 48px; padding-top: 22px; font-size: 12px; line-height: 1.6; color: #a1a8ab; }
+.home-footer .footer-mark { color: inherit; }
+@media (max-width: 900px) {
+  .home-footer .footer-inner { flex-direction: column; gap: 36px; }
+  .home-footer .footer-cols { justify-content: space-between; width: 100%; }
+}
+@media (max-width: 640px) {
+  .home-footer { padding: 40px 0 0; }
+  .home-footer .footer-inner { gap: 32px; }
+  .home-footer .footer-tag { font-size: 30px; }
+  .short-home .home-footer .footer-cols { gap: 26px 24px; }
+  .home-footer .footer-col h3 { margin-bottom: 8px; }
+  .home-footer .footer-col a { min-height: 44px; display: flex; align-items: center; }
+  .home-footer .footer-col:last-child { grid-column: 1 / -1; justify-items: start; }
+  .home-footer .footer-word { margin-top: 28px; font-size: 32vw; }
+  .home-footer .footer-base { margin-top: 32px; gap: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-footer .footer-col a { transition: none; }
+  .home-footer .footer-download:active { transform: none; }
+}
+
 /* Carry the Balanced wordmark's weight and spacing through display headings. */
 .short-home .section-title--with-nivo,
 .short-home .collector-pricing .section-title,
