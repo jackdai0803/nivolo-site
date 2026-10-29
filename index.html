@@ -52,7 +52,7 @@
   </style>
   <link rel="stylesheet" href="styles.css?v=123" />
   <link rel="stylesheet" href="assets/contact.css?v=2" />
-  <link rel="stylesheet" href="assets/editorial-concept.css?v=34" />
+  <link rel="stylesheet" href="assets/editorial-concept.css?v=35" />
   <link rel="stylesheet" href="assets/nivo.css?v=5" />
   <link rel="stylesheet" href="assets/app-opals.css?v=3" />
   <link rel="stylesheet" href="assets/keepsakes.css?v=2" />
@@ -301,7 +301,15 @@
       </section>
 
       <details class="compact-disclosure collection-disclosure" id="full-collection">
-        <summary><span data-site-copy="collection">Explore the full collection</span><span class="disclosure-plus" aria-hidden="true">+</span></summary>
+        <summary>
+          <img class="collection-preview-icon" src="assets/icons/classic.png" width="160" height="160" alt="" loading="lazy" />
+          <span class="collection-preview-copy">
+            <span class="collection-preview-eyebrow" data-site-copy="collectionPreview">A little face for every chapter</span>
+            <span class="collection-preview-title" data-site-copy="collectionClassic">Meet Classic.</span>
+            <span class="collection-preview-description" data-site-copy="collectionStory">Your first Nivo. There’s a whole collection of little personalities to discover as you go.</span>
+            <span class="collection-preview-action"><span class="collection-preview-more" data-site-copy="collection">Meet the rest of the collection</span><span class="collection-preview-less" data-site-copy="collectionLess">Show less</span><span class="disclosure-plus" aria-hidden="true">+</span></span>
+          </span>
+        </summary>
         <div class="disclosure-body">
       <div class="lore-tier reveal">
         <p class="lore-tier-label">Start here</p>
@@ -309,13 +317,6 @@
       </div>
 
       <div class="lore-grid reveal" data-stagger="50">
-        <article class="lore-card">
-          <img class="lore-ic" src="assets/icons/classic.png" alt="" loading="lazy" width="160" height="160" />
-          <div>
-            <h3>Classic</h3>
-            <p>The first Nivo. The same face he had on day one — and the one waiting whenever you come back.</p>
-          </div>
-        </article>
         <article class="lore-card">
           <img class="lore-ic" src="assets/icons/waiting.png" alt="" loading="lazy" width="160" height="160" />
           <div>
@@ -701,7 +702,7 @@
   <script src="assets/founders-gallery.js?v=7" defer></script>
   <script src="assets/frost.js?v=7" defer></script>
   <script src="assets/app-opals.js?v=2" defer></script>
-  <script src="assets/editorial-concept.js?v=12" defer></script>
+  <script src="assets/editorial-concept.js?v=13" defer></script>
   <script type="module" src="assets/nivo.js?v=3"></script>
 </body>
 </html>

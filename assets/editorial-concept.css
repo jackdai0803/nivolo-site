@@ -1627,6 +1627,26 @@ a.nav-cta:active, a.btn-light:active, a.btn-moonlit:active { transform: translat
 .short-home .keepsakes { margin-bottom: 24px; }
 .short-home .early-supporter { margin-bottom: 28px; }
 .collection-disclosure .lore-tier { margin-top: 12px; }
+.collection-disclosure > summary { justify-content: flex-start; gap: clamp(22px, 4vw, 44px); padding: clamp(24px, 4vw, 40px); }
+.collection-preview-icon { flex: 0 0 auto; width: clamp(100px, 15vw, 160px); height: auto; border-radius: 24%; filter: drop-shadow(0 12px 12px #173d5218); transition: transform 180ms ease; }
+.collection-preview-copy { display: grid; gap: 9px; max-width: 510px; }
+.collection-preview-eyebrow { color: #637680; font-size: 12px; font-weight: 600; letter-spacing: .03em; }
+.collection-preview-title { color: var(--ink); font: 700 clamp(25px, 3vw, 34px)/1.12 var(--font-display); letter-spacing: -.035em; }
+.collection-preview-description { color: #647078; font: 400 16px/1.6 var(--font-body); }
+.collection-preview-action { display: flex; align-items: center; gap: 14px; margin-top: 7px; color: #267492; font-size: 15px; font-weight: 650; }
+.collection-preview-less, .collection-disclosure[open] .collection-preview-more { display: none; }
+.collection-disclosure[open] .collection-preview-less { display: inline; }
+.collection-disclosure > summary:active .collection-preview-icon { transform: scale(.96); }
+.collection-disclosure[open] > summary { border-bottom: 1px solid #ccdce2; }
+@media (max-width: 560px) {
+  .collection-disclosure > summary { flex-direction: column; align-items: flex-start; gap: 20px; padding: 24px; }
+  .collection-preview-icon { width: 104px; }
+  .collection-preview-description { font-size: 15px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .collection-preview-icon { transition: none; }
+  .collection-disclosure > summary:active .collection-preview-icon { transform: none; }
+}
 .collection-disclosure .lore-more { margin-top: 28px; }
 .compact-krill { margin-top: 34px; padding-top: 28px; border-top: 1px solid #d3dfe4; }
 .compact-krill > h3 { margin-bottom: 20px; font: 750 25px/1.2 var(--font-display); color: #173d52; }
