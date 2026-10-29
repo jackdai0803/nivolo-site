@@ -268,6 +268,8 @@
   for (var z = -DEPTH / 2; z <= DEPTH / 2 + 0.000001; z += STEP) {
     var s = document.createElement("div");
     s.className = "ipop-slice";
+    // A soft light band across the thickness rounds the ceramic edge.
+    s.style.setProperty("--glaze-band", (12 + 22 * Math.cos(z / (DEPTH / 2) * Math.PI / 2)).toFixed(1) + "%");
     // keyed off the CSS knob, so the slab thickens with the tile
     s.style.transform = "translateZ(calc(var(--ipop-depth-size, var(--ipop-tile)) * " + z.toFixed(6) + "))";
     tile.insertBefore(s, front);
@@ -326,8 +328,8 @@
     tile.style.transform = "rotateX(" + cur.x + "deg) rotateY(" + cur.y + "deg)";
     // A broad reflected light shifts gently as the glazed surface turns.
     if (!collectible) {
-      tile.style.setProperty("--glaze-x", (25 - Math.max(-40, Math.min(40, cur.y)) * .3).toFixed(1) + "%");
-      tile.style.setProperty("--glaze-y", (7 + Math.max(-30, Math.min(30, cur.x)) * .2).toFixed(1) + "%");
+      tile.style.setProperty("--glaze-x", (25 - Math.sin(cur.y * Math.PI / 180) * 18).toFixed(1) + "%");
+      tile.style.setProperty("--glaze-y", (7 + Math.sin(cur.x * Math.PI / 180) * 8).toFixed(1) + "%");
     }
     if (sceneActive) {
       // The environment drifts opposite the tile at a much lower rate,
@@ -533,6 +535,9 @@
       tile.style.setProperty("--tint-deep", mix(c, 0.30));
       tile.style.setProperty("--tint-edge", "rgba(" + c.join(",") + ",.55)");
       tile.style.setProperty("--tint-lite", lift(c, 0.62));
+      tile.style.setProperty("--glaze-body", lift(c, 0.32));
+      tile.style.setProperty("--glaze-pale", lift(c, 0.82));
+      tile.style.setProperty("--glaze-ink", mix(c, 0.24));
     });
     base.x = 0; base.y = 0; cur.x = 0; cur.y = 0; follow.x = 0; follow.y = 0;
     tile.style.transform = "rotateX(0deg) rotateY(0deg)";
