@@ -62,7 +62,6 @@
   };
   var NEW_ICONS = { "early-supporter": true, porcelain: true, jade: true, kintsugi: true };
   function iconSrc(id, large) {
-    if (NEW_ICONS[id]) return "assets/charms/" + id + (large ? "-lg" : "") + ".jpg";
     return "assets/icons-3d/" + id + (large ? "-lg" : "") + (NEW_ICONS[id] ? ".jpg" : ".webp");
   }
 
@@ -341,10 +340,8 @@
     }
     tile.style.transform = "rotateX(" + cur.x + "deg) rotateY(" + cur.y + "deg)";
     // A broad reflected light shifts gently as the glazed surface turns.
-    if (!hatchling) {
-      tile.style.setProperty("--glaze-x", (25 - Math.sin(cur.y * Math.PI / 180) * 18).toFixed(1) + "%");
-      tile.style.setProperty("--glaze-y", (7 + Math.sin(cur.x * Math.PI / 180) * 8).toFixed(1) + "%");
-    }
+    tile.style.setProperty("--glaze-x", (25 - Math.sin(cur.y * Math.PI / 180) * 18).toFixed(1) + "%");
+    tile.style.setProperty("--glaze-y", (7 + Math.sin(cur.x * Math.PI / 180) * 8).toFixed(1) + "%");
     if (sceneActive) {
       // The environment drifts opposite the tile at a much lower rate,
       // creating depth without making the backdrop feel attached to the cursor.
@@ -434,7 +431,7 @@
   tile.addEventListener("touchcancel", function () { end(true); });
   window.addEventListener("blur", function () { end(true); });
   tile.addEventListener("keydown", function (e) {
-    if (!collectible || (e.key !== "Enter" && e.key !== " ")) return;
+    if (e.key !== "Enter" && e.key !== " ") return;
     e.preventDefault();
     base.y = Math.round(base.y / 180) * 180 + 180;
     base.x = follow.x = follow.y = 0;
@@ -449,28 +446,15 @@
     ceramic = id === "porcelain" || id === "kintsugi";
     hatchling = id === "early-supporter";
     collectible = pendant || ceramic || hatchling;
-    overlay.classList.toggle("is-glazed", !collectible);
-    overlay.classList.toggle("is-pendant", pendant);
-    overlay.classList.toggle("is-porcelain", id === "porcelain");
-    overlay.classList.toggle("is-kintsugi", id === "kintsugi");
-    overlay.classList.toggle("is-hatchling", hatchling);
+    // Every icon shares the same ceramic pebble silhouette and domed surface.
+    overlay.classList.add("is-glazed");
     swing = collectible && !reduceMotion ? (ceramic ? -2 : -3) : 0;
     swingVelocity = swingTarget = 0;
     suspension.style.transform = "rotateZ(" + swing + "deg)";
-    if (collectible) {
-      tile.tabIndex = 0;
-      tile.setAttribute("role", "button");
-      tile.setAttribute("aria-label", hatchling ? "Flip Early Supporter egg to read its story" : ceramic ? "Flip " + name + " medallion to read its story" : "Flip Jade pendant to read its story");
-    } else {
-      tile.removeAttribute("tabindex");
-      tile.removeAttribute("role");
-      tile.removeAttribute("aria-label");
-    }
-    overlay.querySelector(".ipop-hint").textContent = pendant
-      ? "Drag to turn · release to sway · tap to flip"
-      : hatchling ? "Drag to turn · release to wobble · tap to flip"
-      : ceramic ? "Drag to turn · release to settle · tap to flip"
-      : "Drag to turn it over in your hands · tap to flip";
+    tile.tabIndex = 0;
+    tile.setAttribute("role", "button");
+    tile.setAttribute("aria-label", "Flip " + name + " ceramic pebble to read its story");
+    overlay.querySelector(".ipop-hint").textContent = "Drag to turn it over in your hands · tap to flip";
     if (closeCleanupTimer !== null) {
       clearTimeout(closeCleanupTimer);
       closeCleanupTimer = null;
@@ -479,7 +463,7 @@
     overlay.classList.remove("scene-instant");
     var img = front.querySelector("img");
     var layered = LAYERED[id];
-    if (!collectible) tile.style.setProperty("--pebble-art", 'url("' + iconSrc(layered ? layered.bg : id, true) + '")');
+    tile.style.setProperty("--pebble-art", 'url("' + iconSrc(layered ? layered.bg : id, true) + '")');
     function setSrc(el, base) {
       el.src = iconSrc(base, false);
       el.srcset = iconSrc(base, false) + " 512w, " + iconSrc(base, true) + " 1024w";

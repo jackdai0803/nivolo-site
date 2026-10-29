@@ -1685,6 +1685,10 @@ footer {
     radial-gradient(ellipse 80% 85% at 50% 40%, transparent 55%, #0c25332e 100%);
 }
 .is-glazed .ipop-face, .is-glazed .ipop-slice { corner-shape: round; }
+.is-glazed .ipop-tile:focus-visible {
+  outline: 2px solid #fff8e8; outline-offset: 6px;
+  border-radius: var(--ipop-radius); corner-shape: round;
+}
 .is-glazed .ipop-slice {
   scale: var(--glaze-round, 1);
   background-image: linear-gradient(135deg, #fff9e81a, transparent 36% 65%, #10202f26), var(--pebble-art);
