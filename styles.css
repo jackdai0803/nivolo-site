@@ -1573,7 +1573,16 @@ footer {
    Everything here only matters once frost.js has run; without it (or
    under reduced motion) the list renders exactly as before. */
 .frost { position: relative; padding: 12px; margin: -12px -12px 22px; border-radius: var(--radius); }
-.frost .lore-mini { margin-bottom: 0; }
+.frost .lore-mini { margin-bottom: 0; gap: 14px; }
+.frost .lore-mini li { min-height: 100px; padding: 18px 16px; gap: 16px; }
+.frost .lore-mini img { width: 48px; height: 48px; }
+.frost .lore-mini li:active img { transform: scale(.95); }
+.frost .lore-mini li.is-thawing { background: rgba(164, 220, 240, .12); }
+.frost .lore-mini li:focus-visible { outline-offset: 3px; }
+@media (max-width: 640px) {
+  .frost .lore-mini { gap: 10px; }
+  .frost .lore-mini li { min-height: 108px; padding: 16px 12px; gap: 13px; }
+}
 .frost-ice, .frost-fx {
   position: absolute; left: 0; top: 0;
   pointer-events: none;

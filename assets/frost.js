@@ -28,7 +28,15 @@
 
   var FINE = !!(window.matchMedia && matchMedia("(hover: hover) and (pointer: fine)").matches);
   var hint = document.querySelector("[data-frost-hint]");
-  if (hint && FINE) hint.textContent = "Linger over the ice or click to thaw it. Click a revealed icon to explore its world.";
+  var copy = {
+    en: { hint: "Tap an ice block to reveal an icon. Tap again to explore its world.", all: "Thaw all", count: "{n} of {total} revealed", done: "All {total} revealed. Discover how to earn them in the app." },
+    zh: { hint: "轻点冰块，揭晓图标。再次轻点，探索它的世界。", all: "全部融化", count: "已揭晓 {n} / {total}", done: "已揭晓全部 {total} 个。在 App 中发现它们的解锁方式。" }
+  };
+  function t(key) {
+    return copy[document.documentElement.lang.indexOf("zh") === 0 ? "zh" : "en"][key]
+      .replace("{n}", thawedCount).replace("{total}", items.length);
+  }
+  if (hint) hint.textContent = t("hint");
   var RADIUS = 20;               // the pane's corner, matches .frost (--radius) in styles.css
   var CELL = 10;                 // coverage grid, CSS px per cell
   var BRUSH = FINE ? 58 : 50;    // radius of the warmth
@@ -70,10 +78,11 @@
   var bar = document.createElement("div");
   bar.className = "frost-bar";
   bar.innerHTML = '<span class="frost-count"></span><span class="frost-sep" aria-hidden="true"></span>' +
-                  '<button type="button" class="frost-all">Thaw all</button>';
+                  '<button type="button" class="frost-all">' + t("all") + '</button>';
   pane.parentNode.insertBefore(bar, pane);
   var countEl = bar.querySelector(".frost-count");
   var allBtn = bar.querySelector(".frost-all");
+  countEl.setAttribute("role", "status");
 
   /* ── Geometry ─────────────────────────────────────────────────────── */
 
@@ -166,72 +175,68 @@
 
   /* ── Painting the ice ─────────────────────────────────────────────── */
 
+  // Each collectible has its own solid, bevelled ice shell. Gaps stay clear.
   function paint() {
     var rnd = seeded(11);
     ctx.globalCompositeOperation = "source-over";
     ctx.clearRect(0, 0, W, H);
-    ctx.save();
-    continuousRect(ctx, 0.5, 0.5, W - 1, H - 1, RADIUS);
-    ctx.clip();
-
-    // The body: pale glacier blue, a shade deeper toward the foot.
-    var g = ctx.createLinearGradient(0, 0, 0, H);
-    g.addColorStop(0, "#E4EEF3");
-    g.addColorStop(1, "#D3E3EA");
-    ctx.fillStyle = g;
-    ctx.fillRect(0, 0, W, H);
-
-    // What's trapped inside: each icon a soft bloom of its own colour,
-    // each line of text a smudge. Enough to want, not enough to read.
     state.forEach(function (s) {
+      var r = s.rect;
+      if (!r || !r.w) return;
+      var x = r.x + 2, y = r.y + 2, w = r.w - 4, h = r.h - 7;
+      ctx.save();
+      // Darker lower edge gives the block thickness without a heavy drop shadow.
+      continuousRect(ctx, x, y + 5, w, h, 20);
+      ctx.fillStyle = "rgba(73, 139, 166, .35)"; ctx.fill();
+      continuousRect(ctx, x, y, w, h, 20);
+      ctx.clip();
+      var body = ctx.createLinearGradient(x, y, x + w * .65, y + h);
+      body.addColorStop(0, "#edfaff");
+      body.addColorStop(.3, "#d5eff8");
+      body.addColorStop(.72, "#b5dcea");
+      body.addColorStop(1, "#8fc3d8");
+      ctx.fillStyle = body; ctx.fillRect(x, y, w, h);
+      if (s.img && s.img.el.complete && s.img.el.naturalWidth) {
+        ctx.save();
+        ctx.globalAlpha = .65;
+        ctx.filter = "blur(2px) saturate(.65)";
+        ctx.drawImage(s.img.el, s.img.x, s.img.y, s.img.w, s.img.h);
+        ctx.restore();
+      }
       s.lines.forEach(smudge);
-      if (s.img) ghost(s.img);
+      // Broad translucent facets, with light consistently entering at top left.
+      ctx.fillStyle = "rgba(255,255,255,.26)";
+      ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + w * .7, y);
+      ctx.lineTo(x + w * .38, y + h); ctx.lineTo(x, y + h); ctx.fill();
+      ctx.strokeStyle = "rgba(255,255,255,.75)"; ctx.lineWidth = 2;
+      continuousRect(ctx, x + 3, y + 3, w - 6, h - 6, 17); ctx.stroke();
+      ctx.strokeStyle = "rgba(255,255,255,.28)"; ctx.lineWidth = 5;
+      continuousRect(ctx, x + 7, y + 7, w - 14, h - 14, 14); ctx.stroke();
+      for (var j = 0; j < 7; j++) {
+        var bx = x + 12 + rnd() * (w - 24), by = y + 12 + rnd() * (h - 24);
+        ctx.beginPath(); ctx.ellipse(bx, by, 1 + rnd() * 2, 1 + rnd() * 3, -.4, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(255,255,255,.48)"; ctx.fill();
+      }
+      ctx.restore();
+      continuousRect(ctx, x + .5, y + .5, w - 1, h - 1, 20);
+      ctx.strokeStyle = "rgba(81,151,181,.4)"; ctx.lineWidth = 1; ctx.stroke();
     });
+  }
 
-    rim();
-    grain(rnd);
-    ferns(rnd);
-    writing();
+  // A short branching fracture appears exactly where the block was tapped.
+  function fracture(s, x, y) {
+    var r = s.rect, rnd = seeded(Math.round(x + y));
+    ctx.save();
+    continuousRect(ctx, r.x + 2, r.y + 2, r.w - 4, r.h - 7, 20); ctx.clip();
+    ctx.lineCap = "round";
+    for (var i = 0; i < 5; i++) {
+      var a = i * Math.PI * 2 / 5 + rnd() * .45;
+      var len = 23 + rnd() * 26, mx = x + Math.cos(a) * len * .45, my = y + Math.sin(a) * len * .45;
+      var ex = x + Math.cos(a + .2) * len, ey = y + Math.sin(a + .2) * len;
+      line([x, y, mx, my, ex, ey], "rgba(63,126,156,.35)", 2.5, 1);
+      line([x, y, mx, my, ex, ey], "rgba(255,255,255,.95)", 1.2, 0);
+    }
     ctx.restore();
-
-    continuousRect(ctx, 0.5, 0.5, W - 1, H - 1, RADIUS);
-    ctx.strokeStyle = "rgba(20, 112, 159, 0.16)";
-    ctx.lineWidth = 1;
-    ctx.stroke();
-  }
-
-  var blobs = {};
-  function blob(im) {
-    var key = im.el.currentSrc || im.el.src;
-    if (blobs[key]) return blobs[key];
-    if (!im.el.complete || !im.el.naturalWidth) return null;
-    // Shrink the icon to 4x4 and let smoothing blow it back up: the
-    // cheapest blur there is, and it works where ctx.filter doesn't.
-    var tiny = document.createElement("canvas");
-    tiny.width = tiny.height = 4;
-    tiny.getContext("2d").drawImage(im.el, 0, 0, 4, 4);
-    var S = 48, soft = document.createElement("canvas");
-    soft.width = soft.height = S;
-    var sc = soft.getContext("2d");
-    sc.imageSmoothingEnabled = true;
-    sc.drawImage(tiny, 0, 0, S, S);
-    sc.globalCompositeOperation = "destination-in";
-    var rg = sc.createRadialGradient(S / 2, S / 2, 0, S / 2, S / 2, S / 2);
-    rg.addColorStop(0, "rgba(0,0,0,1)");
-    rg.addColorStop(0.55, "rgba(0,0,0,0.75)");
-    rg.addColorStop(1, "rgba(0,0,0,0)");
-    sc.fillStyle = rg;
-    sc.fillRect(0, 0, S, S);
-    return (blobs[key] = soft);
-  }
-
-  function ghost(im) {
-    var b = blob(im);
-    if (!b) return;
-    var grow = im.w * 0.5;
-    ctx.globalAlpha = 0.55;
-    ctx.drawImage(b, im.x - grow, im.y - grow, im.w + grow * 2, im.h + grow * 2);
-    ctx.globalAlpha = 1;
   }
 
   // Draw the bar far off to the left and keep only its shadow: a blurred
@@ -249,81 +254,6 @@
     ctx.restore();
   }
 
-  // Frost is thicker at the edge of a pane than in the middle.
-  function rim() {
-    ctx.save();
-    ctx.shadowColor = "rgba(255, 255, 255, 0.95)";
-    ctx.shadowBlur = 26 * dpr;
-    ctx.lineWidth = 30;
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.85)";
-    continuousRect(ctx, -14, -14, W + 28, H + 28, RADIUS + 14);
-    ctx.stroke();
-    ctx.restore();
-  }
-
-  var grainPattern = null;
-  function grain(rnd) {
-    if (!grainPattern) {
-      var n = 160, gc = document.createElement("canvas");
-      gc.width = gc.height = n;
-      var g2 = gc.getContext("2d"), id = g2.createImageData(n, n), d = id.data;
-      for (var i = 0; i < d.length; i += 4) {
-        var v = rnd();
-        if (v > 0.93) { d[i] = d[i + 1] = d[i + 2] = 255; d[i + 3] = 60 + rnd() * 120; }
-        else if (v < 0.05) { d[i] = 132; d[i + 1] = 170; d[i + 2] = 194; d[i + 3] = 36 + rnd() * 44; }
-      }
-      g2.putImageData(id, 0, 0);
-      grainPattern = ctx.createPattern(gc, "repeat");
-    }
-    ctx.fillStyle = grainPattern;
-    ctx.fillRect(0, 0, W, H);
-    var count = Math.round(W * H / 900);
-    for (var k = 0; k < count; k++) {
-      ctx.fillStyle = "rgba(255, 255, 255, " + (0.5 + rnd() * 0.5).toFixed(2) + ")";
-      ctx.beginPath();
-      ctx.arc(rnd() * W, rnd() * H, 0.4 + rnd() * 0.9, 0, 6.2832);
-      ctx.fill();
-    }
-  }
-
-  // Window frost grows in from the frame as feathered fronds. Each is
-  // drawn twice, a faint blue-grey line under a white one, so it reads as
-  // relief in the ice rather than a white drawing on it.
-  function ferns(rnd) {
-    var per = 2 * (W + H), n = Math.round(per / 46);
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
-    for (var i = 0; i < n; i++) {
-      var t = rnd() * per, x, y, a;
-      if (t < W) { x = t; y = 0; a = Math.PI / 2; }
-      else if (t < W + H) { x = W; y = t - W; a = Math.PI; }
-      else if (t < 2 * W + H) { x = t - W - H; y = H; a = -Math.PI / 2; }
-      else { x = 0; y = t - 2 * W - H; a = 0; }
-      frond(x, y, a + (rnd() - 0.5) * 1.1, 22 + rnd() * rnd() * 130, 0, rnd);
-    }
-  }
-  // Barbs come off both sides of every segment at ~55 degrees and shorten
-  // toward the tip, which is what makes it a feather and not a twig.
-  function frond(x, y, a, len, depth, rnd) {
-    var steps = Math.max(3, Math.round(len / 5)), seg = len / steps;
-    var pts = [x, y], bend = (rnd() - 0.5) * 0.05;
-    for (var s = 0; s < steps; s++) {
-      a += bend + (rnd() - 0.5) * 0.12;
-      x += Math.cos(a) * seg;
-      y += Math.sin(a) * seg;
-      pts.push(x, y);
-      if (depth < 2 && s > 0) {
-        var bl = len * (depth ? 0.3 : 0.3) * Math.pow(1 - s / steps, 0.8);
-        for (var side = -1; side <= 1; side += 2) {
-          if (rnd() > (depth ? 0.7 : 0.92)) continue;
-          var l2 = bl * (0.7 + rnd() * 0.45);
-          if (l2 > 3.5) frond(x, y, a + side * (0.9 + rnd() * 0.22), l2, depth + 1, rnd);
-        }
-      }
-    }
-    line(pts, "rgba(96, 138, 164, " + (0.16 - depth * 0.04) + ")", 1.3 - depth * 0.3, 0.6);
-    line(pts, "rgba(255, 255, 255, " + (0.9 - depth * 0.18) + ")", 0.95 - depth * 0.22, 0);
-  }
   function line(pts, color, width, dy) {
     ctx.beginPath();
     ctx.moveTo(pts[0], pts[1] + dy);
@@ -331,28 +261,6 @@
     ctx.strokeStyle = color;
     ctx.lineWidth = width;
     ctx.stroke();
-  }
-
-  // The invitation, written on the glass the way you would with a
-  // fingertip: darker where the frost was wiped, a bright lip under it.
-  function writing() {
-    // On touch the shelf thaws itself as it scrolls in (see selfThaw), so
-    // there is nothing left to invite anyone to do.
-    if (!FINE) return;
-    var msg = "linger here to thaw";
-    var fs = Math.round(Math.max(21, Math.min(30, W / 28)));
-    var x = W / 2, y = Math.min(H / 2, 118);
-    ctx.save();
-    ctx.font = "italic 500 " + fs + "px Newsreader, 'Iowan Old Style', Georgia, serif";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillStyle = "rgba(255, 255, 255, 0.75)";
-    ctx.fillText(msg, x, y + 1.2);
-    ctx.shadowColor = "rgba(60, 100, 124, 0.35)";
-    ctx.shadowBlur = 1.5 * dpr;
-    ctx.fillStyle = "rgba(62, 104, 128, 0.42)";
-    ctx.fillText(msg, x, y);
-    ctx.restore();
   }
 
   /* ── Melting ──────────────────────────────────────────────────────── */
@@ -669,17 +577,24 @@
   function thawItem(i, ox, oy, quiet) {
     var s = state[i];
     if (s.thawed) return;
+    if (!near) arrive();
+    touched = true;
     s.thawed = true;
     s.thawedAt = Date.now();
     thawedCount++;
-    items[i].classList.add("is-thawed");
-    revealIcon(s);
+    items[i].classList.add("is-thawing");
+    setTimeout(function () {
+      items[i].classList.remove("is-thawing");
+      items[i].classList.add("is-thawed");
+      revealIcon(s);
+      if (!quiet) drip();
+    }, 280);
     var r = s.rect;
-    if (ox == null) { ox = r.x + 30; oy = r.y + r.h / 2; } // from the icon outward
+    if (ox == null) { ox = s.img ? s.img.x + s.img.w / 2 : r.x + 30; oy = r.y + r.h / 2; } // from the icon outward
+    fracture(s, ox, oy);
     var far = Math.sqrt(Math.pow(Math.max(ox - r.x, r.x + r.w - ox), 2) +
                         Math.pow(Math.max(oy - r.y, r.y + r.h - oy), 2));
     thaws.push({ i: i, x: ox, y: oy, t0: 0, far: far + 16 });
-    if (!quiet) drip();
     updateCount();
     kick();
   }
@@ -687,7 +602,7 @@
     for (var k = thaws.length - 1; k >= 0; k--) {
       var t = thaws[k], r = state[t.i].rect;
       if (!t.t0) t.t0 = now;
-      var p = Math.min(1, (now - t.t0) / 560), e = 1 - Math.pow(1 - p, 3);
+      var p = Math.min(1, Math.max(0, now - t.t0 - 90) / 680), e = 1 - Math.pow(1 - p, 3);
       var R = Math.max(2, t.far * e);
       ctx.save();
       continuousRect(ctx, r.x - 6, r.y - 6, r.w + 12, r.h + 12, 16);
@@ -725,7 +640,7 @@
   }
 
   function updateCount() {
-    countEl.textContent = thawedCount + " of " + items.length + " thawed";
+    countEl.textContent = t("count");
     if (thawedCount === items.length) finish();
   }
   function finish() {
@@ -733,7 +648,7 @@
     done = true;
     allBtn.hidden = true;
     bar.classList.add("is-done");
-    countEl.textContent = "All " + items.length + " thawed. In the app, they take a little longer.";
+    countEl.textContent = t("done");
     pane.classList.remove("is-frozen");
     // Let the last thaw finish, then fade the canvases out and drop them.
     setTimeout(function () {
@@ -744,7 +659,7 @@
         if (fx.parentNode) fx.parentNode.removeChild(fx);
         if (tcv && tcv.parentNode) tcv.parentNode.removeChild(tcv);
       }, 900);
-    }, 650);
+    }, 850);
   }
 
   /* ── The warmth ───────────────────────────────────────────────────── */
@@ -1029,7 +944,13 @@
   }, { passive: true });
   pane.addEventListener("pointerdown", function (e) {
     pointerAt = Date.now();
-    if (done || e.pointerType === "mouse") return;
+    if (done) return;
+    var pressed = indexOf(e.target);
+    if (pressed >= 0 && !state[pressed].thawed) {
+      var point = local(e);
+      fracture(state[pressed], point.x, point.y);
+    }
+    if (e.pointerType === "mouse") return;
     // A finger held on the ice melts it; the moment it drags, the page
     // scrolls as normal and pointercancel ends the warmth.
     var p = local(e);
@@ -1070,8 +991,8 @@
   });
 
   /* Everything still frozen, cleared the way the shelf is read: row by
-     row, left to right, 40ms apart. Each icon keeps its own thaw (560ms of
-     melt, then the 0.7s settle). */
+     row, left to right, 40ms apart. Each icon keeps its own fracture,
+     melt and reveal sequence. */
   function thawAll() {
     var order = [];
     state.forEach(function (s, i) { if (!s.thawed) order.push(i); });
@@ -1133,20 +1054,8 @@
     arrive();
   }
 
-  /* A phone has no cursor to linger with, and most visitors never guessed
-     that the ice wanted tapping — so the rare icons stayed hidden from the
-     people most likely to be looking. On touch the shelf clears itself once
-     its top is a quarter of the way up the screen. */
-  if (!FINE && window.IntersectionObserver) {
-    var selfThaw = new IntersectionObserver(function (entries) {
-      if (!entries[0].isIntersecting) return;
-      selfThaw.disconnect();
-      arrive();
-      touched = true; // a late font or image must not refreeze what is melting
-      setTimeout(thawAll, 350);
-    }, { rootMargin: "0px 0px -25% 0px" });
-    selfThaw.observe(pane);
-  }
+  // Touch uses the same explicit tap-to-reveal as desktop. Normal page
+  // scrolling remains available; Thaw all is the immediate alternative.
 
   // Fonts and lazy icons land after the first paint and move the text and
   // colour blooms. Repaint for them only while the ice is untouched — and
