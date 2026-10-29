@@ -52,7 +52,7 @@
   </style>
   <link rel="stylesheet" href="styles.css?v=116" />
   <link rel="stylesheet" href="assets/contact.css?v=2" />
-  <link rel="stylesheet" href="assets/editorial-concept.css?v=25" />
+  <link rel="stylesheet" href="assets/editorial-concept.css?v=31" />
   <link rel="stylesheet" href="assets/nivo.css?v=5" />
   <link rel="stylesheet" href="assets/app-opals.css?v=3" />
   <link rel="stylesheet" href="assets/keepsakes.css?v=2" />
@@ -77,7 +77,7 @@
   }
   </script>
 </head>
-<body class="short-home">
+<body class="short-home premium-home">
   <a class="skip-link" href="#main">Skip to content</a>
 
   <nav>
@@ -115,24 +115,16 @@
       </button>
     </div>
 
-    <p class="editorial-sub">A clear path from intention to progress.</p>
+    <p class="editorial-sub" data-site-copy="heroBody">A gentler habit tracker for iPhone. Small steps, with Nivo beside you.</p>
+
+    <div class="editorial-actions">
+      <a class="nav-cta" data-store href="launch.html"><span data-live="Get the app" data-soon="Join the launch list" data-site-store-label>Join the launch list</span></a>
+      <a class="editorial-how" href="#how" data-site-copy="heroHow">See how it works →</a>
+    </div>
 
     <div class="nivo-play-controls" data-nivo-controls hidden>
       <span data-nivo-hint aria-hidden="true"></span>
       <button type="button" class="nivo-sound" data-nivo-sound aria-pressed="false"><span aria-hidden="true">♪</span> <span data-nivo-sound-label></span></button>
-    </div>
-
-    <div class="editorial-filterbar" aria-label="Explore Nivolo">
-      <a class="editorial-filter editorial-filter--lead" href="#how">
-        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 6.5h16M7 12h10M10 17.5h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-        Explore
-      </a>
-      <div class="editorial-filterset">
-        <a class="editorial-filter" href="#how">How it works</a>
-        <a class="editorial-filter" href="#collection" data-site-copy="rewards">Rewards</a>
-        <a class="editorial-filter" href="#privacy">Private</a>
-        <a class="editorial-filter" href="#pricing">Free to start</a>
-      </div>
     </div>
 
     <article class="editorial-feature" aria-labelledby="editorial-feature-title">
@@ -143,110 +135,40 @@
       <div class="editorial-ribbon editorial-ribbon--two" aria-hidden="true"></div>
 
       <div class="editorial-feature-copy">
-        <p class="editorial-feature-intro">Your plan can be ambitious.<br />Today can still be small.</p>
-        <p class="editorial-feature-meta">Nivolo guide · Start here</p>
-      </div>
-
-      <h1 class="editorial-sticker" id="editorial-feature-title">
-        <span>Meet your</span>
-        <span>next small win</span>
-      </h1>
-
-      <div class="editorial-scenes" aria-hidden="true">
-        <div class="editorial-scene editorial-scene--today">
-          <div class="editorial-mini-card">
-            <span class="editorial-mini-face editorial-mini-face--nivo"><span class="site-nivo" data-nivo aria-hidden="true"><svg viewBox="160 170 970 970"><image href="assets/nivo-body.png" width="1254" height="1254" /></svg></span></span>
-            <span><small>Today&rsquo;s step</small><strong>15 minutes of guitar</strong></span>
-            <b>+1</b>
-          </div>
-          <div class="editorial-phone">
-            <picture>
-              <img src="assets/screens/current-home.webp?v=20261026" width="393" height="852" alt="" fetchpriority="high" />
-            </picture>
-          </div>
-        </div>
-
-        <div class="editorial-scene editorial-scene--rest">
-          <div class="editorial-mini-card editorial-mini-card--rest">
-            <span class="editorial-mini-face"><img src="assets/icons/relieved.png" width="180" height="180" alt="" /></span>
-            <span><small>Life happened</small><strong>Rest day protected</strong></span>
-            <b>Safe</b>
-          </div>
-          <div class="editorial-phone editorial-phone--rest">
-            <picture>
-              <img src="assets/screens/current-rest.webp?v=20261026" width="393" height="852" alt="" />
-            </picture>
-          </div>
-          <span class="editorial-scene-badge editorial-scene-badge--rest">❄ streak protected</span>
-        </div>
-
-        <div class="editorial-scene editorial-scene--trophy">
-          <div class="editorial-mini-card editorial-mini-card--trophy">
-            <span class="editorial-mini-face"><img src="assets/icons/champion.png" width="180" height="180" alt="" /></span>
-            <span><small>Goal completed</small><strong>Morning pages</strong></span>
-            <b>Gem</b>
-          </div>
-          <div class="editorial-phone editorial-phone--trophy">
-            <picture>
-              <img src="assets/screens/current-achievements.webp?v=20261026" width="393" height="852" alt="" />
-            </picture>
-          </div>
-          <span class="editorial-scene-badge editorial-scene-badge--trophy"><span data-app-opal data-opal-goal="gx2" data-opal-texture="twotone" data-opal-size="22" data-opal-static></span> proof you kept</span>
+        <p class="editorial-feature-meta" data-site-copy="previewEyebrow">ONE SMALL STEP, TODAY</p>
+        <h1 class="editorial-sticker" id="editorial-feature-title">
+          <span data-site-copy="previewTitleFirst">Meet your</span>
+          <span data-site-copy="previewTitleSecond">next small win</span>
+        </h1>
+        <p class="editorial-feature-intro" data-site-copy="previewBody">Your plan can be ambitious. Today can still be small.</p>
+        <div class="editorial-feature-tags" aria-label="Nivolo highlights">
+          <span data-site-copy="previewStep">One clear step</span>
+          <span data-site-copy="previewStreak">Kinder streaks</span>
+          <span data-site-copy="previewRest">Rest without guilt</span>
         </div>
       </div>
 
-      <div class="editorial-feature-tags" aria-label="Nivolo highlights">
-        <span>One clear step</span>
-        <span>Kinder streaks</span>
-        <span>Rest without guilt</span>
-      </div>
+      <button class="editorial-product" type="button" data-app-screen="Your day in Nivolo" data-site-screen="previewScreen" aria-label="View the Nivolo home screen up close" data-site-label="previewLabel">
+        <span class="phone"><img src="assets/screens/current-home.webp?v=20261026" width="393" height="852" alt="Nivolo home screen with this week’s progress and the next step for Learn guitar." data-site-alt="previewAlt" fetchpriority="high" /></span>
+        <span class="editorial-product-caption" data-site-copy="previewCaption">Your day, one small step at a time. ↗</span>
+      </button>
     </article>
 
     <div class="editorial-proof" aria-label="Nivolo product facts">
-      <span>Private by default</span>
-      <span>No account required</span>
-      <span>Designed for iPhone</span>
-      <span>Core habit tools free</span>
+      <span data-site-copy="proofPrivate">Private by default</span>
+      <span data-site-copy="proofAccount">No account required</span>
+      <span data-site-copy="proofPhone">Designed for iPhone</span>
+      <span data-site-copy="proofFree">Core habit tools free</span>
     </div>
   </header>
 
-  <header class="hero">
-    <span class="kicker-chip"><span class="dot"></span>The cozy habit app</span>
-    <h1>Habits that hold,<br /><em>even when you don&rsquo;t.</em></h1>
-    <p class="hero-sub">One small action a day, a free freeze for when life wins, and a penguin who&rsquo;s extremely proud of you.</p>
-    <div class="hero-actions">
-      <!-- assets/store.js upgrades this launch.html link when an App Store URL is available. -->
-      <a class="btn-dark" data-store href="launch.html">
-        <svg viewBox="0 0 384 512" fill="currentColor" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
-        <span data-live="Download on the App Store" data-soon="Join the launch list">Join the launch list</span>
-      </a>
-      <a class="btn-ghost" href="#features">See what's inside</a>
-    </div>
-    <p class="hero-note">Free at launch · iPhone · English &amp; 中文</p>
-
-    <div class="hero-proof reveal in" aria-labelledby="hero-proof-title">
-      <div class="hero-proof-screen" aria-hidden="true">
-        <picture>
-          <source srcset="assets/screens/current-home.webp?v=20261026" type="image/webp" />
-          <img src="assets/screens/current-home.webp?v=20261026" width="393" height="852" decoding="async" fetchpriority="high" alt="" />
-        </picture>
-      </div>
-      <div class="hero-proof-copy">
-        <p class="section-kicker">Inside the app</p>
-        <h2 id="hero-proof-title">One clear action for today.</h2>
-        <p>See the next small step, log it, and keep moving without rebuilding your whole plan.</p>
-        <a href="#features">Explore the app <span aria-hidden="true">↓</span></a>
-      </div>
-    </div>
-  </header>
 
   
 
   <section class="section steps-section" id="how">
     <div class="wrap">
       <div class="section-head reveal" data-stagger="60">
-        <p class="section-kicker">How it works</p>
-        <h2 class="section-title section-title--with-nivo">Three tiny moves.<br />Then <span class="section-nivo-mark"><img src="assets/logo-face.webp" width="136" height="74" alt="Nivo" /></span> keeps the rhythm.</h2>
+        <h2 class="section-title section-title--with-nivo">Three tiny moves.<br />Then <span class="section-nivo-mark section-nivo-mark--approved"><span class="site-nivo" data-nivo aria-label="Nivo" role="img"><svg viewBox="160 170 970 970" aria-hidden="true"><image href="assets/nivo-body.png" width="1254" height="1254" /></svg></span></span> keeps the rhythm.</h2>
         <p class="section-sub">No setup weekend, no spreadsheet. Give Nivolo one useful action and let the habit grow from there.</p>
       </div>
       <ol class="steps reveal" data-stagger="50">
@@ -279,13 +201,10 @@
         </li>
       </ol>
       <div class="compact-benefits" id="features">
-        <span aria-hidden="true">❄</span>
+        <span aria-hidden="true"><img src="assets/icons/snowy.png" alt="" width="48" height="48" /></span>
         <div><h3 data-site-copy="kindTitle">Room for real life.</h3><p data-site-copy="kindBody">Planned rest days and a free weekly freeze keep your streak safe when life gets in the way.</p></div>
       </div>
-      <details class="compact-disclosure app-gallery-section" id="inside-app">
-        <summary><span data-site-copy="screens">Explore all eight app screens</span><span class="disclosure-plus" aria-hidden="true">+</span></summary>
-        <div class="disclosure-body">
-      <div class="app-screen-rail" tabindex="0" role="region" aria-label="App screenshots. Scroll horizontally to explore all eight screens.">
+      <div class="app-screen-preview" aria-label="Inside Nivolo">
         <button class="app-screen-card" type="button" data-app-screen="Home">
           <span class="app-screen-label"><b>Your day</b><span>01</span></span>
           <span class="phone"><img src="assets/screens/current-home.webp?v=20261026" width="393" height="852" loading="lazy" alt="Home: Nivo, this week’s progress, and the next step for Learn guitar." /></span>
@@ -298,6 +217,11 @@
           <span class="app-screen-label"><b>One small action</b><span>03</span></span>
           <span class="phone"><img src="assets/screens/current-log-action.webp?v=20261026" width="393" height="852" loading="lazy" alt="Log Action: practiced guitar for 15 minutes, today, with three stars of effort." /></span>
         </button>
+      </div>
+      <details class="compact-disclosure app-gallery-section" id="inside-app">
+        <summary><span data-site-copy="screens">See five more app screens</span><span class="disclosure-plus" aria-hidden="true">+</span></summary>
+        <div class="disclosure-body">
+      <div class="app-screen-rail" tabindex="0" role="region" aria-label="More app screenshots. Scroll horizontally to explore five screens.">
         <button class="app-screen-card" type="button" data-app-screen="Rest day">
           <span class="app-screen-label"><b>Room to rest</b><span>04</span></span>
           <span class="phone"><img src="assets/screens/current-rest.webp?v=20261026" width="393" height="852" loading="lazy" alt="Rest day logged, with the streak still intact." /></span>
@@ -334,8 +258,7 @@
   <section class="section lore" id="collection">
     <div class="wrap">
       <div class="section-head reveal" data-stagger="60">
-        <p class="section-kicker">The collection</p>
-        <h2 class="section-title">Every icon has a story</h2>
+        <h2 class="section-title"><span data-site-copy="collectionTitle">Turn small steps into keepsakes.</span></h2>
         <p class="section-sub">Some icons mark a milestone. Others are little keepsakes you choose with the Krill you earn. Each one tells a different part of your story.</p>
       </div>
 
@@ -522,7 +445,6 @@
   <section class="section collector-pricing" id="pricing" aria-labelledby="pricing-title">
     <div class="wrap">
       <div class="section-head reveal" data-stagger="60">
-        <p class="section-kicker">Made for your everyday</p>
         <h2 class="section-title" id="pricing-title">Free is the whole<br />habit app.</h2>
         <p class="section-sub">Your daily habits, free. A little more delight with Plus.</p>
       </div>
@@ -610,8 +532,7 @@
   <section class="section" id="faq">
     <div class="wrap">
       <div class="section-head reveal" data-stagger="60">
-        <p class="section-kicker">Questions</p>
-        <h2 class="section-title">Good to know</h2>
+        <h2 class="section-title"><span data-site-copy="faqTitle">Free habit tools. No account required.</span></h2>
       </div>
       <div class="faq reveal" data-stagger="60">
         <details>
@@ -654,7 +575,6 @@
   <section class="contact-section" id="contact" aria-labelledby="contact-title">
     <div class="wrap">
       <div class="contact-card">
-        <p class="section-kicker" data-contact-copy="kicker">A little help</p>
         <h2 id="contact-title" data-contact-copy="title">Questions or concerns?</h2>
         <p data-contact-copy="body">Something not working, a question on your mind, or an idea to share? We&rsquo;d love to hear from you.</p>
         <div class="contact-actions">
@@ -780,7 +700,7 @@
   <script src="assets/founders-gallery.js?v=7" defer></script>
   <script src="assets/frost.js?v=4" defer></script>
   <script src="assets/app-opals.js?v=2" defer></script>
-  <script src="assets/editorial-concept.js?v=9" defer></script>
+  <script src="assets/editorial-concept.js?v=12" defer></script>
   <script type="module" src="assets/nivo.js?v=3"></script>
 </body>
 </html>

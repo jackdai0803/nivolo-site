@@ -7,22 +7,48 @@
   };
   const t = (key) => copy[document.documentElement.lang.startsWith('zh') ? 'zh' : 'en'][key];
   Object.assign(copy.en, {
+    heroBody: 'A gentler habit tracker for iPhone. Small steps, with Nivo beside you.', collectionTitle: 'Turn small steps into keepsakes.', faqTitle: 'Free habit tools. No account required.',
+    heroJoin: 'Join the launch list', heroGet: 'Get the app', heroHow: 'See how it works →',
+    previewEyebrow: 'ONE SMALL STEP, TODAY', previewTitleFirst: 'Meet your', previewTitleSecond: 'next small win',
+    previewBody: 'Your plan can be ambitious. Today can still be small.',
+    previewStep: 'One clear step', previewStreak: 'Kinder streaks', previewRest: 'Rest without guilt',
+    previewScreen: 'Your day in Nivolo', previewLabel: 'View the Nivolo home screen up close',
+    previewAlt: 'Nivolo home screen with this week’s progress and the next step for Learn guitar.',
+    previewCaption: 'Your day, one small step at a time. ↗',
+    proofPrivate: 'Private by default', proofAccount: 'No account required', proofPhone: 'Designed for iPhone', proofFree: 'Core habit tools free',
     menu: 'Menu', navFeatures: 'Features', navPricing: 'Pricing', navFaq: 'FAQ', navSupport: 'Support',
-    screens: 'Explore all eight app screens', collection: 'Explore the full collection',
+    screens: 'See five more app screens', collection: 'Explore the full collection',
     kindTitle: 'Room for real life.', kindBody: 'Planned rest days and a free weekly freeze keep your streak safe when life gets in the way.',
     krill: 'Meet the Krill', private: 'Private by design.', account: 'No cloud account. No ad trackers.',
     data: 'How AI and icon checks use data', questions: 'More questions', rewards: 'Rewards',
     yearlyNote: 'About $2.50/month · billed yearly · USD', monthlyNote: 'Or $29.99 a year (about $2.50/month) · USD',
   });
   Object.assign(copy.zh, {
+    heroBody: '更温柔的 iPhone 习惯记录。让 Nivo 陪你，一小步一小步前进。', collectionTitle: '让小小行动，成为你的珍藏。', faqTitle: '核心习惯功能免费，无需账户。',
+    heroJoin: '加入上线通知名单', heroGet: '获取应用', heroHow: '看看如何使用 →',
+    previewEyebrow: '今天，迈出一小步', previewTitleFirst: '迎接你的', previewTitleSecond: '下一个小成就',
+    previewBody: '目标可以很远大。今天，只需一小步。',
+    previewStep: '清晰的一步', previewStreak: '更温柔的坚持', previewRest: '安心休息',
+    previewScreen: '你在 Nivolo 的一天', previewLabel: '放大查看 Nivolo 主屏幕',
+    previewAlt: 'Nivolo 主屏幕，展示本周进度和“学习吉他”的下一步。',
+    previewCaption: '每一天，都从一小步开始。↗',
+    proofPrivate: '默认保护隐私', proofAccount: '无需账户', proofPhone: '为 iPhone 设计', proofFree: '核心习惯功能免费',
     menu: '菜单', navFeatures: '功能', navPricing: '价格', navFaq: '常见问题', navSupport: '支持',
-    screens: '查看全部八张应用截图', collection: '探索完整收藏',
+    screens: '再看五张应用截图', collection: '探索完整收藏',
     kindTitle: '为生活留点余地。', kindBody: '提前安排休息日，每周还有一次免费的连续记录冻结，在忙碌时守护你的坚持。',
     krill: '认识磷虾', private: '隐私，融入设计。', account: '无需云端账户，没有广告追踪。',
     data: 'AI 和图标检查如何使用数据', questions: '更多问题', rewards: '奖励',
     yearlyNote: '约每月 $2.50 · 按年计费 · 美元', monthlyNote: '或每年 $29.99（约每月 $2.50）· 美元',
   });
   document.querySelectorAll('[data-site-copy]').forEach((element) => { element.textContent = t(element.dataset.siteCopy); });
+  document.querySelectorAll('[data-site-store-label]').forEach((element) => {
+    element.dataset.live = t('heroGet');
+    element.dataset.soon = t('heroJoin');
+    element.textContent = t(typeof APP_STORE_URL !== 'undefined' && APP_STORE_URL ? 'heroGet' : 'heroJoin');
+  });
+  document.querySelectorAll('[data-site-label]').forEach((element) => element.setAttribute('aria-label', t(element.dataset.siteLabel)));
+  document.querySelectorAll('[data-site-alt]').forEach((element) => { element.alt = t(element.dataset.siteAlt); });
+  document.querySelectorAll('[data-site-screen]').forEach((element) => { element.dataset.appScreen = t(element.dataset.siteScreen); });
   const phoneMenu = document.querySelector('.phone-menu');
   const phoneLayout = matchMedia('(max-width: 760px)');
   phoneMenu?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => { phoneMenu.open = false; }));
