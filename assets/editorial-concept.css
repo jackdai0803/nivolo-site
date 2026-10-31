@@ -1627,25 +1627,34 @@ a.nav-cta:active, a.btn-light:active, a.btn-moonlit:active { transform: translat
 .short-home .keepsakes { margin-bottom: 24px; }
 .short-home .early-supporter { margin-bottom: 28px; }
 .collection-disclosure .lore-tier { margin-top: 12px; }
-.collection-disclosure > summary { justify-content: flex-start; gap: clamp(22px, 4vw, 44px); padding: clamp(24px, 4vw, 40px); }
-.collection-preview-icon { flex: 0 0 auto; width: clamp(100px, 15vw, 160px); height: auto; border-radius: 24%; filter: drop-shadow(0 12px 12px #173d5218); transition: transform 180ms ease; }
-.collection-preview-copy { display: grid; gap: 9px; max-width: 510px; }
+.classic-preview { display: grid; grid-template-columns: minmax(240px, .9fr) 1.1fr; align-items: center; gap: clamp(24px, 4vw, 48px); padding: 20px; border: 1px solid #ccdce2; border-radius: 24px; background: #ffffff75; }
+.classic-preview-art { position: relative; display: grid; place-items: center; min-height: 290px; overflow: hidden; border-radius: 18px; background: #071a3a url("scenes/classic.webp?v=2") center / cover; }
+.classic-preview-pebble { position: relative; display: block; width: clamp(126px, 14vw, 160px); border-radius: 29%; corner-shape: round; box-shadow: 0 5px 0 #283747, 0 18px 20px -8px #0009; transform: rotate(-5deg); transition: transform 180ms ease; }
+.classic-preview-pebble img { display: block; width: 100%; height: auto; border-radius: inherit; corner-shape: round; }
+.classic-preview-pebble::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: radial-gradient(ellipse 90% 35% at 25% 5%, #fff9e861, transparent 75%); box-shadow: inset 0 2px 3px #fff8e84d, inset 0 -4px 7px #06274366; }
+.classic-preview-art:hover .classic-preview-pebble { transform: rotate(-2deg) translateY(-3px); }
+.classic-preview-art:active .classic-preview-pebble { transform: rotate(-2deg) scale(.96); }
+.classic-preview-open { position: absolute; bottom: 18px; left: 0; right: 0; text-align: center; color: #edf8ff; font-size: 13px; font-weight: 600; pointer-events: none; }
+.classic-preview-open span { margin-left: 6px; }
+.collection-preview-copy { display: grid; gap: 12px; max-width: 510px; padding: 12px 16px 12px 0; }
 .collection-preview-eyebrow { color: #637680; font-size: 12px; font-weight: 600; letter-spacing: .03em; }
-.collection-preview-title { color: var(--ink); font: 700 clamp(25px, 3vw, 34px)/1.12 var(--font-display); letter-spacing: -.035em; }
-.collection-preview-description { color: #647078; font: 400 16px/1.6 var(--font-body); }
-.collection-preview-action { display: flex; align-items: center; gap: 14px; margin-top: 7px; color: #267492; font-size: 15px; font-weight: 650; }
+.collection-preview-title { margin: 0; color: var(--ink); font: 700 clamp(25px, 3vw, 34px)/1.12 var(--font-display); letter-spacing: -.035em; }
+.collection-preview-description { margin: 0; color: #647078; font: 400 16px/1.6 var(--font-body); }
+.classic-preview-note { color: #267492; font-size: 13px; }
+.collection-disclosure { margin-top: 12px; }
+.collection-disclosure > summary { justify-content: space-between; padding: 18px 24px; }
 .collection-preview-less, .collection-disclosure[open] .collection-preview-more { display: none; }
 .collection-disclosure[open] .collection-preview-less { display: inline; }
-.collection-disclosure > summary:active .collection-preview-icon { transform: scale(.96); }
 .collection-disclosure[open] > summary { border-bottom: 1px solid #ccdce2; }
 @media (max-width: 560px) {
-  .collection-disclosure > summary { flex-direction: column; align-items: flex-start; gap: 20px; padding: 24px; }
-  .collection-preview-icon { width: 104px; }
+  .classic-preview { grid-template-columns: 1fr; gap: 8px; padding: 12px; }
+  .classic-preview-art { min-height: 250px; }
+  .collection-preview-copy { padding: 16px 12px; }
   .collection-preview-description { font-size: 15px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .collection-preview-icon { transition: none; }
-  .collection-disclosure > summary:active .collection-preview-icon { transform: none; }
+  .classic-preview-pebble { transition: none; }
+  .classic-preview-art:hover .classic-preview-pebble, .classic-preview-art:active .classic-preview-pebble { transform: rotate(-5deg); }
 }
 .collection-disclosure .lore-more { margin-top: 28px; }
 .compact-krill { margin-top: 34px; padding-top: 28px; border-top: 1px solid #d3dfe4; }

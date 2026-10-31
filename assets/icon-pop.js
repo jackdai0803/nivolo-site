@@ -32,7 +32,7 @@
     porcelain: keepsakeScene("porcelain", "porcelain"),
     jade: keepsakeScene("jade", "jade"),
     kintsugi: keepsakeScene("kintsugi", "kintsugi"),
-    classic: scene("classic", "aurora"),
+    classic: { wide: "assets/scenes/classic.webp?v=2", tall: "assets/scenes/classic-portrait.webp?v=2", effect: "aurora" },
     grumpy: scene("grumpy", "pressure"),
     snowy: scene("snowy", "snow"),
     blaze: scene("blaze", "embers"),
@@ -613,6 +613,7 @@
     var m = (img.getAttribute("src") || "").match(/([a-z_-]+)\.png$/);
     if (!m) return;
     var id = m[1];
+    var name = el.getAttribute("data-icon-name") || head.textContent;
     buttonHost.classList.add("ipop-source");
     /* A real button, laid over the whole card: the card stays an article
        (or a list item) with its heading and its story, and the thing that
@@ -621,9 +622,9 @@
     var opener = document.createElement("button");
     opener.type = "button";
     opener.className = "ipop-open";
-    opener.setAttribute("aria-label", "View " + head.textContent + " up close");
+    opener.setAttribute("aria-label", "View " + name + " up close");
     buttonHost.appendChild(opener);
-    function go() { openFor(id, head.textContent, para.textContent); }
+    function go() { openFor(id, name, para.textContent); }
     /* fetch this one's art and environment the moment there is any hint of
        intent, so by the time the click lands the pixels are already there */
     function prime() { warmScene(id); warmIcon(id, true); }
@@ -634,6 +635,9 @@
     opener.addEventListener("click", go);
     warmQueue.push(id);
   }
+  Array.prototype.forEach.call(document.querySelectorAll("#collection .classic-preview"), function (el) {
+    attachPreview(el, el.querySelector(".classic-preview-art"), el.querySelector("img"), el.querySelector("h3"), el.querySelector("p"));
+  });
   Array.prototype.forEach.call(document.querySelectorAll("#collection .keepsake-card"), function (el) {
     attachPreview(el, el, el.querySelector("img"), el.querySelector("h4"), el.querySelector("p"));
   });
