@@ -1,0 +1,64 @@
+.hero-reassurance { margin: 12px auto 0; color: #526773; font: 500 12px/1.5 var(--font-body); }
+.premium-home .editorial-feature--demo { grid-template-columns: minmax(0, 1fr) minmax(300px, 420px); gap: clamp(28px, 5vw, 64px); scroll-margin-top: 100px; }
+.first-step-demo { position: relative; z-index: 6; width: 100%; min-width: 0; padding: 24px; border: 1px solid #ffffffa8; border-radius: 30px; background: #f5f8f8; color: #173d52; box-shadow: 0 12px 0 #173d5224, 0 22px 40px #102f4330; text-align: left; }
+.demo-topline { display: flex; justify-content: space-between; gap: 12px; color: #526e7a; font: 650 10px/1.5 var(--font-body); letter-spacing: .1em; }
+.demo-topline > :last-child { font-variant-numeric: tabular-nums; }
+.demo-scene { position: relative; display: grid; justify-items: center; padding: 10px 0 20px; }
+.demo-nivo { width: 112px; }
+.demo-message { display: grid; align-items: center; min-height: 42px; margin-top: 6px; font: 650 14px/1.5 var(--font-body); text-align: center; }
+.demo-goal-heading { display: flex; align-items: center; gap: 12px; }
+.demo-goal-heading > div { min-width: 0; }
+.demo-goal-icon { display: grid; place-items: center; flex: 0 0 42px; height: 46px; border: 1px solid #ccdde2; border-radius: 14px; background: #e3eef2; color: #37627a; font-size: 26px; }
+.demo-goal-heading p, .demo-next p { color: #58717d; font: 650 9px/1.5 var(--font-body); letter-spacing: .08em; }
+.demo-goal-heading h2 { margin: 3px 0 0; font: 700 17px/1.3 var(--font-display); letter-spacing: -.02em; color: #173d52; }
+.demo-progress-heading { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 8px; margin: 22px 0 8px; color: #526b78; font: 500 11px/1.4 var(--font-body); font-variant-numeric: tabular-nums; }
+.demo-progress { height: 12px; border: 1px solid #d8e4e8; border-radius: 99px; background: #e5edf0; overflow: hidden; }
+.demo-progress > span { display: block; height: 100%; width: var(--progress, 0%); border-radius: inherit; background: linear-gradient(#bce4f3, #6caecb); box-shadow: inset 0 2px 0 #e2f5ff; transition: width 450ms cubic-bezier(.2,.8,.2,1); }
+.demo-next { display: flex; align-items: center; gap: 12px; min-height: 90px; padding: 14px 0; }
+.demo-step-check { display: grid; place-items: center; flex: 0 0 30px; height: 30px; border: 1px solid #ccdce3; border-radius: 50%; corner-shape: round; color: #456777; background: #fff; font: 650 13px/1 var(--font-body); }
+.demo-next h3 { margin-top: 4px; color: #173d52; font: 650 15px/1.35 var(--font-body); }
+.demo-log { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; min-height: 52px; padding: 14px 17px; border: 1px solid #c4e2ef; border-radius: 18px; background: linear-gradient(#def2fb, #b6ddec); box-shadow: 0 5px 0 #80a9ba, inset 0 1px 0 #fff; color: #173d52; font: 700 14px/1.3 var(--font-body); cursor: pointer; touch-action: manipulation; transition: transform 100ms ease-out, box-shadow 100ms ease-out; }
+.demo-log:hover { background: linear-gradient(#edf9fe, #c5e8f5); }
+.demo-log:active { transform: translateY(4px); box-shadow: 0 1px 0 #80a9ba; }
+.demo-log:focus-visible, .demo-own-goal:focus-visible { outline: 3px solid #14709f; outline-offset: 5px; }
+.demo-log:disabled { cursor: default; opacity: .65; }
+.demo-log > span { font-size: 21px; }
+.demo-keepsake { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-top: 23px; min-height: 80px; border-top: 1px solid #dce6e9; padding-top: 10px; }
+.demo-keepsake p { min-height: 34px; display: grid; align-items: end; font: 650 12px/1.4 var(--font-body); }
+.demo-keepsake > div > span { display: block; margin-top: 5px; color: #5c7380; font: 400 11px/1.5 var(--font-body); }
+.demo-shelf { position: relative; display: grid; place-items: center; flex: 0 0 80px; height: 68px; border-bottom: 3px solid #cbdce2; border-radius: 3px; }
+.demo-shelf-outline { width: 50px; height: 42px; border: 1px dashed #9fb9c5; border-radius: 60% 40% 55% 45% / 64% 58% 42% 36%; corner-shape: round; }
+.demo-earned-gem { position: absolute; inset: 6px auto auto 8px; opacity: 0; pointer-events: none; }
+.demo-earned-gem *, .demo-earned-gem .opal-fire, .demo-earned-gem .opal-sheen { animation: none; }
+.is-complete .demo-earned-gem { opacity: 1; }
+.is-complete .demo-shelf-outline { opacity: 0; }
+.is-complete .demo-step-check { background: #dceee4; border-color: #aecfbc; color: #2f6650; }
+.demo-own-goal { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 44px; margin-top: 8px; color: #195675; font: 650 12px/1.4 var(--font-body); }
+.demo-own-goal[hidden] { display: none; }
+.demo-note { margin-top: 14px; color: #5c7380; font: 400 10px/1.5 var(--font-body); text-align: center; }
+.demo-status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.demo-spark { position: absolute; top: 46%; left: 50%; z-index: 2; color: #b18737; font-size: 18px; pointer-events: none; }
+@media (max-width: 760px) {
+  .premium-home .editorial-feature--demo { grid-template-columns: minmax(0, 1fr); display: grid; padding: 28px 16px 24px; gap: 28px; }
+  .premium-home .editorial-feature--demo .editorial-feature-copy { order: 0; }
+  .editorial-feature--demo .first-step-demo { order: 1; max-width: 420px; margin: 0 auto; padding: 20px; border-radius: 24px; }
+  .premium-home .editorial-feature--demo .editorial-sticker { font-size: clamp(30px, 8vw, 48px); }
+  .premium-home .editorial-feature--demo .editorial-feature-intro { margin-top: 18px; }
+  .editorial-feature--demo .editorial-feature-tags { display: none; }
+  .hero-reassurance { font-size: 11px; }
+}
+@media (max-width: 370px) {
+  .editorial-feature--demo .first-step-demo { padding: 16px 14px; }
+  .demo-log { font-size: 12px; padding-inline: 12px; }
+  .demo-goal-heading h2 { font-size: 15px; }
+  .demo-nivo { width: 96px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .demo-progress > span, .demo-log { transition: none; }
+  .demo-log:active { transform: none; }
+}
+
+/* The closing invitation occupies the same space as the preview note. */
+.demo-outcome-link { display: grid; min-height: 44px; margin-top: 8px; align-items: center; }
+.demo-outcome-link > * { grid-area: 1 / 1; margin: 0; }
+.demo-note[hidden] { display: none; }

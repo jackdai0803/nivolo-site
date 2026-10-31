@@ -7,10 +7,10 @@
   };
   const t = (key) => copy[document.documentElement.lang.startsWith('zh') ? 'zh' : 'en'][key];
   Object.assign(copy.en, {
-    heroBody: 'A gentler habit tracker for iPhone. Small steps, with Nivo beside you.', collectionTitle: 'Turn small steps into keepsakes.', faqTitle: 'Free habit tools. No account required.',
-    heroJoin: 'Join the launch list', heroGet: 'Get the app', heroHow: 'See how it works →',
-    previewEyebrow: 'ONE SMALL STEP, TODAY', previewTitleFirst: 'Meet your', previewTitleSecond: 'next small win',
-    previewBody: 'Your plan can be ambitious. Today can still be small.',
+    heroBody: 'Make room for what matters. One small step at a time.', heroReassurance: 'Free core tools · No account required', collectionTitle: 'Turn small steps into keepsakes.', faqTitle: 'Free habit tools. No account required.',
+    heroJoin: 'Join the launch list', heroGet: 'Get the app', heroHow: 'Try a small step ↓',
+    previewEyebrow: 'ONE SMALL STEP, TODAY', previewTitleFirst: 'Starting is', previewTitleSecond: 'the hard part.',
+    previewBody: 'Give Nivo one small action. See what happens next.',
     previewStep: 'One clear step', previewStreak: 'Kinder streaks', previewRest: 'Rest without guilt',
     previewScreen: 'Your day in Nivolo', previewLabel: 'View the Nivolo home screen up close',
     previewAlt: 'Nivolo home screen with this week’s progress and the next step for Learn guitar.',
@@ -26,10 +26,10 @@
     yearlyNote: 'About $2.50/month · billed yearly · USD', monthlyNote: 'Or $29.99 a year (about $2.50/month) · USD',
   });
   Object.assign(copy.zh, {
-    heroBody: '更温柔的 iPhone 习惯记录。让 Nivo 陪你，一小步一小步前进。', collectionTitle: '让小小行动，成为你的珍藏。', faqTitle: '核心习惯功能免费，无需账户。',
-    heroJoin: '加入上线通知名单', heroGet: '获取应用', heroHow: '看看如何使用 →',
-    previewEyebrow: '今天，迈出一小步', previewTitleFirst: '迎接你的', previewTitleSecond: '下一个小成就',
-    previewBody: '目标可以很远大。今天，只需一小步。',
+    heroBody: '为重要的事留点空间。从一小步开始。', heroReassurance: '核心功能免费 · 无需账户', collectionTitle: '让小小行动，成为你的珍藏。', faqTitle: '核心习惯功能免费，无需账户。',
+    heroJoin: '加入上线通知名单', heroGet: '获取应用', heroHow: '试着迈出一小步 ↓',
+    previewEyebrow: '今天，迈出一小步', previewTitleFirst: '最难的，', previewTitleSecond: '是开始。',
+    previewBody: '和 Nivo 一起迈出一小步，看看接下来会发生什么。',
     previewStep: '清晰的一步', previewStreak: '更温柔的坚持', previewRest: '安心休息',
     previewScreen: '你在 Nivolo 的一天', previewLabel: '放大查看 Nivolo 主屏幕',
     previewAlt: 'Nivolo 主屏幕，展示本周进度和“学习吉他”的下一步。',
