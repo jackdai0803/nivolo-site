@@ -1,43 +1,55 @@
-/* Real arithmetic, with a small rolling-digit celebration. */
+/* A scroll-through impact story: one large figure, three scales of progress. */
 .small-impact {
-  max-width: 1160px;
+  --impact-ink: #edf7fc;
+  max-width: 1384px;
   margin: clamp(64px, 9vw, 120px) auto 0;
-  padding: 0 32px clamp(32px, 5vw, 64px);
-  color: #173d52;
-  text-align: center;
-  scroll-margin-top: 120px;
+  color: var(--impact-ink);
+  scroll-margin-top: 100px;
 }
-.small-impact-kicker { color: #526773; font: 600 12px/1.5 var(--font-body); letter-spacing: .14em; }
-.small-impact h2 { margin: 16px 0 12px; font: 500 clamp(32px, 4.5vw, 54px)/1.12 var(--font-serif); letter-spacing: -.035em; text-wrap: balance; }
-.small-impact-intro { color: #526773; font-size: 17px; line-height: 1.6; }
-.small-impact-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 52px 0 34px; }
-.small-impact-stat { min-width: 0; padding: 0 18px; }
-.small-impact-stat + .small-impact-stat { border-left: 1px solid #d2dadd; }
-.small-impact-number { display: flex; justify-content: center; align-items: baseline; height: 1.12em; font: 700 clamp(64px, 9.5vw, 112px)/1.12 var(--font-display); letter-spacing: -.055em; font-variant-numeric: tabular-nums; }
+.small-impact-stage {
+  padding: 64px 32px 40px;
+  border-radius: 36px;
+  background: radial-gradient(ellipse at 50% 40%, #244d61 0%, #102c3d 52%, #0c2332 100%);
+  text-align: center;
+  overflow: hidden;
+}
+.small-impact-kicker { color: #a4c2d2; font: 600 12px/1.5 var(--font-body); letter-spacing: .14em; }
+.small-impact h2 { max-width: 700px; margin: 16px auto 12px; color: var(--impact-ink); font: 500 clamp(34px, 4.5vw, 58px)/1.12 var(--font-serif); letter-spacing: -.035em; text-wrap: balance; }
+.small-impact-intro { color: #b5ceda; font-size: 16px; line-height: 1.6; }
+.small-impact-stats { display: grid; gap: 40px; margin: 44px 0 36px; }
+.small-impact-stat { min-width: 0; }
+.small-impact-number { display: flex; justify-content: center; align-items: baseline; height: 1.12em; font: 700 clamp(100px, 18vw, 230px)/1.12 var(--font-display); letter-spacing: -.055em; font-variant-numeric: tabular-nums; color: #e5f5fd; text-shadow: 0 6px 40px #92d7ff1a; }
 .small-impact-plus { align-self: center; margin-left: .08em; font-size: .52em; font-weight: 500; }
-.small-impact-stat > p { margin-top: 12px; font: 600 18px/1.4 var(--font-body); }
-.small-impact-stat > span { display: block; margin-top: 7px; color: #526773; font-size: 14px; line-height: 1.6; }
+.small-impact-stat > p { margin-top: 8px; color: #d7e9f2; font: 600 clamp(20px, 2.5vw, 28px)/1.4 var(--font-body); }
+.small-impact-stat > span { display: block; margin-top: 8px; color: #a4c2d2; font-size: 14px; line-height: 1.6; }
 .small-impact-reel { display: inline-block; position: relative; overflow: hidden; width: .64em; height: 1.12em; letter-spacing: 0; }
 .small-impact-track { display: block; }
 .small-impact-track > span { display: block; height: 1.12em; }
 .small-impact-accessible { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-.small-impact-footer { display: flex; align-items: center; justify-content: center; gap: 12px 24px; flex-wrap: wrap; }
-.small-impact-footer > p { max-width: 560px; color: #526773; font-size: 12px; line-height: 1.7; }
-.small-impact-toggle { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 10px 14px; border: 1px solid #d2dadd; border-radius: 999px; background: transparent; color: #365568; font: 500 12px/1.4 var(--font-body); cursor: pointer; }
-.small-impact-toggle[hidden] { display: none; }
-.small-impact-toggle:hover { background: #e3ebee; }
-.small-impact-toggle:active { transform: translateY(1px); }
-.small-impact-toggle:focus-visible { outline: 3px solid #14709f; outline-offset: 4px; }
-.small-impact-toggle [data-impact-toggle-icon] { width: 12px; }
+.small-impact-footer > p { max-width: 590px; margin: 0 auto; color: #a4c2d2; font-size: 12px; line-height: 1.7; text-wrap: balance; }
+/* Without JS, or with Reduce Motion, every figure stays in normal flow. */
+.small-impact.is-scroll-story { height: 250svh; min-height: 1400px; }
+.is-scroll-story .small-impact-stage { position: sticky; top: 100px; height: calc(100svh - 120px); min-height: 500px; max-height: 900px; display: flex; flex-direction: column; justify-content: space-between; }
+.is-scroll-story .small-impact-stats { display: grid; align-items: center; flex: 1; min-height: 0; margin: 24px 0; }
+.is-scroll-story .small-impact-stat { grid-area: 1 / 1; opacity: 0; transform: translateY(24px); filter: blur(5px); transition: opacity 320ms ease, transform 480ms cubic-bezier(.2,.8,.2,1), filter 320ms ease; pointer-events: none; }
+.is-scroll-story .small-impact-stat.is-current { opacity: 1; transform: translateY(0); filter: blur(0); }
+@media (max-width: 1440px) { .small-impact { margin-inline: 28px; } }
 @media (max-width: 600px) {
-  .small-impact { padding-inline: 24px; margin-top: 68px; }
-  .small-impact h2 { max-width: 320px; margin-inline: auto; }
-  .small-impact-intro { font-size: 15px; }
-  .small-impact-stats { grid-template-columns: 1fr; margin: 28px 0 22px; }
-  .small-impact-stat { display: grid; grid-template-columns: 1fr 1fr; column-gap: 16px; align-items: center; padding: 22px 0; text-align: left; }
-  .small-impact-stat + .small-impact-stat { border-left: 0; border-top: 1px solid #d2dadd; }
-  .small-impact-number { grid-row: span 2; justify-content: flex-start; font-size: clamp(58px, 17vw, 80px); }
-  .small-impact-stat > p { margin: 0; align-self: end; font-size: 16px; }
-  .small-impact-stat > span { align-self: start; font-size: 12px; margin-top: 4px; }
-  .small-impact-footer { gap: 8px; }
+  .small-impact { margin: 64px 12px 0; }
+  .small-impact-stage { padding: 42px 20px 28px; border-radius: 28px; }
+  .small-impact h2 { max-width: 330px; }
+  .small-impact-intro { font-size: 14px; }
+  .small-impact-number { font-size: clamp(108px, 31vw, 180px); }
+  .small-impact-stat > span { font-size: 13px; }
+  .small-impact-footer > p { font-size: 11px; }
+}
+@media (max-height: 720px) {
+  .is-scroll-story .small-impact-stage { padding-top: 28px; padding-bottom: 24px; min-height: 430px; }
+  .small-impact h2 { font-size: 34px; margin-top: 10px; }
+  .is-scroll-story .small-impact-number { font-size: clamp(90px, 22svh, 150px); }
+  .is-scroll-story .small-impact-stats { margin: 12px 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .small-impact-stat { transition: none; }
+  .small-impact-number { font-size: clamp(86px, 16vw, 150px); }
 }
