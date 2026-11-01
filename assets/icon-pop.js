@@ -5,6 +5,28 @@
 (function () {
   "use strict";
 
+  var copy = {
+    en: {
+      deepseaName: "Deep-Sea", deepseaStory: "A little ocean light, wherever your day takes you. Nivo brings his cyan-and-violet glow from the deep to your Home Screen.",
+      membership: "Included with an active Nivolo Plus membership",
+      otherIcons: "Achievement icons are earned through progress. Keepsakes are unlocked with Krill.",
+      close: "Close", detail: "Icon detail", flip: "Flip {name} to read its story", view: "View {name} up close",
+      hint: "Drag to turn it over in your hands · tap to flip",
+    },
+    zh: {
+      deepseaName: "深海", deepseaStory: "无论今天去向哪里，都带上一点海洋的光。Nivo 把深海里的青紫微光，带到你的主屏幕。",
+      membership: "Nivolo Plus 会员有效期内专属",
+      otherIcons: "成就图标靠进步赢得，珍藏图标用磷虾解锁。",
+      close: "关闭", detail: "图标详情", flip: "翻转{name}，阅读它的故事", view: "近距离欣赏{name}",
+      hint: "拖动来转动 · 轻点来翻面",
+    },
+  };
+  var requestedLanguage = new URLSearchParams(location.search).get("lang");
+  function t(key, name) {
+    var lang = requestedLanguage === "zh" || requestedLanguage === "en" ? requestedLanguage : document.documentElement.lang;
+    return copy[lang.indexOf("zh") === 0 ? "zh" : "en"][key].replace("{name}", name || "");
+  }
+
   /* The tile's pixel size is owned by CSS (--ipop-tile) so it can adapt to the
      viewport; these are its proportions, expressed as fractions of that size. */
   var BASE = 220, DEPTH = 24 / BASE, STEP = 0.4 / BASE;
@@ -32,6 +54,7 @@
     porcelain: keepsakeScene("porcelain", "porcelain"),
     jade: keepsakeScene("jade", "jade"),
     kintsugi: keepsakeScene("kintsugi", "kintsugi"),
+    deepsea: { wide: "assets/scenes/deepsea.jpg", tall: "assets/scenes/deepsea-portrait.jpg", effect: "" },
     classic: { wide: "assets/scenes/classic.webp?v=2", tall: "assets/scenes/classic-portrait.webp?v=2", effect: "aurora" },
     grumpy: scene("grumpy", "pressure"),
     snowy: scene("snowy", "snow"),
@@ -60,7 +83,7 @@
     glitch: scene("glitch", "glitch"),
     coming_soon: scene("coming_soon", "fog"),
   };
-  var NEW_ICONS = { "early-supporter": true, porcelain: true, jade: true, kintsugi: true };
+  var NEW_ICONS = { "early-supporter": true, porcelain: true, jade: true, kintsugi: true, deepsea: true };
   function iconSrc(id, large) {
     return "assets/icons-3d/" + id + (large ? "-lg" : "") + (NEW_ICONS[id] ? ".jpg" : ".webp");
   }
@@ -146,6 +169,7 @@
     '  </div></div></div>' +
     '  <div class="ipop-shadow"></div>' +
     '  <p class="ipop-hint">Drag to turn it over in your hands &middot; tap to flip</p>' +
+    '  <div class="ipop-info" hidden><h2></h2><p class="ipop-membership"></p><p class="ipop-access-note"></p></div>' +
     "</div>";
   document.body.appendChild(overlay);
 
@@ -442,6 +466,17 @@
   /* ── open / close ── */
   var lastFocus = null;
   function openFor(id, name, story) {
+    var deepsea = id === "deepsea";
+    if (deepsea) { name = t("deepseaName"); story = t("deepseaStory"); }
+    var info = overlay.querySelector(".ipop-info");
+    info.hidden = !deepsea;
+    if (deepsea) {
+      info.querySelector("h2").textContent = name;
+      info.querySelector(".ipop-membership").textContent = t("membership");
+      info.querySelector(".ipop-access-note").textContent = t("otherIcons");
+    }
+    overlay.querySelector(".ipop-close").setAttribute("aria-label", t("close"));
+    overlay.querySelector(".ipop-dialog").setAttribute("aria-label", deepsea ? name : t("detail"));
     pendant = id === "jade";
     ceramic = id === "porcelain" || id === "kintsugi";
     hatchling = id === "early-supporter";
@@ -453,8 +488,8 @@
     suspension.style.transform = "rotateZ(" + swing + "deg)";
     tile.tabIndex = 0;
     tile.setAttribute("role", "button");
-    tile.setAttribute("aria-label", "Flip " + name + " ceramic pebble to read its story");
-    overlay.querySelector(".ipop-hint").textContent = "Drag to turn it over in your hands · tap to flip";
+    tile.setAttribute("aria-label", t("flip", name));
+    overlay.querySelector(".ipop-hint").textContent = t("hint");
     if (closeCleanupTimer !== null) {
       clearTimeout(closeCleanupTimer);
       closeCleanupTimer = null;
@@ -622,7 +657,7 @@
     var opener = document.createElement("button");
     opener.type = "button";
     opener.className = "ipop-open";
-    opener.setAttribute("aria-label", "View " + name + " up close");
+    opener.setAttribute("aria-label", t("view", id === "deepsea" ? t("deepseaName") : name));
     buttonHost.appendChild(opener);
     function go() { openFor(id, name, para.textContent); }
     /* fetch this one's art and environment the moment there is any hint of

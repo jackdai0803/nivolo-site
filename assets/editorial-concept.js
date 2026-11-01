@@ -7,6 +7,13 @@
   };
   const t = (key) => copy[document.documentElement.lang.startsWith('zh') ? 'zh' : 'en'][key];
   Object.assign(copy.en, {
+    featuredIcons: 'Find your kind of Nivo.',
+    featuredIconsIntro: 'Choose a keepsake with earned Krill, or explore Deep-Sea with Nivolo Plus.',
+    featuredIconsNote: 'The three Krill keepsakes are yours to keep. Deep-Sea is available with an active Plus membership.',
+    deepseaName: 'Deep-Sea', deepseaCard: 'A familiar face. A little ocean light.',
+    deepseaMembership: 'Included with Nivolo Plus', deepseaBenefit: 'Exclusive Deep-Sea app icon',
+    deepseaAlt: 'Nivo’s face glowing cyan and violet against midnight blue',
+
     heroBody: 'Make room for what matters. One small step at a time.', heroReassurance: 'Free core tools · No account required', collectionTitle: 'Turn small steps into keepsakes.', faqTitle: 'Free habit tools. No account required.',
     heroJoin: 'Join the launch list', heroGet: 'Get the app', heroHow: 'Try a small step ↓',
     previewEyebrow: 'ONE SMALL STEP, TODAY', previewTitleFirst: 'Starting is', previewTitleSecond: 'the hard part.',
@@ -26,6 +33,13 @@
     yearlyNote: 'About $2.50/month · billed yearly · USD', monthlyNote: 'Or $29.99 a year (about $2.50/month) · USD',
   });
   Object.assign(copy.zh, {
+    featuredIcons: '找到你的那一款 Nivo。',
+    featuredIconsIntro: '用努力赚来的磷虾挑选珍藏，或与 Nivolo Plus 一起探索深海。',
+    featuredIconsNote: '三款磷虾珍藏解锁后永久拥有。深海图标可在 Plus 会员有效期内使用。',
+    deepseaName: '深海', deepseaCard: '熟悉的小脸，点亮一片海。',
+    deepseaMembership: 'Nivolo Plus 专属', deepseaBenefit: '深海专属应用图标',
+    deepseaAlt: '午夜蓝背景中，Nivo 的小脸泛着青色和紫色的光',
+
     heroBody: '为重要的事留点空间。从一小步开始。', heroReassurance: '核心功能免费 · 无需账户', collectionTitle: '让小小行动，成为你的珍藏。', faqTitle: '核心习惯功能免费，无需账户。',
     heroJoin: '加入上线通知名单', heroGet: '获取应用', heroHow: '试着迈出一小步 ↓',
     previewEyebrow: '今天，迈出一小步', previewTitleFirst: '最难的，', previewTitleSecond: '是开始。',

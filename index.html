@@ -55,7 +55,7 @@
   <link rel="stylesheet" href="assets/editorial-concept.css?v=36" />
   <link rel="stylesheet" href="assets/nivo.css?v=5" />
   <link rel="stylesheet" href="assets/app-opals.css?v=3" />
-  <link rel="stylesheet" href="assets/keepsakes.css?v=2" />
+  <link rel="stylesheet" href="assets/keepsakes.css?v=3" />
   <link rel="stylesheet" href="assets/krill.css?v=2" />
   <link rel="stylesheet" href="assets/founders-gallery.css?v=5" />
   <link rel="stylesheet" href="assets/impact.css?v=2" />
@@ -331,8 +331,8 @@
 
       <section class="keepsakes reveal" id="keepsakes" aria-labelledby="keepsakes-title">
         <header class="keepsakes-head">
-          <h3 id="keepsakes-title">Keepsake collection</h3>
-          <p>Earn Krill through small steps. Choose a little more you.</p>
+          <h3 id="keepsakes-title" data-site-copy="featuredIcons">Find your kind of Nivo.</h3>
+          <p data-site-copy="featuredIconsIntro">Choose a keepsake with earned Krill, or explore Deep-Sea with Nivolo Plus.</p>
         </header>
         <div class="keepsakes-grid">
           <article class="keepsake-card">
@@ -347,8 +347,12 @@
             <img src="assets/icons/kintsugi.png" width="256" height="256" alt="Nivo on charcoal with gold repair lines" loading="lazy" />
             <div><h4>Kintsugi</h4><p>Every golden line is part of the story.</p><span class="keepsake-price">800 <img src="assets/krill-token.png?v=2" width="20" height="20" alt="Krill" /></span></div>
           </article>
+          <article class="keepsake-card keepsake-card--deepsea" data-icon-name="Deep-Sea">
+            <img src="assets/icons/deepsea.png" width="256" height="256" alt="Nivo’s face glowing cyan and violet against midnight blue" data-site-alt="deepseaAlt" loading="lazy" />
+            <div><h4 data-site-copy="deepseaName">Deep-Sea</h4><p data-site-copy="deepseaCard">A familiar face. A little ocean light.</p><span class="keepsake-price keepsake-membership" data-site-copy="deepseaMembership">Included with Nivolo Plus</span></div>
+          </article>
         </div>
-        <p class="keepsakes-note">Unlock in the app with earned Krill. Yours to keep.</p>
+        <p class="keepsakes-note" data-site-copy="featuredIconsNote">The three Krill keepsakes are yours to keep. Deep-Sea is available with an active Plus membership.</p>
       </section>
 
       <article class="classic-preview" data-icon-name="Classic" aria-labelledby="classic-preview-title">
@@ -555,7 +559,7 @@
             <li><span class="collector-check" aria-hidden="true">✦</span>Everything in Free</li>
             <li><span class="collector-check" aria-hidden="true">✓</span>Double Krill on every finish</li>
             <li><span class="collector-check" aria-hidden="true">✓</span>Deep-Sea Nivo &amp; glowing Krill</li>
-            <li><span class="collector-check" aria-hidden="true">✓</span>All streak and mood icons, from day one</li>
+            <li><span class="collector-check" aria-hidden="true">✓</span><span data-site-copy="deepseaBenefit">Exclusive Deep-Sea app icon</span></li>
             <li><span class="collector-check" aria-hidden="true">✓</span>A streak freeze every day</li>
           </ul>
           <a class="collector-cta btn-moonlit" href="launch.html" data-store><span data-live="Explore Plus in the app" data-soon="Join the launch list">Join the launch list</span></a>
@@ -755,11 +759,11 @@
   <!-- No ?v= on purpose: this is the one file edited at launch, and it should be the only edit. -->
   <script src="assets/store.js" defer></script>
   <script src="assets/contact.js?v=2" defer></script>
-  <script src="assets/icon-pop.js?v=37" defer></script>
+  <script src="assets/icon-pop.js?v=38" defer></script>
   <script src="assets/founders-gallery.js?v=7" defer></script>
   <script src="assets/frost.js?v=7" defer></script>
   <script src="assets/app-opals.js?v=2" defer></script>
-  <script src="assets/editorial-concept.js?v=14" defer></script>
+  <script src="assets/editorial-concept.js?v=15" defer></script>
   <script src="assets/impact.js?v=2" defer></script>
   <script type="module" src="assets/nivo.js?v=3"></script>
   <script type="module" src="assets/first-step-demo.js?v=2"></script>
