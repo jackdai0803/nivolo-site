@@ -7,6 +7,7 @@
 
   var copy = {
     en: {
+      snowyName: "Snowy",
       deepseaName: "Deep-Sea", deepseaStory: "A little ocean light, wherever your day takes you. Nivo brings his cyan-and-violet glow from the deep to your Home Screen.",
       membership: "Included with an active Nivolo Plus membership",
       otherIcons: "Achievement icons are earned through progress. Keepsakes are unlocked with Krill.",
@@ -14,6 +15,7 @@
       hint: "Drag to turn it over in your hands · tap to flip",
     },
     zh: {
+      snowyName: "雪花",
       deepseaName: "深海", deepseaStory: "无论今天去向哪里，都带上一点海洋的光。Nivo 把深海里的青紫微光，带到你的主屏幕。",
       membership: "Nivolo Plus 会员有效期内专属",
       otherIcons: "成就图标靠进步赢得，珍藏图标用磷虾解锁。",
@@ -679,6 +681,14 @@
   Array.prototype.forEach.call(document.querySelectorAll("#collection .lore-card, #collection .lore-mini li"), function (el) {
     attachPreview(el, el, el.querySelector("img"), el.querySelector("h3"), el.querySelector("p"));
   });
+
+  var benefitIcon = document.querySelector(".benefit-icon-preview");
+  var snowyCard = document.querySelector('#collection .lore-card img[src$="/snowy.png"]');
+  if (benefitIcon && snowyCard) {
+    var snowyStory = snowyCard.closest(".lore-card");
+    benefitIcon.setAttribute("data-icon-name", t("snowyName"));
+    attachPreview(benefitIcon, benefitIcon, benefitIcon.querySelector("img"), snowyStory.querySelector("h3"), snowyStory.querySelector("p"));
+  }
 
   /* Once the collection is in reach, scenes and tile art are warmed quietly
      in the background, a few
