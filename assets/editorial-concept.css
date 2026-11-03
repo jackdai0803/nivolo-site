@@ -35,7 +35,10 @@
 .collector-icon { position: absolute; width: 96px; height: 96px; object-fit: contain; border-radius: var(--radius-icon); filter: drop-shadow(0 12px 14px #0c203b28); }
 .collector-icon--classic { width: 112px; height: 112px; left: calc(50% - 86px); top: 49px; transform: rotate(-10deg); border-radius: 29%; corner-shape: round; filter: none; box-shadow: 0 5px 0 #283747, 0 18px 20px -8px #0009; }
 .collector-gem { position: absolute; left: calc(50% + 12px); top: 105px; transform: rotate(12deg); }
-.collector-gem .opal-fire, .collector-gem .opal-sheen { animation: none; }
+/* Current app artwork and saved v2 recipe for the existing gx4 example. */
+.collector-gem--current { width: 92px; height: 92px; }
+.collector-gem--current img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; user-select: none; filter: hue-rotate(118.8deg) saturate(1.014) brightness(.97); }
+.collector-gem--current .collector-gem-mix { filter: hue-rotate(73.5deg) saturate(1.014) brightness(.97); -webkit-mask-image: linear-gradient(329deg, transparent 11.2%, #000 67.2%); mask-image: linear-gradient(329deg, transparent 11.2%, #000 67.2%); }
 .collector-icon--snowy { left: calc(50% - 127px); top: 62px; transform: rotate(-18deg); width: 88px; height: 88px; }
 .collector-icon--party { left: calc(50% - 55px); top: 27px; width: 112px; height: 112px; transform: rotate(-5deg); z-index: 1; }
 .collector-icon--gold { left: calc(50% + 38px); top: 66px; transform: rotate(15deg); }
