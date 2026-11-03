@@ -255,8 +255,11 @@
     document.querySelectorAll("[data-app-screen]").forEach((button) => {
       button.addEventListener("click", () => {
         const source = button.querySelector("img");
-        image.src = source.src;
-        image.alt = source.alt;
+        const fullScreen = source.src.includes('/current-action-card.webp')
+          ? document.querySelector('.app-screen-preview img[src*="current-log-action.webp"]') || source
+          : source;
+        image.src = fullScreen.src;
+        image.alt = fullScreen.alt;
         title.textContent = button.dataset.appScreen;
         screenDialog.showModal();
         react(screenDialog, [{ opacity: 0, scale: '.94', translate: '0 16px' }, { opacity: 1, scale: '1', translate: '0 0' }], { duration: 320 });

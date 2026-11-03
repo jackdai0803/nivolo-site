@@ -1,18 +1,25 @@
 {
-  "sourceHash": "dd29b944a635819d0bd8ae164d2cc1aee12e490c89ad77862ce62f66848cd130",
-  "capturedAt": "2026-11-03T18:46:31.400Z",
+  "sourceHash": "87a7784446c5fc6922ccdf34cc8bc0a34f64ce99bb3117436433624d36e467e4",
+  "capturedAt": "2026-11-03T18:53:37.688Z",
   "viewport": {
     "width": 393,
     "height": 852
   },
   "files": {
-    "current-home.webp": "3d08f0d0caeb1c88c4ca3677e8243e6ea47759789df20210428cb1837ff87b03",
-    "current-new-goal.webp": "0da0fa5d31dd96c4a38854e3a79e1f67f39bbfebf7003875abc8aa8f13398ea8",
-    "current-log-action.webp": "80bbf4b02b7f55bf5ea50d9ffb750abd292e6a743bceb4b92df23c8d6728dc83",
-    "current-rest.webp": "441f4a703bc27449afcf5e625913d76584a635b40cd02588ea0b7715f9241f85",
-    "current-store.webp": "fa2a6ffc9c1d3040ba4fc8f424b13cae7f76fe5ccc844ac8600edf3a28fc92fa",
-    "current-achievements.webp": "482b49d00ac025286a332bfd0de3d065f09e77ef1ae83d6cfef7be66e7036421",
-    "current-gem-detail.webp": "d1b1e1a5392b1ee3c994661fa1de46257e09be86c41729939acfd845f1172de9",
-    "current-profile.webp": "2ce795224ea3ae489536aaa0bc95091bdefe9e37a5234a3e3d4ba7e816aed7dc"
+    "current-home.webp": "1067390c8ff1cf1dc5230c206f0a38577e5ca0f77d1cdd93f36dcdd62a6141ca",
+    "current-new-goal.webp": "dab35ec239ceb3421c24c98ae2e3fe8320f5daf5d6294e128119e09719d62279",
+    "current-log-action.webp": "9b51f8ea78fea924e05ee80e6f0e65eae675b09856808a2647eb42331131ac80",
+    "current-rest.webp": "11881f166b808503ea28bfd0793eb23639787b2c613025f4cc3409d4ae289267",
+    "current-store.webp": "b6a412c33996de0ab47c78543cec96f0e51cc05e3c14d4997526239add55e8d3",
+    "current-achievements.webp": "7bece723c70f261ece96ecae88e9a79ea4838d8fc294420fdb89e40550ee3fd5",
+    "current-gem-detail.webp": "73440531d28897556b7de9c551b2ebf1d1ed36b5e1168a97d61d9f0463f8b19c",
+    "current-profile.webp": "b48bd43e9351519c21f8c82f444f7fe7fcd9fb443e50a4c2cd0f7ab13a1939f3",
+    "current-action-card.webp": "abb660ebbe9e581d999107dd5aaaf28a24288d2833b1a71fce0d52b712db957a",
+    "current-gem-art.webp": "fa93d27a93e25f8cb180105628c27758424133eb523726f7a6660c1ee419d7c8"
+  },
+  "supportFiles": {
+    "assets/app-opals.js": "2a0c13264b3fba3465f9967ae405ac96a46cfa8bbaa9aca6b038daa3416647b4",
+    "assets/app-opals.css": "4a06478a00791601b88d951e56cd302dcb339bc644dabe35b04d2b79b2331954",
+    "assets/editorial-concept.js": "1c70946130e3b09702aaeeed2708a0efdd3fcd2439800b86d4214782cacf7f44"
   }
 }
