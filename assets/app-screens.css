@@ -6,7 +6,7 @@
 }
 .app-screen-stage .phone::after,
 .app-screen-dialog .phone::after {
-  background-image: url("iphone18-pro-max-frame.svg?v=1");
+  background-image: url("iphone18-pro-max-frame.svg?v=2");
 }
 .app-screen-stage .phone > img,
 .app-screen-dialog .phone > img {
@@ -76,7 +76,8 @@
   inset: .2% 1.5% .1% 2%;
   border-radius: 16% / 7.6%;
   corner-shape: round;
-  background: linear-gradient(100deg, #8d969e 0%, #c3cbd1 2%, #e0e5e9 3%, #aab4bd 7%, #77838e 14%, #c4ccd2 30%, #6e7b86 80%);
+  background: url("iphone18-pro-max-side.svg?v=1") 0 0 / 100% 100% no-repeat,
+    linear-gradient(100deg, #8d969e 0%, #c3cbd1 2%, #e0e5e9 3%, #aab4bd 7%, #77838e 14%, #c4ccd2 30%, #6e7b86 80%);
   transform: translate(-13px, 5px);
   box-shadow: -1px 0 0 #eef2f5, -3px 1px 0 #a0abb4, -4px 2px 0 #73808b;
 }

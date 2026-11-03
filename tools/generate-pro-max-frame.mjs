@@ -51,18 +51,33 @@ const svg = `<?xml version="1.0" encoding="UTF-8"?>
       <path d="${screen}" transform="translate(60 50)" fill="black"/>
     </mask>
   </defs>
-  <g fill="url(#btn)" stroke="rgba(20,23,28,0.25)" stroke-width="2">
-    ${buttons.map(([x, y, w, h]) => `<path d="${contour(x, y, w, h, 12)}"/>`).join('\n    ')}
-  </g>
   <g fill="none" mask="url(#screen-window)">
     <use href="#screen-contour" stroke="rgba(20,23,28,0.3)" stroke-width="100"/>
     <use href="#screen-contour" stroke="url(#band)" stroke-width="98"/>
     <use href="#screen-contour" stroke="rgba(255,255,255,0.4)" stroke-width="50"/>
     <use href="#screen-contour" stroke="#0A0B0D" stroke-width="48"/>
   </g>
+  <!-- Buttons sit over the metal band, so the chassis cannot paint over them. -->
+  <g fill="url(#btn)" stroke="#64717b" stroke-width="3">
+    ${buttons.map(([x, y, w, h]) => `<path d="${contour(x, y, w, h, 12)}"/>`).join('\n    ')}
+  </g>
   <!-- The physical Dynamic Island remains a capsule. -->
   <rect x="595" y="83" width="250" height="82" rx="41" fill="#050607"/>
 </svg>
 `;
 fs.writeFileSync(new URL('assets/iphone18-pro-max-frame.svg', root), svg);
-console.log('Generated phone chassis with a uniform contour-derived bezel.');
+// Detail on the exposed left sidewall. It follows the same depth offset as
+// the aluminum body, rather than floating beside the front glass.
+const side = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 2968">
+  <defs>
+    <linearGradient id="side-button" x1="0" y1="0" x2="1" y2="0">
+      <stop stop-color="#697781"/><stop offset=".3" stop-color="#d7dfe5"/>
+      <stop offset=".65" stop-color="#b6c1ca"/><stop offset="1" stop-color="#7f8d98"/>
+    </linearGradient>
+  </defs>
+  ${buttons.slice(0, 3).map(([, y, , h]) => `<rect x="12" y="${y + 5}" width="40" height="${h}" rx="19" fill="#43515b" opacity=".55"/>
+  <rect x="8" y="${y}" width="38" height="${h - 4}" rx="18" fill="url(#side-button)" stroke="#697782" stroke-width="4"/>
+  <path d="M18 ${y + 16} V${y + h - 22}" fill="none" stroke="#f1f5f7" stroke-width="3" stroke-linecap="round"/>`).join('\n')}
+</svg>\n`;
+fs.writeFileSync(new URL('assets/iphone18-pro-max-side.svg', root), side);
+console.log('Generated Pro Max frame and exposed-side button details.');
