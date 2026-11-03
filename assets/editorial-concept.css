@@ -33,7 +33,7 @@
 /* Deep-Sea Nivo already carries its own rim light; no separate backdrop glow. */
 .collector-art--plus::before { content: none; }
 .collector-icon { position: absolute; width: 96px; height: 96px; object-fit: contain; border-radius: var(--radius-icon); filter: drop-shadow(0 12px 14px #0c203b28); }
-.collector-icon--classic { width: 112px; height: 112px; left: calc(50% - 86px); top: 49px; transform: rotate(-10deg); }
+.collector-icon--classic { width: 112px; height: 112px; left: calc(50% - 86px); top: 49px; transform: rotate(-10deg); border-radius: 29%; corner-shape: round; filter: none; box-shadow: 0 5px 0 #283747, 0 18px 20px -8px #0009; }
 .collector-gem { position: absolute; left: calc(50% + 12px); top: 105px; transform: rotate(12deg); }
 .collector-gem .opal-fire, .collector-gem .opal-sheen { animation: none; }
 .collector-icon--snowy { left: calc(50% - 127px); top: 62px; transform: rotate(-18deg); width: 88px; height: 88px; }
@@ -1630,8 +1630,8 @@ a.nav-cta:active, a.btn-light:active, a.btn-moonlit:active { transform: translat
 .classic-preview { display: grid; grid-template-columns: minmax(240px, .9fr) 1.1fr; align-items: center; gap: clamp(24px, 4vw, 48px); padding: 20px; border: 1px solid #ccdce2; border-radius: 24px; background: #ffffff75; }
 .classic-preview-art { position: relative; display: grid; place-items: center; min-height: 290px; overflow: hidden; border-radius: 18px; background: #071a3a url("scenes/classic.webp?v=2") center / cover; }
 .classic-preview-pebble { position: relative; display: block; width: clamp(126px, 14vw, 160px); border-radius: 29%; corner-shape: round; box-shadow: 0 5px 0 #283747, 0 18px 20px -8px #0009; transform: rotate(-5deg); transition: transform 180ms ease; }
-.classic-preview-pebble img { display: block; width: 100%; height: auto; border-radius: inherit; corner-shape: round; }
-.classic-preview-pebble::after { content: ""; position: absolute; inset: 0; border-radius: inherit; corner-shape: inherit; pointer-events: none; background: radial-gradient(ellipse 90% 35% at 25% 5%, #fff9e861, transparent 75%); box-shadow: inset 0 2px 3px #fff8e84d, inset 0 -4px 7px #06274366; }
+.classic-preview-pebble img, .collector-icon--classic img { display: block; width: 100%; height: auto; border-radius: inherit; corner-shape: round; }
+.classic-preview-pebble::after, .collector-icon--classic::after { content: ""; position: absolute; inset: 0; border-radius: inherit; corner-shape: inherit; pointer-events: none; background: radial-gradient(ellipse 90% 35% at 25% 5%, #fff9e861, transparent 75%); box-shadow: inset 0 2px 3px #fff8e84d, inset 0 -4px 7px #06274366; }
 .classic-preview-art:hover .classic-preview-pebble { transform: rotate(-2deg) translateY(-3px); }
 .classic-preview-art:active .classic-preview-pebble { transform: rotate(-2deg) scale(.96); }
 .classic-preview-open { position: absolute; bottom: 18px; left: 0; right: 0; text-align: center; color: #edf8ff; font-size: 13px; font-weight: 600; pointer-events: none; }
