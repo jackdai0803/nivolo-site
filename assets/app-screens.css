@@ -1,4 +1,4 @@
-/* iPhone 18 Pro Max presentation, using the live app captures.
+/* Rendered product phones, using the live app captures.
    Keep the full-size dialog upright and unmasked for reading. */
 .app-screen-stage .phone,
 .app-screen-dialog .phone {
@@ -40,13 +40,12 @@
   position: relative;
   display: grid;
   place-items: start center;
-  aspect-ratio: 0.68;
+  aspect-ratio: 1073 / 1466;
   overflow: hidden;
   isolation: isolate;
-  perspective: 1600px;
   /* Fade the device, its side and its shadow together into the page. */
-  -webkit-mask-image: linear-gradient(#000 0 68%, #000b 82%, transparent 98%);
-  mask-image: linear-gradient(#000 0 68%, #000b 82%, transparent 98%);
+  -webkit-mask-image: radial-gradient(78.47% 67.69% at 50.07% 32.31%, #000 0%, #000 49.96%, #000b 69.77%, #0002 85.07%, transparent 100%);
+  mask-image: radial-gradient(78.47% 67.69% at 50.07% 32.31%, #000 0%, #000 49.96%, #000b 69.77%, #0002 85.07%, transparent 100%);
 }
 .app-screen-stage::before {
   content: "";
@@ -61,25 +60,37 @@
 .app-screen-card:nth-child(3n) .app-screen-stage::before {
   background: radial-gradient(ellipse at 48% 45%, #d9e3cc80, transparent 67%);
 }
-:is(.app-screen-preview, .app-screen-rail) .app-screen-card .app-screen-stage .phone {
-  width: 80%;
-  margin-top: 11%;
-  transform: translateX(6%) rotateX(14deg) rotateY(-10deg) rotateZ(-10deg);
-  filter: drop-shadow(-12px 18px 13px #142c3826);
+/* The product render already contains its perspective, material and lighting. */
+:is(.app-screen-preview, .app-screen-rail) .app-screen-card .phone.is-studio {
+  width: 100%;
+  aspect-ratio: 1073 / 1466;
+  margin: 0;
+  transform: none;
+  filter: none;
   transition: translate 240ms ease-out;
 }
-/* The deeper aluminum side stays behind the glass and its precise contour. */
-.app-screen-stage .phone::before {
-  content: "";
+.app-screen-stage .phone.is-studio::before { content: none; }
+.app-screen-stage .phone.is-studio::after {
+  background: url("phone-studio-frame.webp?v=1") center / 100% 100% no-repeat;
+}
+.phone-studio-display {
   position: absolute;
-  z-index: 0;
-  inset: .2% 1.5% .1% 2%;
-  border-radius: 16% / 7.6%;
-  corner-shape: round;
-  background: url("iphone18-pro-max-side.svg?v=1") 0 0 / 100% 100% no-repeat,
-    linear-gradient(100deg, #8d969e 0%, #c3cbd1 2%, #e0e5e9 3%, #aab4bd 7%, #77838e 14%, #c4ccd2 30%, #6e7b86 80%);
-  transform: translate(-13px, 5px);
-  box-shadow: -1px 0 0 #eef2f5, -3px 1px 0 #a0abb4, -4px 2px 0 #73808b;
+  inset: 0;
+  overflow: hidden;
+  -webkit-mask: url("phone-studio-display-mask.svg?v=1") center / 100% 100% no-repeat;
+  mask: url("phone-studio-display-mask.svg?v=1") center / 100% 100% no-repeat;
+}
+.phone-studio-display > img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+  width: 393px;
+  height: 852px;
+  max-width: none;
+  border-radius: 0;
+  object-fit: cover;
+  transform-origin: 0 0;
 }
 .app-screen-rail { gap: 26px; padding: 10px 6px 18px; }
 .app-screen-rail .app-screen-card { flex-basis: 270px; }
@@ -116,5 +127,5 @@
   .app-screen-rail .app-screen-card { flex-basis: min(270px, 78vw); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .app-screen-card .app-screen-stage .phone { transition: none; translate: none; }
+  :is(.app-screen-preview, .app-screen-rail) .app-screen-card .phone.is-studio { transition: none; translate: none; }
 }
