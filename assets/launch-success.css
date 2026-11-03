@@ -1,0 +1,66 @@
+/* The confirmed state replaces the invitation; the same Nivo stays beside it. */
+.launch-success {
+  display: block;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.launch-success .launch-success-eyebrow {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 20px; color: #376651;
+  font: 650 12px/18px var(--font-display); letter-spacing: .035em;
+}
+.launch-success-mark {
+  display: grid; place-items: center; flex: 0 0 24px;
+  width: 24px; height: 24px; border-radius: 50%; corner-shape: round;
+  color: #28624a; background: #e3efe7; font-size: 14px;
+}
+.launch-success h2 {
+  max-width: 9ch; margin: 0 0 20px;
+  font: 500 clamp(44px, 5vw, 62px)/1.02 var(--font-serif);
+  letter-spacing: -.025em; text-wrap: balance;
+}
+.launch-success #launchSuccessNote { font-size: 16px; line-height: 26px; max-width: 34ch; }
+.launch-email-receipt {
+  display: flex; gap: 13px; align-items: center; margin-top: 26px;
+  padding: 17px; background: #f1f6f7; border: 1px solid #dce8ec; border-radius: 16px;
+}
+.launch-email-receipt[hidden] { display: none; }
+.launch-email-receipt > svg { flex-shrink: 0; color: #427086; }
+.launch-email-receipt > div { min-width: 0; }
+.launch-email-receipt span { color: #52636c; font-size: 12px; line-height: 18px; }
+.launch-success .launch-saved-email { margin: 3px 0 0; color: #233c49; font-weight: 650; line-height: 21px; }
+.launch-success .launch-success-promise { margin-top: 13px; font-size: 12px; line-height: 19px; color: #636c71; }
+.launch-success-actions { flex-direction: column; align-items: stretch; gap: 5px; margin-top: 28px; }
+.launch-success-actions a.btn-dark { display: flex; justify-content: space-between; padding: 16px 20px; min-height: 54px; text-decoration: none; color: white; font-size: 15px; }
+.launch-success-actions a.btn-dark:hover { color: #0B4A6B; }
+.launch-success-actions .launch-text-action { text-align: center; color: #59666e; font-size: 13px; font-weight: 500; }
+.launch-success-actions a:active, .launch-success-actions button:active { transform: translateY(2px); }
+.launch-success .launch-removal { margin-top: 14px; color: #70777c; font-size: 11px; line-height: 17px; }
+.is-joined .launch-fineprint { display: none; }
+.launch-sparkles { display: none; position: absolute; z-index: 3; width: 300px; height: 300px; pointer-events: none; }
+.is-joined .launch-sparkles { display: block; }
+.launch-sparkles i { position: absolute; width: 13px; height: 13px; background: #c3a66a; clip-path: polygon(50% 0, 65% 35%, 100% 50%, 65% 65%, 50% 100%, 35% 65%, 0 50%, 35% 35%); opacity: .8; }
+.launch-sparkles i:nth-child(1) { left: 12%; top: 20%; --x: -15px; --y: -13px; }
+.launch-sparkles i:nth-child(2) { right: 9%; top: 11%; --x: 16px; --y: -20px; width: 19px; height: 19px; }
+.launch-sparkles i:nth-child(3) { left: 3%; top: 57%; --x: -22px; --y: 8px; width: 8px; height: 8px; background: #6aa0b5; }
+.launch-sparkles i:nth-child(4) { right: 4%; top: 48%; --x: 22px; --y: 3px; background: #6aa0b5; }
+.launch-sparkles i:nth-child(5) { left: 22%; bottom: 8%; --x: -12px; --y: 18px; width: 9px; height: 9px; }
+.launch-sparkles i:nth-child(6) { right: 25%; top: 0; --x: 8px; --y: -22px; width: 7px; height: 7px; }
+@media (prefers-reduced-motion: no-preference) {
+  .is-celebrating .launch-sparkles i { animation: launch-spark 900ms 180ms both; }
+  .is-celebrating .launch-art-note { animation: launch-note 450ms 320ms both; }
+}
+@keyframes launch-spark { 0% { opacity: 0; transform: translate(calc(var(--x) * -1), calc(var(--y) * -1)) scale(.2); } 45% { opacity: 1; transform: translate(var(--x), var(--y)) scale(1.2); } 100% { opacity: .8; transform: none; } }
+@keyframes launch-note { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
+@media (max-width: 760px) {
+  .launch-success h2 { max-width: none; font-size: 42px; }
+  .is-joined .launch-copy { padding: 28px 24px 24px; }
+  .launch-success .launch-success-eyebrow { margin-bottom: 14px; }
+  .launch-success h2 { margin-bottom: 14px; }
+  .launch-email-receipt { margin-top: 20px; }
+  .launch-success-actions { margin-top: 20px; }
+  .launch-sparkles { width: 240px; height: 180px; top: 10px; }
+}
+@media (prefers-reduced-motion: reduce) { .launch-success-actions a:active, .launch-success-actions button:active { transform: none; } }

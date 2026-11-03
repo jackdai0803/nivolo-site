@@ -10,37 +10,41 @@ const ok = () => ({ ok: true, status: 200, json: async () => ({ ok: true }) });
 
 // Only the DOM surfaces used by the form. This lets failures, delayed
 // replies and clipboard denial run without touching real signup records.
-function formFixture({ online = true, fetch = async () => ok(), search = '', lang = 'en', clipboard } = {}) {
+function formFixture({ online = true, fetch = async () => ok(), search = '', lang = 'en', clipboard, valid = true, reduced = false } = {}) {
   let focused;
   let copied;
+  const animations = [];
   const timers = new Map();
   const elements = Object.fromEntries([
     'launchForm', 'launchEmail', 'launchCompany', 'launchSubmit', 'launchStatus',
     'launchSuccess', 'launchHelp', 'launchSavedEmail', 'launchEdit', 'launchRemoval',
-    'launchCopy', 'launchCopyStatus',
+    'launchCopy', 'launchCopyStatus', 'launchCard', 'launchIntro', 'launchArtNote', 'launchReceipt',
   ].map((id) => [id, {
     hidden: ['launchSuccess', 'launchHelp', 'launchSavedEmail', 'launchEdit', 'launchRemoval'].includes(id),
-    textContent: '', value: '', disabled: false, attributes: {}, listeners: {},
+    classList: { add() {}, remove() {} }, textContent: '', value: '', disabled: false, attributes: {}, listeners: {},
     addEventListener(event, callback) { this.listeners[event] = callback; },
     setAttribute(name, value) { this.attributes[name] = value; },
     removeAttribute(name) { delete this.attributes[name]; },
+    getBoundingClientRect() { return { top: 0 }; },
     focus() { focused = id; }, select() { this.selected = true; },
-    reportValidity() { return true; },
+    checkValidity() { return valid; },
+    animate(frames, options) { animations.push({ id, frames, options }); },
     querySelector() { return this.label ||= { textContent: '' }; },
   }]));
+  elements.launchSuccess.querySelector = () => ({ animate(frames, options) { animations.push({ id: 'art', frames, options }); } });
   elements.launchForm.action = 'https://example.test/api/launch-alert';
   elements.launchEmail.value = 'Alex@example.com';
   const labels = ['join', 'help', 'copy', 'back', 'another', 'remove'].map((key) => ({ dataset: { launchCopy: key } }));
   runInNewContext(source, {
     document: { getElementById: (id) => elements[id], documentElement: { lang }, querySelectorAll: () => labels },
     navigator: { onLine: online, clipboard: { writeText: clipboard || (async (value) => { copied = value; }) } },
-    window: { location: { search, pathname: '/launch.html' } },
+    window: { location: { search, pathname: '/launch.html' }, matchMedia: () => ({ matches: reduced }) },
     history: { replaceState() {} }, fetch, AbortController, URLSearchParams, TypeError,
     setTimeout(callback, ms) { timers.set(callback, ms); return callback; },
     clearTimeout(id) { timers.delete(id); },
   });
   return {
-    elements, labels, timers, focused: () => focused, copied: () => copied,
+    elements, labels, timers, animations, focused: () => focused, copied: () => copied,
     submit: () => elements.launchForm.listeners.submit({ preventDefault() {} }),
     click: (id) => elements[id].listeners.click(),
   };
@@ -111,8 +115,10 @@ test('success confirms the submitted address, blocks duplicates and permits anot
   resolve(ok());
   await pending;
   assert.equal(payload.email, 'alex$&@example.com');
-  assert.equal(f.elements.launchSavedEmail.textContent, 'We’ll write to alex$&@example.com.');
+  assert.equal(f.elements.launchSavedEmail.textContent, 'alex$&@example.com');
   assert.equal(f.elements.launchForm.hidden, true);
+  assert.equal(f.elements.launchIntro.hidden, true);
+  assert.equal(f.elements.launchReceipt.hidden, false);
   assert.equal(f.focused(), 'launchSuccess');
   assert.equal(f.elements.launchRemoval.hidden, false);
   f.click('launchEdit');
@@ -126,6 +132,7 @@ test('redirect success has no invented email; busy redirect does not claim to re
   const f = formFixture({ search: '?joined=1' });
   assert.equal(f.elements.launchSuccess.hidden, false);
   assert.equal(f.elements.launchSavedEmail.hidden, true);
+  assert.equal(f.elements.launchReceipt.hidden, true);
   const busy = formFixture({ search: '?error=busy' });
   assert.doesNotMatch(busy.elements.launchStatus.textContent, /still in the box/);
 });
@@ -174,4 +181,29 @@ test('all HTML launch CTAs are links before scripts load; store enhancement reta
   runInNewContext(live, { document });
   assert.equal(link.href, 'https://apps.apple.com/app/test');
   assert.equal(label.textContent, 'Get the app');
+});
+
+
+test('invalid email is explained inline without making a signup request', async () => {
+  let calls = 0;
+  const f = formFixture({ valid: false, fetch: async () => { calls++; return ok(); } });
+  await f.submit();
+  assert.equal(calls, 0);
+  assert.equal(f.elements.launchEmail.attributes['aria-invalid'], 'true');
+  assert.match(f.elements.launchStatus.textContent, /looks incomplete/);
+  assert.equal(f.focused(), 'launchEmail');
+  assert.equal(f.elements.launchForm.noValidate, true);
+});
+
+test('success moves focus and only animates a fresh signup with motion enabled', async () => {
+  const normal = formFixture();
+  await normal.submit();
+  assert.equal(normal.focused(), 'launchSuccess');
+  assert.equal(normal.animations.length, 2);
+  const reduced = formFixture({ reduced: true });
+  await reduced.submit();
+  assert.equal(reduced.animations.length, 0);
+  assert.equal(reduced.elements.launchSuccess.hidden, false);
+  const redirected = formFixture({ search: '?joined=1' });
+  assert.equal(redirected.animations.length, 0);
 });

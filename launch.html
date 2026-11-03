@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="assets/fonts.css?v=5" />
   <link rel="stylesheet" href="styles.css?v=129" />
   <link rel="stylesheet" href="assets/nivo.css?v=5" />
+  <link rel="stylesheet" href="assets/launch-success.css?v=2" />
 </head>
 <body class="launch-body">
   <a class="skip-link" href="#main">Skip to form</a>
@@ -28,23 +29,24 @@
   </nav>
 
   <main id="main" tabindex="-1" class="launch-page">
-    <section class="launch-card" aria-labelledby="launch-title">
+    <section class="launch-card" id="launchCard" aria-labelledby="launch-title">
       <div class="launch-art" aria-hidden="true">
         <span class="launch-orbit launch-orbit--one"></span>
         <span class="launch-orbit launch-orbit--two"></span>
-        <span class="site-nivo" data-nivo aria-hidden="true"><svg viewBox="160 170 970 970"><image href="assets/nivo-body.png" width="1254" height="1254" /></svg></span>
-        <span class="launch-art-note">Nivo is waiting too.</span>
+        <span class="site-nivo" data-launch-nivo aria-hidden="true"><svg viewBox="160 170 970 970"><image href="assets/nivo-body.png" width="1254" height="1254" /></svg></span>
+        <span class="launch-sparkles"><i></i><i></i><i></i><i></i><i></i><i></i></span>
+        <span class="launch-art-note" id="launchArtNote" data-launch-copy="waiting">Nivo is waiting too.</span>
       </div>
 
       <div class="launch-copy">
-        <p class="section-kicker">One email. That&rsquo;s it.</p>
+        <div id="launchIntro"><p class="section-kicker">One email. That&rsquo;s it.</p>
         <h1 id="launch-title">Know when Nivolo <em>lands.</em></h1>
-        <p class="launch-lede">Leave your email and we&rsquo;ll send one note when the iPhone app is ready. No newsletter, no weekly drip.</p>
+        <p class="launch-lede">Leave your email and we&rsquo;ll send one note when the iPhone app is ready. No newsletter, no weekly drip.</p></div>
 
         <form class="launch-form" id="launchForm" action="/api/launch-alert" method="post">
           <div class="launch-field">
             <label for="launchEmail">Email address</label>
-            <input id="launchEmail" name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" maxlength="254" placeholder="you@example.com" required />
+            <input id="launchEmail" name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" maxlength="254" placeholder="you@example.com" aria-describedby="launchStatus" required />
           </div>
           <div class="launch-honeypot" aria-hidden="true">
             <label for="launchCompany">Company</label>
@@ -62,18 +64,20 @@
           </div>
         </form>
 
-        <div class="launch-success" id="launchSuccess" hidden tabindex="-1">
-          <span class="launch-success-mark" aria-hidden="true">✓</span>
-          <div>
-            <h2>You&rsquo;re on the little list.</h2>
-            <p>We&rsquo;ll send one email when Nivolo is ready for your iPhone.</p>
-            <p class="launch-saved-email" id="launchSavedEmail" hidden></p>
-            <div class="launch-success-actions">
-              <a href="index.html" data-launch-copy="back">Back to Nivolo</a>
-              <button class="launch-text-action" id="launchEdit" type="button" data-launch-copy="another" hidden>Use another email</button>
-            </div>
-            <p class="launch-removal" id="launchRemoval" hidden><span data-launch-copy="remove">To remove a previous address, email</span> <a href="mailto:support@nivolo.app?subject=Remove%20my%20launch-list%20address">support@nivolo.app</a>.</p>
+        <div class="launch-success" id="launchSuccess" hidden tabindex="-1" aria-labelledby="launch-success-title" aria-describedby="launchSuccessNote launchSavedEmail">
+          <p class="launch-success-eyebrow"><span class="launch-success-mark" aria-hidden="true">✓</span><span data-launch-copy="reserved">A little spot, just for you</span></p>
+          <h2 id="launch-success-title" data-launch-copy="successTitle">You’re on the list.</h2>
+          <p id="launchSuccessNote" data-launch-copy="successNote">Nivo’s saving you a place. We’ll send one email when Nivolo is ready for your iPhone.</p>
+          <div class="launch-email-receipt" id="launchReceipt" hidden>
+            <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 7 8 6 8-6"/></svg>
+            <div><span data-launch-copy="delivery">Your launch note will go to</span><p class="launch-saved-email" id="launchSavedEmail" hidden></p></div>
           </div>
+          <p class="launch-success-promise" data-launch-copy="promise">Just the launch. No newsletters. Pinky promise.</p>
+          <div class="launch-success-actions">
+            <a class="btn-dark" href="index.html"><span data-launch-copy="back">Back to Nivolo</span><span aria-hidden="true">→</span></a>
+            <button class="launch-text-action" id="launchEdit" type="button" data-launch-copy="another" hidden>Use another email</button>
+          </div>
+          <p class="launch-removal" id="launchRemoval" hidden><span data-launch-copy="remove">To remove a previous address, email</span> <a href="mailto:support@nivolo.app?subject=Remove%20my%20launch-list%20address">support@nivolo.app</a>.</p>
         </div>
 
         <p class="launch-fineprint">Your address is used only for the launch note. Ask <a href="mailto:support@nivolo.app">support@nivolo.app</a> to remove it anytime. <a href="privacy.html#website">Privacy</a></p>
@@ -81,7 +85,7 @@
     </section>
   </main>
 
-  <script src="assets/launch.js?v=2" defer></script>
-  <script type="module" src="assets/nivo.js?v=3"></script>
+  <script src="assets/launch.js?v=4" defer></script>
+  <script type="module" src="assets/launch-paddle.js?v=2"></script>
 </body>
 </html>
