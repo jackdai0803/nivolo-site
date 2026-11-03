@@ -13,11 +13,11 @@
   const position = (phone, width) => {
     if (!width) return;
     const s = width / 1073;
-    phone.querySelector('img').style.transform = `matrix3d(${[
+    phone.style.setProperty('--phone-screen-transform', `matrix3d(${[
       a / 393 * s, d / 393 * s, 0, g / 393,
       b / 852 * s, e / 852 * s, 0, h / 852,
       0, 0, 1, 0, x0 * s, y0 * s, 0, 1,
-    ].join(',')})`;
+    ].join(',')})`);
   };
   const observer = new ResizeObserver(entries => {
     for (const entry of entries) position(entry.target, entry.contentRect.width);
@@ -29,6 +29,24 @@
     display.className = 'phone-studio-display';
     image.before(display);
     display.append(image);
+    const hardware = document.createElement('span');
+    hardware.className = 'phone-studio-hardware';
+    hardware.setAttribute('aria-hidden', 'true');
+    phone.append(hardware);
+    // Extend the screenshot's own background into the reserved island area.
+    const matchBackground = () => {
+      if (!image.naturalWidth) return;
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = canvas.height = 1;
+        const context = canvas.getContext('2d');
+        context.drawImage(image, 0, 0, 1, 1, 0, 0, 1, 1);
+        const [r, g, b] = context.getImageData(0, 0, 1, 1).data;
+        phone.style.setProperty('--phone-screen-background', `rgb(${r} ${g} ${b})`);
+      } catch { /* The neutral fallback also works when pixel access is unavailable. */ }
+    };
+    image.addEventListener('load', matchBackground, { once: true });
+    if (image.complete) matchBackground();
     phone.classList.add('is-studio');
     position(phone, phone.getBoundingClientRect().width);
     observer.observe(phone);
