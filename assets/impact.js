@@ -34,52 +34,23 @@
   stage.append(summary);
   let top = 0;
   let travel = 1;
-  let current = -1;
   let frame = 0;
   let measureNeeded = true;
-  const animations = new Set();
-  const tracks = [];
-  // Each incoming figure rolls once, then stays still until the next scroll beat.
-  stats.forEach((stat, group) => {
-    const number = stat.querySelector('[data-impact-number]');
-    const plus = number.querySelector('.small-impact-plus');
-    const accessible = document.createElement('span');
-    accessible.className = 'small-impact-accessible';
-    accessible.textContent = number.textContent;
-    number.replaceChildren(accessible);
-    [...number.dataset.impactNumber].forEach((digit, column) => {
-      const reel = document.createElement('span');
-      reel.className = 'small-impact-reel';
-      reel.setAttribute('aria-hidden', 'true');
-      const track = document.createElement('span');
-      track.className = 'small-impact-track';
-      for (let i = 0; i <= 10; i++) {
-        const face = document.createElement('span');
-        face.textContent = String((Number(digit) + i) % 10);
-        track.append(face);
-      }
-      reel.append(track);
-      number.append(reel);
-      tracks.push({ track, group, column });
+  const clamp = (value) => Math.max(0, Math.min(1, value));
+  const ease = (value) => { const p = clamp(value); return p * p * (3 - 2 * p); };
+  // Scroll controls the fade itself. Holding still holds the exact same frame;
+  // reversing the gesture retraces it, with no timed digit spin to finish.
+  const paint = (progress) => {
+    const opacity = [1, 0, 0];
+    const transitions = [[0.28, 0.40], [0.62, 0.74]];
+    transitions.forEach(([start, end], index) => {
+      if (progress < start) return;
+      const phase = clamp((progress - start) / (end - start));
+      opacity[index] = 1 - ease(phase / 0.55);
+      opacity[index + 1] = ease((phase - 0.45) / 0.55);
     });
-    if (plus) { plus.setAttribute('aria-hidden', 'true'); number.append(plus); }
-  });
-  const stop = () => {
-    animations.forEach((animation) => animation.cancel());
-    animations.clear();
-  };
-  const show = (index, roll) => {
-    if (index === current) return;
-    stop();
-    current = index;
-    stats.forEach((stat, i) => stat.classList.toggle('is-current', i === index));
-    if (!roll || !Element.prototype.animate) return;
-    tracks.filter((item) => item.group === index).forEach(({ track, column }) => {
-      const animation = track.animate([
-        { transform: 'translateY(0)' }, { transform: 'translateY(-90.9090909%)' },
-      ], { duration: 1100, delay: column * 70, easing: 'cubic-bezier(.2,.7,.15,1)' });
-      animations.add(animation);
-      animation.onfinish = () => { animations.delete(animation); animation.cancel(); };
+    stats.forEach((stat, index) => {
+      stat.style.opacity = String(opacity[index]);
     });
   };
   const update = () => {
@@ -92,22 +63,19 @@
     }
     const stickyTop = 100;
     const progress = Math.max(0, Math.min(1, (window.scrollY + stickyTop - top) / travel));
-    const index = Math.min(2, Math.floor(progress * 3));
     const inView = window.scrollY + window.innerHeight > top && window.scrollY < top + section.offsetHeight;
-    if (inView) show(index, !document.hidden);
+    if (inView) paint(progress);
   };
   const schedule = () => { if (!frame) frame = requestAnimationFrame(update); };
   const measure = () => { measureNeeded = true; schedule(); };
   const configure = () => {
-    stop();
     section.classList.toggle('is-scroll-story', !motion.matches);
     summary.hidden = motion.matches;
     stats.forEach((stat, index) => {
-      stat.classList.toggle('is-current', index === 0);
+      stat.style.opacity = motion.matches ? '' : String(index === 0 ? 1 : 0);
       if (motion.matches) stat.removeAttribute('aria-hidden');
       else stat.setAttribute('aria-hidden', 'true');
     });
-    current = -1;
     measure();
   };
   window.addEventListener('scroll', schedule, { passive: true });
@@ -115,6 +83,6 @@
   window.addEventListener('load', measure, { once: true });
   document.fonts?.ready.then(measure);
   motion.addEventListener('change', configure);
-  document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); else schedule(); });
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) measure(); });
   configure();
 })();

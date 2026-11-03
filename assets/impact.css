@@ -22,19 +22,15 @@
 .small-impact-plus { align-self: center; margin-left: .08em; font-size: .52em; font-weight: 500; }
 .small-impact-stat > p { margin-top: 8px; color: #d7e9f2; font: 600 clamp(20px, 2.5vw, 28px)/1.4 var(--font-body); }
 .small-impact-stat > span { display: block; margin-top: 8px; color: #a4c2d2; font-size: 14px; line-height: 1.6; }
-.small-impact-reel { display: inline-block; position: relative; overflow: hidden; width: .64em; height: 1.12em; letter-spacing: 0; }
-.small-impact-track { display: block; }
-.small-impact-track > span { display: block; height: 1.12em; }
 .small-impact-accessible { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .small-impact-footer > p { max-width: 590px; margin: 0 auto; color: #a4c2d2; font-size: 12px; line-height: 1.7; text-wrap: balance; }
 /* Without JS, or with Reduce Motion, every figure stays in normal flow. */
-/* Reserve at least a full viewport of reading distance for each figure.
-   The final figure gets its own beat before the card releases into the page. */
-.small-impact.is-scroll-story { height: 400svh; min-height: 2600px; }
+/* Long reading holds, separated by gradual scroll-controlled fades.
+   The final figure gets its own hold before the card releases into the page. */
+.small-impact.is-scroll-story { height: 460svh; min-height: 3000px; }
 .is-scroll-story .small-impact-stage { position: sticky; top: 100px; height: calc(100svh - 120px); min-height: 500px; max-height: 900px; display: flex; flex-direction: column; justify-content: space-between; }
 .is-scroll-story .small-impact-stats { display: grid; align-items: center; flex: 1; min-height: 0; margin: 24px 0; }
-.is-scroll-story .small-impact-stat { grid-area: 1 / 1; opacity: 0; transform: translateY(24px); filter: blur(5px); transition: opacity 320ms ease, transform 480ms cubic-bezier(.2,.8,.2,1), filter 320ms ease; pointer-events: none; }
-.is-scroll-story .small-impact-stat.is-current { opacity: 1; transform: translateY(0); filter: blur(0); }
+.is-scroll-story .small-impact-stat { grid-area: 1 / 1; opacity: 0; pointer-events: none; }
 @media (max-width: 1440px) { .small-impact { margin-inline: 28px; } }
 @media (max-width: 600px) {
   .small-impact { margin: 64px 12px 0; }
