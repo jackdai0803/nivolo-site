@@ -1,4 +1,4 @@
-// The approved PNG is the artwork for EVERY part. No raster pixel is edited.
+// Classic and Deep-Sea each use their approved PNG for every moving part.
 // Curved masks separate the torso from flippers. Flipper roots stay behind it.
 export const EYES = [
   { name: 'left', cx: 489, cy: 604, rx: 94, ry: 98 },
@@ -89,31 +89,50 @@ const rightTip = 'M985 640 H1254 V910 H934 C961 852 984 737 985 640 Z';
 const leftWing = 'M310 755 C290 752 257 772 229 803 C204 828 192 853 211 875 C231 900 275 902 310 884 C335 869 349 843 344 811 C339 783 325 762 310 755 Z';
 const rightWing = 'M969 716 C993 721 1023 757 1045 795 C1065 828 1075 852 1057 871 C1036 892 995 882 964 866 C936 851 927 821 933 785 C937 751 950 725 969 716 Z';
 
-export function createRig(container, source, id, label) {
+export function createRig(container, source, id, label, appearance = "classic", deepSeaSource = null) {
+  const deepsea = appearance === "deepsea" && !!deepSeaSource;
+  const artwork = deepsea ? deepSeaSource : source;
+  // The approved variant has a taller tuft and wider flippers. Its own
+  // cutouts keep pupils and wing joints aligned while sharing every pose.
+  const eyes = deepsea ? [
+    { name: 'left', cx: 481, cy: 593, rx: 102, ry: 107 },
+    { name: 'right', cx: 829, cy: 493, rx: 104, ry: 109 },
+  ] : EYES;
+  const leftCut = deepsea ? 'M0 620 H195 Q205 725 270 830 C290 870 310 910 322 934 H0 Z' : leftTip;
+  const rightCut = deepsea ? 'M1035 640 H1254 V950 H971 C982 900 991 864 1005 830 Q1045 735 1035 640 Z' : rightTip;
+  const leftWindow = deepsea ? 'M268 744 C230 756 177 797 151 846 C126 891 153 920 207 923 C254 925 317 907 341 872 C363 836 328 768 268 744 Z' : leftWing;
+  const rightWindow = deepsea ? 'M1014 701 C1055 722 1106 789 1134 843 C1154 882 1122 910 1074 908 C1024 908 979 883 957 852 C935 817 962 728 1014 701 Z' : rightWing;
+  const beakWindow = deepsea ? 'M568 638 Q568 600 611 576 Q674 531 759 581 L758 627 Q748 720 663 715 Q613 708 588 659 Z' : 'M574 661 Q565 621 600 592 Q661 546 739 595 L737 632 Q737 714 660 716 Q612 710 591 665 Z';
   const image = (attrs = '') => `<use href="#${id}-art" ${attrs}/>`;
   const mask = (name, cuts) => `<mask id="${id}-${name}" maskUnits="userSpaceOnUse" x="0" y="0" width="1254" height="1254" style="mask-type:luminance"><rect width="1254" height="1254" fill="white"/>${cuts}</mask>`;
-  container.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="160 170 970 970" role="img" aria-label="${label}">
+  container.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${deepsea ? "70 45 1120 1120" : "160 170 970 970"}" role="img" aria-label="${label}">
     <defs>
-      <image id="${id}-art" href="${source}" width="1254" height="1254"/>
-      <clipPath id="${id}-beak-window"><path d="M574 661 Q565 621 600 592 Q661 546 739 595 L737 632 Q737 714 660 716 Q612 710 591 665 Z"/></clipPath>
-      <clipPath id="${id}-left-wing"><path d="${leftWing}"/></clipPath>
-      <clipPath id="${id}-right-wing"><path d="${rightWing}"/></clipPath>
-      ${EYES.map(e => `<clipPath id="${id}-${e.name}-eye">${ellipse(e)}</clipPath>`).join('')}
-      ${mask('body-mask', `<path d="${leftTip}" fill="black"/><path d="${rightTip}" fill="black"/>`)}
+      <filter id="${id}-ocean-light" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB">
+        <feGaussianBlur in="SourceAlpha" stdDeviation="10" result="blur"/>
+        <feFlood flood-color="#80dce9" flood-opacity="0" data-part="aurora-light"/>
+        <feComposite in2="blur" operator="in" result="glow"/>
+        <feMerge><feMergeNode in="glow"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <image id="${id}-art" href="${artwork}" width="1254" height="1254"/>
+      <clipPath id="${id}-beak-window"><path d="${beakWindow}"/></clipPath>
+      <clipPath id="${id}-left-wing"><path d="${leftWindow}"/></clipPath>
+      <clipPath id="${id}-right-wing"><path d="${rightWindow}"/></clipPath>
+      ${eyes.map(e => `<clipPath id="${id}-${e.name}-eye">${ellipse(e)}</clipPath>`).join('')}
+      ${mask('body-mask', `<path d="${leftCut}" fill="black"/><path d="${rightCut}" fill="black"/>`)}
     </defs>
-    <g class="character" data-part="motion">
+    <g class="character" data-part="motion" ${deepsea ? `filter="url(#${id}-ocean-light)"` : ""}>
       <g data-part="left-flipper">${image(`clip-path="url(#${id}-left-wing)"`)}</g>
       <g data-part="right-flipper">${image(`clip-path="url(#${id}-right-wing)"`)}</g>
       <!-- The torso covers rotating roots; the original white face lives here. -->
       <g data-part="body">${image(`mask="url(#${id}-body-mask)"`)}</g>
-      ${EYES.map(e => `<g data-part="${e.name}-eye-assembly">
-        ${ellipse(e, 'fill="#ffffff"')}
+      ${eyes.map(e => `<g data-part="${e.name}-eye-assembly">
+        ${ellipse(e, `fill="${deepsea ? '#f1fbff' : '#ffffff'}"`)}
         <g data-part="${e.name}-eye">${image(`clip-path="url(#${id}-${e.name}-eye)"`)}</g>
         <path data-part="${e.name}-lid" fill="none" stroke="#111111" stroke-width="16" stroke-linecap="round" opacity="0" transform="translate(${e.cx} ${e.cy}) rotate(-17)" d="M-59 8 Q0 38 59 8"/>
       </g>`).join('')}
       <g data-part="beak">${image(`clip-path="url(#${id}-beak-window)"`)}</g>
     </g>
-    <g data-part="SparkleBurst" fill="#f5bb43" opacity="0" aria-hidden="true">
+    <g data-part="SparkleBurst" fill="${deepsea ? "#9ae7ed" : "#f5bb43"}" opacity="0" aria-hidden="true">
       ${[[228,365],[1000,320],[1100,635],[210,665],[350,215],[1030,960]].map(([x,y],i)=>`<path data-sparkle="${i}" data-x="${x}" data-y="${y}" d="M0 -16 Q3 -3 14 0 Q3 3 0 16 Q-3 3 -14 0 Q-3 -3 0 -16Z" transform="translate(${x} ${y})"/>`).join('')}
     </g>
   </svg>`;
@@ -121,10 +140,11 @@ export function createRig(container, source, id, label) {
   const sparkles = [...container.querySelectorAll('[data-sparkle]')];
   return {
     render(pose) {
+      if (deepsea) nodes["aurora-light"].setAttribute("flood-opacity", String(pose.sparkle * .16));
       nodes.motion.setAttribute('transform', `translate(${pose.x} ${pose.y}) translate(635 650) rotate(${pose.rotate}) scale(${pose.sx} ${pose.sy}) translate(-635 -650)`);
-      nodes['left-flipper'].setAttribute('transform', `rotate(${pose.left} 320 815)`);
-      nodes['right-flipper'].setAttribute('transform', `rotate(${pose.right} 965 785)`);
-      for (const eye of EYES) {
+      nodes['left-flipper'].setAttribute('transform', `rotate(${pose.left} ${deepsea ? "310 850" : "320 815"})`);
+      nodes['right-flipper'].setAttribute('transform', `rotate(${pose.right} ${deepsea ? "995 815" : "965 785"})`);
+      for (const eye of eyes) {
         const openness = Math.max(.025, 1 - pose.blink);
         const node = nodes[`${eye.name}-eye`];
         node.setAttribute('transform', `translate(${eye.cx} ${eye.cy}) rotate(-17) scale(1 ${openness}) rotate(17) translate(${-eye.cx} ${-eye.cy})`);
