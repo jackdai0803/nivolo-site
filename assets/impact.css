@@ -27,7 +27,7 @@
 /* Without JS, or with Reduce Motion, every figure stays in normal flow. */
 /* Long reading holds, separated by gradual scroll-controlled fades.
    The final figure gets its own hold before the card releases into the page. */
-.small-impact.is-scroll-story { height: 700svh; min-height: 4600px; }
+.small-impact.is-scroll-story { height: 420svh; min-height: 2100px; }
 .is-scroll-story .small-impact-stage { position: sticky; top: 100px; height: calc(100svh - 120px); min-height: 500px; max-height: 900px; display: flex; flex-direction: column; justify-content: space-between; }
 .is-scroll-story .small-impact-stats { display: grid; align-items: center; flex: 1; min-height: 0; margin: 24px 0; }
 .is-scroll-story .small-impact-stat { grid-area: 1 / 1; opacity: 0; pointer-events: none; }
