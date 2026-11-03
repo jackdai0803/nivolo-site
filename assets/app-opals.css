@@ -2,6 +2,7 @@
 [data-app-opal] { display: inline-grid; }
 .opal-wrap { position: relative; display: grid; place-items: center; }
 .opal-artwork { display: block; width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 7px 9px rgba(12,35,52,.16)); }
+.opal-artwork { background-repeat: no-repeat; }
 .collector-gem--current .opal-artwork { position: static; filter: drop-shadow(0 7px 9px rgba(12,35,52,.16)); }
 .opal-bob { animation: opalBob 5s ease-in-out infinite; }
 @keyframes opalBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
