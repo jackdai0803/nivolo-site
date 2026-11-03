@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1073 1466">
+  <!-- Display aperture measured against phone-studio-frame.webp. A small
+       overlap beneath the opaque bezel prevents light seams at any size. -->
+  <path fill="white" stroke="white" stroke-width="4" d="M165 173 L620 109 C675 101 710 125 735 176 L1180 1515 L548 1515 L110 300 C100 266 98 225 119 197 C130 183 146 177 165 173 Z"/>
+</svg>

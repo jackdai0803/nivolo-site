@@ -115,6 +115,7 @@
         // including taps that arrive before the previous animation finishes.
         hue = (hue + 75 + Math.random() * 50) % 360;
         version += 1;
+        gem.dispatchEvent(new CustomEvent('gem-variation', { detail: version }));
         gem.style.setProperty('--gem-hue', `${hue}deg`);
         gem.style.setProperty('--gem-saturation', String([.78, 1.08, .9][version % 3]));
         gem.dataset.gemVersion = String(version);
@@ -126,7 +127,7 @@
         button.querySelectorAll('.step-spark').forEach((spark) => react(spark, [
           { scale: '1', opacity: .65 }, { scale: '1.7', opacity: 1, offset: .5 }, { scale: '1', opacity: .65 },
         ], { duration: 700 }));
-        // Colour remains a response when reduced motion is enabled.
+        // Artwork and colour still change when reduced motion is enabled.
         button.classList.toggle('is-polished');
       });
     }
