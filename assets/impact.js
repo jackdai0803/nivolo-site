@@ -42,7 +42,7 @@
   // reversing the gesture retraces it, with no timed digit spin to finish.
   const paint = (progress) => {
     const opacity = [1, 0, 0];
-    const transitions = [[0.28, 0.40], [0.62, 0.74]];
+    const transitions = [[0.24, 0.42], [0.62, 0.80]];
     transitions.forEach(([start, end], index) => {
       if (progress < start) return;
       const phase = clamp((progress - start) / (end - start));
