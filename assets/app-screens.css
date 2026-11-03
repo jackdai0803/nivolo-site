@@ -24,6 +24,7 @@
 .app-screen-preview .app-screen-card,
 .app-screen-rail .app-screen-card {
   padding: 0;
+  cursor: default;
   border: 0;
   border-radius: 18px;
   background: transparent;
@@ -67,7 +68,8 @@
   margin: 0;
   transform: none;
   filter: none;
-  transition: translate 240ms ease-out;
+  transition: none;
+  translate: none;
 }
 .app-screen-stage .phone.is-studio::before { content: none; }
 .app-screen-stage .phone.is-studio::after {
@@ -126,18 +128,6 @@
 }
 .app-screen-rail { gap: 26px; padding: 10px 6px 18px; }
 .app-screen-rail .app-screen-card { flex-basis: 270px; }
-@media (hover: hover) and (prefers-reduced-motion: no-preference) {
-  .app-screen-card:hover .app-screen-stage .phone { translate: 0 -5px; }
-}
-.app-screen-card:active .app-screen-stage .phone {
-  translate: 0 2px;
-  transition-duration: 80ms;
-}
-.app-screen-preview .app-screen-card:focus-visible,
-.app-screen-rail .app-screen-card:focus-visible {
-  outline: 2px solid #267492;
-  outline-offset: 3px;
-}
 @media (max-width: 760px) {
   .app-screen-preview {
     display: flex;

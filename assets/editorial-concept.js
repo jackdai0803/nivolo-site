@@ -89,8 +89,9 @@
     animation.onfinish = () => reactions.delete(element);
   };
 
-  // The illustrations are useful entry points, with plain artwork as fallback.
+  // Screens stay illustrative; only the gem responds to taps.
   document.querySelectorAll('.step-art').forEach((art, index) => {
+    if (index < 2) return;
     const button = document.createElement('button');
     button.type = 'button';
     button.className = `${art.className} step-play`;
@@ -261,31 +262,6 @@
       });
     });
     billing.hidden = false;
-  }
-
-  const screenDialog = document.querySelector("#app-screen-dialog");
-  if (screenDialog) {
-    const image = screenDialog.querySelector("img");
-    const title = screenDialog.querySelector("h2");
-    document.querySelectorAll("[data-app-screen]").forEach((button) => {
-      button.addEventListener("click", () => {
-        const source = button.querySelector("img");
-        const fullScreen = source.src.includes('/current-action-card.webp')
-          ? document.querySelector('.app-screen-preview img[src*="current-log-action.webp"]') || source
-          : source;
-        image.src = fullScreen.src;
-        image.alt = fullScreen.alt;
-        title.textContent = button.dataset.appScreen;
-        screenDialog.showModal();
-        react(screenDialog, [{ opacity: 0, scale: '.94', translate: '0 16px' }, { opacity: 1, scale: '1', translate: '0 0' }], { duration: 320 });
-      });
-    });
-    screenDialog.querySelector("[data-close-screen]").addEventListener("click", () => screenDialog.close());
-    screenDialog.addEventListener("click", (event) => {
-      if (event.target !== screenDialog) return;
-      const bounds = screenDialog.getBoundingClientRect();
-      if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) screenDialog.close();
-    });
   }
 
   const chapter = document.querySelector(".midnight-chapter");
