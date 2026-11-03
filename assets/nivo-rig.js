@@ -137,6 +137,7 @@ export function createRig(container, source, id, label, appearance = "classic", 
     </g>
   </svg>`;
   const nodes = Object.fromEntries([...container.querySelectorAll('[data-part]')].map(el => [el.dataset.part, el]));
+  const bodyArtwork = nodes.body.querySelector('use');
   const sparkles = [...container.querySelectorAll('[data-sparkle]')];
   return {
     render(pose) {
@@ -144,6 +145,11 @@ export function createRig(container, source, id, label, appearance = "classic", 
       nodes.motion.setAttribute('transform', `translate(${pose.x} ${pose.y}) translate(635 650) rotate(${pose.rotate}) scale(${pose.sx} ${pose.sy}) translate(-635 -650)`);
       nodes['left-flipper'].setAttribute('transform', `rotate(${pose.left} ${deepsea ? "310 850" : "320 815"})`);
       nodes['right-flipper'].setAttribute('transform', `rotate(${pose.right} ${deepsea ? "995 815" : "965 785"})`);
+      // Keep the original halo whole when no independent flipper pose is needed.
+      const wholeSilhouette = deepsea && !pose.peek && pose.left === 0 && pose.right === 0;
+      bodyArtwork.setAttribute('mask', wholeSilhouette ? 'none' : `url(#${id}-body-mask)`);
+      nodes['left-flipper'].setAttribute('opacity', wholeSilhouette ? '0' : '1');
+      nodes['right-flipper'].setAttribute('opacity', wholeSilhouette ? '0' : '1');
       for (const eye of eyes) {
         const openness = Math.max(.025, 1 - pose.blink);
         const node = nodes[`${eye.name}-eye`];

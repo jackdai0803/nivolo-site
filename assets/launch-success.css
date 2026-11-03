@@ -64,3 +64,7 @@
   .launch-sparkles { width: 240px; height: 180px; top: 10px; }
 }
 @media (prefers-reduced-motion: reduce) { .launch-success-actions a:active, .launch-success-actions button:active { transform: none; } }
+
+/* Two synchronized looks share one pose during the short colour reveal. */
+.launch-nivo-layer { position: absolute; inset: 0; }
+.launch-nivo-layer > svg { display: block; width: 100%; height: 100%; overflow: visible; }
