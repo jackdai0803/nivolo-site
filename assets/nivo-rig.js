@@ -98,27 +98,39 @@ export function createRig(container, source, id, label, appearance = "classic", 
     { name: 'left', cx: 481, cy: 593, rx: 102, ry: 107 },
     { name: 'right', cx: 829, cy: 493, rx: 104, ry: 109 },
   ] : EYES;
-  const leftCut = deepsea ? 'M0 620 H195 Q205 725 270 830 C290 870 310 910 322 934 H0 Z' : leftTip;
-  const rightCut = deepsea ? 'M1035 640 H1254 V950 H971 C982 900 991 864 1005 830 Q1045 735 1035 640 Z' : rightTip;
-  const leftWindow = deepsea ? 'M268 744 C230 756 177 797 151 846 C126 891 153 920 207 923 C254 925 317 907 341 872 C363 836 328 768 268 744 Z' : leftWing;
-  const rightWindow = deepsea ? 'M1014 701 C1055 722 1106 789 1134 843 C1154 882 1122 910 1074 908 C1024 908 979 883 957 852 C935 817 962 728 1014 701 Z' : rightWing;
+  // Complementary cuts keep the flipper and torso together; the slight overlap
+  // closes antialiasing seams while the halo is rebuilt around the final pose.
+  const leftCut = deepsea ? 'M0 718 H210 Q231 741 244 751 C287 737 332 763 344 812 C353 854 332 886 306 900 L285 960 H0 Z' : leftTip;
+  const rightCut = deepsea ? 'M1054 672 H1254 V970 H1060 Q1030 916 1007 878 C948 843 943 800 963 750 Q981 711 1014 701 Q1034 691 1054 672 Z' : rightTip;
+  const leftWindow = deepsea ? leftCut : leftWing;
+  const rightWindow = deepsea ? rightCut : rightWing;
   const beakWindow = deepsea ? 'M568 638 Q568 600 611 576 Q674 531 759 581 L758 627 Q748 720 663 715 Q613 708 588 659 Z' : 'M574 661 Q565 621 600 592 Q661 546 739 595 L737 632 Q737 714 660 716 Q612 710 591 665 Z';
   const image = (attrs = '') => `<use href="#${id}-art" ${attrs}/>`;
   const mask = (name, cuts) => `<mask id="${id}-${name}" maskUnits="userSpaceOnUse" x="0" y="0" width="1254" height="1254" style="mask-type:luminance"><rect width="1254" height="1254" fill="white"/>${cuts}</mask>`;
   container.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${deepsea ? "70 45 1120 1120" : "160 170 970 970"}" role="img" aria-label="${label}">
     <defs>
-      <filter id="${id}-ocean-light" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB">
-        <feGaussianBlur in="SourceAlpha" stdDeviation="10" result="blur"/>
-        <feFlood flood-color="#80dce9" flood-opacity="0" data-part="aurora-light"/>
-        <feComposite in2="blur" operator="in" result="glow"/>
-        <feMerge><feMergeNode in="glow"/><feMergeNode in="SourceGraphic"/></feMerge>
+      <filter id="${id}-ocean-light" x="-15%" y="-15%" width="130%" height="130%" color-interpolation-filters="sRGB">
+        <feComponentTransfer in="SourceAlpha" result="solid"><feFuncA type="linear" slope="255" intercept="-127"/></feComponentTransfer>
+        <feGaussianBlur in="solid" stdDeviation="2" result="soft-solid"/>
+        <feMorphology in="soft-solid" operator="erode" radius="3" result="core"/>
+        <feComposite in="SourceGraphic" in2="core" operator="in" result="colour"/>
+        <feMorphology in="core" operator="dilate" radius="4" result="edge"/>
+        <feComposite in="edge" in2="core" operator="out" result="hard-ring"/>
+        <feGaussianBlur in="hard-ring" stdDeviation="2.5" result="ring"/>
+        <feImage href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1254' height='1254'%3E%3Cdefs%3E%3ClinearGradient id='g' x2='0' y2='1'%3E%3Cstop stop-color='%234ee0ff'/%3E%3Cstop offset='.5' stop-color='%234cbbff'/%3E%3Cstop offset='1' stop-color='%23bc83ff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath fill='url(%23g)' d='M0 0h1254v1254H0z'/%3E%3C/svg%3E" x="0" y="0" width="1254" height="1254" result="gradient"/>
+        <feComposite in="gradient" in2="ring" operator="in" result="rim"/>
+        <feGaussianBlur in="rim" stdDeviation="10" result="glow"/>
+        <feFlood flood-color="#80dce9" flood-opacity="0" data-part="aurora-light" result="sparkle-colour"/>
+        <feComposite in="sparkle-colour" in2="glow" operator="in" result="sparkle-glow"/>
+        <feMerge><feMergeNode in="glow"/><feMergeNode in="glow"/><feMergeNode in="sparkle-glow"/><feMergeNode in="rim"/><feMergeNode in="colour"/></feMerge>
       </filter>
       <image id="${id}-art" href="${artwork}" width="1254" height="1254"/>
+      <clipPath id="${id}-perch-edge" clipPathUnits="userSpaceOnUse"><rect width="1254" height="${deepsea ? 770 : 798}"/></clipPath>
       <clipPath id="${id}-beak-window"><path d="${beakWindow}"/></clipPath>
       <clipPath id="${id}-left-wing"><path d="${leftWindow}"/></clipPath>
       <clipPath id="${id}-right-wing"><path d="${rightWindow}"/></clipPath>
       ${eyes.map(e => `<clipPath id="${id}-${e.name}-eye">${ellipse(e)}</clipPath>`).join('')}
-      ${mask('body-mask', `<path d="${leftCut}" fill="black"/><path d="${rightCut}" fill="black"/>`)}
+      ${mask('body-mask', `<path d="${leftCut}" fill="black" stroke="white" stroke-width="${deepsea ? 14 : 0}"/><path d="${rightCut}" fill="black" stroke="white" stroke-width="${deepsea ? 14 : 0}"/>`)}
     </defs>
     <g class="character" data-part="motion" ${deepsea ? `filter="url(#${id}-ocean-light)"` : ""}>
       <g data-part="left-flipper">${image(`clip-path="url(#${id}-left-wing)"`)}</g>
@@ -143,13 +155,20 @@ export function createRig(container, source, id, label, appearance = "classic", 
     render(pose) {
       if (deepsea) nodes["aurora-light"].setAttribute("flood-opacity", String(pose.sparkle * .16));
       nodes.motion.setAttribute('transform', `translate(${pose.x} ${pose.y}) translate(635 650) rotate(${pose.rotate}) scale(${pose.sx} ${pose.sy}) translate(-635 -650)`);
-      nodes['left-flipper'].setAttribute('transform', `rotate(${pose.left} ${deepsea ? "310 850" : "320 815"})`);
-      nodes['right-flipper'].setAttribute('transform', `rotate(${pose.right} ${deepsea ? "995 815" : "965 785"})`);
+      nodes['left-flipper'].setAttribute('transform', `translate(0 ${pose.leftY || 0}) rotate(${pose.left} ${deepsea ? "310 850" : "320 815"})`);
+      nodes['right-flipper'].setAttribute('transform', `translate(0 ${pose.rightY || 0}) rotate(${pose.right} ${deepsea ? "995 815" : "965 785"})`);
       // Keep the original halo whole when no independent flipper pose is needed.
       const wholeSilhouette = deepsea && !pose.peek && pose.left === 0 && pose.right === 0;
       bodyArtwork.setAttribute('mask', wholeSilhouette ? 'none' : `url(#${id}-body-mask)`);
       nodes['left-flipper'].setAttribute('opacity', wholeSilhouette ? '0' : '1');
       nodes['right-flipper'].setAttribute('opacity', wholeSilhouette ? '0' : '1');
+      nodes.body.setAttribute('clip-path', pose.peek ? `url(#${id}-perch-edge)` : 'none');
+      if (pose.peek) {
+        // A little more reach makes both resting flippers readable at 68px.
+        for (const [part, x, y] of [['left-flipper', deepsea ? 310 : 320, deepsea ? 850 : 815], ['right-flipper', deepsea ? 995 : 965, deepsea ? 815 : 785]]) {
+          nodes[part].setAttribute('transform', `${nodes[part].getAttribute('transform')} translate(${x} ${y}) scale(1.35) translate(${-x} ${-y})`);
+        }
+      }
       for (const eye of eyes) {
         const openness = Math.max(.025, 1 - pose.blink);
         const node = nodes[`${eye.name}-eye`];

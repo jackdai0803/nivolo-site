@@ -84,3 +84,6 @@
   .launch-art:has(.site-nivo) { min-height: 220px; padding: 16px 80px 44px; }
   .launch-art .site-nivo { width: min(100%, 160px); }
 }
+
+/* Retain the Plus card's still image until the shared rig is ready. */
+.collector-nivo-deepsea > img { display: block; width: 100%; height: 100%; object-fit: contain; }

@@ -1,4 +1,4 @@
-import { createRig, idleAt, neutralPose, celebrationAt, CELEBRATION_MS } from './nivo-rig.js';
+import { createRig, idleAt, neutralPose, celebrationAt, CELEBRATION_MS } from './nivo-rig.js?v=7';
 
 const strings = {
   en: { squish: 'Give Nivo a little squish', hint: 'Go on, give Nivo a squish.', again: 'One more? Nivo thinks so.', off: 'Sound: off', on: 'Sound: on' },
@@ -50,8 +50,27 @@ if (controls) {
 // Snapshot of the shared app rig. Refresh both files when its artwork changes.
 const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
 const artwork = new URL('./nivo-body.png', import.meta.url).href;
+const deepSeaArtwork = new URL('./nivo-deepsea.webp', import.meta.url).href;
+// A calm swimming loop with a short hello, only for the Plus card.
+const plusIdleAt = (ms) => {
+  const pose = idleAt(ms);
+  const seconds = ms / 1000;
+  pose.y *= 1.7;
+  pose.rotate = 2.2 * Math.sin(seconds * Math.PI * 2 / 7.1);
+  pose.left *= 3;
+  pose.right *= 3;
+  const wave = (ms % 11200 - 1800) / 2200;
+  if (wave > 0 && wave < 1) {
+    const lift = Math.sin(wave * Math.PI) ** 2;
+    pose.right -= lift * (24 + 8 * Math.sin(wave * Math.PI * 6));
+  }
+  return pose;
+};
 document.querySelectorAll('[data-nivo]').forEach((container, index) => {
-  const rig = createRig(container, artwork, 'site-nivo-' + index, 'Nivo');
+  const deepSea = container.dataset.nivoAppearance === 'deepsea';
+  const rig = createRig(container, artwork, 'site-nivo-' + index, 'Nivo', deepSea ? 'deepsea' : 'classic', deepSeaArtwork);
+  // Keep the same framing as the card's original square image.
+  if (deepSea) container.querySelector('svg').setAttribute('viewBox', '0 0 1254 1254');
   let frame = 0;
   let clock = 0;
   let previous = null;
@@ -65,7 +84,7 @@ document.querySelectorAll('[data-nivo]').forEach((container, index) => {
     previous = now;
     const elapsed = reactionStart === null ? CELEBRATION_MS : now - reactionStart;
     if (elapsed >= CELEBRATION_MS) reactionStart = null;
-    rig.render(preference.matches ? neutralPose() : reactionStart !== null ? celebrationAt(elapsed) : idleAt(clock));
+    rig.render(preference.matches ? neutralPose() : reactionStart !== null ? celebrationAt(elapsed) : deepSea ? plusIdleAt(clock) : idleAt(clock));
     if (visible && !document.hidden && !preference.matches) frame = requestAnimationFrame(render);
   };
   const resume = () => {

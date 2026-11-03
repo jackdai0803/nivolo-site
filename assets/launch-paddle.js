@@ -1,4 +1,4 @@
-import { createRig, idleAt, neutralPose } from './nivo-rig.js?v=6';
+import { createRig, idleAt, neutralPose } from './nivo-rig.js?v=7';
 
 // The launch page owns this rig so the flipper and its paddle share one motion.
 const container = document.querySelector('[data-launch-nivo]');
