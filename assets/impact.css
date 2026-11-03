@@ -28,7 +28,9 @@
 .small-impact-accessible { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .small-impact-footer > p { max-width: 590px; margin: 0 auto; color: #a4c2d2; font-size: 12px; line-height: 1.7; text-wrap: balance; }
 /* Without JS, or with Reduce Motion, every figure stays in normal flow. */
-.small-impact.is-scroll-story { height: 250svh; min-height: 1400px; }
+/* Reserve at least a full viewport of reading distance for each figure.
+   The final figure gets its own beat before the card releases into the page. */
+.small-impact.is-scroll-story { height: 400svh; min-height: 2600px; }
 .is-scroll-story .small-impact-stage { position: sticky; top: 100px; height: calc(100svh - 120px); min-height: 500px; max-height: 900px; display: flex; flex-direction: column; justify-content: space-between; }
 .is-scroll-story .small-impact-stats { display: grid; align-items: center; flex: 1; min-height: 0; margin: 24px 0; }
 .is-scroll-story .small-impact-stat { grid-area: 1 / 1; opacity: 0; transform: translateY(24px); filter: blur(5px); transition: opacity 320ms ease, transform 480ms cubic-bezier(.2,.8,.2,1), filter 320ms ease; pointer-events: none; }
