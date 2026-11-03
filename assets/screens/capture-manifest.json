@@ -1,25 +1,25 @@
 {
   "sourceHash": "87a7784446c5fc6922ccdf34cc8bc0a34f64ce99bb3117436433624d36e467e4",
-  "capturedAt": "2026-11-03T18:53:37.688Z",
+  "capturedAt": "2026-11-03T19:27:09.134Z",
   "viewport": {
     "width": 393,
     "height": 852
   },
   "files": {
-    "current-home.webp": "1067390c8ff1cf1dc5230c206f0a38577e5ca0f77d1cdd93f36dcdd62a6141ca",
-    "current-new-goal.webp": "dab35ec239ceb3421c24c98ae2e3fe8320f5daf5d6294e128119e09719d62279",
-    "current-log-action.webp": "9b51f8ea78fea924e05ee80e6f0e65eae675b09856808a2647eb42331131ac80",
-    "current-rest.webp": "11881f166b808503ea28bfd0793eb23639787b2c613025f4cc3409d4ae289267",
-    "current-store.webp": "b6a412c33996de0ab47c78543cec96f0e51cc05e3c14d4997526239add55e8d3",
-    "current-achievements.webp": "7bece723c70f261ece96ecae88e9a79ea4838d8fc294420fdb89e40550ee3fd5",
-    "current-gem-detail.webp": "73440531d28897556b7de9c551b2ebf1d1ed36b5e1168a97d61d9f0463f8b19c",
-    "current-profile.webp": "b48bd43e9351519c21f8c82f444f7fe7fcd9fb443e50a4c2cd0f7ab13a1939f3",
+    "current-home.webp": "78ddec8fa7a6340a079692f3f2e0c025a62e0e21e42f83bbe06b5dddc3c80033",
+    "current-new-goal.webp": "1b9dc6a50c4154c9396c915c8aabcf59a62143384cf232399113546f7cb7d22d",
+    "current-log-action.webp": "245a3affb7b2498300f50be4f24feb5a833aa37bb5bd2755632f41f4743c4914",
+    "current-rest.webp": "8367497e0458b47b4b4ef38988156670deb8a359d69c2bb10b7dd0f382312400",
+    "current-store.webp": "681c82a38dca8a3266ecb6c820c379508fd405b1b0bda630da1354f644e93f0f",
+    "current-achievements.webp": "756775bbc9e73a504357e8a976a76a35d367c730095c7f20bfa4675215e2182b",
+    "current-gem-detail.webp": "b6c08b373680981829a54724a35d5af2f39c2d2200a33c20f1c6bc8849837a81",
+    "current-profile.webp": "523f40fea25b1d4169ea79172e0ef18f1349c4e8d651a0fc08e59cea383bfaea",
     "current-action-card.webp": "abb660ebbe9e581d999107dd5aaaf28a24288d2833b1a71fce0d52b712db957a",
     "current-gem-art.webp": "fa93d27a93e25f8cb180105628c27758424133eb523726f7a6660c1ee419d7c8"
   },
   "supportFiles": {
     "assets/app-opals.js": "2a0c13264b3fba3465f9967ae405ac96a46cfa8bbaa9aca6b038daa3416647b4",
-    "assets/app-opals.css": "4a06478a00791601b88d951e56cd302dcb339bc644dabe35b04d2b79b2331954",
-    "assets/editorial-concept.js": "1c70946130e3b09702aaeeed2708a0efdd3fcd2439800b86d4214782cacf7f44"
+    "assets/app-opals.css": "7dcc0479b9d249fe58666da83d38e2548a3f7c9ca809cec3ce4e6e0d8d7cb275",
+    "assets/editorial-concept.js": "1ee88091ba2cdb87fd3f12cd0debde4ca82d9f97357ed82a0fb048902015e93c"
   }
 }

@@ -2,8 +2,8 @@
   // A few short reactions keep the opening playful without a permanent loop.
   const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
   const copy = {
-    en: { goal: 'Preview a new goal', action: 'Preview logging an action', gem: 'Give the goal gem a spin', previous: 'Previous app screen', next: 'Next app screen', browse: 'Browse app screens', progress: 'Progress through app screenshots' },
-    zh: { goal: '预览新目标', action: '预览记录行动', gem: '转动目标宝石', previous: '上一张应用截图', next: '下一张应用截图', browse: '浏览应用截图', progress: '应用截图浏览进度' },
+    en: { goal: 'Preview a new goal', action: 'Preview logging an action', gem: 'See another gem version', gemHint: 'Tap to see another version', previous: 'Previous app screen', next: 'Next app screen', browse: 'Browse app screens', progress: 'Progress through app screenshots' },
+    zh: { goal: '预览新目标', action: '预览记录行动', gem: '查看另一款宝石', gemHint: '轻点，看看另一款宝石', previous: '上一张应用截图', next: '下一张应用截图', browse: '浏览应用截图', progress: '应用截图浏览进度' },
   };
   const t = (key) => copy[document.documentElement.lang.startsWith('zh') ? 'zh' : 'en'][key];
   Object.assign(copy.en, {
@@ -103,19 +103,33 @@
     cue.textContent = index === 2 ? '↻' : '↗';
     button.appendChild(cue);
     if (index < 2) button.dataset.appScreen = t(index === 0 ? 'goal' : 'action');
-    else button.addEventListener('click', () => {
-      react(button.querySelector('[data-app-opal]'), [
-        { rotate: '0deg', scale: '1' },
-        { rotate: '-18deg', scale: '.92', offset: .15 },
-        { rotate: '335deg', scale: '1.16', offset: .72 },
-        { rotate: '360deg', scale: '1' },
-      ], { duration: 850 });
-      button.querySelectorAll('.step-spark').forEach((spark) => react(spark, [
-        { scale: '1', opacity: .65 }, { scale: '1.7', opacity: 1, offset: .5 }, { scale: '1', opacity: .65 },
-      ], { duration: 700 }));
-      // Colour remains a response when reduced motion is enabled.
-      button.classList.toggle('is-polished');
-    });
+    else {
+      const gem = button.querySelector('[data-app-opal]');
+      const hint = button.querySelector('.step-gem-label small');
+      hint.textContent = t('gemHint');
+      hint.classList.add('step-gem-hint');
+      let version = 0;
+      let hue = 0;
+      button.addEventListener('click', () => {
+        // Always move far enough around the colour wheel to visibly change,
+        // including taps that arrive before the previous animation finishes.
+        hue = (hue + 75 + Math.random() * 50) % 360;
+        version += 1;
+        gem.style.setProperty('--gem-hue', `${hue}deg`);
+        gem.style.setProperty('--gem-saturation', String([.78, 1.08, .9][version % 3]));
+        gem.dataset.gemVersion = String(version);
+        react(gem, [
+          { rotate: '0deg', scale: '1' },
+          { rotate: '-8deg', scale: '.94', offset: .25 },
+          { rotate: '0deg', scale: '1' },
+        ], { duration: 320 });
+        button.querySelectorAll('.step-spark').forEach((spark) => react(spark, [
+          { scale: '1', opacity: .65 }, { scale: '1.7', opacity: 1, offset: .5 }, { scale: '1', opacity: .65 },
+        ], { duration: 700 }));
+        // Colour remains a response when reduced motion is enabled.
+        button.classList.toggle('is-polished');
+      });
+    }
     art.replaceWith(button);
   });
 

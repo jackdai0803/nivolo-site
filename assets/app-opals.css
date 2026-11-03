@@ -8,3 +8,11 @@
 /* The current action sheet leads with its heading, action and quick picks. */
 .steps .step-art--action .step-app-screen { top: 18px; bottom: auto; }
 @media (prefers-reduced-motion: reduce) { [data-app-opal] * { animation: none !important; } }
+
+/* Keep variations on the captured app artwork, including reduced-motion taps. */
+.step-art--gem .opal-artwork {
+  filter: hue-rotate(var(--gem-hue, 0deg)) saturate(var(--gem-saturation, 1)) drop-shadow(0 7px 9px rgba(12,35,52,.16));
+}
+.step-gem-label small.step-gem-hint { letter-spacing: 0; text-transform: none; }
+
+.step-art--gem > [data-app-opal] { transform: translateY(-34px); }
