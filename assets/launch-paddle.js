@@ -43,13 +43,15 @@ if (container && card) {
   let joined = false;
   let started = 0;
   let animateArrival = false;
-  let clock = 0;
+  const HOLD_MS = 4400;
+  const FIRST_HOLD_MS = 700;
+  const CHANGE_MS = 1000;
+  // Show the first colour change while the visitor starts entering their email.
+  let clock = HOLD_MS - FIRST_HOLD_MS;
   let idleClock = 0;
   let direction = 1;
   let manualChange = false;
   let previous = null;
-  const HOLD_MS = 4400;
-  const CHANGE_MS = 1000;
   const ease = value => { const p = Math.max(0, Math.min(1, value)); return p * p * (3 - 2 * p); };
 
   function render(now) {
