@@ -1,4 +1,12 @@
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const WELCOME_TEXT = `Hi there,
+
+Thanks for joining the Nivolo launch list! Nivolo is a habit app with a penguin buddy named Nivo, and we're still building it. We'll let you know as soon as it's ready to try.
+
+Quick question: how did you hear about Nivolo? And what's one habit you're hoping to stick with? Just hit reply, we read every message.
+
+Thanks,
+The Nivolo team`;
 const OFFLINE_PAGE = `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Nivolo — Back soon</title>
 <style>html{color-scheme:light}body{margin:0;min-height:100svh;display:grid;place-items:center;background:#f2f1ee;color:#163c2e;font-family:system-ui,-apple-system,sans-serif}main{max-width:480px;padding:40px 24px;text-align:center}p{font-size:16px;line-height:1.6;color:#526258}h1{margin:24px 0 16px;font-size:clamp(32px,7vw,48px);letter-spacing:-.045em;line-height:1.12}.brand{font-size:18px;font-weight:800;letter-spacing:-.04em;color:#163c2e}</style></head>
@@ -61,6 +69,20 @@ const notifyOwner = async (env, email, joinedAt) => {
   });
 };
 
+async function sendWelcome(env, email, key) {
+  if (!env.WELCOME_EMAIL) return;
+  const welcomeKey = key.replace("signup:", "welcome:");
+  if (await env.LAUNCH_SIGNUPS.get(welcomeKey)) return;
+  await env.WELCOME_EMAIL.send({
+    from: { email: "support@nivolo.app", name: "Nivolo Support" },
+    replyTo: "support@nivolo.app",
+    to: email,
+    subject: "Welcome to Nivolo 🐧",
+    text: WELCOME_TEXT,
+  });
+  await env.LAUNCH_SIGNUPS.put(welcomeKey, new Date().toISOString());
+}
+
 async function handleLaunchSignup(request, env, ctx) {
   const useJson = wantsJson(request);
   const ip = request.headers.get("CF-Connecting-IP") || "local";
@@ -82,10 +104,22 @@ async function handleLaunchSignup(request, env, ctx) {
     return useJson ? json({ ok: true }) : redirectToForm(request, "joined");
   }
 
+  const started = Number(body.started);
+  if (!Number.isFinite(started) || Date.now() - started < 2000) {
+    return useJson ? json({ ok: false, error: "too_fast" }, 400) : redirectToForm(request, "invalid");
+  }
+
   const email = String(body.email || "").trim().toLowerCase();
   if (email.length > 254 || !EMAIL_PATTERN.test(email)) {
     return useJson ? json({ ok: false, error: "invalid_email" }, 400) : redirectToForm(request, "invalid");
   }
+
+  const rateKey = `rate:${ip}:${Math.floor(Date.now() / 3600000)}`;
+  const count = Number(await env.LAUNCH_SIGNUPS.get(rateKey) || "0");
+  if (count >= 3) {
+    return useJson ? json({ ok: false, error: "rate_limited" }, 429) : redirectToForm(request, "busy");
+  }
+  await env.LAUNCH_SIGNUPS.put(rateKey, String(count + 1), { expirationTtl: 7200 });
 
   const key = await emailKey(email);
   const existing = await env.LAUNCH_SIGNUPS.get(key);
@@ -95,10 +129,10 @@ async function handleLaunchSignup(request, env, ctx) {
 
   const joinedAt = new Date().toISOString();
   await env.LAUNCH_SIGNUPS.put(key, JSON.stringify({ email, joinedAt, source: "nivolo.app" }));
-  ctx.waitUntil(notifyOwner(env, email, joinedAt).catch(() => {
-    // The address is already safely stored. A notification failure should
-    // not make the visitor retry and create misleading duplicate traffic.
-  }));
+  ctx.waitUntil((async () => {
+    await notifyOwner(env, email, joinedAt).catch(e => console.error("notify_failed", e?.code, e?.message));
+    await sendWelcome(env, email, key).catch(e => console.error("welcome_failed", e?.code, e?.message));
+  })());
 
   return useJson ? json({ ok: true }) : redirectToForm(request, "joined");
 }

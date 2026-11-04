@@ -32,6 +32,10 @@
     {
       "name": "NOTIFY_SIGNUP",
       "destination_address": "jackdai259@gmail.com"
+    },
+    {
+      "name": "WELCOME_EMAIL",
+      "allowed_sender_addresses": ["support@nivolo.app"]
     }
   ],
   // One public address only: no *.workers.dev copy, no preview links.

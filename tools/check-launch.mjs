@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 import test from 'node:test';
+import { webcrypto } from 'node:crypto';
 
 const read = (path) => readFileSync(new URL('../' + path, import.meta.url), 'utf8');
 const source = read('assets/launch.js');
@@ -16,7 +17,7 @@ function formFixture({ online = true, fetch = async () => ok(), search = '', lan
   const animations = [];
   const timers = new Map();
   const elements = Object.fromEntries([
-    'launchForm', 'launchEmail', 'launchCompany', 'launchSubmit', 'launchStatus',
+    'launchForm', 'launchEmail', 'launchCompany', 'launchStarted', 'launchSubmit', 'launchStatus',
     'launchSuccess', 'launchHelp', 'launchSavedEmail', 'launchEdit', 'launchRemoval',
     'launchCopy', 'launchCopyStatus', 'launchCard', 'launchIntro', 'launchArtNote', 'launchReceipt',
   ].map((id) => [id, {
@@ -115,6 +116,8 @@ test('success confirms the submitted address, blocks duplicates and permits anot
   resolve(ok());
   await pending;
   assert.equal(payload.email, 'alex$&@example.com');
+  assert.equal(payload.started, Number(f.elements.launchStarted.value));
+  assert.ok(Number.isFinite(payload.started) && payload.started > 0);
   assert.equal(f.elements.launchSavedEmail.textContent, 'alex$&@example.com');
   assert.equal(f.elements.launchForm.hidden, true);
   assert.equal(f.elements.launchIntro.hidden, true);
@@ -206,4 +209,158 @@ test('success moves focus and only animates a fresh signup with motion enabled',
   assert.equal(reduced.elements.launchSuccess.hidden, false);
   const redirected = formFixture({ search: '?joined=1' });
   assert.equal(redirected.animations.length, 0);
+});
+
+// Exercise the real Worker with in-memory KV and email mocks only.
+function workerFixture({ welcomeFails = false, notifyFails = false, limiterAllows = true, welcomeEnabled = true } = {}) {
+  const now = Date.parse('2026-11-04T12:30:00Z');
+  class Clock extends Date {
+    constructor(...args) { super(...(args.length ? args : [now])); }
+    static now() { return now; }
+  }
+  const records = new Map();
+  const writes = [];
+  const emails = [];
+  const errors = [];
+  const pending = [];
+  const limits = [];
+  const worker = runInNewContext(read('worker/index.js').replace('export default {', 'globalThis.worker = {'), {
+    Request, Response, URL, TextEncoder, crypto: webcrypto, btoa, Date: Clock,
+    console: { error: (...args) => errors.push(args) },
+  });
+  const env = {
+    LAUNCH_SIGNUPS: {
+      async get(key) { return records.get(key) ?? null; },
+      async put(key, value, options) { records.set(key, value); writes.push({ key, value, options }); },
+    },
+    SIGNUP_LIMITER: { async limit({ key }) { limits.push(key); return { success: limiterAllows }; } },
+    NOTIFY_SIGNUP: { async send(message) {
+      emails.push({ kind: 'owner', ...message });
+      if (notifyFails) throw Object.assign(new Error('Mock owner failure'), { code: 'MOCK_NOTIFY' });
+    } },
+    ...(welcomeEnabled ? { WELCOME_EMAIL: { async send(message) {
+      emails.push({ kind: 'welcome', ...message });
+      if (welcomeFails) throw Object.assign(new Error('Mock welcome failure'), { code: 'MOCK_WELCOME' });
+    } } } : {}),
+  };
+  return {
+    now, records, writes, emails, errors, limits,
+    async signup(body = {}, { form = false, ip = '192.0.2.1' } = {}) {
+      const payload = { email: 'Alex@example.com', company: '', started: now - 3000, ...body };
+      return worker.fetch(new Request('https://example.test/api/launch-alert', {
+        method: 'POST',
+        headers: { 'Content-Type': form ? 'application/x-www-form-urlencoded' : 'application/json', 'CF-Connecting-IP': ip },
+        body: form ? new URLSearchParams(payload) : JSON.stringify(payload),
+      }), env, { waitUntil(promise) { pending.push(promise); } });
+    },
+    async drain() { await Promise.all(pending); },
+  };
+}
+
+const expectedWelcome = `Hi there,
+
+Thanks for joining the Nivolo launch list! Nivolo is a habit app with a penguin buddy named Nivo, and we're still building it. We'll let you know as soon as it's ready to try.
+
+Quick question: how did you hear about Nivolo? And what's one habit you're hoping to stick with? Just hit reply, we read every message.
+
+Thanks,
+The Nivolo team`;
+
+test('Worker: normal signup saves, notifies owner, then sends the exact welcome and marks it', async () => {
+  const f = workerFixture();
+  const response = await f.signup({ started: f.now - 2000 });
+  assert.equal(response.status, 200);
+  assert.deepEqual(await response.json(), { ok: true });
+  await f.drain();
+  const signup = f.writes.find(({ key }) => key.startsWith('signup:'));
+  assert.equal(JSON.parse(signup.value).email, 'alex@example.com');
+  assert.deepEqual(f.emails.map(({ kind }) => kind), ['owner', 'welcome']);
+  assert.deepEqual(JSON.parse(JSON.stringify(f.emails[1])), {
+    kind: 'welcome', from: { email: 'support@nivolo.app', name: 'Nivolo Support' },
+    replyTo: 'support@nivolo.app', to: 'alex@example.com', subject: 'Welcome to Nivolo 🐧', text: expectedWelcome,
+  });
+  assert.equal(f.records.get(signup.key.replace('signup:', 'welcome:')), new Date(f.now).toISOString());
+});
+
+for (const form of [false, true]) {
+  test(`Worker: honeypot silently succeeds without saves or email (${form ? 'form' : 'JSON'})`, async () => {
+    const f = workerFixture();
+    const response = await f.signup({ company: 'bot', started: 'invalid', email: 'invalid' }, { form });
+    assert.equal(response.status, form ? 303 : 200);
+    if (form) assert.match(response.headers.get('Location'), /joined=1$/);
+    else assert.deepEqual(await response.json(), { ok: true });
+    await f.drain();
+    assert.equal(f.writes.length, 0);
+    assert.equal(f.emails.length, 0);
+  });
+
+  test(`Worker: rejects fast/non-finite starts and invalid emails (${form ? 'form' : 'JSON'})`, async () => {
+    for (const body of [{ started: Date.parse('2026-11-04T12:30:00Z') - 1999 }, { started: 'invalid' }, { started: 'Infinity' }, { email: 'invalid' }]) {
+      const f = workerFixture();
+      const response = await f.signup(body, { form });
+      assert.equal(response.status, form ? 303 : 400);
+      if (form) assert.match(response.headers.get('Location'), /error=invalid$/);
+      else assert.equal((await response.json()).error, body.email ? 'invalid_email' : 'too_fast');
+      assert.equal(f.writes.length, 0);
+      assert.equal(f.emails.length, 0);
+    }
+  });
+
+  test(`Worker: fourth request from an IP is blocked, another IP can sign up (${form ? 'form' : 'JSON'})`, async () => {
+    const f = workerFixture();
+    for (let i = 0; i < 3; i++) assert.equal((await f.signup({ email: `person${i}@example.com` }, { form })).status, form ? 303 : 200);
+    const response = await f.signup({ email: 'fourth@example.com' }, { form });
+    assert.equal(response.status, form ? 303 : 429);
+    if (form) assert.match(response.headers.get('Location'), /error=busy$/);
+    else assert.deepEqual(await response.json(), { ok: false, error: 'rate_limited' });
+    const rateWrites = f.writes.filter(({ key }) => key.startsWith('rate:'));
+    assert.deepEqual(rateWrites.map(({ value }) => value), ['1', '2', '3']);
+    for (const write of rateWrites) {
+      assert.equal(write.key, `rate:192.0.2.1:${Math.floor(f.now / 3600000)}`);
+      assert.equal(write.options.expirationTtl, 7200);
+    }
+    assert.equal((await f.signup({ email: 'fourth@example.com' }, { ip: '192.0.2.2' })).status, 200);
+    await f.drain();
+    assert.equal(f.emails.filter(({ kind }) => kind === 'welcome').length, 4);
+  });
+}
+
+test('Worker: duplicate address does not save or send again; welcome marker also prevents resending', async () => {
+  const f = workerFixture();
+  await f.signup();
+  await f.drain();
+  assert.deepEqual(await (await f.signup({ email: ' ALEX@example.com ' })).json(), { ok: true, alreadyJoined: true });
+  await f.drain();
+  assert.equal(f.emails.length, 2);
+  const signup = f.writes.find(({ key }) => key.startsWith('signup:'));
+  assert.equal(f.writes.filter(({ key }) => key.startsWith('signup:')).length, 1);
+  f.records.delete(signup.key); // Keep the welcome marker while exercising its guard.
+  await f.signup();
+  await f.drain();
+  assert.equal(f.emails.filter(({ kind }) => kind === 'welcome').length, 1);
+});
+
+for (const kind of ['welcome', 'notify']) {
+  test(`Worker: ${kind} failure keeps success and logs the failure`, async () => {
+    const f = workerFixture({ [kind + 'Fails']: true });
+    const response = await f.signup();
+    assert.deepEqual(await response.json(), { ok: true });
+    await f.drain();
+    assert.deepEqual(f.errors[0], [`${kind}_failed`, `MOCK_${kind.toUpperCase()}`, `Mock ${kind === 'notify' ? 'owner' : kind} failure`]);
+    assert.equal(f.emails.length, 2);
+    assert.equal([...f.records.keys()].some(key => key.startsWith('signup:')), true);
+    assert.equal([...f.records.keys()].some(key => key.startsWith('welcome:')), kind !== 'welcome');
+  });
+}
+
+test('Worker: missing welcome binding skips sending; existing SIGNUP_LIMITER still blocks', async () => {
+  const f = workerFixture({ welcomeEnabled: false });
+  await f.signup();
+  await f.drain();
+  assert.deepEqual(f.emails.map(({ kind }) => kind), ['owner']);
+  assert.equal([...f.records.keys()].some(key => key.startsWith('welcome:')), false);
+  const blocked = workerFixture({ limiterAllows: false });
+  assert.equal((await blocked.signup()).status, 429);
+  assert.deepEqual(blocked.limits, ['192.0.2.1']);
+  assert.equal(blocked.writes.length, 0);
 });

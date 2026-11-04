@@ -2,6 +2,9 @@
   "use strict";
 
   var form = document.getElementById("launchForm");
+  var startedAt = Date.now();
+  var startedInput = document.getElementById("launchStarted");
+  if (startedInput) startedInput.value = startedAt;
   var input = document.getElementById("launchEmail");
   var submit = document.getElementById("launchSubmit");
   var status = document.getElementById("launchStatus");
@@ -182,6 +185,7 @@
         body: JSON.stringify({
           email: email,
           company: document.getElementById("launchCompany").value,
+          started: startedAt,
         }),
       });
       if (response.status === 429) throw new Error("rate_limited");
