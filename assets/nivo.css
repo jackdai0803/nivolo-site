@@ -38,7 +38,7 @@
 .nivo-play:hover::before, .nivo-play:focus-visible::before, .nivo-play.is-delighted::before { opacity: 1; scale: 1.25; }
 .nivo-play:focus-visible { outline: 3px solid #267492; outline-offset: 10px; border-radius: 30%; }
 .nivo-play .site-nivo { transform-origin: 50% 85%; transition: transform 100ms ease-out; }
-.nivo-play:active .site-nivo { transform: translateY(5px) scale(1.14, .84) rotate(-4deg); }
+.nivo-play:active .site-nivo { transform: translateY(2px) scale(1.03, .97); }
 .nivo-play-controls {
   display: flex;
   align-items: center;
@@ -87,3 +87,27 @@
 
 /* Retain the Plus card's still image until the shared rig is ready. */
 .collector-nivo-deepsea > img { display: block; width: 100%; height: 100%; object-fit: contain; }
+
+/* A quiet invitation attached to Nivo, dismissed after the first discovery. */
+.nivo-look { position: absolute; inset: 0; }
+.nivo-look > svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.nivo-hint-bubble {
+  position: absolute; right: -8px; bottom: calc(100% + 6px); z-index: 2;
+  padding: 8px 12px; border: 1px solid #d8e5e9; border-radius: 14px;
+  background: #f8fcfd; color: #315c71;
+  font: 600 12px/1.2 var(--font-body); letter-spacing: 0; white-space: nowrap;
+  box-shadow: 0 3px 8px #173d520a; pointer-events: none;
+  transition: opacity 160ms ease, visibility 160ms;
+}
+.nivo-hint-bubble::after {
+  content: ''; position: absolute; right: 25px; bottom: -5px;
+  width: 8px; height: 8px; background: #f8fcfd;
+  border-right: 1px solid #d8e5e9; border-bottom: 1px solid #d8e5e9;
+  transform: rotate(45deg);
+}
+.nivo-play:disabled .nivo-hint-bubble, .nivo-play.has-transformed .nivo-hint-bubble { opacity: 0; visibility: hidden; }
+@media (max-width: 760px) {
+  .premium-home .editorial-lockup:has(.nivo-play) { margin-top: 36px; }
+  .nivo-hint-bubble { right: -4px; bottom: calc(100% + 4px); padding: 7px 10px; font-size: 11px; }
+}
+@media (prefers-reduced-motion: reduce) { .nivo-hint-bubble { transition: none; } }

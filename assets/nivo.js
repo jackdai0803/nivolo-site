@@ -1,8 +1,8 @@
-import { createRig, idleAt, neutralPose, celebrationAt, CELEBRATION_MS } from './nivo-rig.js?v=8';
+import { createRig, idleAt, neutralPose } from './nivo-rig.js?v=8';
 
 const strings = {
-  en: { squish: 'Give Nivo a little squish', hint: 'Go on, give Nivo a squish.', again: 'One more? Nivo thinks so.', off: 'Sound: off', on: 'Sound: on' },
-  zh: { squish: '轻轻捏一下 Nivo', hint: '来，轻轻捏一下 Nivo。', again: '再来一次？Nivo 也这么想。', off: '声音：关', on: '声音：开' },
+  en: { transform: 'Transform Nivo', hint: 'Tap to transform', off: 'Sound: off', on: 'Sound: on' },
+  zh: { transform: '变换 Nivo 的外观', hint: '点我变身', off: '声音：关', on: '声音：开' },
 };
 const t = (key) => strings[document.documentElement.lang.startsWith('zh') ? 'zh' : 'en'][key];
 const controls = document.querySelector('[data-nivo-controls]');
@@ -68,67 +68,77 @@ const plusIdleAt = (ms) => {
 };
 document.querySelectorAll('[data-nivo]').forEach((container, index) => {
   const deepSea = container.dataset.nivoAppearance === 'deepsea';
-  const rig = createRig(container, artwork, 'site-nivo-' + index, 'Nivo', deepSea ? 'deepsea' : 'classic', deepSeaArtwork);
-  // Keep the same framing as the card's original square image.
-  if (deepSea) container.querySelector('svg').setAttribute('viewBox', '0 0 1254 1254');
+  const play = container.closest('[data-nivo-play]');
+  const looks = play ? ['classic', 'deepsea'] : [deepSea ? 'deepsea' : 'classic'];
+  if (play) container.replaceChildren();
+  const characters = looks.map(look => {
+    const layer = play ? document.createElement('span') : container;
+    if (play) {
+      layer.className = 'nivo-look';
+      layer.style.opacity = look === 'classic' ? '1' : '0';
+      container.append(layer);
+    }
+    const rig = createRig(layer, artwork, `site-nivo-${index}-${look}`, 'Nivo', look, deepSeaArtwork);
+    if (play) layer.querySelector('svg').setAttribute('viewBox', '160 170 970 970');
+    else if (deepSea) layer.querySelector('svg').setAttribute('viewBox', '0 0 1254 1254');
+    return { look, layer, rig };
+  });
   let frame = 0;
   let clock = 0;
   let previous = null;
   let visible = false;
-  let reactionStart = null;
-  let settleTimer;
-  let lastTap = -Infinity;
-  const play = container.closest('[data-nivo-play]');
+  let progress = 0;
+  let target = 0;
+  const ease = value => { const p = Math.max(0, Math.min(1, value)); return p * p * (3 - 2 * p); };
   const render = (now) => {
-    if (previous !== null) clock += Math.min(40, now - previous);
+    cancelAnimationFrame(frame);
+    const delta = previous === null ? 0 : Math.min(40, now - previous);
+    clock += delta;
     previous = now;
-    const elapsed = reactionStart === null ? CELEBRATION_MS : now - reactionStart;
-    if (elapsed >= CELEBRATION_MS) reactionStart = null;
-    rig.render(preference.matches ? neutralPose() : reactionStart !== null ? celebrationAt(elapsed) : deepSea ? plusIdleAt(clock) : idleAt(clock));
+    progress = preference.matches ? target : progress + Math.sign(target - progress) * Math.min(Math.abs(target - progress), delta / 900);
+    const blend = ease((progress - .28) / .44);
+    const pose = preference.matches ? neutralPose() : deepSea ? plusIdleAt(clock) : idleAt(clock);
+    if (play) {
+      // One gentle hop follows the reveal, including when a tap reverses it.
+      const lift = Math.sin(progress * Math.PI);
+      pose.y -= 28 * lift;
+      pose.sx *= 1 - .02 * lift;
+      pose.sy *= 1 + .02 * lift;
+      pose.blink = Math.max(pose.blink, lift ** 6);
+      container.dataset.nivoAppearance = blend >= .5 ? 'deepsea' : 'classic';
+    }
+    for (const {look, layer, rig} of characters) {
+      if (play) layer.style.opacity = String(look === 'deepsea' ? blend : 1 - blend);
+      rig.render(play && look === 'deepsea' ? { ...pose, left: 0, right: 0 } : pose);
+    }
     if (visible && !document.hidden && !preference.matches) frame = requestAnimationFrame(render);
   };
   const resume = () => {
-    cancelAnimationFrame(frame);
-    clearTimeout(settleTimer);
-    reactionStart = null;
-    play?.classList.remove('is-delighted');
-    if (play && hint) hint.textContent = t('hint');
     previous = null;
-    rig.render(neutralPose());
-    if (visible && !document.hidden && !preference.matches) frame = requestAnimationFrame(render);
+    render(performance.now());
   };
   if (play) {
-    play.disabled = false;
-    play.setAttribute('aria-label', t('squish'));
+    play.setAttribute('aria-label', t('transform'));
+    if (hint) {
+      hint.classList.add('nivo-hint-bubble');
+      play.append(hint);
+    }
+    // Enable discovery only once both looks can appear without a blank frame.
+    const preload = new Image();
+    preload.src = deepSeaArtwork;
+    preload.decode().then(() => { play.disabled = false; }).catch(() => {});
     play.addEventListener('click', () => {
-      const now = performance.now();
-      if (now - lastTap < 250) return;
-      lastTap = now;
-      clearTimeout(settleTimer);
-      hint.textContent = t('again');
-      play.classList.add('is-delighted');
-      if (preference.matches) {
-        rig.render({ ...neutralPose(), happy: 1, blink: 1, left: 18, right: -18 });
-      } else {
-        reactionStart = now;
-        if (!visible) { visible = true; previous = null; frame = requestAnimationFrame(render); }
-      }
+      target = 1 - target;
+      play.classList.add('has-transformed');
+      render(performance.now());
       pop();
-      settleTimer = setTimeout(() => {
-        play.classList.remove('is-delighted');
-        hint.textContent = t('hint');
-        if (preference.matches) rig.render(neutralPose());
-      }, CELEBRATION_MS + 600);
     });
   }
   const observer = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; resume(); });
   observer.observe(container);
   document.addEventListener('visibilitychange', resume);
   preference.addEventListener('change', resume);
-  window.addEventListener('pagehide', () => {
-    cancelAnimationFrame(frame);
-    clearTimeout(settleTimer);
-  });
+  window.addEventListener('pagehide', () => cancelAnimationFrame(frame));
   window.addEventListener('pageshow', resume);
-  rig.render(neutralPose());
+  render(performance.now());
 });
