@@ -3,13 +3,15 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#f6f3ec" />
+  <meta name="theme-color" content="#f2f1ee" />
   <title>Founder’s Gallery — Nivolo</title>
   <meta name="description" content="Twenty little worlds with Nivo. Explore the Founder’s Edition collection of ceramic-mosaic paintings." />
   <link rel="icon" href="assets/favicon-32.png?v=5" />
   <link rel="stylesheet" href="assets/fonts.css" />
-  <link rel="stylesheet" href="assets/founders-gallery.css?v=5" />
-  <script src="assets/founders-gallery.js?v=7" defer></script>
+  <link rel="stylesheet" href="styles.css?v=129" />
+  <link rel="stylesheet" href="assets/founders-gallery.css?v=10" />
+  <script src="assets/founders-gallery.js?v=10" defer></script>
+  <script src="assets/icon-pop.js?v=40" defer></script>
 </head>
 <body class="founders-page">
   <a class="founder-skip" href="#paintings" data-founder-copy="skip">Skip to paintings</a>
@@ -19,153 +21,165 @@
   </header>
   <main>
     <section class="founder-intro" aria-labelledby="gallery-title">
-      <div class="founder-identity">
-        <img src="assets/icons/early-supporter.png" width="56" height="56" alt="" />
-        <div><p class="founder-eyebrow" data-founder-copy="edition">The Founder’s Edition</p><p class="founder-icon-label" data-founder-copy="iconLabel">Early Supporter icon</p></div>
+      <div class="founder-intro-main">
+        <p class="founder-eyebrow" data-founder-copy="edition">The Founder’s Edition</p>
+        <h1 id="gallery-title" data-founder-copy="galleryTitle">Twenty little worlds.<br />One small beginning.</h1>
+        <p class="founder-intro-copy" data-founder-copy="galleryIntro">Quiet shores. Star-filled skies. A little wander with Nivo, told through twenty ceramic-mosaic paintings.</p>
+        <a class="founder-browse" href="#paintings"><span data-founder-copy="browse">Find your little world</span><span aria-hidden="true">↓</span></a>
       </div>
-      <h1 id="gallery-title" data-founder-copy="galleryTitle">Twenty little worlds.<br />One small beginning.</h1>
-      <p class="founder-intro-copy" data-founder-copy="intro">One numbered painting and the Early Supporter icon for each of Nivolo’s first twenty paying members. Your supporter number matches your painting. Free trials and launch-list signups do not reserve a place.</p>
-      <div class="founder-intro-meta"><span data-founder-copy="medium">Ceramic mosaic</span><span aria-hidden="true">·</span><span data-founder-copy="twenty">20 original artworks</span></div>
+      <aside class="founder-welcome" data-founder-icon aria-labelledby="founder-welcome-title">
+        <div class="founder-welcome-top">
+          <div class="founder-icon-preview">
+            <img src="assets/icons/early-supporter.png" width="160" height="160" alt="" />
+            <strong class="founder-icon-name" data-founder-copy="iconLabel">Early Supporter icon</strong>
+            <span class="founder-icon-hint" data-founder-copy="iconHint">Take a closer look · tap to turn</span>
+            <span class="founder-icon-expand" aria-hidden="true">↗</span>
+          </div>
+        </div>
+        <h2 id="founder-welcome-title" data-founder-copy="welcomeTitle">Here from the beginning.</h2>
+        <p data-founder-copy="welcomeBody">Our first twenty paying members each receive a numbered painting and the Early Supporter icon. Your supporter number matches your painting.</p>
+        <p class="founder-welcome-note" data-founder-copy="featureTerms">Any paid membership counts. Free trials and launch-list signups do not reserve a place.</p>
+      </aside>
     </section>
     <section class="founder-collection" id="paintings" aria-label="The twenty paintings">
-      <div class="founder-collection-heading"><p data-founder-copy="collection">The complete collection</p><span data-founder-copy="openHint">Select a painting to look closer ↗</span></div>
+      <div class="founder-collection-heading"><div><p class="founder-eyebrow" data-founder-copy="medium">Ceramic mosaic</p><h2 data-founder-copy="collection">The complete collection</h2></div><span data-founder-copy="openHint">Select a painting to look closer ↗</span></div>
       <div class="founder-grid">
       <article class="founder-card" id="painting-01">
         <a class="founder-art-link" href="assets/founders/01.webp" data-painting="01" aria-label="View The First Light">
-          <img src="assets/founders/01-small.webp" srcset="assets/founders/01-small.webp 640w, assets/founders/01.webp 1536w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 960px) 45vw, 30vw" width="1536" height="1024" loading="lazy" decoding="async" alt="Beneath an emerald aurora, Nivo holds a little light of his own." />
+          <span class="founder-gallery-art"><img src="assets/founders/01-small.webp" srcset="assets/founders/01-small.webp 640w, assets/founders/01.webp 1536w" sizes="(max-width: 640px) calc(100vw - 104px), (max-width: 1160px) 42vw, 480px" width="1536" height="1024" loading="lazy" decoding="async" alt="Beneath an emerald aurora, Nivo holds a little light of his own." /></span>
           <span class="founder-art-cue" aria-hidden="true">↗</span>
         </a>
         <div class="founder-caption"><div><h2>The First Light</h2><p>An imagined beginning</p></div><span class="founder-number">01 / 20</span></div>
       </article>
       <article class="founder-card" id="painting-02">
         <a class="founder-art-link" href="assets/founders/02.webp" data-painting="02" aria-label="View Moon Garden">
-          <img src="assets/founders/02-small.webp" srcset="assets/founders/02-small.webp 640w, assets/founders/02.webp 1536w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 960px) 45vw, 30vw" width="1536" height="1024" loading="lazy" decoding="async" alt="Moonflowers gather around a still pool, where a golden crescent finds its reflection." />
+          <span class="founder-gallery-art"><img src="assets/founders/02-small.webp" srcset="assets/founders/02-small.webp 640w, assets/founders/02.webp 1536w" sizes="(max-width: 640px) calc(100vw - 104px), (max-width: 1160px) 42vw, 480px" width="1536" height="1024" loading="lazy" decoding="async" alt="Moonflowers gather around a still pool, where a golden crescent finds its reflection." /></span>
           <span class="founder-art-cue" aria-hidden="true">↗</span>
         </a>
         <div class="founder-caption"><div><h2>Moon Garden</h2><p>A garden after dark</p></div><span class="founder-number">02 / 20</span></div>
       </article>
       <article class="founder-card" id="painting-03">
         <a class="founder-art-link" href="assets/founders/03.webp" data-painting="03" aria-label="View Amber Shore">
-          <img src="assets/founders/03-small.webp" srcset="assets/founders/03-small.webp 640w, assets/founders/03.webp 1536w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 960px) 45vw, 30vw" width="1536" height="1024" loading="lazy" decoding="async" alt="A little spiral shell catches Nivo’s eye as the shore turns warm with evening light." />
+          <span class="founder-gallery-art"><img src="assets/founders/03-small.webp" srcset="assets/founders/03-small.webp 640w, assets/founders/03.webp 1536w" sizes="(max-width: 640px) calc(100vw - 104px), (max-width: 1160px) 42vw, 480px" width="1536" height="1024" loading="lazy" decoding="async" alt="A little spiral shell catches Nivo’s eye as the shore turns warm with evening light." /></span>
           <span class="founder-art-cue" aria-hidden="true">↗</span>
         </a>
         <div class="founder-caption"><div><h2>Amber Shore</h2><p>A quiet coast</p></div><span class="founder-number">03 / 20</span></div>
       </article>
       <article class="founder-card" id="painting-04">
         <a class="founder-art-link" href="assets/founders/04.webp" data-painting="04" aria-label="View The Quiet Observatory">
-          <img src="assets/founders/04-small.webp" srcset="assets/founders/04-small.webp 640w, assets/founders/04.webp 1536w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 960px) 45vw, 30vw" width="1536" height="1024" loading="lazy" decoding="async" alt="Above a sleeping alpine village, Nivo reaches toward a constellation." />
+          <span class="founder-gallery-art"><img src="assets/founders/04-small.webp" srcset="assets/founders/04-small.webp 640w, assets/founders/04.webp 1536w" sizes="(max-width: 640px) calc(100vw - 104px), (max-width: 1160px) 42vw, 480px" width="1536" height="1024" loading="lazy" decoding="async" alt="Above a sleeping alpine village, Nivo reaches toward a constellation." /></span>
           <span class="founder-art-cue" aria-hidden="true">↗</span>
         </a>
         <div class="founder-caption"><div><h2>The Quiet Observatory</h2><p>Swiss Alps-inspired</p></div><span class="founder-number">04 / 20</span></div>
       </article>
       <article class="founder-card" id="painting-05">
         <a class="founder-art-link" href="assets/founders/05.webp" data-painting="05" aria-label="View Winter Lantern">
-          <img src="assets/founders/05-small.webp" srcset="assets/founders/05-small.webp 640w, assets/founders/05.webp 1536w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 960px) 45vw, 30vw" width="1536" height="1024" loading="lazy" decoding="async" alt="A small lantern brings a pocket of warmth to the hush of winter." />
+          <span class="founder-gallery-art"><img src="assets/founders/05-small.webp" srcset="assets/founders/05-small.webp 640w, assets/founders/05.webp 1536w" sizes="(max-width: 640px) calc(100vw - 104px), (max-width: 1160px) 42vw, 480px" width="1536" height="1024" loading="lazy" decoding="async" alt="A small lantern brings a pocket of warmth to the hush of winter." /></span>
           <span class="founder-art-cue" aria-hidden="true">↗</span>
         </a>
         <div class="founder-caption"><div><h2>Winter Lantern</h2><p>A winter hideaway</p></div><span class="founder-number">05 / 20</span></div>
       </article>
       <article class="founder-card" id="painting-06">
         <a class="founder-art-link" href="assets/founders/06.webp" data-painting="06" aria-label="View Lotus Morning">
-          <img src="assets/founders/06-small.webp" srcset="assets/founders/06-small.webp 640w, assets/founders/06.webp 1536w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 960px) 45vw, 30vw" width="1536" height="1024" loading="lazy" decoding="async" alt="Lotus flowers open beneath distant pagodas and a soft morning sky." />
+          <span class="founder-gallery-art"><img src="assets/founders/06-small.webp" srcset="assets/founders/06-small.webp 640w, assets/founders/06.webp 1536w" sizes="(max-width: 640px) calc(100vw - 104px), (max-width: 1160px) 42vw, 480px" width="1536" height="1024" loading="lazy" decoding="async" alt="Lotus flowers open beneath distant pagodas and a soft morning sky." /></span>
           <span class="founder-art-cue" aria-hidden="true">↗</span>
         </a>
         <div class="founder-caption"><div><h2>Lotus Morning</h2><p>West Lake-inspired · China</p></div><span class="founder-number">06 / 20</span></div>
       </article>
       <article class="founder-card" id="painting-07">
         <a class="founder-art-link" href="assets/founders/07.webp" data-painting="07" aria-label="View The Little Orchard">
-          <img src="assets/founders/07-small.webp" srcset="assets/founders/07-small.webp 640w, assets/founders/07.webp 1536w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 960px) 45vw, 30vw" width="1536" height="1024" loading="lazy" decoding="async" alt="A small discovery among fruit trees makes an ordinary morning feel special." />
+          <span class="founder-gallery-art"><img src="assets/founders/07-small.webp" srcset="assets/founders/07-small.webp 640w, assets/founders/07.webp 1536w" sizes="(max-width: 640px) calc(100vw - 104px), (max-width: 1160px) 42vw, 480px" width="1536" height="1024" loading="lazy" decoding="async" alt="A small discovery among fruit trees makes an ordinary morning feel special." /></span>
           <span class="founder-art-cue" aria-hidden="true">↗</span>
         </a>
         <div class="founder-caption"><div><h2>The Little Orchard</h2><p>An orchard in the sunshine</p></div><span class="founder-number">07 / 20</span></div>
       </article>
       <article class="founder-card" id="painting-08">
         <a class="founder-art-link" href="assets/founders/08.webp" data-painting="08" aria-label="View Fuji After the Rain">
-          <img src="assets/founders/08-small.webp" srcset="assets/founders/08-small.webp 640w, assets/founders/08.webp 1536w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 960px) 45vw, 30vw" width="1536" height="1024" loading="lazy" decoding="async" alt="Nivo discovers a whole mountain reflected in a little rain puddle." />
+          <span class="founder-gallery-art"><img src="assets/founders/08-small.webp" srcset="assets/founders/08-small.webp 640w, assets/founders/08.webp 1536w" sizes="(max-width: 640px) calc(100vw - 104px), (max-width: 1160px) 42vw, 480px" width="1536" height="1024" loading="lazy" decoding="async" alt="Nivo discovers a whole mountain reflected in a little rain puddle." /></span>
           <span class="founder-art-cue" aria-hidden="true">↗</span>
         </a>
         <div class="founder-caption"><div><h2>Fuji After the Rain</h2><p>Mount Fuji-inspired · Japan</p></div><span class="founder-number">08 / 20</span></div>
       </article>
       <article class="founder-card" id="painting-09">
         <a class="founder-art-link" href="assets/founders/09.webp" data-painting="09" aria-label="View Coral Cove">
-          <img src="assets/founders/09-small.webp" srcset="assets/founders/09-small.webp 640w, assets/founders/09.webp 1536w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 960px) 45vw, 30vw" width="1536" height="1024" loading="lazy" decoding="async" alt="Turquoise water winds between limestone cliffs in a sheltered tropical cove." />
+          <span class="founder-gallery-art"><img src="assets/founders/09-small.webp" srcset="assets/founders/09-small.webp 640w, assets/founders/09.webp 1536w" sizes="(max-width: 640px) calc(100vw - 104px), (max-width: 1160px) 42vw, 480px" width="1536" height="1024" loading="lazy" decoding="async" alt="Turquoise water winds between limestone cliffs in a sheltered tropical cove." /></span>
           <span class="founder-art-cue" aria-hidden="true">↗</span>
         </a>
         <div class="founder-caption"><div><h2>Coral Cove</h2><p>Krabi-inspired · Thailand</p></div><span class="founder-number">09 / 20</span></div>
       </article>
       <article class="founder-card" id="painting-10">
         <a class="founder-art-link" href="assets/founders/10.webp" data-painting="10" aria-label="View The Wishing Tree">
-          <img src="assets/founders/10-small.webp" srcset="assets/founders/10-small.webp 640w, assets/founders/10.webp 1536w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 960px) 45vw, 30vw" width="1536" height="1024" loading="lazy" decoding="async" alt="Beneath an old sheltering tree, one golden winged seed drifts toward Nivo." />
+          <span class="founder-gallery-art"><img src="assets/founders/10-small.webp" srcset="assets/founders/10-small.webp 640w, assets/founders/10.webp 1536w" sizes="(max-width: 640px) calc(100vw - 104px), (max-width: 1160px) 42vw, 480px" width="1536" height="1024" loading="lazy" decoding="async" alt="Beneath an old sheltering tree, one golden winged seed drifts toward Nivo." /></span>
           <span class="founder-art-cue" aria-hidden="true">↗</span>
         </a>
         <div class="founder-caption"><div><h2>The Wishing Tree</h2><p>An old woodland clearing</p></div><span class="founder-number">10 / 20</span></div>
       </article>
       <article class="founder-card" id="painting-11">
         <a class="founder-art-link" href="assets/founders/11.webp" data-painting="11" aria-label="View Lavender Dusk">
-          <img src="assets/founders/11-small.webp" srcset="assets/founders/11-small.webp 640w, assets/founders/11.webp 1536w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 960px) 45vw, 30vw" width="1536" height="1024" loading="lazy" decoding="async" alt="Rows of lavender lead into the last warm light of a quiet summer day." />
+          <span class="founder-gallery-art"><img src="assets/founders/11-small.webp" srcset="assets/founders/11-small.webp 640w, assets/founders/11.webp 1536w" sizes="(max-width: 640px) calc(100vw - 104px), (max-width: 1160px) 42vw, 480px" width="1536" height="1024" loading="lazy" decoding="async" alt="Rows of lavender lead into the last warm light of a quiet summer day." /></span>
           <span class="founder-art-cue" aria-hidden="true">↗</span>
         </a>
         <div class="founder-caption"><div><h2>Lavender Dusk</h2><p>Provence-inspired · France</p></div><span class="founder-number">11 / 20</span></div>
       </article>
       <article class="founder-card" id="painting-12">
         <a class="founder-art-link" href="assets/founders/12.webp" data-painting="12" aria-label="View Above the Clouds">
-          <img src="assets/founders/12-small.webp" srcset="assets/founders/12-small.webp 640w, assets/founders/12.webp 1536w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 960px) 45vw, 30vw" width="1536" height="1024" loading="lazy" decoding="async" alt="Ancient pines hold their place above granite peaks and a rolling sea of clouds." />
+          <span class="founder-gallery-art"><img src="assets/founders/12-small.webp" srcset="assets/founders/12-small.webp 640w, assets/founders/12.webp 1536w" sizes="(max-width: 640px) calc(100vw - 104px), (max-width: 1160px) 42vw, 480px" width="1536" height="1024" loading="lazy" decoding="async" alt="Ancient pines hold their place above granite peaks and a rolling sea of clouds." /></span>
           <span class="founder-art-cue" aria-hidden="true">↗</span>
         </a>
         <div class="founder-caption"><div><h2>Above the Clouds</h2><p>Huangshan-inspired · China</p></div><span class="founder-number">12 / 20</span></div>
       </article>
       <article class="founder-card" id="painting-13">
         <a class="founder-art-link" href="assets/founders/13.webp" data-painting="13" aria-label="View The Hidden Spring">
-          <img src="assets/founders/13-small.webp" srcset="assets/founders/13-small.webp 640w, assets/founders/13.webp 1536w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 960px) 45vw, 30vw" width="1536" height="1024" loading="lazy" decoding="async" alt="Clear jewel-coloured pools reveal a quiet world beneath the forest." />
+          <span class="founder-gallery-art"><img src="assets/founders/13-small.webp" srcset="assets/founders/13-small.webp 640w, assets/founders/13.webp 1536w" sizes="(max-width: 640px) calc(100vw - 104px), (max-width: 1160px) 42vw, 480px" width="1536" height="1024" loading="lazy" decoding="async" alt="Clear jewel-coloured pools reveal a quiet world beneath the forest." /></span>
           <span class="founder-art-cue" aria-hidden="true">↗</span>
         </a>
         <div class="founder-caption"><div><h2>The Hidden Spring</h2><p>Jiuzhaigou-inspired · China</p></div><span class="founder-number">13 / 20</span></div>
       </article>
       <article class="founder-card" id="painting-14">
         <a class="founder-art-link" href="assets/founders/14.webp" data-painting="14" aria-label="View Autumn Letter">
-          <img src="assets/founders/14-small.webp" srcset="assets/founders/14-small.webp 640w, assets/founders/14.webp 1536w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 960px) 45vw, 30vw" width="1536" height="1024" loading="lazy" decoding="async" alt="Autumn leaves and a little letter turn a quiet garden into a moment to remember." />
+          <span class="founder-gallery-art"><img src="assets/founders/14-small.webp" srcset="assets/founders/14-small.webp 640w, assets/founders/14.webp 1536w" sizes="(max-width: 640px) calc(100vw - 104px), (max-width: 1160px) 42vw, 480px" width="1536" height="1024" loading="lazy" decoding="async" alt="Autumn leaves and a little letter turn a quiet garden into a moment to remember." /></span>
           <span class="founder-art-cue" aria-hidden="true">↗</span>
         </a>
         <div class="founder-caption"><div><h2>Autumn Letter</h2><p>Kyoto-inspired · Japan</p></div><span class="founder-number">14 / 20</span></div>
       </article>
       <article class="founder-card" id="painting-15">
         <a class="founder-art-link" href="assets/founders/15.webp" data-painting="15" aria-label="View Cloud Harbour">
-          <img src="assets/founders/15-small.webp" srcset="assets/founders/15-small.webp 640w, assets/founders/15.webp 1536w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 960px) 45vw, 30vw" width="1536" height="1024" loading="lazy" decoding="async" alt="Whitewashed terraces overlook a blue harbour, where sky and sea seem to meet." />
+          <span class="founder-gallery-art"><img src="assets/founders/15-small.webp" srcset="assets/founders/15-small.webp 640w, assets/founders/15.webp 1536w" sizes="(max-width: 640px) calc(100vw - 104px), (max-width: 1160px) 42vw, 480px" width="1536" height="1024" loading="lazy" decoding="async" alt="Whitewashed terraces overlook a blue harbour, where sky and sea seem to meet." /></span>
           <span class="founder-art-cue" aria-hidden="true">↗</span>
         </a>
         <div class="founder-caption"><div><h2>Cloud Harbour</h2><p>Santorini-inspired · Greece</p></div><span class="founder-number">15 / 20</span></div>
       </article>
       <article class="founder-card" id="painting-16">
         <a class="founder-art-link" href="assets/founders/16.webp" data-painting="16" aria-label="View Gardens of Light">
-          <img src="assets/founders/16-small.webp" srcset="assets/founders/16-small.webp 640w, assets/founders/16.webp 1536w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 960px) 45vw, 30vw" width="1536" height="1024" loading="lazy" decoding="async" alt="An orchid beside Nivo echoes the illuminated gardens rising across the water." />
+          <span class="founder-gallery-art"><img src="assets/founders/16-small.webp" srcset="assets/founders/16-small.webp 640w, assets/founders/16.webp 1536w" sizes="(max-width: 640px) calc(100vw - 104px), (max-width: 1160px) 42vw, 480px" width="1536" height="1024" loading="lazy" decoding="async" alt="An orchid beside Nivo echoes the illuminated gardens rising across the water." /></span>
           <span class="founder-art-cue" aria-hidden="true">↗</span>
         </a>
         <div class="founder-caption"><div><h2>Gardens of Light</h2><p>Singapore-inspired</p></div><span class="founder-number">16 / 20</span></div>
       </article>
       <article class="founder-card" id="painting-17">
         <a class="founder-art-link" href="assets/founders/17.webp" data-painting="17" aria-label="View Desert Bloom">
-          <img src="assets/founders/17-small.webp" srcset="assets/founders/17-small.webp 640w, assets/founders/17.webp 1536w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 960px) 45vw, 30vw" width="1536" height="1024" loading="lazy" decoding="async" alt="Among desert rocks and sculptural trees, a small bloom is worth stopping for." />
+          <span class="founder-gallery-art"><img src="assets/founders/17-small.webp" srcset="assets/founders/17-small.webp 640w, assets/founders/17.webp 1536w" sizes="(max-width: 640px) calc(100vw - 104px), (max-width: 1160px) 42vw, 480px" width="1536" height="1024" loading="lazy" decoding="async" alt="Among desert rocks and sculptural trees, a small bloom is worth stopping for." /></span>
           <span class="founder-art-cue" aria-hidden="true">↗</span>
         </a>
         <div class="founder-caption"><div><h2>Desert Bloom</h2><p>Joshua Tree-inspired · California</p></div><span class="founder-number">17 / 20</span></div>
       </article>
       <article class="founder-card" id="painting-18">
         <a class="founder-art-link" href="assets/founders/18.webp" data-painting="18" aria-label="View Firefly Evening">
-          <img src="assets/founders/18-small.webp" srcset="assets/founders/18-small.webp 640w, assets/founders/18.webp 1536w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 960px) 45vw, 30vw" width="1536" height="1024" loading="lazy" decoding="async" alt="Nivo watches a few golden fireflies gather over a quiet meadow pond." />
+          <span class="founder-gallery-art"><img src="assets/founders/18-small.webp" srcset="assets/founders/18-small.webp 640w, assets/founders/18.webp 1536w" sizes="(max-width: 640px) calc(100vw - 104px), (max-width: 1160px) 42vw, 480px" width="1536" height="1024" loading="lazy" decoding="async" alt="Nivo watches a few golden fireflies gather over a quiet meadow pond." /></span>
           <span class="founder-art-cue" aria-hidden="true">↗</span>
         </a>
         <div class="founder-caption"><div><h2>Firefly Evening</h2><p>A meadow at twilight</p></div><span class="founder-number">18 / 20</span></div>
       </article>
       <article class="founder-card" id="painting-19">
         <a class="founder-art-link" href="assets/founders/19.webp" data-painting="19" aria-label="View The Blue Hour">
-          <img src="assets/founders/19-small.webp" srcset="assets/founders/19-small.webp 640w, assets/founders/19.webp 1536w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 960px) 45vw, 30vw" width="1536" height="1024" loading="lazy" decoding="async" alt="A warm cup of tea, still mountain water, and the first gold star of evening." />
+          <span class="founder-gallery-art"><img src="assets/founders/19-small.webp" srcset="assets/founders/19-small.webp 640w, assets/founders/19.webp 1536w" sizes="(max-width: 640px) calc(100vw - 104px), (max-width: 1160px) 42vw, 480px" width="1536" height="1024" loading="lazy" decoding="async" alt="A warm cup of tea, still mountain water, and the first gold star of evening." /></span>
           <span class="founder-art-cue" aria-hidden="true">↗</span>
         </a>
         <div class="founder-caption"><div><h2>The Blue Hour</h2><p>Lake Louise-inspired · Canada</p></div><span class="founder-number">19 / 20</span></div>
       </article>
       <article class="founder-card" id="painting-20">
         <a class="founder-art-link" href="assets/founders/20.webp" data-painting="20" aria-label="View A Place to Begin">
-          <img src="assets/founders/20-small.webp" srcset="assets/founders/20-small.webp 640w, assets/founders/20.webp 1536w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 960px) 45vw, 30vw" width="1536" height="1024" loading="lazy" decoding="async" alt="Nivo tends a tiny sprout through melting snow as sunrise opens across his home valley." />
+          <span class="founder-gallery-art"><img src="assets/founders/20-small.webp" srcset="assets/founders/20-small.webp 640w, assets/founders/20.webp 1536w" sizes="(max-width: 640px) calc(100vw - 104px), (max-width: 1160px) 42vw, 480px" width="1536" height="1024" loading="lazy" decoding="async" alt="Nivo tends a tiny sprout through melting snow as sunrise opens across his home valley." /></span>
           <span class="founder-art-cue" aria-hidden="true">↗</span>
         </a>
         <div class="founder-caption"><div><h2>A Place to Begin</h2><p>Nivo’s home valley</p></div><span class="founder-number">20 / 20</span></div>

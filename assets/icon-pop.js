@@ -8,6 +8,7 @@
   var copy = {
     en: {
       snowyName: "Snowy",
+      supporterName: "Early Supporter", supporterStory: "The first 20. You were here when Nivolo first hatched.",
       deepseaName: "Deep-Sea", deepseaStory: "A little ocean light, wherever your day takes you. Nivo brings his cyan-and-violet glow from the deep to your Home Screen.",
       membership: "Included with an active Nivolo Plus membership",
       otherIcons: "Achievement icons are earned through progress. Keepsakes are unlocked with Krill.",
@@ -16,6 +17,7 @@
     },
     zh: {
       snowyName: "雪花",
+      supporterName: "早期支持者", supporterStory: "最初的二十位。Nivolo 刚刚破壳时，你就已经在这里了。",
       deepseaName: "深海", deepseaStory: "无论今天去向哪里，都带上一点海洋的光。Nivo 把深海里的青紫微光，带到你的主屏幕。",
       membership: "Nivolo Plus 会员有效期内专属",
       otherIcons: "成就图标靠进步赢得，珍藏图标用磷虾解锁。",
@@ -469,6 +471,7 @@
   var lastFocus = null;
   function openFor(id, name, story) {
     var deepsea = id === "deepsea";
+    if (id === "early-supporter") name = t("supporterName");
     if (deepsea) { name = t("deepseaName"); story = t("deepseaStory"); }
     var info = overlay.querySelector(".ipop-info");
     info.hidden = !deepsea;
@@ -564,7 +567,7 @@
     }
     overlay.querySelector(".ipop-back h3").textContent = name;
     overlay.querySelector(".ipop-back p").textContent = hatchling
-      ? "The first 20. You were here when Nivolo first hatched."
+      ? t("supporterStory")
       : story;
     tintFor(id, function (c) {
       tile.style.setProperty("--tint-dark", mix(c, 0.62));
@@ -650,7 +653,7 @@
     var m = (img.getAttribute("src") || "").match(/([a-z_-]+)\.png$/);
     if (!m) return;
     var id = m[1];
-    var name = el.getAttribute("data-icon-name") || head.textContent;
+    var name = id === "early-supporter" ? t("supporterName") : (el.getAttribute("data-icon-name") || head.textContent);
     buttonHost.classList.add("ipop-source");
     /* A real button, laid over the whole card: the card stays an article
        (or a list item) with its heading and its story, and the thing that
@@ -680,6 +683,10 @@
   });
   Array.prototype.forEach.call(document.querySelectorAll("#collection .lore-card, #collection .lore-mini li"), function (el) {
     attachPreview(el, el, el.querySelector("img"), el.querySelector("h3"), el.querySelector("p"));
+  });
+
+  Array.prototype.forEach.call(document.querySelectorAll("[data-founder-icon]"), function (el) {
+    attachPreview(el, el.querySelector(".founder-icon-preview"), el.querySelector("img"), el.querySelector('[data-founder-copy="iconLabel"]'), el.querySelector(".founder-icon-hint, .founder-icon-note"));
   });
 
   var benefitIcon = document.querySelector(".benefit-icon-preview");
@@ -713,7 +720,7 @@
      are only delivered on a rendering update, which a backgrounded tab does
      not get — the warm-up would then be waiting at the moment the tab comes
      back and the first icon is tapped. */
-  var collection = document.getElementById("collection");
+  var collection = document.getElementById("collection") || document.querySelector("[data-founder-icon]");
   function nearCollection() {
     if (!collection) return false;
     var r = collection.getBoundingClientRect();
