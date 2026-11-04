@@ -5,6 +5,7 @@
   const zh = document.documentElement.lang.startsWith('zh');
   const copy = {
     edition: ['The Founder’s Edition', '创始珍藏系列'],
+    iconHint: ['Take a closer look · tap to turn', '近距离欣赏 · 轻点来翻转'],
     iconLabel: ['Early Supporter icon', '早期支持者图标'],
     featureTitle: ['A little thank-you.\nFor our first twenty.', '一份小小的谢意。\n献给最初的二十位。'],
     featureBody: ['Twenty little worlds, for the people who believe in ours. Our first twenty paying members each receive a numbered ceramic-mosaic painting and the Early Supporter icon.', '二十个小世界，献给相信 Nivolo 的你。最初二十位付费会员，每人获赠一幅编号陶瓷马赛克画作与早期支持者图标。'],

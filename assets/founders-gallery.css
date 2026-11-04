@@ -26,8 +26,24 @@
 .founder-browse:hover { background: #34383d; }
 .founder-browse:active { transform: scale(.97); }
 .founder-welcome { padding: 28px; background: #fff; border: 1px solid var(--gallery-line); border-radius: 24px; }
-.founder-welcome-top { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 22px; }
-.founder-welcome-top img { display: block; width: 64px; height: 64px; border-radius: 16px; box-shadow: 0 5px 12px #203f3e1a; }
+.founder-welcome-top { margin-bottom: 24px; }
+.founder-icon-preview { position: relative; border-radius: 18px; }
+.founder-welcome .founder-icon-preview { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 28px 16px 20px; background: #e6eff3; text-align: center; }
+.founder-welcome-top img { display: block; width: 160px; height: 160px; margin-bottom: 8px; border-radius: 24%; box-shadow: 0 12px 22px #203f3e22; transition: transform 200ms ease; }
+.founder-icon-name { font: 600 14px/1.5 Inter, sans-serif; }
+.founder-icon-hint { color: #486270; font: 400 12px/1.5 Inter, sans-serif; visibility: hidden; }
+.founder-icon-preview.ipop-source .founder-icon-hint { visibility: visible; }
+.founder-icon-expand { display: none; position: absolute; right: 10px; bottom: 10px; width: 28px; height: 28px; place-items: center; border-radius: 9px; background: #fff; color: #344d5b; box-shadow: 0 2px 6px #203f3e14; font: 16px/1 Inter, sans-serif; }
+.founder-icon-preview.ipop-source .founder-icon-expand { display: grid; }
+.founder-feature .founder-icon-preview { flex: none; }
+.founder-feature .founder-icon-expand { right: -6px; bottom: -6px; width: 24px; height: 24px; font-size: 14px; }
+.founders-page .ipop-close { font-size: 24px; line-height: 1; }
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .founder-welcome .founder-icon-preview:hover img { transform: translateY(-4px) rotate(-3deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .founder-welcome-top img { transition: none; }
+}
 .founder-welcome-edition { max-width: 130px; color: #486270; font-size: 12px; text-align: right; }
 .founder-welcome h2 { margin: 0 0 12px; font: 600 24px/1.15 'Inter Tight', Inter, sans-serif; letter-spacing: -.025em; }
 .founder-welcome p { margin: 0; color: var(--gallery-muted); font-size: 13px; line-height: 1.7; }
@@ -96,7 +112,7 @@
 .founder-icon-label { margin: 0; color: #697268; font: 400 12px/1.5 Inter, Arial, sans-serif; }
 .founder-intro .founder-identity { width: fit-content; margin: 0 auto 30px; }
 .founder-feature .founder-identity { margin: 0; padding-top: 18px; border-top: 1px solid #48627026; gap: 12px; }
-.founder-feature .founder-identity img { width: 44px; height: 44px; border-radius: 11px; }
+.founder-feature .founder-identity img { width: 80px; height: 80px; border-radius: 20px; }
 .founder-feature .founder-icon-label { color: var(--ink); font-weight: 600; }
 .founder-icon-note { margin: 4px 0 0; color: #486270; font: 400 12px/1.5 var(--font-body); }
 .founder-feature-terms { grid-column: 1 / -1; margin: 0; padding: 18px 20px 18px 0; color: var(--ink-3); font: 400 12px/1.6 var(--font-body); }
@@ -207,7 +223,7 @@ html.founder-viewer-open { overflow: hidden; }
   .founder-intro-copy { font-size: 15px; margin-block: 20px; }
   .founder-welcome { padding: 22px; }
   .founder-welcome-top { margin-bottom: 18px; }
-  .founder-welcome-top img { width: 48px; height: 48px; border-radius: 12px; }
+  .founder-welcome-top img { width: 144px; height: 144px; }
   .founder-welcome h2 { font-size: 23px; }
   .founder-collection { padding-bottom: 48px; }
   .founder-collection-heading { flex-direction: column; align-items: start; gap: 12px; padding-bottom: 22px; }

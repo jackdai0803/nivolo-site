@@ -8,8 +8,10 @@
   <meta name="description" content="Twenty little worlds with Nivo. Explore the Founder’s Edition collection of ceramic-mosaic paintings." />
   <link rel="icon" href="assets/favicon-32.png?v=5" />
   <link rel="stylesheet" href="assets/fonts.css" />
-  <link rel="stylesheet" href="assets/founders-gallery.css?v=9" />
-  <script src="assets/founders-gallery.js?v=9" defer></script>
+  <link rel="stylesheet" href="styles.css?v=129" />
+  <link rel="stylesheet" href="assets/founders-gallery.css?v=10" />
+  <script src="assets/founders-gallery.js?v=10" defer></script>
+  <script src="assets/icon-pop.js?v=40" defer></script>
 </head>
 <body class="founders-page">
   <a class="founder-skip" href="#paintings" data-founder-copy="skip">Skip to paintings</a>
@@ -25,8 +27,15 @@
         <p class="founder-intro-copy" data-founder-copy="galleryIntro">Quiet shores. Star-filled skies. A little wander with Nivo, told through twenty ceramic-mosaic paintings.</p>
         <a class="founder-browse" href="#paintings"><span data-founder-copy="browse">Find your little world</span><span aria-hidden="true">↓</span></a>
       </div>
-      <aside class="founder-welcome" aria-labelledby="founder-welcome-title">
-        <div class="founder-welcome-top"><img src="assets/icons/early-supporter.png" width="64" height="64" alt="" /><span class="founder-welcome-edition" data-founder-copy="twenty">20 original artworks</span></div>
+      <aside class="founder-welcome" data-founder-icon aria-labelledby="founder-welcome-title">
+        <div class="founder-welcome-top">
+          <div class="founder-icon-preview">
+            <img src="assets/icons/early-supporter.png" width="160" height="160" alt="" />
+            <strong class="founder-icon-name" data-founder-copy="iconLabel">Early Supporter icon</strong>
+            <span class="founder-icon-hint" data-founder-copy="iconHint">Take a closer look · tap to turn</span>
+            <span class="founder-icon-expand" aria-hidden="true">↗</span>
+          </div>
+        </div>
         <h2 id="founder-welcome-title" data-founder-copy="welcomeTitle">Here from the beginning.</h2>
         <p data-founder-copy="welcomeBody">Our first twenty paying members each receive a numbered painting and the Early Supporter icon. Your supporter number matches your painting.</p>
         <p class="founder-welcome-note" data-founder-copy="featureTerms">Any paid membership counts. Free trials and launch-list signups do not reserve a place.</p>
