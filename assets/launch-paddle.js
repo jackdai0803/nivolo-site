@@ -1,4 +1,4 @@
-import { createRig, idleAt, neutralPose } from './nivo-rig.js?v=7';
+import { createRig, idleAt, neutralPose } from './nivo-rig.js?v=8';
 
 // The launch page owns this rig so the flipper and its paddle share one motion.
 const container = document.querySelector('[data-launch-nivo]');
@@ -7,10 +7,14 @@ if (container && card) {
   const artwork = new URL('./nivo-body.png', import.meta.url).href;
   const deepSeaArtwork = new URL('./nivo-deepsea.webp', import.meta.url).href;
   let appearance = 'classic';
+  const strings = { en: { transform: 'Transform Nivo' }, zh: { transform: '变换 Nivo 的外观' } };
+  const t = key => strings[document.documentElement.lang.startsWith('zh') ? 'zh' : 'en'][key];
+  container.setAttribute('aria-label', t('transform'));
   container.replaceChildren();
   const characters = ['classic', 'deepsea'].map(look => {
     const layer = document.createElement('span');
     layer.className = 'launch-nivo-layer';
+    layer.setAttribute('aria-hidden', 'true');
     layer.style.opacity = look === 'classic' ? '1' : '0';
     container.append(layer);
     const rig = createRig(layer, artwork, `launch-nivo-${look}`, 'Nivo', look, deepSeaArtwork);
@@ -32,7 +36,7 @@ if (container && card) {
   let artworkReady = false;
   const preload = new Image();
   preload.src = deepSeaArtwork;
-  preload.decode().then(() => { artworkReady = true; }).catch(() => {});
+  preload.decode().then(() => { artworkReady = true; container.disabled = false; }).catch(() => {});
   const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
   let frame = 0;
   let visible = true;
@@ -40,6 +44,9 @@ if (container && card) {
   let started = 0;
   let animateArrival = false;
   let clock = 0;
+  let idleClock = 0;
+  let direction = 1;
+  let manualChange = false;
   let previous = null;
   const HOLD_MS = 4400;
   const CHANGE_MS = 1000;
@@ -47,8 +54,19 @@ if (container && card) {
 
   function render(now) {
     cancelAnimationFrame(frame);
-    if (previous !== null && visible && !document.hidden && !preference.matches && !joined && artworkReady) {
-      clock += Math.min(40, now - previous);
+    if (previous !== null && visible && !document.hidden && !preference.matches && (!joined || manualChange) && artworkReady) {
+      const delta = Math.min(40, now - previous);
+      idleClock += delta;
+      const cycle = HOLD_MS + CHANGE_MS;
+      const before = Math.floor(clock / cycle);
+      clock += delta * direction;
+      if (direction < 0 && clock % cycle <= HOLD_MS) {
+        clock = before * cycle;
+        direction = 1;
+        manualChange = false;
+      } else if (Math.floor(clock / cycle) !== before) {
+        manualChange = false;
+      }
     }
     previous = now;
     const cycle = HOLD_MS + CHANGE_MS;
@@ -56,7 +74,7 @@ if (container && card) {
     const blend = ease((phase - .32) / .28);
     const fromDeepSea = Math.floor(clock / cycle) % 2 === 1;
     let deepSeaAmount = appearance === 'deepsea' ? 1 : 0;
-    if (!joined && !preference.matches) {
+    if (!preference.matches) {
       deepSeaAmount = fromDeepSea ? 1 - blend : blend;
       appearance = deepSeaAmount >= .5 ? 'deepsea' : 'classic';
       container.dataset.nivoAppearance = appearance;
@@ -64,7 +82,7 @@ if (container && card) {
     container.style.transform = 'none';
     const elapsed = now - started;
     const progress = joined ? (animateArrival && !preference.matches ? ease(elapsed / 750) : 1) : 0;
-    const pose = joined ? neutralPose() : preference.matches ? neutralPose() : idleAt(clock);
+    const pose = joined ? neutralPose() : preference.matches ? neutralPose() : idleAt(idleClock);
     if (!joined && !preference.matches && phase > 0) {
       // A little anticipation and lift keeps Nivo round and facing the visitor.
       const poses = [[0, 0, 1, 0], [.2, 12, 1.045, -2], [.48, -34, .975, 2], [.72, -8, 1.02, -.8], [1, 0, 1, 0]];
@@ -99,15 +117,35 @@ if (container && card) {
       check.style.strokeDasharray = '1';
       check.style.strokeDashoffset = String(1 - (animateArrival && !preference.matches ? ease((elapsed - 420) / 300) : 1));
     }
-    if (visible && !document.hidden && !preference.matches && (!joined || (animateArrival && elapsed < 950))) {
+    if (visible && !document.hidden && !preference.matches && (!joined || manualChange || (animateArrival && elapsed < 950))) {
       frame = requestAnimationFrame(render);
     }
   }
+  container.addEventListener('click', () => {
+    if (!artworkReady) return;
+    const cycle = HOLD_MS + CHANGE_MS;
+    if (preference.matches) {
+      appearance = appearance === 'classic' ? 'deepsea' : 'classic';
+      container.dataset.nivoAppearance = appearance;
+      clock = appearance === 'deepsea' ? cycle : 0;
+      direction = 1;
+      manualChange = false;
+    } else {
+      // Reverse from the current frame if tapped again during a change.
+      if (clock % cycle > HOLD_MS) direction *= -1;
+      else { clock = Math.floor(clock / cycle) * cycle + HOLD_MS; direction = 1; }
+      manualChange = true;
+    }
+    previous = null;
+    render(performance.now());
+  });
   function update() {
     const next = card.classList.contains('is-joined');
     if (next !== joined) {
       joined = next;
-      if (!joined) clock = appearance === 'deepsea' ? HOLD_MS + CHANGE_MS : 0;
+      clock = appearance === 'deepsea' ? HOLD_MS + CHANGE_MS : 0;
+      direction = 1;
+      manualChange = false;
       started = performance.now();
       animateArrival = joined && card.classList.contains('is-celebrating');
     }

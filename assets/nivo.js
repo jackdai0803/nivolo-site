@@ -1,4 +1,4 @@
-import { createRig, idleAt, neutralPose, celebrationAt, CELEBRATION_MS } from './nivo-rig.js?v=7';
+import { createRig, idleAt, neutralPose, celebrationAt, CELEBRATION_MS } from './nivo-rig.js?v=8';
 
 const strings = {
   en: { squish: 'Give Nivo a little squish', hint: 'Go on, give Nivo a squish.', again: 'One more? Nivo thinks so.', off: 'Sound: off', on: 'Sound: on' },

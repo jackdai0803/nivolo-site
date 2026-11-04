@@ -138,11 +138,12 @@ export function createRig(container, source, id, label, appearance = "classic", 
       <!-- The torso covers rotating roots; the original white face lives here. -->
       <g data-part="body">${image(`mask="url(#${id}-body-mask)"`)}</g>
       ${eyes.map(e => `<g data-part="${e.name}-eye-assembly">
-        ${ellipse(e, `fill="${deepsea ? '#f1fbff' : '#ffffff'}"`)}
+        ${ellipse(e, `fill="#ffffff"`)}
         <g data-part="${e.name}-eye">${image(`clip-path="url(#${id}-${e.name}-eye)"`)}</g>
         <path data-part="${e.name}-lid" fill="none" stroke="#111111" stroke-width="16" stroke-linecap="round" opacity="0" transform="translate(${e.cx} ${e.cy}) rotate(-17)" d="M-59 8 Q0 38 59 8"/>
       </g>`).join('')}
-      <g data-part="beak">${image(`clip-path="url(#${id}-beak-window)"`)}</g>
+      <!-- Deep-Sea’s intact beak is already on the torso. Its old overlay caught a pupil edge. -->
+      <g data-part="beak">${deepsea ? '' : image(`clip-path="url(#${id}-beak-window)"`)}</g>
     </g>
     <g data-part="SparkleBurst" fill="${deepsea ? "#9ae7ed" : "#f5bb43"}" opacity="0" aria-hidden="true">
       ${[[228,365],[1000,320],[1100,635],[210,665],[350,215],[1030,960]].map(([x,y],i)=>`<path data-sparkle="${i}" data-x="${x}" data-y="${y}" d="M0 -16 Q3 -3 14 0 Q3 3 0 16 Q-3 3 -14 0 Q-3 -3 0 -16Z" transform="translate(${x} ${y})"/>`).join('')}
@@ -173,7 +174,8 @@ export function createRig(container, source, id, label, appearance = "classic", 
         const openness = Math.max(.025, 1 - pose.blink);
         const node = nodes[`${eye.name}-eye`];
         node.setAttribute('transform', `translate(${eye.cx} ${eye.cy}) rotate(-17) scale(1 ${openness}) rotate(17) translate(${-eye.cx} ${-eye.cy})`);
-        node.setAttribute('opacity', String(clamp(openness / .22)));
+        // The closed lid replaces the pupil completely; no compressed bitmap line.
+        node.setAttribute('opacity', String(clamp(deepsea ? (openness - .025) / .195 : openness / .22)));
         const lid = nodes[`${eye.name}-lid`];
         lid.setAttribute('opacity', String(clamp((pose.blink - .62) / .3)));
         lid.setAttribute('d', pose.happy > .2 ? 'M-59 10 Q0 -43 59 10' : 'M-59 8 Q0 38 59 8');

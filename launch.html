@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="assets/fonts.css?v=5" />
   <link rel="stylesheet" href="styles.css?v=129" />
   <link rel="stylesheet" href="assets/nivo.css?v=6" />
-  <link rel="stylesheet" href="assets/launch-success.css?v=3" />
+  <link rel="stylesheet" href="assets/launch-success.css?v=4" />
 </head>
 <body class="launch-body">
   <a class="skip-link" href="#main">Skip to form</a>
@@ -30,10 +30,10 @@
 
   <main id="main" tabindex="-1" class="launch-page">
     <section class="launch-card" id="launchCard" aria-labelledby="launch-title">
-      <div class="launch-art" aria-hidden="true">
+      <div class="launch-art">
         <span class="launch-orbit launch-orbit--one"></span>
         <span class="launch-orbit launch-orbit--two"></span>
-        <span class="site-nivo" data-launch-nivo aria-hidden="true"><svg viewBox="160 170 970 970"><image href="assets/nivo-body.png" width="1254" height="1254" /></svg></span>
+        <button type="button" class="site-nivo launch-nivo-toggle" data-launch-nivo aria-label="Transform Nivo" disabled><svg viewBox="160 170 970 970"><image href="assets/nivo-body.png" width="1254" height="1254" /></svg></button>
         <span class="launch-sparkles"><i></i><i></i><i></i><i></i><i></i><i></i></span>
         <span class="launch-art-note" id="launchArtNote" data-launch-copy="waiting">Nivo is waiting too.</span>
       </div>
@@ -86,6 +86,6 @@
   </main>
 
   <script src="assets/launch.js?v=4" defer></script>
-  <script type="module" src="assets/launch-paddle.js?v=5"></script>
+  <script type="module" src="assets/launch-paddle.js?v=6"></script>
 </body>
 </html>
