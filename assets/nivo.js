@@ -2,12 +2,11 @@ import { createRig, idleAt, neutralPose } from './nivo-rig.js?v=8';
 import { makeClassicSkin, heroLooks } from './nivo-skins.js?v=1';
 
 const strings = {
-  en: { transform: 'Transform Nivo', pause: 'Pause animation', resume: 'Resume animation', off: 'Sound: off', on: 'Sound: on' },
-  zh: { transform: '变换 Nivo 的外观', pause: '暂停动画', resume: '继续动画', off: '声音：关', on: '声音：开' },
+  en: { pause: 'Pause animation', resume: 'Resume animation', off: 'Sound: off', on: 'Sound: on' },
+  zh: { pause: '暂停动画', resume: '继续动画', off: '声音：关', on: '声音：开' },
 };
 const t = (key) => strings[document.documentElement.lang.startsWith('zh') ? 'zh' : 'en'][key];
 const controls = document.querySelector('[data-nivo-controls]');
-const hint = controls?.querySelector('[data-nivo-hint]');
 const soundButton = controls?.querySelector('[data-nivo-sound]');
 let soundOn = false;
 let audio;
@@ -36,7 +35,6 @@ const pop = async () => {
   } catch { /* Sound is an optional extra; the visual response always works. */ }
 };
 if (controls) {
-  hint?.remove();
   soundButton.querySelector('[data-nivo-sound-label]').textContent = t('off');
   soundButton.addEventListener('click', () => {
     soundOn = !soundOn;
@@ -45,7 +43,6 @@ if (controls) {
     if (soundOn) pop();
     else { audio?.close().catch(() => {}); audio = undefined; }
   });
-  controls.hidden = false;
 }
 
 // Snapshot of the shared app rig. Refresh both files when its artwork changes.
@@ -69,23 +66,23 @@ const plusIdleAt = (ms) => {
 };
 document.querySelectorAll('[data-nivo]').forEach((container, index) => {
   const deepSea = container.dataset.nivoAppearance === 'deepsea';
-  const play = container.closest('[data-nivo-play]');
-  const looks = play ? heroLooks : [{ id: deepSea ? 'deepsea' : 'classic', name: 'Nivo' }];
-  if (play) container.replaceChildren();
+  const autoCycle = container.hasAttribute('data-nivo-cycle');
+  const looks = autoCycle ? heroLooks : [{ id: deepSea ? 'deepsea' : 'classic', name: 'Nivo' }];
+  if (autoCycle) container.replaceChildren();
   const characters = new Map();
   const mount = (lookIndex) => {
     if (characters.has(lookIndex)) return characters.get(lookIndex);
     const look = looks[lookIndex];
-    const layer = play ? document.createElement('span') : container;
-    if (play) {
+    const layer = autoCycle ? document.createElement('span') : container;
+    if (autoCycle) {
       layer.className = 'nivo-look';
       layer.dataset.look = look.id;
       container.append(layer);
     }
-    const rig = play
+    const rig = autoCycle
       ? makeClassicSkin(layer, look, `site-nivo-${index}-${look.id}`)
       : createRig(layer, artwork, `site-nivo-${index}-${look.id}`, 'Nivo', look.id, deepSeaArtwork);
-    if (play) {
+    if (autoCycle) {
       // Fit the visible body, not the PNG canvas: Deep-Sea's silhouette is
       // 1019px tall versus Classic's 875px. Preserve its own face/glow rig.
       layer.querySelector('svg').setAttribute('viewBox', look.id === 'deepsea'
@@ -96,7 +93,7 @@ document.querySelectorAll('[data-nivo]').forEach((container, index) => {
     return character;
   };
   mount(0);
-  if (play) container.dataset.nivoAppearance = looks[0].id;
+  if (autoCycle) container.dataset.nivoAppearance = looks[0].id;
   let frame = 0;
   let clock = 0;
   let previous = null;
@@ -122,13 +119,15 @@ document.querySelectorAll('[data-nivo]').forEach((container, index) => {
     const delta = previous === null ? 0 : Math.min(40, now - previous);
     const moving = visible && !document.hidden && !preference.matches && !paused;
     if (moving) clock += delta;
-    if (play && ready && moving && clock - lastChange >= 4000) advance();
+    if (autoCycle && ready && moving && clock - lastChange >= 4000) {
+      advance();
+      pop();
+    }
     previous = now;
     progress = preference.matches || paused ? 1 : Math.min(1, progress + delta / 560);
     const blend = ease(progress);
     const pose = preference.matches || paused ? neutralPose() : deepSea ? plusIdleAt(clock) : idleAt(clock);
-    if (play) {
-      // Follow the current hop when another click redirects the reveal.
+    if (autoCycle) {
       hop = preference.matches || paused ? 0 : hop + (Math.sin(progress * Math.PI) * 24 - hop) * (1 - Math.exp(-delta / 70));
       pose.y -= hop;
       pose.sx *= 1 - hop / 1400;
@@ -139,7 +138,7 @@ document.querySelectorAll('[data-nivo]').forEach((container, index) => {
     }
     for (const [lookIndex, character] of characters) {
       const { look, layer, rig } = character;
-      if (play) {
+      if (autoCycle) {
         character.opacity = character.from * (1 - blend) + (lookIndex === target ? blend : 0);
         layer.style.opacity = String(character.opacity);
         if (progress === 1 && lookIndex !== target) {
@@ -148,24 +147,22 @@ document.querySelectorAll('[data-nivo]').forEach((container, index) => {
           continue;
         }
       }
-      rig.render(play && look.id === 'deepsea' ? { ...pose, left: 0, right: 0 } : pose);
+      rig.render(autoCycle && look.id === 'deepsea' ? { ...pose, left: 0, right: 0 } : pose);
     }
     if (moving) frame = requestAnimationFrame(render);
   };
   const resume = () => {
     previous = null;
-    if (pauseButton) pauseButton.style.display = preference.matches ? 'none' : '';
+    if (autoCycle && controls) controls.hidden = preference.matches;
     render(performance.now());
   };
-  if (play) {
-    play.setAttribute('aria-label', t('transform'));
+  if (autoCycle) {
     if (controls) {
       pauseButton = document.createElement('button');
       pauseButton.type = 'button';
       pauseButton.className = 'nivo-sound';
       pauseButton.textContent = t('pause');
       pauseButton.setAttribute('aria-pressed', 'false');
-      pauseButton.style.display = preference.matches ? 'none' : '';
       controls.prepend(pauseButton);
       pauseButton.addEventListener('click', () => {
         paused = !paused;
@@ -174,18 +171,12 @@ document.querySelectorAll('[data-nivo]').forEach((container, index) => {
         resume();
       });
     }
-    // Every collection skin shares these two images; decode before enabling.
+    // Decode the shared artwork before the first automatic change.
     Promise.all([artwork, deepSeaArtwork].map(src => {
       const preload = new Image();
       preload.src = src;
       return preload.decode();
-    })).then(() => { play.disabled = false; ready = true; lastChange = clock; }).catch(() => {});
-    play.addEventListener('click', () => {
-      render(performance.now());
-      advance();
-      render(performance.now());
-      pop();
-    });
+    })).then(() => { ready = true; lastChange = clock; }).catch(() => {});
   }
   const observer = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; resume(); });
   observer.observe(container);
