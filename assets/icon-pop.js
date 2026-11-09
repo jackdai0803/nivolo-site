@@ -303,18 +303,6 @@
     s.style.transform = "translateZ(calc(var(--ipop-depth-size, var(--ipop-tile)) * " + z.toFixed(6) + "))";
     tile.insertBefore(s, front);
   }
-  // Shallow contour layers carry the same artwork across a convex front.
-  // The image stays aligned; only each layer's visible contour and height change.
-  for (var ring = 1; ring < 32; ring++) {
-    var dome = document.createElement("div");
-    dome.className = "ipop-dome";
-    dome.setAttribute("aria-hidden", "true");
-    var rise = ring / 32;
-    dome.style.setProperty("--dome-trim", ((1 - Math.sqrt(1 - rise)) / 2).toFixed(5));
-    dome.style.setProperty("--dome-corner", Math.max(0, .29 - (1 - Math.sqrt(1 - rise)) / 2).toFixed(5));
-    dome.style.setProperty("--dome-rise", rise.toFixed(5));
-    tile.insertBefore(dome, front);
-  }
   // current tile size in px, for the few places that need a real number
   function tilePx() { return tile.offsetWidth || BASE; }
 
@@ -367,9 +355,6 @@
       suspension.style.transform = "rotateZ(" + swing.toFixed(3) + "deg)";
     }
     tile.style.transform = "rotateX(" + cur.x + "deg) rotateY(" + cur.y + "deg)";
-    // A broad reflected light shifts gently as the glazed surface turns.
-    tile.style.setProperty("--glaze-x", (25 - Math.sin(cur.y * Math.PI / 180) * 18).toFixed(1) + "%");
-    tile.style.setProperty("--glaze-y", (7 + Math.sin(cur.x * Math.PI / 180) * 8).toFixed(1) + "%");
     if (sceneActive) {
       // The environment drifts opposite the tile at a much lower rate,
       // creating depth without making the backdrop feel attached to the cursor.
@@ -486,8 +471,7 @@
     ceramic = id === "porcelain" || id === "kintsugi";
     hatchling = id === "early-supporter";
     collectible = pendant || ceramic || hatchling;
-    // Every icon shares the same ceramic pebble silhouette and domed surface.
-    overlay.classList.add("is-glazed");
+    // Use the original flat-faced app-icon tile, without a ceramic coating.
     swing = collectible && !reduceMotion ? (ceramic ? -2 : -3) : 0;
     swingVelocity = swingTarget = 0;
     suspension.style.transform = "rotateZ(" + swing + "deg)";
