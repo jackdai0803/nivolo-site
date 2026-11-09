@@ -1,4 +1,4 @@
-//#region ../pebble-app/src/flowers/editions.js
+//#region src/flowers/editions.js
 var newEditions = [
 	{
 		id: "white-lotus",
@@ -227,7 +227,7 @@ var firstScenes = {
 	}
 };
 //#endregion
-//#region ../pebble-app/src/flowers/catalog.js
+//#region src/flowers/catalog.js
 var flowers = [
 	{
 		id: "plum-blossom",
@@ -271,7 +271,7 @@ var flowers = [
 	...f
 }));
 //#endregion
-//#region ../pebble-app/src/flowers/edition-art.js
+//#region src/flowers/edition-art.js
 var isNewEdition = (id) => newEditions.some((f) => f.id === id);
 var palette = {
 	"white-lotus": [
@@ -533,7 +533,7 @@ function editionPlacement(id, icon = false) {
 	return `translate(${x} ${y}) rotate(${r}) scale(${s})`;
 }
 //#endregion
-//#region ../pebble-app/src/flowers/soft-flowers.js
+//#region src/flowers/soft-flowers.js
 function softFlowerDefs(uid) {
 	const radial = (name, a, b, c) => `<radialGradient id="${uid}-${name}" cx="35%" cy="24%" r="86%"><stop stop-color="${a}"/><stop offset=".54" stop-color="${b}"/><stop offset="1" stop-color="${c}"/></radialGradient>`;
 	return `${radial("plum", "#fff1ed", "#efafbd", "#bd6488")}${radial("plum-inner", "#fff7ef", "#ffc9cc", "#df819e")}${radial("jasmine", "#ffffff", "#fffdf0", "#cbd7ba")}${radial("jasmine-inner", "#ffffff", "#fffef6", "#e7e9d6")}${radial("camellia", "#ffd0ad", "#ee775f", "#b83b39")}${radial("camellia-inner", "#ffe5c4", "#f6a583", "#d35846")}${radial("leaf", "#a9c59a", "#527e59", "#264e40")}${radial("bud", "#ffd9dc", "#d77b9e", "#994c70")}${radial("gold", "#fff4bd", "#ecc36f", "#c99346")}
@@ -604,7 +604,7 @@ function flowerPlacement(kind, icon = false) {
 	return kind === "jasmine" ? "translate(377 363) rotate(-16) scale(1.35)" : kind === "camellia" ? "translate(845 310) rotate(-12) scale(1.15)" : "translate(845 315) rotate(-12) scale(1.2)";
 }
 //#endregion
-//#region ../pebble-app/src/nivoRig.js
+//#region src/nivoRig.js
 var EYES = [{
 	name: "left",
 	cx: 489,
@@ -802,7 +802,7 @@ function applyClassicCoat(svg, uid, colors, markings = "") {
 //#region \0flower-body
 var _flower_body_default = new URL("./nivo-body.png", "" + import.meta.url).href;
 //#endregion
-//#region ../pebble-app/src/flowers/art.js
+//#region src/flowers/art.js
 var softFaceIds = [
 	"plum-blossom",
 	"jasmine",
@@ -845,7 +845,7 @@ function makeFlower(host, f, uid) {
 	} };
 }
 //#endregion
-//#region ../pebble-app/src/flowers/scenes.js
+//#region src/flowers/scenes.js
 var bloom = (f, u, x, y, s, r = 0) => (isNewEdition(f.id) ? editionBloom : softBloom)(u, f.id, x, y, s, r);
 var leaf = (u, x, y, r, s = 1) => `<g transform="translate(${x} ${y}) rotate(${r}) scale(${s})"><path d="M0 0C-40-27-58-76-3-120C29-79 41-36 0 0Z" fill="url(#${u}-leaf)"/><path d="M0-8Q-8-50-3-102" stroke="#d5e4bf" stroke-width="1.5" opacity=".3" fill="none"/></g>`;
 var flowers$1 = (f, u, points) => points.map(([x, y, s, r = 0]) => bloom(f, u, x, y, s, r)).join("");
