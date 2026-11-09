@@ -1,0 +1,47 @@
+/* A quiet, dedicated home for the forthcoming Flower Edition. */
+.flower-edition{background:#eef0e9;scroll-margin-top:90px;color:#273c36}
+.flower-heading{max-width:720px;margin-bottom:42px}
+.flower-eyebrow{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin:0 0 16px;color:#526b5c}
+.flower-heading h2{font:800 clamp(38px,5vw,66px)/1.07 var(--font-display);letter-spacing:-.055em;margin:0 0 20px}
+.flower-heading>p:last-child{font-size:clamp(16px,1.8vw,19px);line-height:1.7;max-width:610px;color:#52635b}
+.flower-feature{display:grid;grid-template-columns:.72fr 1.28fr;gap:clamp(30px,6vw,80px);align-items:center}
+.flower-soon{display:inline-block;padding:7px 12px;border:1px solid #bccbc0;border-radius:100px;background:#ffffff69;color:#4c6657;font-size:11px;font-weight:650;letter-spacing:.02em}
+.flower-selected-zh{font-family:"Songti SC","Noto Serif SC",Georgia,serif;font-size:39px;letter-spacing:.14em;margin:25px 0 10px;color:#637660}
+.flower-selected-name{font:650 clamp(25px,3vw,35px)/1.15 var(--font-display);letter-spacing:-.035em;margin:0 0 14px}
+.flower-selected-note{font-size:16px;line-height:1.7;color:#52635b;max-width:320px;min-height:54px}
+.flower-matching{display:flex;align-items:center;gap:17px;margin:26px 0}
+.flower-matching img{width:76px;height:76px;border-radius:23%;box-shadow:0 4px 10px #193c2711}
+.flower-matching p{font-size:12px;line-height:1.85;color:#52635b;white-space:pre-line}
+.flower-availability{font-size:12px;line-height:1.7;max-width:270px;color:#647269}
+.flower-showcase{min-width:0}
+.flower-controls{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;min-height:42px}
+.flower-controls[hidden]{display:none}
+.flower-controls button{font:650 12px/1.2 var(--font-body);cursor:pointer;min-height:40px;border-radius:100px;border:0;transition:background 120ms ease,transform 120ms ease}
+.flower-controls button:active,.flower-choice:active{transform:scale(.97)}
+.flower-light{display:flex;padding:3px;border:1px solid #c3cec2;border-radius:100px;background:#e0e6db}
+.flower-light button{padding:9px 17px;color:#53665a;background:transparent}
+.flower-light button[aria-pressed=true]{background:#fffefa;color:#2c4436;box-shadow:0 1px 3px #18382417}
+.flower-pause{padding:9px 13px;background:transparent;color:#506457}
+.flower-pause:hover{background:#e0e6db}
+.flower-stage{position:relative;isolation:isolate;aspect-ratio:400/340;border-radius:28px;overflow:hidden;background:#d4e5df;border:1px solid #a8bdaf45}
+.flower-fallback{display:block;width:100%;height:100%;object-fit:cover}
+.flower-stage[data-ready] .flower-fallback{display:none}
+.flower-scenery,.flower-nivo{position:absolute;inset:0;pointer-events:none}
+.flower-scenery>svg,.flower-nivo>svg{width:100%;height:100%;display:block}
+.flower-nivo{padding:10px 24px 18px}
+.flower-stage-caption{font-size:12px;line-height:1.6;text-align:center;color:#5f7164;margin:14px 0 0}
+.flower-picker{border:0;padding:0;margin:42px 0 0;min-width:0}
+.flower-picker legend{font:650 14px/1.5 var(--font-body);margin-bottom:17px;color:#435a4b}
+.flower-choices{display:grid;grid-template-columns:repeat(11,minmax(0,1fr));gap:8px}
+.flower-choice{display:flex;flex-direction:column;align-items:center;gap:7px;min-width:0;border:1px solid transparent;border-radius:18px;background:transparent;padding:12px 5px 10px;cursor:pointer;color:#475e50;transition:background 120ms ease,border-color 120ms ease,transform 120ms ease}
+.flower-choice img{width:clamp(40px,5vw,58px);height:auto;aspect-ratio:1;border-radius:23%}
+.flower-choice:hover{background:#ffffff80}
+.flower-choice[aria-pressed=true]{background:#fffefa;border-color:#a9bbab;box-shadow:0 3px 0 #c7d2c3}
+.flower-choice:disabled{cursor:default}
+.flower-choice-zh{font:500 15px/1.3 "Songti SC",Georgia,serif;letter-spacing:.08em}
+.flower-choice-name{font:500 10px/1.4 var(--font-body);text-align:center;min-height:28px}
+.flower-edition button:focus-visible{outline:3px solid #456f58;outline-offset:4px}
+.flower-announcement{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+@media(max-width:1000px){.flower-feature{grid-template-columns:.85fr 1.15fr;gap:30px}.flower-choices{grid-template-columns:repeat(6,minmax(0,1fr))}.flower-choice img{width:54px}.flower-choice-name{font-size:11px;min-height:16px}}
+@media(max-width:680px){.flower-edition{padding-block:64px}.flower-heading{margin-bottom:27px}.flower-feature{display:flex;flex-direction:column;gap:22px;align-items:stretch}.flower-story{display:grid;grid-template-columns:1fr auto;column-gap:15px}.flower-soon{grid-column:1/-1;justify-self:start}.flower-selected-zh{margin:20px 0 7px;font-size:29px}.flower-selected-name{grid-column:1;margin-bottom:10px;font-size:26px}.flower-selected-note{grid-column:1;min-height:0;font-size:14px;max-width:none}.flower-matching{grid-column:2;grid-row:2/5;align-self:center;margin:0}.flower-matching img{width:65px;height:65px}.flower-matching p{display:none}.flower-availability{grid-column:1/-1;max-width:none;margin-top:14px;font-size:11px}.flower-stage{border-radius:23px}.flower-nivo{padding:5px 17px 12px}.flower-picker{margin-top:25px}.flower-choices{grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}.flower-choice{padding:10px 5px}.flower-choice img{width:49px}.flower-choice-name{min-height:29px;font-size:10px}}
+@media(prefers-reduced-motion:reduce){.flower-edition *{transition:none!important}}
