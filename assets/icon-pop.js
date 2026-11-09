@@ -63,7 +63,7 @@
     grumpy: scene("grumpy", "pressure"),
     snowy: scene("snowy", "snow"),
     blaze: scene("blaze", "embers"),
-    gold: scene("gold", "coins"),
+    gold: scene("classic", "twinkles"),
     melting: scene("melting", "drips"),
     sick: scene("sick", "haze"),
     party: scene("party", "confetti"),
@@ -89,7 +89,7 @@
   };
   var NEW_ICONS = { "early-supporter": true, porcelain: true, jade: true, kintsugi: true, deepsea: true };
   function iconSrc(id, large) {
-    return "assets/icons-3d/" + id + (large ? "-lg" : "") + (NEW_ICONS[id] ? ".jpg" : ".webp");
+    return "assets/icons-3d/" + id + (large ? "-lg" : "") + (NEW_ICONS[id] ? ".jpg" : ".webp") + "?v=20261109";
   }
 
   /* The artwork is a wide vista; on a portrait phone a cover-crop would show
@@ -499,7 +499,7 @@
        of the tile sitting empty while it downloads. */
     tile.classList.remove("icon-ready");
     tile.classList.remove("icon-instant");
-    front.style.backgroundImage = 'url("' + (collectible ? iconSrc(id, false) : 'assets/icons/' + id + '.png') + '")';
+    front.style.backgroundImage = 'url("' + (collectible ? iconSrc(id, false) : 'assets/icons/' + id + '.png?v=20261109') + '")';
     img.onload = function () { tile.classList.add("icon-ready"); };
     if (layered) {
       setSrc(img, layered.bg);
@@ -630,11 +630,17 @@
   window.addEventListener("resize", repickScene);
   window.addEventListener("orientationchange", repickScene);
 
+  // Keep the existing 3D viewer available from the inline mascot preview.
+  document.addEventListener("nivo-icon-inspect", function (event) {
+    var detail = event.detail;
+    if (detail && SCENES[detail.id]) openFor(detail.id, detail.name, detail.story);
+  });
+
   /* ── wire up the collection ── */
   var warmQueue = [];
   function attachPreview(el, buttonHost, img, head, para) {
     if (!img || !head || !para) return;
-    var m = (img.getAttribute("src") || "").match(/([a-z_-]+)\.png$/);
+    var m = (img.getAttribute("src") || "").match(/([a-z_-]+)\.png(?:\?[^#]*)?$/);
     if (!m) return;
     var id = m[1];
     var name = id === "early-supporter" ? t("supporterName") : (el.getAttribute("data-icon-name") || head.textContent);
@@ -648,7 +654,10 @@
     opener.className = "ipop-open";
     opener.setAttribute("aria-label", t("view", id === "deepsea" ? t("deepseaName") : name));
     buttonHost.appendChild(opener);
-    function go() { openFor(id, name, para.textContent); }
+    function go() {
+      var selection = new CustomEvent("nivo-look-select", { detail: { id: id }, cancelable: true });
+      if (document.dispatchEvent(selection)) openFor(id, name, para.textContent);
+    }
     /* fetch this one's art and environment the moment there is any hint of
        intent, so by the time the click lands the pixels are already there */
     function prime() { warmScene(id); warmIcon(id, true); }
@@ -674,7 +683,7 @@
   });
 
   var benefitIcon = document.querySelector(".benefit-icon-preview");
-  var snowyCard = document.querySelector('#collection .lore-card img[src$="/snowy.png"]');
+  var snowyCard = document.querySelector('#collection .lore-card img[src*="/snowy.png"]');
   if (benefitIcon && snowyCard) {
     var snowyStory = snowyCard.closest(".lore-card");
     benefitIcon.setAttribute("data-icon-name", t("snowyName"));

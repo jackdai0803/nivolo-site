@@ -1,5 +1,5 @@
 import { createRig, idleAt, neutralPose, smallWinAt, celebrationAt, SMALL_WIN_MS, CELEBRATION_MS } from './nivo-rig.js?v=8';
-import { makeClassicSkin, heroLooks } from './nivo-skins.js?v=1';
+import { makeClassicSkin, heroLooks } from './nivo-skins.js?v=3';
 
 const strings = {
   en: { pause: 'Pause animation', resume: 'Resume animation', off: 'Sound: off', on: 'Sound: on' },

@@ -1,4 +1,4 @@
-//#region ../pebble-app/design/flower-collection/editions.js
+//#region ../pebble-app/src/flowers/editions.js
 var newEditions = [
 	{
 		id: "white-lotus",
@@ -13,8 +13,8 @@ var newEditions = [
 		accent: "#39786d",
 		note: "Pearl-to-teal plumage and an upright lotus fan above a still pond.",
 		scene: [
-			"#c6dfe0",
-			"#e4eeea",
+			"#8aa6ba",
+			"#bdcedb",
 			"#7ea9a2"
 		],
 		night: [
@@ -59,8 +59,8 @@ var newEditions = [
 		accent: "#776a9c",
 		note: "Porcelain-lilac plumage and sculpted ivory magnolia cups after rain.",
 		scene: [
-			"#cfdde8",
-			"#edf0ef",
+			"#94a8bb",
+			"#becbd5",
 			"#b5c0ca"
 		],
 		night: [
@@ -82,8 +82,8 @@ var newEditions = [
 		accent: "#4a786b",
 		note: "Ink-jade plumage, a slender orchid spray, and long ribbon leaves.",
 		scene: [
-			"#d9e4d7",
-			"#edf0df",
+			"#9eaf98",
+			"#c2cfb3",
 			"#9db5a1"
 		],
 		night: [
@@ -105,8 +105,8 @@ var newEditions = [
 		accent: "#9a702c",
 		note: "Honey-gold plumage and tiny four-petal clusters under an autumn moon.",
 		scene: [
-			"#ead7af",
-			"#f7ebd3",
+			"#aebfa8",
+			"#d0dbc2",
 			"#c2ab78"
 		],
 		night: [
@@ -128,8 +128,8 @@ var newEditions = [
 		accent: "#a55578",
 		note: "Apricot plumage and a hanging coral bud spray beside a dawn-lit lattice.",
 		scene: [
-			"#f1d5c3",
-			"#fff0dc",
+			"#bda6b6",
+			"#dec8d0",
 			"#c0b49b"
 		],
 		night: [
@@ -151,8 +151,8 @@ var newEditions = [
 		accent: "#ac4f72",
 		note: "Dusty mauve plumage and a wide, open blush bloom with a golden heart.",
 		scene: [
-			"#e2d7ed",
-			"#f3e9ed",
+			"#adbfba",
+			"#d0dbd0",
 			"#aeb9ac"
 		],
 		night: [
@@ -189,9 +189,9 @@ var firstScenes = {
 	"plum-blossom": {
 		title: "Plum Blossom in Snow",
 		scene: [
-			"#d6e4f0",
-			"#edf4f7",
-			"#a9bfd3"
+			"#aaa6bf",
+			"#dad1df",
+			"#bcc7d5"
 		],
 		night: [
 			"#202e47",
@@ -202,9 +202,9 @@ var firstScenes = {
 	jasmine: {
 		title: "Jasmine Morning",
 		scene: [
-			"#e1e8cf",
-			"#f7f7e8",
-			"#b0c7a3"
+			"#97b0ae",
+			"#c4d5cd",
+			"#9eb8a0"
 		],
 		night: [
 			"#202e30",
@@ -227,7 +227,51 @@ var firstScenes = {
 	}
 };
 //#endregion
-//#region ../pebble-app/design/flower-collection/edition-art.js
+//#region ../pebble-app/src/flowers/catalog.js
+var flowers = [
+	{
+		id: "plum-blossom",
+		name: "Plum Blossom",
+		zh: "梅花",
+		colors: [
+			"#edf5f7",
+			"#bdd7e4",
+			"#7094b7"
+		],
+		accent: "#a34767",
+		note: "Icy blue plumage, a pink five-petal branch, and fresh winter snow."
+	},
+	{
+		id: "jasmine",
+		name: "Jasmine",
+		zh: "茉莉",
+		colors: [
+			"#fff8df",
+			"#e4e9bd",
+			"#9cb982"
+		],
+		accent: "#507554",
+		note: "Warm cream plumage and a trailing spray of small white jasmine flowers."
+	},
+	{
+		id: "camellia",
+		name: "Camellia",
+		zh: "山茶",
+		colors: [
+			"#842d31",
+			"#bd4c49",
+			"#ee9478"
+		],
+		accent: "#a4384d",
+		note: "Terracotta plumage, a compact coral rosette, and glossy evergreen leaves."
+	},
+	...newEditions
+].map((f) => ({
+	...firstScenes[f.id],
+	...f
+}));
+//#endregion
+//#region ../pebble-app/src/flowers/edition-art.js
 var isNewEdition = (id) => newEditions.some((f) => f.id === id);
 var palette = {
 	"white-lotus": [
@@ -489,7 +533,7 @@ function editionPlacement(id, icon = false) {
 	return `translate(${x} ${y}) rotate(${r}) scale(${s})`;
 }
 //#endregion
-//#region ../pebble-app/design/flower-collection/soft-flowers.js
+//#region ../pebble-app/src/flowers/soft-flowers.js
 function softFlowerDefs(uid) {
 	const radial = (name, a, b, c) => `<radialGradient id="${uid}-${name}" cx="35%" cy="24%" r="86%"><stop stop-color="${a}"/><stop offset=".54" stop-color="${b}"/><stop offset="1" stop-color="${c}"/></radialGradient>`;
 	return `${radial("plum", "#fff1ed", "#efafbd", "#bd6488")}${radial("plum-inner", "#fff7ef", "#ffc9cc", "#df819e")}${radial("jasmine", "#ffffff", "#fffdf0", "#cbd7ba")}${radial("jasmine-inner", "#ffffff", "#fffef6", "#e7e9d6")}${radial("camellia", "#ffd0ad", "#ee775f", "#b83b39")}${radial("camellia-inner", "#ffe5c4", "#f6a583", "#d35846")}${radial("leaf", "#a9c59a", "#527e59", "#264e40")}${radial("bud", "#ffd9dc", "#d77b9e", "#994c70")}${radial("gold", "#fff4bd", "#ecc36f", "#c99346")}
@@ -758,49 +802,7 @@ function applyClassicCoat(svg, uid, colors, markings = "") {
 //#region \0flower-body
 var _flower_body_default = new URL("./nivo-body.png", "" + import.meta.url).href;
 //#endregion
-//#region ../pebble-app/design/flower-collection/art.js
-var flowers = [
-	{
-		id: "plum-blossom",
-		name: "Plum Blossom",
-		zh: "梅花",
-		colors: [
-			"#edf5f7",
-			"#bdd7e4",
-			"#7094b7"
-		],
-		accent: "#a34767",
-		note: "Icy blue plumage, a pink five-petal branch, and fresh winter snow."
-	},
-	{
-		id: "jasmine",
-		name: "Jasmine",
-		zh: "茉莉",
-		colors: [
-			"#fff8df",
-			"#e4e9bd",
-			"#9cb982"
-		],
-		accent: "#507554",
-		note: "Warm cream plumage and a trailing spray of small white jasmine flowers."
-	},
-	{
-		id: "camellia",
-		name: "Camellia",
-		zh: "山茶",
-		colors: [
-			"#842d31",
-			"#bd4c49",
-			"#ee9478"
-		],
-		accent: "#a4384d",
-		note: "Terracotta plumage, a compact coral rosette, and glossy evergreen leaves."
-	},
-	...newEditions
-].map((f) => ({
-	...firstScenes[f.id],
-	...f
-}));
+//#region ../pebble-app/src/flowers/art.js
 var softFaceIds = [
 	"plum-blossom",
 	"jasmine",
@@ -828,7 +830,7 @@ function makeFlower(host, f, uid) {
 		art.style.isolation = "isolate";
 		art.querySelector(`[mask="url(#${uid}-plumage-mask)"]`).style.mixBlendMode = "screen";
 	}
-	svg.querySelector("defs").insertAdjacentHTML("beforeend", `<filter id="${uid}-soft-silhouette" x="-2%" y="-2%" width="104%" height="104%" color-interpolation-filters="sRGB"><feMorphology in="SourceAlpha" operator="erode" radius="3" result="inset-edge"/><feGaussianBlur in="inset-edge" stdDeviation=".65" result="soft-edge"/><feComposite in="SourceGraphic" in2="soft-edge" operator="in"/></filter>` + defs(uid, f.id));
+	svg.querySelector("defs").insertAdjacentHTML("beforeend", `<filter id="${uid}-soft-silhouette" x="-2%" y="-2%" width="104%" height="104%" color-interpolation-filters="sRGB"><feMorphology in="SourceAlpha" operator="erode" radius="7" result="inset-edge"/><feGaussianBlur in="inset-edge" stdDeviation="1.1" result="soft-edge"/><feComposite in="SourceGraphic" in2="soft-edge" operator="in"/></filter>` + defs(uid, f.id));
 	svg.querySelector(`[id="${uid}-art"]`).setAttribute("filter", `url(#${uid}-soft-silhouette)`);
 	svg.querySelector("[data-part=\"motion\"]").insertAdjacentHTML("beforeend", `<g data-flower-fit transform="${placement(f.id)}">${arrangement(uid, f.id)}</g>`);
 	if (f.id === "plum-blossom") svg.insertAdjacentHTML("beforeend", "<g data-petal opacity=\"0\"><path d=\"M-9-3Q-14-24 5-19Q22-6 0 12Q-9 8-9-3Z\" fill=\"#e8a2b8\"/></g>");
@@ -843,7 +845,7 @@ function makeFlower(host, f, uid) {
 	} };
 }
 //#endregion
-//#region ../pebble-app/design/flower-collection/scenes.js
+//#region ../pebble-app/src/flowers/scenes.js
 var bloom = (f, u, x, y, s, r = 0) => (isNewEdition(f.id) ? editionBloom : softBloom)(u, f.id, x, y, s, r);
 var leaf = (u, x, y, r, s = 1) => `<g transform="translate(${x} ${y}) rotate(${r}) scale(${s})"><path d="M0 0C-40-27-58-76-3-120C29-79 41-36 0 0Z" fill="url(#${u}-leaf)"/><path d="M0-8Q-8-50-3-102" stroke="#d5e4bf" stroke-width="1.5" opacity=".3" fill="none"/></g>`;
 var flowers$1 = (f, u, points) => points.map(([x, y, s, r = 0]) => bloom(f, u, x, y, s, r)).join("");
@@ -852,6 +854,16 @@ var petals = (u, points) => `<g fill="url(#${u}-fallen)" opacity=".65">${points.
 function sceneArt(f, u, night = false, layout = "home") {
 	const card = layout === "card", h = card ? 340 : 800, c = night ? f.night : f.scene;
 	const floor = card ? 286 : 665, canopy = card ? 28 : 168;
+	const paleCoat = [
+		"plum-blossom",
+		"jasmine",
+		"white-lotus",
+		"magnolia",
+		"orchid",
+		"osmanthus",
+		"crabapple",
+		"peony"
+	].includes(f.id);
 	const distant = night ? "#9ab0a1" : "#789487", stone = night ? "#9b8b95" : "#c4b29d";
 	const hills = `<path d="M0 ${h * .65}Q70 ${h * .47} 135 ${h * .62}Q228 ${h * .45} 307 ${h * .6}Q361 ${h * .52} 400 ${h * .61}V${h}H0Z" fill="${c[2]}" opacity=".16"/><path d="M0 ${h * .79}Q89 ${h * .64} 182 ${h * .75}Q298 ${h * .6} 400 ${h * .75}V${h}H0Z" fill="${c[2]}" opacity=".24"/>`;
 	const moon = (x, y, r) => `<circle cx="${x}" cy="${y}" r="${r * 2.2}" fill="url(#${u}-mist)" opacity=".42"/><circle cx="${x}" cy="${y}" r="${r}" fill="${night ? "#f3e5be" : "#fffaf0"}" opacity=".86"/>`;
@@ -1567,7 +1579,7 @@ function sceneArt(f, u, night = false, layout = "home") {
 			break;
 		}
 	}
-	return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 ${h}" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs>${softFlowerDefs(u)}${isNewEdition(f.id) ? editionDefs(u, f.id) : ""}<linearGradient id="${u}-sky" x2="0" y2="1"><stop stop-color="${c[0]}"/><stop offset=".6" stop-color="${c[1]}"/><stop offset="1" stop-color="${c[2]}"/></linearGradient><radialGradient id="${u}-mist"><stop stop-color="#fff9ed" stop-opacity=".6"/><stop offset="1" stop-color="#fff9ed" stop-opacity="0"/></radialGradient><linearGradient id="${u}-fallen"><stop stop-color="#fff1e5"/><stop offset="1" stop-color="${f.accent || "#d89ca8"}"/></linearGradient></defs><rect width="400" height="${h}" fill="url(#${u}-sky)"/>${landscape}<ellipse cx="200" cy="${h * .44}" rx="169" ry="${h * .32}" fill="url(#${u}-mist)" opacity="${night ? .12 : .5}"/><g opacity="${night ? .78 : .88}">${back}</g><g transform="translate(0 ${card ? 0 : -54})">${front}</g></svg>`;
+	return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 ${h}" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs>${softFlowerDefs(u)}${isNewEdition(f.id) ? editionDefs(u, f.id) : ""}<linearGradient id="${u}-sky" x2="0" y2="1"><stop stop-color="${c[0]}"/><stop offset=".6" stop-color="${c[1]}"/><stop offset="1" stop-color="${c[2]}"/></linearGradient><radialGradient id="${u}-mist"><stop stop-color="#fff9ed" stop-opacity=".6"/><stop offset="1" stop-color="#fff9ed" stop-opacity="0"/></radialGradient><linearGradient id="${u}-fallen"><stop stop-color="#fff1e5"/><stop offset="1" stop-color="${f.accent || "#d89ca8"}"/></linearGradient></defs><rect width="400" height="${h}" fill="url(#${u}-sky)"/>${landscape}<ellipse cx="200" cy="${h * .44}" rx="169" ry="${h * .32}" fill="url(#${u}-mist)" opacity="${night ? .12 : paleCoat ? .16 : .5}"/><g opacity="${night ? .78 : .88}">${back}</g><g transform="translate(0 ${card ? 0 : -54})">${front}</g></svg>`;
 }
 //#endregion
 export { flowers, idleAt, makeFlower, neutralPose, sceneArt };

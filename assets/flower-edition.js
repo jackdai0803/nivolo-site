@@ -2,8 +2,8 @@ const section=document.querySelector('#flower-edition');
 if(section){
  const lang=()=>document.documentElement.lang.startsWith('zh')?'zh':'en';
  const copy={
-  en:{edition:'The Flower Edition',title:'A little room to bloom.',intro:'Eleven flowers, eleven little worlds. A new collection inspired by the beauty of Chinese gardens.',soon:'In bloom · Coming soon',matching:'A Nivo look.\nA matching icon.\nA world of its own.',availability:'A first look at what’s growing. Not yet available in the app.',lighting:'Scene lighting',day:'Day',midnight:'Midnight',pause:'Pause Nivo',resume:'Resume Nivo',hint:'Find a flower that feels like you.',choose:'Explore all eleven'},
-  zh:{edition:'花卉系列',title:'留一点空间，让美好盛开。',intro:'十一种花，十一个小世界。灵感来自中式花园之美的新系列。',soon:'含苞待放 · 即将推出',matching:'一款 Nivo。\n一枚专属图标。\n一个自己的小世界。',availability:'先来看看正在盛开的新设计，尚未在应用内上线。',lighting:'场景光线',day:'白昼',midnight:'午夜',pause:'暂停 Nivo',resume:'继续 Nivo',hint:'找到与你心意相通的那朵花。',choose:'探索十一种花'}
+  en:{edition:'The Flower Edition',title:'A little room to bloom.',intro:'Eleven flowers, eleven little worlds. A new collection inspired by the beauty of Chinese gardens.',soon:'Eleven looks · One little companion',matching:'A Nivo look.\nA matching icon.\nA world of its own.',availability:'Eight editions to collect with Krill. White Lotus, Tree Peony and Red Spider Lily are included with active Nivolo Plus.',lighting:'Scene lighting',day:'Day',midnight:'Midnight',pause:'Pause Nivo',resume:'Resume Nivo',hint:'Find a flower that feels like you.',choose:'Explore all eleven'},
+  zh:{edition:'花卉系列',title:'留一点空间，让美好盛开。',intro:'十一种花，十一个小世界。灵感来自中式花园之美的新系列。',soon:'十一种外观 · 同一位小伙伴',matching:'一款 Nivo。\n一枚专属图标。\n一个自己的小世界。',availability:'八款花卉可用磷虾解锁。白荷、牡丹和彼岸花在 Nivolo Plus 会员有效期内专属。',lighting:'场景光线',day:'白昼',midnight:'午夜',pause:'暂停 Nivo',resume:'继续 Nivo',hint:'找到与你心意相通的那朵花。',choose:'探索十一种花'}
  };
  const stories={
   'plum-blossom':['Plum Blossom in Snow','雪中梅花','Pink blossoms, winter blue, and a first dusting of snow.','粉梅、冰蓝，与初落的一层薄雪。'],
@@ -43,7 +43,7 @@ if(section){
   const f=api.flowers.find(f=>f.id===selected);
   scenery.innerHTML=api.sceneArt(f,'website-flower-scene',night,'card');
   nivo.replaceChildren();rig=api.makeFlower(nivo,f,'website-flower-nivo');
-  section.querySelector('.flower-matching img').src=`assets/flowers/${selected}-icon.webp`;
+  section.querySelector('.flower-matching img').src=`assets/flowers/${selected}-icon.webp?v=20261109`;
   for(const b of themes)b.setAttribute('aria-pressed',String((b.dataset.flowerTheme==='midnight')===night));
   text();stage.dataset.ready='';resume();
   if(announce)section.querySelector('.flower-announcement').textContent=`${stories[selected][lang()==='zh'?1:0]} · ${t(night?'midnight':'day')}`;
@@ -51,7 +51,7 @@ if(section){
  async function load(){
   if(api||loading)return;loading=true;
   try{
-   api=await import('./flower-art.js?v=2');
+   api=await import('./flower-art.js?v=3');
    const image=new Image();image.src=new URL('./nivo-body.png',import.meta.url).href;await image.decode();
    render();choices.forEach(b=>b.disabled=false);section.querySelector('.flower-controls').hidden=false;
   }catch{api=null;}finally{loading=false;}

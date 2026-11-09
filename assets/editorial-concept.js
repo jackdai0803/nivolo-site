@@ -7,6 +7,17 @@
   };
   const t = (key) => copy[document.documentElement.lang.startsWith('zh') ? 'zh' : 'en'][key];
   Object.assign(copy.en, {
+    repairStory: 'A little bandage for a busy life. A streak freeze kept your place.',
+    pearlName: "Pearl",
+    pearlStory: "Fifty days of showing up. A little pearl, with all that quiet effort inside.",
+    goalPlanning: "Name what matters and choose your next small steps. With Plus, Nivo can draft a plan to help you begin.",
+    languages: "14 languages, including English and 简体中文",
+    personalLooks: "Matching Nivo looks, app icons and home colours",
+    reminders: "Weekly reminders on the days and times you choose",
+    plusFlowers: "White Lotus, Tree Peony and Red Spider Lily editions",
+    auroraFlame: "An exclusive Aurora streak flame",
+    freeAnswer: "Yes, and there are no ads. Every core habit feature — unlimited goals, streaks, freezes, rest days, Krill, gems, Season in Review and the widget — is free. Nivolo Plus adds AI planning and insights, double Krill, Deep-Sea and three Plus flower editions, and a daily freeze. Achievement icons stay earned through progress; Krill keepsakes stay yours once unlocked.",
+
     featuredIcons: 'Find your kind of Nivo.',
     featuredIconsIntro: 'Choose a keepsake with earned Krill, or explore Deep-Sea with Nivolo Plus.',
     featuredIconsNote: 'The three Krill keepsakes are yours to keep. Deep-Sea is available with an active Plus membership.',
@@ -30,9 +41,20 @@
     kindTitle: 'Room for real life.', kindBody: 'Planned rest days and a free weekly freeze keep your streak safe when life gets in the way.',
     krill: 'Meet the Krill', private: 'Private by design.', account: 'No cloud account. No ad trackers.',
     data: 'How AI and icon checks use data', questions: 'More questions', rewards: 'Rewards',
-    yearlyNote: 'About $2.50/month · billed yearly · USD', monthlyNote: 'Or $29.99 a year (about $2.50/month) · USD',
+    yearlyNote: 'About $4.17/month · billed yearly · USD · Final price shown in the App Store', monthlyNote: 'Or $49.99 a year (about $4.17/month) · USD · Final price shown in the App Store',
   });
   Object.assign(copy.zh, {
+    repairStory: '为忙碌的生活贴上一块小绷带。一次冻结，守住了你的坚持。',
+    pearlName: "珍珠",
+    pearlStory: "坚持了五十天。一颗小珍珠，藏着每一天安静的努力。",
+    goalPlanning: "写下在意的目标，选好接下来的一小步。Plus 中的 Nivo 还能帮你起草计划。",
+    languages: "支持包括英语、简体中文在内的 14 种语言",
+    personalLooks: "相配的 Nivo 外观、应用图标和主屏幕配色",
+    reminders: "按你选择的日期和时间，每周提醒",
+    plusFlowers: "白荷、牡丹与彼岸花系列",
+    auroraFlame: "专属极光连续记录火焰",
+    freeAnswer: "是的，而且没有广告。无限目标、连续记录、冻结、休息日、磷虾、宝石、时光回顾和小组件等核心功能均免费。Nivolo Plus 提供 AI 计划与洞察、双倍磷虾、深海与三款 Plus 花卉外观，以及每日冻结。成就图标仍需通过进步获得；用磷虾解锁的珍藏永久属于你。",
+
     featuredIcons: '找到你的那一款 Nivo。',
     featuredIconsIntro: '用努力赚来的磷虾挑选珍藏，或与 Nivolo Plus 一起探索深海。',
     featuredIconsNote: '三款磷虾珍藏解锁后永久拥有。深海图标可在 Plus 会员有效期内使用。',
@@ -56,7 +78,7 @@
     kindTitle: '为生活留点余地。', kindBody: '提前安排休息日，每周还有一次免费的连续记录冻结，在忙碌时守护你的坚持。',
     krill: '认识磷虾', private: '隐私，融入设计。', account: '无需云端账户，没有广告追踪。',
     data: 'AI 和图标检查如何使用数据', questions: '更多问题', rewards: '奖励',
-    yearlyNote: '约每月 $2.50 · 按年计费 · 美元', monthlyNote: '或每年 $29.99（约每月 $2.50）· 美元',
+    yearlyNote: '约每月 $4.17 · 按年计费 · 美元 · 最终价格以 App Store 为准', monthlyNote: '或每年 $49.99（约每月 $4.17）· 美元 · 最终价格以 App Store 为准',
   });
   document.querySelectorAll('[data-site-copy]').forEach((element) => { element.textContent = t(element.dataset.siteCopy); });
   document.querySelectorAll('[data-site-store-label]').forEach((element) => {
@@ -255,7 +277,7 @@
         if (button.getAttribute('aria-pressed') === 'true') return;
         const yearly = button.dataset.billingPeriod === "yearly";
         options.forEach((option) => option.setAttribute("aria-pressed", String(option === button)));
-        price.textContent = yearly ? "$29.99" : "$4.99";
+        price.textContent = yearly ? "$49.99" : "$7.99";
         period.textContent = yearly ? "/ year" : "/ month";
         note.textContent = t(yearly ? 'yearlyNote' : 'monthlyNote');
         react(price, [{ scale: '.92', opacity: .5 }, { scale: '1.04', opacity: 1, offset: .65 }, { scale: '1', opacity: 1 }]);
