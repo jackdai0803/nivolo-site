@@ -1,19 +1,19 @@
 {
   "sourceHash": "fcfd83e0afec36b1e5c9b872705a290a87a042c02338d9dcefcfb2bbdcafed1a",
-  "capturedAt": "2026-11-09T14:06:17.562Z",
+  "capturedAt": "2026-11-09T14:13:12.337Z",
   "viewport": {
     "width": 393,
     "height": 852
   },
   "files": {
-    "current-home.webp": "c014201e7ee02740c02eb0c704b16cfbf010d9b0dd4d69b99675bab587307dc0",
-    "current-new-goal.webp": "dcfced5e778fe710cffc966075bfe54f64b26e5045bc6a4a0dd4bc3cd5892471",
-    "current-log-action.webp": "688b0b913db7d7c27d531e2ca9d50604be15cf0b19321384cc546918d77e88ec",
-    "current-rest.webp": "cd319f80e5026ad101cc91b9982fc86f6a1f37d395f96058f743c920e9f2c01b",
-    "current-store.webp": "9bc6bf44ec78b341342079c2dcd7164adfb466255367b9d0ba5e7ebea268b641",
-    "current-achievements.webp": "11a687d18efea08ff777c20f1dc0074807f3c6661a382512d2426500de620fb9",
-    "current-gem-detail.webp": "6072cf8d593ffe95d917143e222c49967560677322dea49061bbfd89e9b95315",
-    "current-profile.webp": "5504338e1623a54fe2e514f5c0169e2d5b4b5f6423cec42fbc463edfa9a5f888",
+    "current-home.webp": "110d87edbb08623d3f7c949f6d2be12b811284ca7024d2d45e613a55359a91c8",
+    "current-new-goal.webp": "a137be744bcf2f4c79edb0d2b024e8cdc168f24f87a6ea5a82f5bbf384b074be",
+    "current-log-action.webp": "ab56653f401f527a9625d02170b1d0a27a9cc39424fd128b3b43cc3d89c6880a",
+    "current-rest.webp": "bb20008480cbb18369a6b90757a63f8d1768b231502cc7ac588940af98663795",
+    "current-store.webp": "ef5dca78fb8660d1802820c784e375876e060d0bc4f9b1c0cfe435e9a47df3b1",
+    "current-achievements.webp": "63d3d789c734305050a4414a0c2396b487ef73c56fd4e2113b02977800e53808",
+    "current-gem-detail.webp": "c72123567c2e1f11b25feac63ded9f98cc2bba39e37da20df2bc57fc0b54baab",
+    "current-profile.webp": "47b323643df8d17acfa0eed53d5d6cc1b479484c58366b11ffc1c98b5005052a",
     "current-action-card.webp": "abb660ebbe9e581d999107dd5aaaf28a24288d2833b1a71fce0d52b712db957a",
     "current-gem-art.webp": "fa93d27a93e25f8cb180105628c27758424133eb523726f7a6660c1ee419d7c8",
     "current-gem-variants.webp": "130670968f3cb0d5dc4c07ed87202a737ba09c56d93f441aaccb69ae78e5a0fc"
