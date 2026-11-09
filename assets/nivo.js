@@ -2,8 +2,8 @@ import { createRig, idleAt, neutralPose } from './nivo-rig.js?v=8';
 import { makeClassicSkin, heroLooks } from './nivo-skins.js?v=1';
 
 const strings = {
-  en: { transform: 'Transform Nivo', hint: 'Tap to transform', off: 'Sound: off', on: 'Sound: on' },
-  zh: { transform: '变换 Nivo 的外观', hint: '点我变身', off: '声音：关', on: '声音：开' },
+  en: { transform: 'Transform Nivo', pause: 'Pause animation', resume: 'Resume animation', off: 'Sound: off', on: 'Sound: on' },
+  zh: { transform: '变换 Nivo 的外观', pause: '暂停动画', resume: '继续动画', off: '声音：关', on: '声音：开' },
 };
 const t = (key) => strings[document.documentElement.lang.startsWith('zh') ? 'zh' : 'en'][key];
 const controls = document.querySelector('[data-nivo-controls]');
@@ -36,7 +36,7 @@ const pop = async () => {
   } catch { /* Sound is an optional extra; the visual response always works. */ }
 };
 if (controls) {
-  hint.textContent = t('hint');
+  hint?.remove();
   soundButton.querySelector('[data-nivo-sound-label]').textContent = t('off');
   soundButton.addEventListener('click', () => {
     soundOn = !soundOn;
@@ -104,19 +104,32 @@ document.querySelectorAll('[data-nivo]').forEach((container, index) => {
   let progress = 1;
   let target = 0;
   let hop = 0;
+  let ready = false;
+  let paused = false;
+  let lastChange = 0;
+  let pauseButton;
+  const advance = () => {
+    target = (target + 1) % looks.length;
+    mount(target);
+    for (const character of characters.values()) character.from = character.opacity;
+    progress = 0;
+    lastChange = clock;
+    container.dataset.nivoAppearance = looks[target].id;
+  };
   const ease = value => { const p = Math.max(0, Math.min(1, value)); return p * p * (3 - 2 * p); };
   const render = (now) => {
     cancelAnimationFrame(frame);
     const delta = previous === null ? 0 : Math.min(40, now - previous);
-    clock += delta;
+    const moving = visible && !document.hidden && !preference.matches && !paused;
+    if (moving) clock += delta;
+    if (play && ready && moving && clock - lastChange >= 4000) advance();
     previous = now;
-    progress = preference.matches ? 1 : Math.min(1, progress + delta / 560);
+    progress = preference.matches || paused ? 1 : Math.min(1, progress + delta / 560);
     const blend = ease(progress);
-    const moving = visible && !document.hidden && !preference.matches;
-    const pose = preference.matches ? neutralPose() : deepSea ? plusIdleAt(clock) : idleAt(clock);
+    const pose = preference.matches || paused ? neutralPose() : deepSea ? plusIdleAt(clock) : idleAt(clock);
     if (play) {
       // Follow the current hop when another click redirects the reveal.
-      hop = preference.matches ? 0 : hop + (Math.sin(progress * Math.PI) * 24 - hop) * (1 - Math.exp(-delta / 70));
+      hop = preference.matches || paused ? 0 : hop + (Math.sin(progress * Math.PI) * 24 - hop) * (1 - Math.exp(-delta / 70));
       pose.y -= hop;
       pose.sx *= 1 - hop / 1400;
       pose.sy *= 1 + hop / 1400;
@@ -137,32 +150,39 @@ document.querySelectorAll('[data-nivo]').forEach((container, index) => {
       }
       rig.render(play && look.id === 'deepsea' ? { ...pose, left: 0, right: 0 } : pose);
     }
-    if (visible && !document.hidden && !preference.matches) frame = requestAnimationFrame(render);
+    if (moving) frame = requestAnimationFrame(render);
   };
   const resume = () => {
     previous = null;
+    if (pauseButton) pauseButton.style.display = preference.matches ? 'none' : '';
     render(performance.now());
   };
   if (play) {
     play.setAttribute('aria-label', t('transform'));
-    if (hint) {
-      hint.classList.add('nivo-hint-bubble');
-      play.append(hint);
+    if (controls) {
+      pauseButton = document.createElement('button');
+      pauseButton.type = 'button';
+      pauseButton.className = 'nivo-sound';
+      pauseButton.textContent = t('pause');
+      pauseButton.setAttribute('aria-pressed', 'false');
+      pauseButton.style.display = preference.matches ? 'none' : '';
+      controls.prepend(pauseButton);
+      pauseButton.addEventListener('click', () => {
+        paused = !paused;
+        pauseButton.textContent = t(paused ? 'resume' : 'pause');
+        pauseButton.setAttribute('aria-pressed', String(paused));
+        resume();
+      });
     }
     // Every collection skin shares these two images; decode before enabling.
     Promise.all([artwork, deepSeaArtwork].map(src => {
       const preload = new Image();
       preload.src = src;
       return preload.decode();
-    })).then(() => { play.disabled = false; }).catch(() => {});
+    })).then(() => { play.disabled = false; ready = true; lastChange = clock; }).catch(() => {});
     play.addEventListener('click', () => {
       render(performance.now());
-      target = (target + 1) % looks.length;
-      mount(target);
-      for (const character of characters.values()) character.from = character.opacity;
-      progress = 0;
-      container.dataset.nivoAppearance = looks[target].id;
-      play.classList.add('has-transformed');
+      advance();
       render(performance.now());
       pop();
     });
