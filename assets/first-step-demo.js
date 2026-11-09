@@ -1,5 +1,3 @@
-import { createRig, neutralPose, idleAt, smallWinAt, celebrationAt, SMALL_WIN_MS, CELEBRATION_MS } from './nivo-rig.js?v=4';
-
 const demo = document.querySelector('[data-first-step-demo]');
 if (demo) {
   const copy = {
@@ -37,11 +35,8 @@ if (demo) {
   const gem = demo.querySelector('.demo-earned-gem');
   const scene = demo.querySelector('.demo-scene');
   const motion = matchMedia('(prefers-reduced-motion: reduce)');
-  const rig = createRig(find('nivo'), new URL('./nivo-body.png', import.meta.url).href, 'first-step-demo-nivo', 'Nivo');
+  const nivo = find('nivo');
   let steps = 0;
-  let frame = 0;
-  let visible = false;
-  let reactionStart = null;
   let lastTap = -Infinity;
   let audio;
   const effects = new Set();
@@ -78,19 +73,6 @@ if (demo) {
         tone.onended = () => { tone.disconnect(); gain.disconnect(); };
       });
     } catch { /* The visual acknowledgement still works without audio. */ }
-  };
-  const render = (now) => {
-    frame = 0;
-    const elapsed = reactionStart === null ? Infinity : now - reactionStart;
-    const duration = steps === 3 ? CELEBRATION_MS : SMALL_WIN_MS;
-    if (elapsed >= duration) reactionStart = null;
-    rig.render(reactionStart === null ? idleAt(now) : steps === 3 ? celebrationAt(elapsed) : smallWinAt(elapsed));
-    if (visible && !document.hidden && !motion.matches) frame = requestAnimationFrame(render);
-  };
-  const resume = () => {
-    cancelAnimationFrame(frame); frame = 0;
-    rig.render(motion.matches && steps ? { ...neutralPose(), happy: 1, blink: 1, left: 12, right: -12 } : neutralPose());
-    if (visible && !document.hidden && !motion.matches) frame = requestAnimationFrame(render);
   };
   const update = () => {
     demo.dataset.steps = steps;
@@ -134,8 +116,7 @@ if (demo) {
     steps = steps === 3 ? 0 : steps + 1;
     update();
     status.textContent = steps ? t(`status${steps}`) : t('reset');
-    reactionStart = steps ? now : null;
-    resume();
+    nivo.dispatchEvent(new CustomEvent('nivo-reaction', { detail: steps }));
     if (!steps) return;
     playSfx(steps === 3);
     navigator.vibrate?.(steps === 3 ? [12, 35, 18] : 10);
@@ -153,11 +134,9 @@ if (demo) {
       ], { duration: 1550, easing: 'cubic-bezier(.2,.8,.2,1)' });
     }
   });
-  new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; resume(); }).observe(demo);
-  motion.addEventListener('change', () => { clearEffects(); reactionStart = null; resume(); });
-  document.addEventListener('visibilitychange', () => { if (document.hidden) clearEffects(); resume(); });
-  window.addEventListener('pagehide', () => { cancelAnimationFrame(frame); clearEffects(); audio?.close().catch(() => {}); audio = undefined; });
-  window.addEventListener('pageshow', resume);
+  motion.addEventListener('change', clearEffects);
+  document.addEventListener('visibilitychange', () => { if (document.hidden) clearEffects(); });
+  window.addEventListener('pagehide', () => { clearEffects(); audio?.close().catch(() => {}); audio = undefined; });
   update();
   button.disabled = false;
 }

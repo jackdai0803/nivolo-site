@@ -1,4 +1,4 @@
-import { createRig, idleAt, neutralPose } from './nivo-rig.js?v=8';
+import { createRig, idleAt, neutralPose, smallWinAt, celebrationAt, SMALL_WIN_MS, CELEBRATION_MS } from './nivo-rig.js?v=8';
 import { makeClassicSkin, heroLooks } from './nivo-skins.js?v=1';
 
 const strings = {
@@ -8,6 +8,8 @@ const strings = {
 const t = (key) => strings[document.documentElement.lang.startsWith('zh') ? 'zh' : 'en'][key];
 const controls = document.querySelector('[data-nivo-controls]');
 const soundButton = controls?.querySelector('[data-nivo-sound]');
+const pauseButton = controls ? document.createElement('button') : null;
+let cyclePaused = false;
 let soundOn = false;
 let audio;
 const pop = async () => {
@@ -35,6 +37,16 @@ const pop = async () => {
   } catch { /* Sound is an optional extra; the visual response always works. */ }
 };
 if (controls) {
+  pauseButton.type = 'button';
+  pauseButton.className = 'nivo-sound';
+  pauseButton.textContent = t('pause');
+  pauseButton.setAttribute('aria-pressed', 'false');
+  controls.prepend(pauseButton);
+  pauseButton.addEventListener('click', () => {
+    cyclePaused = !cyclePaused;
+    pauseButton.textContent = t(cyclePaused ? 'resume' : 'pause');
+    pauseButton.setAttribute('aria-pressed', String(cyclePaused));
+  });
   soundButton.querySelector('[data-nivo-sound-label]').textContent = t('off');
   soundButton.addEventListener('click', () => {
     soundOn = !soundOn;
@@ -67,6 +79,7 @@ const plusIdleAt = (ms) => {
 document.querySelectorAll('[data-nivo]').forEach((container, index) => {
   const deepSea = container.dataset.nivoAppearance === 'deepsea';
   const autoCycle = container.hasAttribute('data-nivo-cycle');
+  const demoNivo = container.hasAttribute('data-demo-nivo');
   const looks = autoCycle ? heroLooks : [{ id: deepSea ? 'deepsea' : 'classic', name: 'Nivo' }];
   if (autoCycle) container.replaceChildren();
   const characters = new Map();
@@ -102,9 +115,9 @@ document.querySelectorAll('[data-nivo]').forEach((container, index) => {
   let target = 0;
   let hop = 0;
   let ready = false;
-  let paused = false;
   let lastChange = 0;
-  let pauseButton;
+  let reactionStep = 0;
+  let reactionStart = 0;
   const advance = () => {
     target = (target + 1) % looks.length;
     mount(target);
@@ -117,18 +130,30 @@ document.querySelectorAll('[data-nivo]').forEach((container, index) => {
   const render = (now) => {
     cancelAnimationFrame(frame);
     const delta = previous === null ? 0 : Math.min(40, now - previous);
+    const paused = autoCycle && cyclePaused;
     const moving = visible && !document.hidden && !preference.matches && !paused;
     if (moving) clock += delta;
     if (autoCycle && ready && moving && clock - lastChange >= 2500) {
       advance();
-      pop();
+      if (!demoNivo) pop();
     }
     previous = now;
     progress = preference.matches || paused ? 1 : Math.min(1, progress + delta / 560);
     const blend = ease(progress);
-    const pose = preference.matches || paused ? neutralPose() : deepSea ? plusIdleAt(clock) : idleAt(clock);
+    const elapsed = now - reactionStart;
+    const finished = reactionStep === 3;
+    const reacting = reactionStep > 0 && elapsed < (finished ? CELEBRATION_MS : SMALL_WIN_MS);
+    let pose;
+    if (preference.matches || paused) {
+      pose = neutralPose();
+      if (reactionStep) Object.assign(pose, { happy: 1, blink: 1, left: 12, right: -12 });
+    } else if (reacting) {
+      pose = finished ? celebrationAt(elapsed) : smallWinAt(elapsed);
+    } else {
+      pose = deepSea ? plusIdleAt(clock) : idleAt(clock);
+    }
     if (autoCycle) {
-      hop = preference.matches || paused ? 0 : hop + (Math.sin(progress * Math.PI) * 24 - hop) * (1 - Math.exp(-delta / 70));
+      hop = preference.matches || paused || reacting ? 0 : hop + (Math.sin(progress * Math.PI) * 24 - hop) * (1 - Math.exp(-delta / 70));
       pose.y -= hop;
       pose.sx *= 1 - hop / 1400;
       pose.sy *= 1 + hop / 1400;
@@ -157,26 +182,21 @@ document.querySelectorAll('[data-nivo]').forEach((container, index) => {
     render(performance.now());
   };
   if (autoCycle) {
-    if (controls) {
-      pauseButton = document.createElement('button');
-      pauseButton.type = 'button';
-      pauseButton.className = 'nivo-sound';
-      pauseButton.textContent = t('pause');
-      pauseButton.setAttribute('aria-pressed', 'false');
-      controls.prepend(pauseButton);
-      pauseButton.addEventListener('click', () => {
-        paused = !paused;
-        pauseButton.textContent = t(paused ? 'resume' : 'pause');
-        pauseButton.setAttribute('aria-pressed', String(paused));
-        resume();
-      });
-    }
+    pauseButton?.addEventListener('click', resume);
     // Decode the shared artwork before the first automatic change.
     Promise.all([artwork, deepSeaArtwork].map(src => {
       const preload = new Image();
       preload.src = src;
       return preload.decode();
     })).then(() => { ready = true; lastChange = clock; }).catch(() => {});
+  }
+  if (demoNivo) {
+    container.addEventListener('nivo-reaction', ({ detail }) => {
+      reactionStep = detail;
+      reactionStart = performance.now();
+      lastChange = clock;
+      resume();
+    });
   }
   const observer = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; resume(); });
   observer.observe(container);
