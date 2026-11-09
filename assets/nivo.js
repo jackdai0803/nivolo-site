@@ -1,4 +1,5 @@
 import { createRig, idleAt, neutralPose } from './nivo-rig.js?v=8';
+import { makeClassicSkin, heroLooks } from './nivo-skins.js?v=1';
 
 const strings = {
   en: { transform: 'Transform Nivo', hint: 'Tap to transform', off: 'Sound: off', on: 'Sound: on' },
@@ -69,47 +70,72 @@ const plusIdleAt = (ms) => {
 document.querySelectorAll('[data-nivo]').forEach((container, index) => {
   const deepSea = container.dataset.nivoAppearance === 'deepsea';
   const play = container.closest('[data-nivo-play]');
-  const looks = play ? ['classic', 'deepsea'] : [deepSea ? 'deepsea' : 'classic'];
+  const looks = play ? heroLooks : [{ id: deepSea ? 'deepsea' : 'classic', name: 'Nivo' }];
   if (play) container.replaceChildren();
-  const characters = looks.map(look => {
+  const characters = new Map();
+  const mount = (lookIndex) => {
+    if (characters.has(lookIndex)) return characters.get(lookIndex);
+    const look = looks[lookIndex];
     const layer = play ? document.createElement('span') : container;
     if (play) {
       layer.className = 'nivo-look';
-      layer.style.opacity = look === 'classic' ? '1' : '0';
+      layer.dataset.look = look.id;
       container.append(layer);
     }
-    const rig = createRig(layer, artwork, `site-nivo-${index}-${look}`, 'Nivo', look, deepSeaArtwork);
-    if (play) layer.querySelector('svg').setAttribute('viewBox', '160 170 970 970');
-    else if (deepSea) layer.querySelector('svg').setAttribute('viewBox', '0 0 1254 1254');
-    return { look, layer, rig };
-  });
+    const rig = play
+      ? makeClassicSkin(layer, look, `site-nivo-${index}-${look.id}`)
+      : createRig(layer, artwork, `site-nivo-${index}-${look.id}`, 'Nivo', look.id, deepSeaArtwork);
+    if (play) {
+      // Fit the visible body, not the PNG canvas: Deep-Sea's silhouette is
+      // 1019px tall versus Classic's 875px. Preserve its own face/glow rig.
+      layer.querySelector('svg').setAttribute('viewBox', look.id === 'deepsea'
+        ? '87 59 1130 1130' : '160 170 970 970');
+    } else if (deepSea) layer.querySelector('svg').setAttribute('viewBox', '0 0 1254 1254');
+    const character = { look, layer, rig, opacity: lookIndex === 0 ? 1 : 0, from: 0 };
+    characters.set(lookIndex, character);
+    return character;
+  };
+  mount(0);
+  if (play) container.dataset.nivoAppearance = looks[0].id;
   let frame = 0;
   let clock = 0;
   let previous = null;
   let visible = false;
-  let progress = 0;
+  let progress = 1;
   let target = 0;
+  let hop = 0;
   const ease = value => { const p = Math.max(0, Math.min(1, value)); return p * p * (3 - 2 * p); };
   const render = (now) => {
     cancelAnimationFrame(frame);
     const delta = previous === null ? 0 : Math.min(40, now - previous);
     clock += delta;
     previous = now;
-    progress = preference.matches ? target : progress + Math.sign(target - progress) * Math.min(Math.abs(target - progress), delta / 900);
-    const blend = ease((progress - .28) / .44);
+    progress = preference.matches ? 1 : Math.min(1, progress + delta / 560);
+    const blend = ease(progress);
+    const moving = visible && !document.hidden && !preference.matches;
     const pose = preference.matches ? neutralPose() : deepSea ? plusIdleAt(clock) : idleAt(clock);
     if (play) {
-      // One gentle hop follows the reveal, including when a tap reverses it.
-      const lift = Math.sin(progress * Math.PI);
-      pose.y -= 28 * lift;
-      pose.sx *= 1 - .02 * lift;
-      pose.sy *= 1 + .02 * lift;
-      pose.blink = Math.max(pose.blink, lift ** 6);
-      container.dataset.nivoAppearance = blend >= .5 ? 'deepsea' : 'classic';
+      // Follow the current hop when another click redirects the reveal.
+      hop = preference.matches ? 0 : hop + (Math.sin(progress * Math.PI) * 24 - hop) * (1 - Math.exp(-delta / 70));
+      pose.y -= hop;
+      pose.sx *= 1 - hop / 1400;
+      pose.sy *= 1 + hop / 1400;
+      pose.blink = Math.max(pose.blink, (hop / 24) ** 6);
+      pose.skinTimeMs = clock;
+      pose.skinMotion = moving;
     }
-    for (const {look, layer, rig} of characters) {
-      if (play) layer.style.opacity = String(look === 'deepsea' ? blend : 1 - blend);
-      rig.render(play && look === 'deepsea' ? { ...pose, left: 0, right: 0 } : pose);
+    for (const [lookIndex, character] of characters) {
+      const { look, layer, rig } = character;
+      if (play) {
+        character.opacity = character.from * (1 - blend) + (lookIndex === target ? blend : 0);
+        layer.style.opacity = String(character.opacity);
+        if (progress === 1 && lookIndex !== target) {
+          layer.remove();
+          characters.delete(lookIndex);
+          continue;
+        }
+      }
+      rig.render(play && look.id === 'deepsea' ? { ...pose, left: 0, right: 0 } : pose);
     }
     if (visible && !document.hidden && !preference.matches) frame = requestAnimationFrame(render);
   };
@@ -123,12 +149,19 @@ document.querySelectorAll('[data-nivo]').forEach((container, index) => {
       hint.classList.add('nivo-hint-bubble');
       play.append(hint);
     }
-    // Enable discovery only once both looks can appear without a blank frame.
-    const preload = new Image();
-    preload.src = deepSeaArtwork;
-    preload.decode().then(() => { play.disabled = false; }).catch(() => {});
+    // Every collection skin shares these two images; decode before enabling.
+    Promise.all([artwork, deepSeaArtwork].map(src => {
+      const preload = new Image();
+      preload.src = src;
+      return preload.decode();
+    })).then(() => { play.disabled = false; }).catch(() => {});
     play.addEventListener('click', () => {
-      target = 1 - target;
+      render(performance.now());
+      target = (target + 1) % looks.length;
+      mount(target);
+      for (const character of characters.values()) character.from = character.opacity;
+      progress = 0;
+      container.dataset.nivoAppearance = looks[target].id;
       play.classList.add('has-transformed');
       render(performance.now());
       pop();
