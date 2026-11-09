@@ -828,7 +828,8 @@ function makeFlower(host, f, uid) {
 		art.style.isolation = "isolate";
 		art.querySelector(`[mask="url(#${uid}-plumage-mask)"]`).style.mixBlendMode = "screen";
 	}
-	svg.querySelector("defs").insertAdjacentHTML("beforeend", defs(uid, f.id));
+	svg.querySelector("defs").insertAdjacentHTML("beforeend", `<filter id="${uid}-soft-silhouette" x="-2%" y="-2%" width="104%" height="104%" color-interpolation-filters="sRGB"><feMorphology in="SourceAlpha" operator="erode" radius="3" result="inset-edge"/><feGaussianBlur in="inset-edge" stdDeviation=".65" result="soft-edge"/><feComposite in="SourceGraphic" in2="soft-edge" operator="in"/></filter>` + defs(uid, f.id));
+	svg.querySelector(`[id="${uid}-art"]`).setAttribute("filter", `url(#${uid}-soft-silhouette)`);
 	svg.querySelector("[data-part=\"motion\"]").insertAdjacentHTML("beforeend", `<g data-flower-fit transform="${placement(f.id)}">${arrangement(uid, f.id)}</g>`);
 	if (f.id === "plum-blossom") svg.insertAdjacentHTML("beforeend", "<g data-petal opacity=\"0\"><path d=\"M-9-3Q-14-24 5-19Q22-6 0 12Q-9 8-9-3Z\" fill=\"#e8a2b8\"/></g>");
 	const petal = svg.querySelector("[data-petal]");
