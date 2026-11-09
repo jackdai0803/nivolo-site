@@ -119,7 +119,7 @@ document.querySelectorAll('[data-nivo]').forEach((container, index) => {
     const delta = previous === null ? 0 : Math.min(40, now - previous);
     const moving = visible && !document.hidden && !preference.matches && !paused;
     if (moving) clock += delta;
-    if (autoCycle && ready && moving && clock - lastChange >= 4000) {
+    if (autoCycle && ready && moving && clock - lastChange >= 2500) {
       advance();
       pop();
     }
