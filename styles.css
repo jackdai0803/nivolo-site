@@ -54,10 +54,6 @@
   --green: #0F7A54;
   --green-soft: rgba(15, 122, 84, 0.11);
 
-  /* The primary button is near-black now, like Hilos' "Get started". */
-  --ice: #16171A;
-  --ice-ink: #FFFFFF;
-
   /* Corners: five sizes and nothing between. xs for focus rings and small
      chips, sm for mock-UI cards, the default for cards, lg for panels. */
   --radius-xs: 8px;
@@ -133,6 +129,46 @@ a { color: var(--cyan); text-decoration: none; }
 a:hover { text-decoration: underline; }
 button { font: inherit; }
 
+/* The same glacier-blue action surface and press feedback as the app. */
+:root {
+  --button-fill: #D5EAF5;
+  --button-ink: #173E52;
+  --button-shadow: inset 0 1px 0 #ffffff29, 0 1px 2px #5a5c6214;
+  --button-pressed-shadow: inset 0 1px 2px #5a5c621a;
+}
+:is(.btn-moonlit, .gallery-arrow) {
+  min-height: 44px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  corner-shape: round;
+  background: var(--button-fill);
+  color: var(--button-ink);
+  box-shadow: var(--button-shadow);
+  font-weight: 650;
+  letter-spacing: 0;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: transform 120ms ease, box-shadow 120ms ease, filter 120ms ease;
+}
+.btn-moonlit--quiet {
+  --button-fill: #edf5f8;
+  border: 1px solid #173e5222;
+}
+@media (hover: hover) {
+  :is(.btn-moonlit, .gallery-arrow):not(:disabled):hover { filter: brightness(1.025); text-decoration: none; }
+}
+:is(.btn-moonlit, .gallery-arrow):not(:disabled):active {
+  transform: translateY(1px) scale(.985);
+  box-shadow: var(--button-pressed-shadow);
+  filter: brightness(.94);
+}
+:is(.btn-moonlit, .gallery-arrow):focus-visible { outline: 2px solid #14709F; outline-offset: 4px; }
+:is(.btn-moonlit, .gallery-arrow):disabled { box-shadow: none; opacity: .65; cursor: default; }
+@media (prefers-reduced-motion: reduce) {
+  :is(.btn-moonlit, .gallery-arrow) { transition: none; }
+  :is(.btn-moonlit, .gallery-arrow):not(:disabled):active { transform: none; }
+}
+
 .wrap { max-width: var(--w-wide); margin: 0 auto; padding: 0 24px; }
 
 /* The eyebrow that sits above every section title — small, mono, caps,
@@ -186,7 +222,7 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
 }
 .logo:hover { text-decoration: none; }
 .nav-links { display: flex; align-items: center; gap: 22px; font-size: 14px; font-weight: 600; }
-.nav-links a { color: var(--ink-2); }
+.nav-links .nav-plain { color: var(--ink-2); }
 .nav-links .nav-plain {
   display: inline-flex;
   align-items: center;
@@ -210,12 +246,7 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
   transform: translateY(0) scale(0.97);
   box-shadow: none;
 }
-.nav-cta {
-  background: var(--ice); color: var(--ice-ink) !important;
-  padding: 9px 18px; border-radius: var(--radius-pill); font-weight: 600; font-size: 14px;
-  transition: transform 0.2s ease, background 0.2s ease;
-}
-.nav-cta:hover { transform: translateY(-1px); background: #000; text-decoration: none; }
+.nav-cta { display: inline-flex; align-items: center; padding: 9px 18px; font-size: 14px; }
 
 /* ── Hero ── */
 /* The hero has to fit the first screen, iceberg included, so its spacing
@@ -259,54 +290,11 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
   margin: 0 auto clamp(18px, 2.7vh, 32px);
 }
 .hero-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
-.btn-dark, .btn-light {
+.btn-dark, .btn-light, .btn-ghost {
   display: inline-flex; align-items: center; gap: 10px;
-  background: var(--ice); color: var(--ice-ink);
-  font-weight: 600; font-size: 16px;
-  padding: 14px 24px; border-radius: var(--radius-pill);
-  border: 1px solid transparent;
-  transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: var(--shadow-md);
-}
-.btn-dark:hover, .btn-light:hover {
-  transform: translateY(-2px);
-  background: var(--tint-ice);
-  color: #0B4A6B;
-  box-shadow: 0 3px 0 #0B4A6B, var(--shadow-lg);
-  text-decoration: none;
+  padding: 14px 22px; font-size: 16px;
 }
 .btn-dark svg, .btn-light svg { width: 18px; height: 18px; }
-/* Pre-launch CTAs are ice-blue before store.js turns them into solid,
-   working email links, avoiding a disabled-looking first paint. */
-.nav-cta.is-soon, .btn-dark.is-soon, .btn-light.is-soon {
-  background: var(--tint-ice); color: #0B4A6B;
-  box-shadow: none; cursor: default;
-}
-.nav-cta.is-soon:hover, .btn-dark.is-soon:hover, .btn-light.is-soon:hover {
-  background: var(--tint-ice); box-shadow: none; transform: none; translate: none;
-}
-.hero .btn-dark.is-soon { animation: none; }
-.nav-cta.is-soon { color: #0B4A6B !important; } /* .nav-cta pins its colour with !important */
-/* The hero CTA lifts once, a beat after load, and then holds still: an
-   endless bob kept pulling the eye off the words and left the button out
-   of line with its neighbour most of the time. The hover lift is on
-   `translate` so it composes with the animated transform. */
-@keyframes btn-lift { from { transform: translateY(-4px); } }
-.hero .btn-dark { animation: btn-lift 600ms cubic-bezier(0.34, 1.56, 0.64, 1) 0.8s 1; }
-.hero .btn-dark:hover { translate: 0 -2px; }
-@media (prefers-reduced-motion: reduce) {
-  .hero .btn-dark { animation: none; }
-}
-.btn-ghost {
-  display: inline-flex; align-items: center;
-  color: var(--ink); font-weight: 600; font-size: 16px;
-  padding: 14px 22px; border-radius: var(--radius-pill);
-  border: 1px solid var(--line-strong);
-  background: transparent;
-  backdrop-filter: none; -webkit-backdrop-filter: none;
-  transition: border-color 0.2s ease, background 0.2s ease;
-}
-.btn-ghost:hover { border-color: var(--ink); background: rgba(22, 23, 26, 0.04); text-decoration: none; }
 .hero-note { margin-top: clamp(10px, 1.6vh, 18px); font-size: 14px; line-height: 20px; color: var(--ink-3); }
 
 /* A real screen appears before the playful icon shelf. Visitors understand
@@ -687,8 +675,8 @@ footer {
   color: rgba(255, 255, 255, 0.6);
   margin-bottom: 3px;
 }
-.footer-col a { color: rgba(255, 255, 255, 0.72); font-size: 14px; }
-.footer-col a:hover { color: #fff; text-decoration: none; }
+.footer-col a:not(.btn-moonlit) { color: rgba(255, 255, 255, 0.72); font-size: 14px; }
+.footer-col a:not(.btn-moonlit):hover { color: #fff; text-decoration: none; }
 .footer-col .is-soon { color: rgba(255, 255, 255, 0.72); font-size: 14px; }
 /* On its own line and small: beside the name it made the column wide
    enough to wrap its neighbours on a phone. */
@@ -826,22 +814,9 @@ footer {
 .launch-nav { justify-content: space-between; }
 .launch-back {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  min-height: 44px; padding: 10px 16px;
-  border: 1px solid rgba(15, 95, 136, 0.12);
-  border-radius: var(--radius-pill);
-  background: #EAF3F7; color: #244D63;
-  font-size: 14px; line-height: 20px; font-weight: 650; white-space: nowrap;
-  box-shadow: 0 2px 0 rgba(15, 95, 136, 0.12);
-  transition: background-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+  padding: 10px 16px; font-size: 14px; line-height: 20px; white-space: nowrap;
 }
 .launch-back svg { flex: 0 0 18px; }
-.launch-back:hover { background: #DBEBF3; text-decoration: none; }
-.launch-back:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
-.launch-back:active { transform: translateY(2px); box-shadow: none; }
-@media (prefers-reduced-motion: reduce) {
-  .launch-back { transition: none; }
-  .launch-back:active { transform: none; }
-}
 .launch-page {
   width: min(100% - 32px, 960px);
   min-height: calc(100vh - 96px);
@@ -963,10 +938,9 @@ footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border: 0;
-  font: 700 16px/1 var(--font-display);
+  font-size: 16px;
 }
-.launch-submit:disabled { cursor: wait; opacity: 0.7; transform: none; }
+.launch-submit:disabled { cursor: wait; }
 .launch-honeypot {
   position: absolute !important;
   width: 1px !important;
@@ -1001,7 +975,7 @@ footer {
 .launch-success h2 { margin: 1px 0 4px; font: 700 18px/24px var(--font-rounded); }
 .launch-success p { color: var(--ink-2); font-size: 14px; line-height: 20px; }
 .launch-help { margin-top: 12px; color: var(--ink-2); font-size: 14px; line-height: 20px; }
-.launch-help a, .launch-success a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.launch-help a, .launch-success a:not(.btn-moonlit) { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
 .launch-text-action {
   min-height: 44px;
   padding: 8px 0;
@@ -1014,14 +988,14 @@ footer {
   text-underline-offset: 3px;
   cursor: pointer;
 }
-.launch-text-action:focus-visible, .launch-success a:focus-visible, .launch-help a:focus-visible {
+.launch-text-action:focus-visible, .launch-success a:not(.btn-moonlit):focus-visible, .launch-help a:focus-visible {
   outline: 2px solid var(--cyan); outline-offset: 4px; border-radius: var(--radius-xs);
 }
 .launch-copy-status { color: var(--ink-3); font-size: 12px; line-height: 20px; }
 .launch-saved-email { margin-top: 8px; overflow-wrap: anywhere; }
 .launch-success > div { min-width: 0; }
 .launch-success-actions { display: flex; flex-wrap: wrap; align-items: center; column-gap: 20px; margin-top: 12px; }
-.launch-success-actions a { display: inline-flex; align-items: center; min-height: 44px; font-size: 14px; font-weight: 600; }
+.launch-success-actions a { display: inline-flex; align-items: center; min-height: 44px; font-size: 14px; }
 .launch-success .launch-removal { margin-top: 8px; font-size: 12px; line-height: 18px; }
 .launch-fineprint { margin-top: 16px; color: var(--ink-3); font-size: 12px; line-height: 18px; }
 .launch-fineprint a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }

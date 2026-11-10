@@ -12,7 +12,7 @@
 .look-choice:active { transform:scale(.94); transition-duration:70ms; }
 .look-choice:disabled { cursor:wait; }
 .look-choice:focus-visible,.look-actions button:focus-visible { outline:3px solid var(--cyan); outline-offset:3px; }
-@media(hover:hover) { .look-choice:hover { background:var(--blue-soft); } .look-actions button:hover { background:var(--paper-3); } }
+@media(hover:hover) { .look-choice:hover { background:var(--blue-soft); } }
 .look-preview { align-self:center; display:flex; flex-direction:column; align-items:center; text-align:center; }
 .look-stage { position:relative; display:grid; place-items:center; width:100%; aspect-ratio:1.2; max-height:310px; border-radius:50%; background:radial-gradient(ellipse at center, var(--look-tint,#e7f0f4),transparent 70%); }
 .look-mascot { width: min(85%,310px); aspect-ratio:1; position:relative; }
@@ -24,8 +24,7 @@
 .look-identity h4 { margin:0; font-size:25px; font-weight:600; color:var(--ink); line-height:1.15; letter-spacing:-.02em; }
 .look-note { color:var(--ink-2); font-size:14px; line-height:1.6; max-width:32ch; min-height:4.8em; margin:16px 0; }
 .look-actions { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; }
-.look-actions button { font:inherit; font-size:12px; font-weight:600; padding:10px 15px; min-height:44px; border:1px solid var(--line-strong); border-radius:999px; background:var(--paper-2); color:var(--ink); cursor:pointer; box-shadow:0 2px 0 var(--line); touch-action:manipulation; }
-.look-actions button:active { transform:translateY(2px); box-shadow:none; }
+.look-actions button { font-size:12px; padding:10px 15px; }
 .look-actions button:disabled { opacity:.5; cursor:wait; }
 .look-swipe { display:none; }
 @media(max-width:760px) {

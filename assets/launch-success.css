@@ -33,10 +33,9 @@
 .launch-success .launch-saved-email { margin: 3px 0 0; color: #233c49; font-weight: 650; line-height: 21px; }
 .launch-success .launch-success-promise { margin-top: 13px; font-size: 12px; line-height: 19px; color: #636c71; }
 .launch-success-actions { flex-direction: column; align-items: stretch; gap: 5px; margin-top: 28px; }
-.launch-success-actions a.btn-dark { display: flex; justify-content: space-between; padding: 16px 20px; min-height: 54px; text-decoration: none; color: white; font-size: 15px; }
-.launch-success-actions a.btn-dark:hover { color: #0B4A6B; }
+.launch-success-actions a.btn-dark { display: flex; justify-content: space-between; padding: 16px 20px; min-height: 54px; text-decoration: none; font-size: 15px; }
 .launch-success-actions .launch-text-action { text-align: center; color: #59666e; font-size: 13px; font-weight: 500; }
-.launch-success-actions a:active, .launch-success-actions button:active { transform: translateY(2px); }
+.launch-success-actions button:active { transform: translateY(2px); }
 .launch-success .launch-removal { margin-top: 14px; color: #70777c; font-size: 11px; line-height: 17px; }
 .is-joined .launch-fineprint { display: none; }
 .launch-sparkles { display: none; position: absolute; z-index: 3; width: 300px; height: 300px; pointer-events: none; }
@@ -63,7 +62,7 @@
   .launch-success-actions { margin-top: 20px; }
   .launch-sparkles { width: 240px; height: 180px; top: 10px; }
 }
-@media (prefers-reduced-motion: reduce) { .launch-success-actions a:active, .launch-success-actions button:active { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .launch-success-actions button:active { transform: none; } }
 
 /* Two synchronized looks share one pose during the short colour reveal. */
 .launch-nivo-layer { position: absolute; inset: 0; }

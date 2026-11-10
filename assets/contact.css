@@ -20,14 +20,8 @@
 .contact-email { color: var(--ink); font-size: 15px; text-underline-offset: 4px; text-decoration: underline; }
 .contact-send {
   display: inline-flex; align-items: center; justify-content: center; gap: 20px;
-  min-height: 48px; padding: 12px 22px;
-  border-radius: var(--radius-sm);
-  background: var(--ink); color: var(--paper-2);
-  font-size: 15px; font-weight: 600;
-  transition: transform 160ms ease, background-color 160ms ease;
+  min-height: 48px; padding: 12px 22px; font-size: 15px;
 }
-.contact-send:hover { background: #30343a; text-decoration: none; }
-.contact-send:active { transform: translateY(2px); }
 .contact-card a:focus-visible { outline: 2px solid var(--cyan); outline-offset: 5px; }
 .contact-card .contact-note { margin: 14px 0 0; font-size: 13px; }
 .page .contact-card { margin: 26px 0 38px; padding: 28px; }
@@ -54,17 +48,14 @@
 .contact-options { display: grid; gap: 10px; margin: 24px 0; }
 .contact-option {
   display: block; width: 100%; min-height: 48px; padding: 12px 16px;
-  border: 1px solid var(--line-strong); border-radius: var(--radius-sm);
-  background: var(--paper-2); color: var(--ink);
-  text-align: center; font: 600 15px/24px var(--font-body); cursor: pointer;
+  text-align: center; font-size: 15px; line-height: 24px;
 }
-.contact-option:hover { background: var(--tint-ice-2); text-decoration: none; }
 .contact-address {
   width: 100%; padding: 8px; border: 0; border-radius: var(--radius-xs);
   background: transparent; color: var(--ink); text-align: center;
   font: 400 16px/24px var(--font-body);
 }
-.contact-copy { margin-top: 8px; background: var(--tint-ice-2); }
+.contact-copy { margin-top: 8px; }
 .contact-copy-status { min-height: 22px; margin-top: 12px; color: var(--ink-2); font-size: 13px; text-align: center; }
 .contact-dialog :is(a, button, input):focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
 @keyframes contact-open { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -75,6 +66,4 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .contact-dialog[open] { animation: none; }
-  .contact-send { transition: none; }
-  .contact-send:active { transform: none; }
 }

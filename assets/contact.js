@@ -61,7 +61,7 @@
     ['outlook', `https://outlook.live.com/mail/0/deeplink/compose?to=${address}&subject=${subject}`],
     ['app', mailto],
   ].forEach(([key, href]) => {
-    const link = make('a', 'contact-option', t(key));
+    const link = make('a', 'contact-option btn-moonlit btn-moonlit--quiet', t(key));
     link.href = href;
     if (key !== 'app') {
       link.target = '_blank';
@@ -74,7 +74,7 @@
   field.readOnly = true;
   field.setAttribute('aria-label', t('address'));
   field.addEventListener('click', () => field.select());
-  const copyButton = make('button', 'contact-option contact-copy', t('copy'));
+  const copyButton = make('button', 'contact-option contact-copy btn-moonlit', t('copy'));
   copyButton.type = 'button';
   const status = make('p', 'contact-copy-status');
   status.setAttribute('role', 'status');
