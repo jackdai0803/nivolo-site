@@ -29,7 +29,6 @@
     ["party", "Party"],
     ["ghost", "Ghost"],
     ["glitch", "Glitch"],
-    ["grumpy", "Grumpy"],
     ["melting", "Melty"],
     ["sick", "Sick Day"],
     ["snowy", "Snowy"],

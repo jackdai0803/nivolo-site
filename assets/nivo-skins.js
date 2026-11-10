@@ -2219,10 +2219,6 @@ var heroLooks = [
 		"name": "Deep-Sea"
 	},
 	{
-		"id": "grumpy",
-		"name": "Grumpy"
-	},
-	{
 		"id": "snowy",
 		"name": "Snowy"
 	},

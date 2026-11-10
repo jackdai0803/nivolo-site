@@ -36,7 +36,6 @@ export const collections = [
     "name": "Little Feelings",
     "zh": "小心情系列",
     "ids": [
-      "grumpy",
       "sleepy",
       "focused",
       "love",

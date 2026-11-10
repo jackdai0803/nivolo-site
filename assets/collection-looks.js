@@ -1,4 +1,4 @@
-import { collections } from './nivo-collections.js?v=20261110-collections';
+import { collections } from './nivo-collections.js?v=20261110-retire-grumpy';
 import { idleAt, neutralPose } from './nivo-rig.js?v=20261110-mascot-size';
 
 const section = document.querySelector('#nivo-looks');
@@ -11,7 +11,6 @@ if (section) {
   const looks = {
     classic: ['Classic', '经典', 'Your first Nivo. A familiar face for every small beginning.', '你的第一位 Nivo，陪伴每一个小小的开始。', '#e2edf2'],
     deepsea: ['Deep-Sea', '深海', 'A little ocean light. The same companion, with his own deep-sea glow.', '一点海洋微光。熟悉的小伙伴，带着独有的深海光芒。', '#263e70'],
-    grumpy: ['Grumpy', '气鼓鼓', 'Some mornings the habit wins and the mood doesn\'t. He turns up anyway, and he\'d like that noted.', '有些早晨习惯赢了，心情没赢。他照样出现，而且希望这一点被记下来。', '#f3e4e9'],
     snowy: ['Snowy', '雪花', 'Arrives after your first proper week. Nivo swears it always snows right before something starts to stick.', '在你完整坚持一周之后到来。Nivo 坚称，事情快要成形之前总会下雪。', '#e0f2fc'],
     blaze: ['Blaze', '烈焰', 'Carried up out of the old fire under the ice. It finds the ones who don\'t cool off.', '从冰层底下那团旧火里带上来的。它只找那些不会冷下来的人。', '#ffe7ce'],
     party: ['Party', '派对', 'He\'s held that confetti since the day you set the goal. Finishing it opens his hands.', '从你定下目标那天起，那把彩纸就攥在他手里。完成目标，他才松手。', '#eee2fc'],
@@ -158,7 +157,7 @@ if (section) {
     failed = false;
     loading = (async () => {
       try {
-        const module = await import('./nivo-skins.js?v=20261110-sick-mascot');
+        const module = await import('./nivo-skins.js?v=20261110-retire-grumpy');
         const image = new Image();
         image.src = new URL('nivo-body.png', import.meta.url).href;
         await image.decode();
