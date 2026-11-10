@@ -22,7 +22,7 @@ if (section) {
     jade: ['Jade', '翡翠', 'Flowing jade bands and a slow, calming breath.', '流动的翡翠纹路，伴着缓缓的呼吸。', '#e2efe5'],
     kintsugi: ['Kintsugi', '金缮', 'Quiet golden glints. Every repair belongs to the story.', '安静闪烁的金光，每一道修补都是故事的一部分。', '#eee9df'],
     relieved: ['Relieved', '松口气', 'A warm mug, rising steam, and a little space to exhale.', '暖暖的杯子、升起的热气，留一点松口气的空间。', '#e5f0e8'],
-    focused: ['Focused', '专注', 'A ready little nod. One small thing at a time.', '轻轻点头，准备好了。一次只做一件小事。', '#e4edfc'],
+    focused: ['Focused', '专注', 'Clear glasses and a little notebook. One small thing at a time.', '透明眼镜与小小的笔记本。一次专注一件小事。', '#e4edfc'],
     love: ['Love', '爱心', 'Blush hearts, golden curls, and a shy little sway.', '粉色爱心、金色卷纹，还有害羞的小摇摆。', '#f7e3ee'],
     starstruck: ['Starstruck', '星星眼', 'A golden constellation. A small moment of wonder.', '一片金色星光，一个小小惊叹的瞬间。', '#f4e5ed'],
     champion: ['Champion', '冠军', 'Golden laurels. Nivo stands a little taller.', '戴上金色桂冠，Nivo 站得更挺了一点。', '#e1eef0'],
@@ -87,6 +87,7 @@ if (section) {
   }
   function select(id, announce = false) {
     if (!api || !looks[id]) return;
+    if (id === 'focused' && selected !== id) elapsed = 0;
     selected = id;
     if (!layers.some(layer => layer.id === id)) {
       const node = document.createElement('div'); node.className = 'look-layer'; node.dataset.lookLayer = id;
@@ -111,7 +112,7 @@ if (section) {
     failed = false;
     loading = (async () => {
       try {
-        const module = await import('./nivo-skins.js?v=4');
+        const module = await import('./nivo-skins.js?v=6');
         const image = new Image();
         image.src = new URL('nivo-body.png', import.meta.url).href;
         await image.decode();
