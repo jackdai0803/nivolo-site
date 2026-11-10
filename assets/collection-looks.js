@@ -194,7 +194,7 @@ if (section) {
     failed = false;
     loading = (async () => {
       try {
-        const [module, flowers] = await Promise.all([import('./nivo-skins.js?v=20261110-remove-grumpy'), import('./flower-art.js?v=20261110-mascot-size')]);
+        const [module, flowers] = await Promise.all([import('./nivo-skins.js?v=20261110-supporter-mascot'), import('./flower-art.js?v=20261110-mascot-size')]);
         flowerApi = flowers;
         const image = new Image();
         image.src = new URL('nivo-body.png', import.meta.url).href;

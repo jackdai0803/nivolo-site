@@ -30,7 +30,7 @@ await build({ configFile: false, root: site, logLevel: 'warn', plugins: [{
       export const heroLooks = ${JSON.stringify(looks)};
       export function makeClassicSkin(host, look, uid) {
         const id = look.id;
-        if (hasSeriesWorld(id) && id !== 'snowy' && !hasIconSkinArtwork(id)) {
+        if ((hasSeriesWorld(id) || id === 'early-supporter') && id !== 'snowy' && !hasIconSkinArtwork(id)) {
           const rig = makeSeriesSkin(host, id, uid);
           return { render(pose) { rig.render({ ...pose, reacting: !!pose.skinReacting }, pose.skinTimeMs || 0, !!pose.skinMotion); } };
         }

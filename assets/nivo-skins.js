@@ -2264,7 +2264,7 @@ var heroLooks = [
 ];
 function makeClassicSkin(host, look, uid) {
 	const id = look.id;
-	if (hasSeriesWorld(id) && id !== "snowy" && !hasIconSkinArtwork(id)) {
+	if ((hasSeriesWorld(id) || id === "early-supporter") && id !== "snowy" && !hasIconSkinArtwork(id)) {
 		const rig = makeSeriesSkin(host, id, uid);
 		return { render(pose) {
 			rig.render({
