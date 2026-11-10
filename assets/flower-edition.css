@@ -59,3 +59,9 @@
 .flower-edition[data-exclusive=true] .flower-stage{box-shadow:0 0 0 1px #ad8a49,0 7px 0 #c0a46c30,0 15px 30px #304c3614}
 .flower-edition[data-exclusive=true] .flower-stage::after{content:"";position:absolute;inset:7px;z-index:3;border:1px solid #fff2caba;border-radius:inherit;pointer-events:none;box-shadow:0 0 0 1px #9c7b3c40}
 .flower-choice[data-exclusive=true] > :not(.flower-exclusive-seal){position:relative;z-index:1}
+
+.flower-choices{grid-template-columns:repeat(8,minmax(0,1fr))}
+.flower-exclusive-group{max-width:420px;margin:30px auto 0}
+.flower-exclusive-group h3{margin:0 0 22px;text-align:center;font:650 14px/1.5 var(--font-body);color:#435a4b}
+.flower-choices-exclusive{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media(max-width:1000px){.flower-choices:not(.flower-choices-exclusive){grid-template-columns:repeat(4,minmax(0,1fr))}}
