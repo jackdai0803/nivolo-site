@@ -2,9 +2,13 @@ const section=document.querySelector('#flower-edition');
 if(section){
  const lang=()=>document.documentElement.lang.startsWith('zh')?'zh':'en';
  const copy={
-  en:{edition:'The Flower Edition',title:'A little room to bloom.',intro:'Eleven flowers, eleven little worlds. A new collection inspired by the beauty of Chinese gardens.',soon:'Eleven looks · One little companion',matching:'A Nivo look.\nA matching icon.\nA world of its own.',availability:'Eight editions to collect with Krill. White Lotus, Tree Peony and Red Spider Lily are included with active Nivolo Plus.',lighting:'Scene lighting',day:'Day',midnight:'Midnight',pause:'Pause Nivo',resume:'Resume Nivo',hint:'Find a flower that feels like you.',choose:'Explore all eleven'},
-  zh:{edition:'花卉系列',title:'留一点空间，让美好盛开。',intro:'十一种花，十一个小世界。灵感来自中式花园之美的新系列。',soon:'十一种外观 · 同一位小伙伴',matching:'一款 Nivo。\n一枚专属图标。\n一个自己的小世界。',availability:'八款花卉可用磷虾解锁。白荷、牡丹和彼岸花在 Nivolo Plus 会员有效期内专属。',lighting:'场景光线',day:'白昼',midnight:'午夜',pause:'暂停 Nivo',resume:'继续 Nivo',hint:'找到与你心意相通的那朵花。',choose:'探索十一种花'}
+  en:{edition:'The Flower Edition',title:'A little room to bloom.',intro:'Eleven flowers, eleven little worlds. A new collection inspired by the beauty of Chinese gardens.',soon:'Eleven looks · One little companion',matching:'A Nivo look.\nA matching icon.\nA world of its own.',availability:'Eight editions are open to everyone. White Lotus, Tree Peony and Red Spider Lily are Plus-exclusive and unlock with 800, 900 and 1,000 Krill. An active Plus membership is required to use them.',lighting:'Scene lighting',day:'Day',midnight:'Midnight',pause:'Pause Nivo',resume:'Resume Nivo',hint:'Find a flower that feels like you.',choose:'Explore all eleven',
+    exclusive:'Plus-exclusive',price:'{n} Krill',plusFlowers:'Three Plus-exclusive flowers to unlock with Krill',freeAnswer:'Yes. The core habit tools are free and there are no ads. Everyone can unlock eight Flower Editions with earned Krill. Plus members can also unlock White Lotus, Tree Peony and Red Spider Lily with Krill. Plus adds AI planning and insights, double Krill, Deep-Sea, and a daily Streak Freeze.'},
+  zh:{edition:'花卉系列',title:'留一点空间，让美好盛开。',intro:'十一种花，十一个小世界。灵感来自中式花园之美的新系列。',soon:'十一种外观 · 同一位小伙伴',matching:'一款 Nivo。\n一枚专属图标。\n一个自己的小世界。',availability:'八款花卉向所有人开放。白荷、牡丹和彼岸花为 Plus 专属，分别需 800、900 和 1,000 磷虾解锁，且需有效的 Plus 会员才能使用。',lighting:'场景光线',day:'白昼',midnight:'午夜',pause:'暂停 Nivo',resume:'继续 Nivo',hint:'找到与你心意相通的那朵花。',choose:'探索十一种花',
+    exclusive:'Plus 专属',price:'{n} 磷虾',plusFlowers:'三款 Plus 专属花卉，使用磷虾解锁',freeAnswer:'是的。核心习惯工具免费，且没有广告。所有人都可以用磷虾解锁八款花卉。Plus 会员还可使用磷虾解锁白荷、牡丹和彼岸花。Plus 也提供 AI 计划与洞察、双倍磷虾、深海外观和每日连续记录保护。'}
  };
+ const prices={'plum-blossom':175,jasmine:100,camellia:275,'white-lotus':800,'tree-peony':900,magnolia:350,orchid:350,osmanthus:475,crabapple:575,peony:700,'spider-lily':1000};
+ const exclusive=new Set(['white-lotus','tree-peony','spider-lily']);
  const stories={
   'plum-blossom':['Plum Blossom in Snow','雪中梅花','Pink blossoms, winter blue, and a first dusting of snow.','粉梅、冰蓝，与初落的一层薄雪。'],
   jasmine:['Jasmine Morning','茉莉清晨','Little white flowers climbing toward the morning light.','小小白花，沿着晨光攀上花架。'],
@@ -27,6 +31,13 @@ if(section){
   document.querySelectorAll('[data-flower-copy]').forEach(el=>{el.textContent=t(el.dataset.flowerCopy);});
   section.querySelector('[data-flower-label]').setAttribute('aria-label',t('lighting'));
   const story=stories[selected],zh=lang()==='zh';
+  const price=t('price').replace('{n}',prices[selected].toLocaleString(zh?'zh-CN':'en-US'));
+  section.querySelector('.flower-soon').textContent=exclusive.has(selected)?`${t('exclusive')} · ${price}`:price;
+  for(const button of choices){
+   let badge=button.querySelector('.flower-choice-access');
+   if(!badge){badge=document.createElement('small');badge.className='flower-choice-access flower-choice-name';button.append(badge);}
+   badge.textContent=exclusive.has(button.dataset.flowerChoice)?t('exclusive'):'';
+  }
   section.querySelector('.flower-selected-name').textContent=story[zh?1:0];
   section.querySelector('.flower-selected-note').textContent=story[zh?3:2];
   section.querySelector('.flower-selected-zh').textContent=choices.find(b=>b.dataset.flowerChoice===selected).querySelector('.flower-choice-zh').textContent;
