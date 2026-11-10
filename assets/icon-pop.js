@@ -7,7 +7,9 @@
 
   var copy = {
     en: {
-      snowyName: "Snowy",
+      repairName: "Repair", repairStory: "A little bandage for a busy life. A streak freeze kept your place.",
+      upside_downName: "Upside Down", upside_downStory: "Nivo keeps strange hours too. It all makes more sense after midnight.",
+      sickName: "Sick", sickStory: "Everyone goes under sometimes. This one shows up for the getting back out.",
       supporterName: "Early Supporter", supporterStory: "The first 20. You were here when Nivolo first hatched.",
       deepseaName: "Deep-Sea", deepseaStory: "A little ocean light, wherever your day takes you. Nivo brings his cyan-and-violet glow from the deep to your Home Screen.",
       membership: "Included with an active Nivolo Plus membership",
@@ -16,7 +18,9 @@
       hint: "Drag to turn it over in your hands · tap to flip",
     },
     zh: {
-      snowyName: "雪花",
+      repairName: "修复", repairStory: "为忙碌的生活贴上一块小绷带。一次冻结，守住了你的坚持。",
+      upside_downName: "颠倒", upside_downStory: "Nivo 的作息也很离谱。过了午夜，一切都更说得通。",
+      sickName: "生病", sickStory: "谁都有撑不住的时候。这一枚记的是重新爬起来的那一段。",
       supporterName: "早期支持者", supporterStory: "最初的二十位。Nivolo 刚刚破壳时，你就已经在这里了。",
       deepseaName: "深海", deepseaStory: "无论今天去向哪里，都带上一点海洋的光。Nivo 把深海里的青紫微光，带到你的主屏幕。",
       membership: "Nivolo Plus 会员有效期内专属",
@@ -675,21 +679,18 @@
   Array.prototype.forEach.call(document.querySelectorAll("#collection .keepsake-card"), function (el) {
     attachPreview(el, el, el.querySelector("img"), el.querySelector("h4"), el.querySelector("p"));
   });
-  Array.prototype.forEach.call(document.querySelectorAll("#collection .lore-card, #collection .lore-mini li"), function (el) {
-    attachPreview(el, el, el.querySelector("img"), el.querySelector("h3"), el.querySelector("p"));
+  Array.prototype.forEach.call(document.querySelectorAll("[data-extra-icon]"), function (el) {
+    var id = el.dataset.extraIcon;
+    var head = el.querySelector("h5");
+    var story = el.querySelector("p");
+    head.textContent = t(id + "Name");
+    story.textContent = t(id + "Story");
+    attachPreview(el, el, el.querySelector("img"), head, story);
   });
 
   Array.prototype.forEach.call(document.querySelectorAll("[data-founder-icon]"), function (el) {
     attachPreview(el, el.querySelector(".founder-icon-preview"), el.querySelector("img"), el.querySelector('[data-founder-copy="iconLabel"]'), el.querySelector(".founder-icon-hint, .founder-icon-note"));
   });
-
-  var benefitIcon = document.querySelector(".benefit-icon-preview");
-  var snowyCard = document.querySelector('#collection .lore-card img[src*="/snowy.png"]');
-  if (benefitIcon && snowyCard) {
-    var snowyStory = snowyCard.closest(".lore-card");
-    benefitIcon.setAttribute("data-icon-name", t("snowyName"));
-    attachPreview(benefitIcon, benefitIcon, benefitIcon.querySelector("img"), snowyStory.querySelector("h3"), snowyStory.querySelector("p"));
-  }
 
   /* Once the collection is in reach, scenes and tile art are warmed quietly
      in the background, a few

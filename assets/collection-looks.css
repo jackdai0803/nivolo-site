@@ -22,12 +22,29 @@
 .look-matching-icon { width:48px; height:48px; border-radius:23%; }
 .look-identity p { margin:0 0 4px; color:var(--ink-3); font-size:11px; line-height:1.4; }
 .look-identity h4 { margin:0; font-size:25px; font-weight:600; color:var(--ink); line-height:1.15; letter-spacing:-.02em; }
-.look-note { color:var(--ink-2); font-size:14px; line-height:1.6; max-width:32ch; min-height:4.8em; margin:16px 0; }
+.look-note { color:var(--ink-2); font-size:14px; line-height:1.6; max-width:42ch; min-height:4.8em; margin:16px 0; }
 .look-actions { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; }
 .look-actions button { font:inherit; font-size:12px; font-weight:600; padding:10px 15px; min-height:44px; border:1px solid var(--line-strong); border-radius:999px; background:var(--paper-2); color:var(--ink); cursor:pointer; box-shadow:0 2px 0 var(--line); touch-action:manipulation; }
 .look-actions button:active { transform:translateY(2px); box-shadow:none; }
 .look-actions button:disabled { opacity:.5; cursor:wait; }
 .look-swipe { display:none; }
+.look-extras { grid-column:1/-1; padding-top:20px; border-top:1px solid var(--line); scroll-margin-top:100px; }
+.look-extras h4 { margin:0 0 10px; font-size:14px; color:var(--ink); }
+.look-extras ul { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; list-style:none; padding:0; margin:0; }
+.look-extras li { display:flex; align-items:center; gap:10px; min-width:0; padding:10px; border:1px solid var(--line); border-radius:var(--radius-sm); background:var(--paper); }
+.look-extras img { width:36px; height:36px; border-radius:23%; transition:transform 120ms ease-out; }
+.look-extras h5 { margin:0; color:var(--ink); font-size:13px; line-height:1.3; overflow-wrap:anywhere; }
+.look-extras li:active img { transform:scale(.94); }
+.benefit-icon-preview:focus-visible { outline:3px solid var(--cyan); outline-offset:3px; }
+#full-collection .compact-krill { margin:0; padding:0; border:0; }
+@media(hover:hover) { .look-extras li.ipop-source:hover { background:var(--blue-soft); } }
+@media(max-width:540px) {
+  .look-extras li { flex-direction:column; justify-content:flex-start; gap:6px; padding:10px 5px; text-align:center; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .look-extras img { transition:none; }
+  .look-extras li:active img { transform:none; }
+}
 @media(max-width:760px) {
   .look-explorer { grid-template-columns:minmax(0,1fr); gap:12px; margin-top:28px; padding:24px 16px; }
   .look-browser h3 { font-size:32px; }
