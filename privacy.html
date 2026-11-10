@@ -47,14 +47,14 @@
 
   <main id="main" tabindex="-1" class="page">
     <h1>Privacy Policy</h1>
-    <p class="updated">Last updated: October 26, 2026 · Applies to the Nivolo iOS app and nivolo.app</p>
+    <p class="updated">Last updated: November 10, 2026 · Applies to the Nivolo iOS app and nivolo.app</p>
 
     <p class="lede">Nivolo is a habit and goal app built to be private by default. It has no cloud account system, analytics, advertising, or trackers. Almost everything you create lives only on your iPhone. This policy explains the exceptions in detail — what leaves your device, when, who processes it, how long it is kept, and what you can ask us to do about it.</p>
 
     <div class="card">
       <p><strong>The short version</strong></p>
-      <p>Your goals, actions, streaks, Krill, gems, name, birthday and any email you enter <strong>inside the app</strong> are stored on your device. Goal text and your reason are sent only if you tap to draft an AI plan; your name, birthday and in-app email are not sent to us.</p>
-      <p>The <strong>AI goal plan</strong> sends what you enter when you request a draft. For Plus members with at least five logged actions, the <strong>AI weekly insight</strong> can send summary counts automatically when the app opens or the language changes, if it has no saved result for that week and language. Requests use a random app ID rather than your name or email. Section 3 explains exactly how this works.</p>
+      <p>Your goals, actions, streaks, Krill, gems, name, birthday and any email you enter <strong>inside the app</strong> are stored on your device. With AI sharing enabled, goal text can be sent for a plan draft or reminder suggestion you request; your name, birthday and in-app email are not sent to us.</p>
+      <p>The <strong>AI goal plan</strong> sends what you enter when you request a draft. After you allow AI sharing, the <strong>AI weekly insight</strong> for eligible Plus members can send summary counts automatically when the app opens or the language changes, if it has no saved result for that week and language. Requests use a random app ID rather than your name or email. Section 3 explains exactly how this works.</p>
       <p>If you voluntarily join the website launch list, we keep the email address you submit only long enough to send the one launch message. We do not run analytics, ads, or trackers, and we do not sell personal information.</p>
       <p>The limited Early Supporter icon and numbered painting are for our first 20 verified paying supporters. Our server verifies Apple-signed purchase records and keeps a hash of each winning subscription identifier; the public count contains no personal information.</p>
     </div>
@@ -110,7 +110,7 @@
     <p>Because this data lives on your device, it is included in your normal iPhone backup (iCloud or a computer), where it is handled under Apple's backup and encryption terms. Deleting the app deletes this data from your device; a backup you have already made may still contain a copy until that backup is deleted or overwritten.</p>
 
     <h2 id="ai" class="anchor">3. Data sent for AI features</h2>
-    <p>Nivolo has two AI features. They are part of the Nivolo Plus membership, and anyone can try the plan drafter a couple of times for free. The plan drafter sends data only when you tap to request it. For eligible Plus members, the weekly insight can run automatically as described below. Requests go over an encrypted HTTPS connection to our own server at <code>api.nivolo.app</code> (a Cloudflare Worker), carrying a short-lived token derived from the random app ID described above.</p>
+    <p>In supported regions, Nivolo asks you to allow AI sharing before these features send data. You can turn it off under Profile → Privacy and keep using the manual tools. Our server uses the country inferred from your network connection to select the provider. Nivolo does not request device location permission. Requests go over an encrypted HTTPS connection to our own server at <code>api.nivolo.app</code> (a Cloudflare Worker), carrying a short-lived token derived from the random app ID described above.</p>
 
     <h3>AI goal plan</h3>
     <p>When you ask Nivolo to draft a plan for a goal, the following is sent:</p>
@@ -122,8 +122,11 @@
     </ul>
     <p>This text is used once, to generate that plan, and is returned to your device. Please avoid typing anything you would not want processed by a third-party AI provider — health details, financial details, or other people's personal information — into a goal you send to the AI. Writing goals by hand instead sends nothing at all.</p>
 
+    <h3>AI reminder suggestion</h3>
+    <p>If you ask Nivolo Plus to suggest a reminder time, it sends your goal title, the availability you type, and your language to generate a draft. Our server verifies the signed subscription record described above. You review and save the time before a reminder is scheduled.</p>
+
     <h3>AI weekly insight</h3>
-    <p>For Plus members with at least five logged actions, Nivolo automatically requests a weekly "Nivo's take" insight when the app opens or the language changes, if it has not already saved an insight for that week and language. This sends <strong>summary counts only</strong> — never your goal text or your name. Specifically: your current streak length, how many actions you logged this week and last week, your most active weekday, how many goals are active, how many goals you completed this week, your total Krill earned, and your language setting, together with the signed subscription record described above. The result is saved on your device.</p>
+    <p>With AI sharing enabled, Plus members with at least five logged actions can receive an automatic weekly "Nivo's take" insight when the app opens or the language changes, if it has not already saved an insight for that week and language. This sends <strong>summary counts only</strong> — never your goal text or your name. Specifically: your current streak length, how many actions you logged this week and last week, your most active weekday, how many goals are active, how many goals you completed this week, your total Krill earned, and your language setting, together with the signed subscription record described above. The result is saved on your device.</p>
 
     <h3>What our server keeps</h3>
     <p>Our server does not store your goal text, does not log request bodies, and does not build a profile. It keeps only the small counters needed to stop abuse and to apply the free and Plus allowances (see <a href="#retention">retention</a>):</p>
@@ -160,8 +163,13 @@
           </tr>
           <tr>
             <td><strong>Anthropic</strong> (Claude API)</td>
-            <td>Generates the plan text and the weekly insight text</td>
-            <td>Only the AI request contents described in section 3, forwarded by our server. Under Anthropic's commercial API terms, inputs and outputs are not used to train their models, and they are deleted from Anthropic's systems within their published retention window. Anthropic does not receive your IP address, your name, or any identifier from your device.</td>
+            <td>Generates plans, reminder suggestions and insights in regions Anthropic supports</td>
+            <td>Only the text, language and activity summaries needed for the feature, forwarded by our server. Under Anthropic's commercial API terms, inputs and outputs are not used to train their models, and they are deleted from Anthropic's systems within their published retention window. Anthropic does not receive your IP address, your name, or any identifier from your device.</td>
+          </tr>
+          <tr>
+            <td><strong>Alibaba Cloud</strong> (Qwen via Beijing Model Studio)</td>
+            <td>Generates plans, reminder suggestions and insights in mainland China when available</td>
+            <td>Only the text, language and activity summaries needed for the feature. Our server does not forward your app ID, subscription record or IP address to the model provider.</td>
           </tr>
           <tr>
             <td><strong>Google</strong> (Gmail)</td>
