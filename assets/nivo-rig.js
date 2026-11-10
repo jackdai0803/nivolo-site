@@ -89,6 +89,9 @@ const rightTip = 'M985 640 H1254 V910 H934 C961 852 984 737 985 640 Z';
 const leftWing = 'M310 755 C290 752 257 772 229 803 C204 828 192 853 211 875 C231 900 275 902 310 884 C335 869 349 843 344 811 C339 783 325 762 310 755 Z';
 const rightWing = 'M969 716 C993 721 1023 757 1045 795 C1065 828 1075 852 1057 871 C1036 892 995 882 964 866 C936 851 927 821 933 785 C937 751 950 725 969 716 Z';
 
+// Match the Series and Flower framing, including headroom for fitted details.
+export const NIVO_FRAME = { x: 90, y: 40, size: 1120 };
+
 export function createRig(container, source, id, label, appearance = "classic") {
   const deepsea = appearance === "deepsea";
   const artwork = source;
@@ -100,7 +103,8 @@ export function createRig(container, source, id, label, appearance = "classic") 
   const beakWindow = 'M574 661 Q565 621 600 592 Q661 546 739 595 L737 632 Q737 714 660 716 Q612 710 591 665 Z';
   const image = (attrs = '') => `<use href="#${id}-art" ${attrs}/>`;
   const mask = (name, cuts) => `<mask id="${id}-${name}" maskUnits="userSpaceOnUse" x="0" y="0" width="1254" height="1254" style="mask-type:luminance"><rect width="1254" height="1254" fill="white"/>${cuts}</mask>`;
-  container.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="160 170 970 970" role="img" aria-label="${label}">
+  const { x, y, size } = NIVO_FRAME;
+  container.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${x} ${y} ${size} ${size}" role="img" aria-label="${label}">
     <defs>
       <filter id="${id}-ocean-light" x="-15%" y="-15%" width="130%" height="130%" color-interpolation-filters="sRGB">
         <feMorphology in="SourceAlpha" operator="erode" radius="2" result="core"/>

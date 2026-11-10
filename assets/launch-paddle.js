@@ -1,4 +1,4 @@
-import { createRig, idleAt, neutralPose } from './nivo-rig.js?v=9';
+import { createRig, idleAt, neutralPose } from './nivo-rig.js?v=20261110-mascot-size';
 
 // The launch page owns this rig so the flipper and its paddle share one motion.
 const container = document.querySelector('[data-launch-nivo]');
@@ -17,7 +17,6 @@ if (container && card) {
     layer.style.opacity = look === 'classic' ? '1' : '0';
     container.append(layer);
     const rig = createRig(layer, artwork, `launch-nivo-${look}`, 'Nivo', look);
-    layer.querySelector('svg').setAttribute('viewBox', '160 170 970 970');
     const wing = layer.querySelector('[data-part="right-flipper"]');
     wing.insertAdjacentHTML('afterbegin', `<g data-launch-paddle opacity="0" aria-hidden="true">
       <rect x="1024" y="524" width="30" height="330" rx="15" fill="#e0c99f"/>

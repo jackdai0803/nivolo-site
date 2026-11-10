@@ -1,5 +1,5 @@
-import { createRig, idleAt, neutralPose, smallWinAt, celebrationAt, SMALL_WIN_MS, CELEBRATION_MS } from './nivo-rig.js?v=9';
-import { makeClassicSkin, heroLooks } from './nivo-skins.js?v=6';
+import { createRig, idleAt, neutralPose, smallWinAt, celebrationAt, SMALL_WIN_MS, CELEBRATION_MS } from './nivo-rig.js?v=20261110-mascot-size';
+import { makeClassicSkin, heroLooks } from './nivo-skins.js?v=20261110-mascot-size';
 
 const strings = {
   en: { pause: 'Pause animation', resume: 'Resume animation', off: 'Sound: off', on: 'Sound: on' },
@@ -94,7 +94,6 @@ document.querySelectorAll('[data-nivo]').forEach((container, index) => {
     const rig = autoCycle
       ? makeClassicSkin(layer, look, `site-nivo-${index}-${look.id}`)
       : createRig(layer, artwork, `site-nivo-${index}-${look.id}`, 'Nivo', look.id);
-    if (deepSea && !autoCycle) layer.querySelector('svg').setAttribute('viewBox', '0 0 1254 1254');
     const character = { look, layer, rig, startedAt: 0, opacity: lookIndex === 0 ? 1 : 0, from: 0 };
     characters.set(lookIndex, character);
     return character;
