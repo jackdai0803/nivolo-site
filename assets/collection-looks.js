@@ -27,6 +27,7 @@ if (section) {
     starstruck: ['Starstruck', '星星眼', 'He looked at what you\'d built and forgot how to blink.', '他看着你做出来的东西，忘了怎么眨眼。', '#f4e5ed'],
     champion: ['Champion', '冠军', 'There\'s a shelf in the ice for the very consistent. He won\'t come down.', '冰上有一块只留给极度稳定者的高台。他不打算下来。', '#e1eef0'],
     sleepy: ['Sleepy', '困困', 'Caught before sunrise. He didn\'t think anyone else was up either.', '在日出前被逮到。他也没想到还有别人醒着。', '#eceafa'],
+    sick: ['Sick', '生病', 'Olive-green plumage, rosy cheeks, and a tiny thermometer. Take it gently.', '橄榄绿羽毛、红润脸颊，还有一支小小的体温计。慢慢来就好。', '#e7efdd'],
     rainy: ['Rainy', '雨天', 'Grey days count double. This one\'s for the people who showed up anyway.', '灰暗的日子算双份。这一枚献给照样出现的人。', '#e2edf0'],
   };
   const zh = () => document.documentElement.lang.startsWith('zh');
@@ -157,7 +158,7 @@ if (section) {
     failed = false;
     loading = (async () => {
       try {
-        const module = await import('./nivo-skins.js?v=20261110-retire-three');
+        const module = await import('./nivo-skins.js?v=20261110-sick-mascot');
         const image = new Image();
         image.src = new URL('nivo-body.png', import.meta.url).href;
         await image.decode();

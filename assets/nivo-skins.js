@@ -1934,6 +1934,13 @@ var SERIES_WORLDS = {
 		motif: "moon",
 		note: "A crescent moon, sleepy stars, and a soft nod toward rest."
 	},
+	sick: {
+		day: ["#e7efdd", "#f6f8eb"],
+		night: ["#172c27", "#2b4031"],
+		ink: "#8faa63",
+		motif: "steam",
+		note: "Olive-green plumage, rosy cheeks, and a tiny thermometer. Take it gently."
+	},
 	relieved: {
 		day: ["#e5f0e8", "#f8f7ee"],
 		night: ["#1b302f", "#2c4340"],
@@ -2230,6 +2237,10 @@ var heroLooks = [
 	{
 		"id": "melting",
 		"name": "Melting"
+	},
+	{
+		"id": "sick",
+		"name": "Sick"
 	},
 	{
 		"id": "ghost",
