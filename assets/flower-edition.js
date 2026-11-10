@@ -33,10 +33,11 @@ if(section){
   const story=stories[selected],zh=lang()==='zh';
   const price=t('price').replace('{n}',prices[selected].toLocaleString(zh?'zh-CN':'en-US'));
   section.querySelector('.flower-soon').textContent=exclusive.has(selected)?`${t('exclusive')} · ${price}`:price;
+  section.dataset.exclusive=String(exclusive.has(selected));
   for(const button of choices){
-   let badge=button.querySelector('.flower-choice-access');
-   if(!badge){badge=document.createElement('small');badge.className='flower-choice-access flower-choice-name';button.append(badge);}
-   badge.textContent=exclusive.has(button.dataset.flowerChoice)?t('exclusive'):'';
+   const premium=exclusive.has(button.dataset.flowerChoice);
+   button.dataset.exclusive=String(premium);
+   if(premium)button.setAttribute('aria-description',t('exclusive'));
   }
   section.querySelector('.flower-selected-name').textContent=story[zh?1:0];
   section.querySelector('.flower-selected-note').textContent=story[zh?3:2];
