@@ -32,7 +32,7 @@ await build({ configFile: false, root: site, logLevel: 'warn', plugins: [{
         const id = look.id;
         if (hasSeriesWorld(id) && id !== 'snowy' && !hasIconSkinArtwork(id)) {
           const rig = makeSeriesSkin(host, id, uid);
-          return { render(pose) { rig.render(pose, pose.skinTimeMs || 0, !!pose.skinMotion); } };
+          return { render(pose) { rig.render({ ...pose, reacting: !!pose.skinReacting }, pose.skinTimeMs || 0, !!pose.skinMotion); } };
         }
         const rig = createRig(host, body, uid, 'Nivo', id);
         const svg = host.querySelector('svg');

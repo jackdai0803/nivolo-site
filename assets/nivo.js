@@ -1,5 +1,5 @@
 import { createRig, idleAt, neutralPose, smallWinAt, celebrationAt, SMALL_WIN_MS, CELEBRATION_MS } from './nivo-rig.js?v=9';
-import { makeClassicSkin, heroLooks } from './nivo-skins.js?v=4';
+import { makeClassicSkin, heroLooks } from './nivo-skins.js?v=6';
 
 const strings = {
   en: { pause: 'Pause animation', resume: 'Resume animation', off: 'Sound: off', on: 'Sound: on' },
@@ -95,7 +95,7 @@ document.querySelectorAll('[data-nivo]').forEach((container, index) => {
       ? makeClassicSkin(layer, look, `site-nivo-${index}-${look.id}`)
       : createRig(layer, artwork, `site-nivo-${index}-${look.id}`, 'Nivo', look.id);
     if (deepSea && !autoCycle) layer.querySelector('svg').setAttribute('viewBox', '0 0 1254 1254');
-    const character = { look, layer, rig, opacity: lookIndex === 0 ? 1 : 0, from: 0 };
+    const character = { look, layer, rig, startedAt: 0, opacity: lookIndex === 0 ? 1 : 0, from: 0 };
     characters.set(lookIndex, character);
     return character;
   };
@@ -114,7 +114,7 @@ document.querySelectorAll('[data-nivo]').forEach((container, index) => {
   let reactionStart = 0;
   const advance = () => {
     target = (target + 1) % looks.length;
-    mount(target);
+    mount(target).startedAt = clock;
     for (const character of characters.values()) character.from = character.opacity;
     progress = 0;
     lastChange = clock;
@@ -127,7 +127,7 @@ document.querySelectorAll('[data-nivo]').forEach((container, index) => {
     const paused = autoCycle && cyclePaused;
     const moving = visible && !document.hidden && !preference.matches && !paused;
     if (moving) clock += delta;
-    if (autoCycle && ready && moving && clock - lastChange >= 2500) {
+    if (autoCycle && ready && moving && clock - lastChange >= (looks[target].id === 'focused' ? 8000 : 2500)) {
       advance();
       if (!demoNivo) pop();
     }
@@ -167,7 +167,7 @@ document.querySelectorAll('[data-nivo]').forEach((container, index) => {
           continue;
         }
       }
-      rig.render(pose);
+      rig.render(look.id === 'focused' ? { ...pose, skinTimeMs: clock - character.startedAt } : pose);
     }
     if (moving) frame = requestAnimationFrame(render);
   };

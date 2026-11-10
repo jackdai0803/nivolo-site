@@ -1,4 +1,4 @@
-//#region ../pebble-app/src/nivoRig.js
+//#region src/nivoRig.js
 var EYES = [{
 	name: "left",
 	cx: 489,
@@ -170,7 +170,7 @@ function applyClassicCoat(svg, uid, colors, markings = "") {
 //#region \0nivo-body
 var _nivo_body_default = new URL("./nivo-body.png", "" + import.meta.url).href;
 //#endregion
-//#region ../pebble-app/src/series/detective-details.js
+//#region src/series/detective-details.js
 function detectiveCap(uid) {
 	const crown = "M293 480C277 351 368 228 527 185C687 139 843 207 905 329Q927 377 931 440Q575 260 293 480Z";
 	return `<g data-accessory="detective-cap">
@@ -287,7 +287,7 @@ function porcelainHairpinBack(uid) {
  </g>`;
 }
 //#endregion
-//#region ../pebble-app/src/series/pearl-details.js
+//#region src/series/pearl-details.js
 function pearlStone(uid) {
 	return `<radialGradient id="${uid}-pearl-stone" cx=".32" cy=".25" r=".75">
   <stop stop-color="#fffefa"/><stop offset=".35" stop-color="#fff2e7"/>
@@ -342,7 +342,7 @@ function pearlSeashell(uid) {
  </g>`;
 }
 //#endregion
-//#region ../pebble-app/src/series/extra-skin-details.js
+//#region src/series/extra-skin-details.js
 var effect$1 = (kind, artwork, x, y, phase = 0) => `<g data-effect="${kind}" data-x="${x}" data-y="${y}" data-phase="${phase}">${artwork}</g>`;
 var EXTRA_SIGNATURES = {
 	grumpy: ["A little anger mark and a puff of steam", "小小生气符号与一团气鼓鼓的蒸汽"],
@@ -384,7 +384,151 @@ function extraSkinDetails(id, uid = "pearl-preview") {
 	}
 }
 //#endregion
-//#region ../pebble-app/src/series/turbo-details.js
+//#region src/series/focused-details.js
+var notebook = `<g data-accessory="focus-notebook"><g><g data-back-cover>
+ <rect x="-120" y="-132" width="246" height="276" rx="22" fill="#5489b4"/>
+ <rect x="-123" y="-137" width="240" height="272" rx="21" fill="#97c6e4"/>
+ <path d="M-108-114V109Q-108 119-98 119H93" fill="none" stroke="#b7dbef" stroke-width="4" stroke-linecap="round"/>
+ <path d="M-102-136V132" stroke="#80b3d5" stroke-width="5"/>
+ <path d="M-74-145V-124M-29-145V-124M16-145V-124M61-145V-124" fill="none" stroke="#d2e3ee" stroke-width="7" stroke-linecap="round"/>
+ </g></g></g>`;
+var pencil = `<g data-accessory="focus-pencil"><g transform="translate(268 789) rotate(-23)">
+ <path d="M-18 61V-104L0-157 18-104V61Z" fill="#f8c65e"/>
+ <path d="M0-104H18V61H0Z" fill="#dc9c3c"/>
+ <path d="M-18-104 0-157 18-104Z" fill="#f4dfb2"/>
+ <path d="M-6-139 0-157 6-139Z" fill="#34435b"/>
+ <path d="M-10-96V40" stroke="#ffe39a" stroke-width="5" stroke-linecap="round"/>
+ <rect x="-18" y="51" width="36" height="15" rx="3" fill="#c4d7df"/>
+ <path d="M-18 66H18V84Q18 94 8 94H-8Q-18 94-18 84Z" fill="#edb0a3"/>
+ </g></g>`;
+var glasses = `<g data-accessory="focus-glasses" fill="none" stroke-linecap="round" stroke-linejoin="round">
+
+ <g transform="translate(644 557) rotate(-17)">
+  <path d="M-290-45Q-330-54-360-85M290-45Q307-37 314-22" stroke="#91b8db" stroke-width="17"/>
+  <path d="M-36-12Q0-38 36-12" stroke="#99bad5" stroke-width="20"/>
+  <rect x="-290" y="-124" width="254" height="246" rx="67" stroke="#8caed0" stroke-width="23"/>
+  <rect x="36" y="-124" width="254" height="246" rx="67" stroke="#8caed0" stroke-width="23"/>
+  <path d="M-36-15Q0-41 36-15" stroke="#eef5fc" stroke-width="12"/>
+  <rect x="-290" y="-127" width="254" height="246" rx="67" stroke="#eef5fc" stroke-width="14"/>
+  <rect x="36" y="-127" width="254" height="246" rx="67" stroke="#eef5fc" stroke-width="14"/>
+  <path d="M-267-69Q-267-102-235-102M59-69Q59-102 91-102" stroke="white" stroke-width="6"/>
+ </g></g>`;
+var focusedAccessories = () => notebook + pencil + glasses;
+function mountFocusedWriting(svg, uid) {
+	const revised = svg;
+	const book = revised.querySelector("[data-accessory=\"focus-notebook\"]");
+	const bookArt = book.firstElementChild;
+	const pen = revised.querySelector("[data-accessory=\"focus-pencil\"]");
+	const penArt = pen.firstElementChild;
+	bookArt.insertAdjacentHTML("beforeend", ["M-16 11q5-12 10 0t10 0q5-11 9-2l6 2q5-9 9-2l8 1q5-10 10 0", "M-16 67q5-13 10 0t10 0l6-3q5-10 9 0t9 0l10-2"].map((d) => `<path data-writing opacity="0" d="${d}" fill="none" stroke="#567087" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>`).join(""));
+	const ink = [...bookArt.querySelectorAll("[data-writing]")];
+	const lengths = ink.map((p) => p.getTotalLength());
+	const handLayers = {};
+	for (const [part, d] of Object.entries({
+		"left-flipper": "M283 770C263 780 244 790 229 803C204 828 192 853 211 875C231 900 275 902 310 884C330 873 343 853 345 831",
+		"right-flipper": "M990 736C1012 751 1032 773 1045 795C1065 828 1075 852 1057 871C1036 892 995 882 964 866C942 854 931 833 932 809"
+	})) {
+		const flipper = revised.querySelector(`[data-part="${part}"]`);
+		flipper.insertAdjacentHTML("beforeend", `<path data-hand-edge d="${d}" fill="none" stroke="#073f9a" stroke-opacity=".72" stroke-width="1.6" vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round"/>`);
+		const layer = document.createElementNS("http://www.w3.org/2000/svg", "g");
+		layer.dataset.handLayer = part;
+		layer.setAttribute("mask", `url(#${uid}-plumage-mask)`);
+		handLayers[part] = layer;
+		book.before(layer);
+		layer.append(flipper);
+	}
+	book.before(handLayers["right-flipper"], handLayers["left-flipper"], pen);
+	const gazeEyes = ["left", "right"].map((side) => {
+		const eye = revised.querySelector(`[data-part="${side}-eye"]`), art = eye.querySelector("use");
+		const window = document.createElementNS("http://www.w3.org/2000/svg", "g");
+		window.dataset.gazeWindow = side;
+		window.setAttribute("clip-path", art.getAttribute("clip-path"));
+		eye.append(window);
+		window.append(art);
+		art.dataset.gazeArt = side;
+		return {
+			art,
+			dx: side === "left" ? 13 : -9
+		};
+	});
+	const clamp = (v) => Math.max(0, Math.min(1, v));
+	const ease = (v) => {
+		const x = clamp(v);
+		return x * x * (3 - 2 * x);
+	};
+	const mix = (a, b, p) => a + (b - a) * p;
+	function reachFromShoulder(node, root, restGrip, grip) {
+		const ux = restGrip[0] - root[0], uy = restGrip[1] - root[1], length = Math.hypot(ux, uy);
+		const vx = grip[0] - root[0], vy = grip[1] - root[1], reach = Math.hypot(vx, vy);
+		const u = [ux / length, uy / length], v = [vx / reach, vy / reach], scale = reach / length;
+		const a = scale * v[0] * u[0] + v[1] * u[1], c = scale * v[0] * u[1] - v[1] * u[0];
+		const b = scale * v[1] * u[0] - v[0] * u[1], d = scale * v[1] * u[1] + v[0] * u[0];
+		node.setAttribute("transform", `matrix(${a} ${b} ${c} ${d} ${root[0] - a * root[0] - c * root[1]} ${root[1] - b * root[0] - d * root[1]})`);
+	}
+	const left = revised.querySelector("[data-part=\"left-flipper\"]");
+	const right = revised.querySelector("[data-part=\"right-flipper\"]");
+	return {
+		pose(pose, time = 0, active = false) {
+			const special = !!(pose.peek || pose.reacting || pose.happy || pose.sparkle);
+			const phase = active && !special ? time % 8e3 : 0;
+			const lift = ease(phase / 1e3) * (1 - ease((phase - 4600) / 1e3));
+			return {
+				...pose,
+				rotate: pose.rotate + 3 * lift,
+				y: pose.y + 9 * lift
+			};
+		},
+		render(pose, time = 0, active = false) {
+			const special = !!(pose.peek || pose.reacting || pose.happy || pose.sparkle);
+			const phase = active && !special ? time % 8e3 : 0;
+			const lift = ease(phase / 1e3) * (1 - ease((phase - 4600) / 1e3));
+			const gaze = ease((phase - 400) / 700) * (1 - ease((phase - 4200) / 850));
+			for (const { art, dx } of gazeEyes) art.setAttribute("transform", `translate(${dx * gaze} ${32 * gaze})`);
+			book.setAttribute("opacity", pose.peek ? "0" : "1");
+			pen.setAttribute("opacity", pose.peek ? "0" : "1");
+			if (special) {
+				bookArt.setAttribute("transform", "translate(829 882) rotate(9) scale(.98 .92)");
+				penArt.setAttribute("transform", "translate(268 789) rotate(-23)");
+				book.setAttribute("transform", right.getAttribute("transform") || "");
+				pen.setAttribute("transform", left.getAttribute("transform") || "");
+				for (const path of ink) path.setAttribute("stroke-dashoffset", "1");
+				return;
+			}
+			const bx = mix(829, 710, lift), by = mix(882, 885, lift), br = mix(9, -9, lift), rad = br * Math.PI / 180;
+			const pageX = .98, pageY = .92;
+			const onPage = (x, y) => ({
+				x: bx + x * pageX * Math.cos(rad) - y * pageY * Math.sin(rad),
+				y: by + x * pageX * Math.sin(rad) + y * pageY * Math.cos(rad)
+			});
+			book.setAttribute("transform", "");
+			bookArt.setAttribute("transform", `translate(${bx} ${by}) rotate(${br}) scale(${pageX} ${pageY})`);
+			const hold = onPage(112, -18), holdX = hold.x, holdY = hold.y;
+			reachFromShoulder(right, [969, 716], [1035, 850], [mix(1035, holdX, lift), mix(850, holdY, lift)]);
+			const a = clamp((phase - 1200) / 1200), b = clamp((phase - 2800) / 1200);
+			ink[0].setAttribute("stroke-dashoffset", String(1 - a));
+			ink[1].setAttribute("stroke-dashoffset", String(1 - b));
+			const row = phase < 2600 ? 0 : 1, progress = row === 0 ? a : b;
+			const point = ink[row].getPointAtLength(lengths[row] * progress);
+			let py = point.y;
+			if (phase >= 2400 && phase < 2800) {
+				const k = ease((phase - 2400) / 400);
+				const end = ink[0].getPointAtLength(lengths[0]);
+				const start = ink[1].getPointAtLength(0);
+				point.x = mix(end.x, start.x, k);
+				py = mix(end.y, start.y, k) - 24 * Math.sin(k * Math.PI);
+			}
+			const tip = onPage(point.x, py), tipX = tip.x, tipY = tip.y;
+			const angle = mix(-23, 125, lift), pr = angle * Math.PI / 180, penScale = 1;
+			const px = mix(268, tipX - 157 * penScale * Math.sin(pr), lift), penY = mix(789, tipY + 157 * penScale * Math.cos(pr), lift);
+			pen.setAttribute("transform", "");
+			penArt.setAttribute("transform", `translate(${px} ${penY}) rotate(${angle}) scale(${penScale})`);
+			const gripX = px - 40 * penScale * Math.sin(pr), gripY = penY + 40 * penScale * Math.cos(pr);
+			reachFromShoulder(left, [310, 755], [268, 850], [gripX - 15.63 * (1 - lift), gripY + 24.18 * (1 - lift)]);
+		}
+	};
+}
+//#endregion
+//#region src/series/turbo-details.js
 var fx$3 = (kind, art, x, y) => `<g data-effect="${kind}" data-x="${x}" data-y="${y}">${art}</g>`;
 function turboFlash(uid, icon = false) {
 	const glow = `${uid}-turbo-glow`, bolt = `${uid}-turbo-bolt`;
@@ -426,7 +570,7 @@ function turboDetails(uid) {
   ${turboFlash(uid)}`;
 }
 //#endregion
-//#region ../pebble-app/src/series/ghost-veil.js
+//#region src/series/ghost-veil.js
 function ghostVeilPath(ripple = 0) {
 	return `M285 805C225 664 256 469 407 304C477 225 552 182 615 199Q643 206 618 244C803 205 963 327 992 536Q1015 705 1030 863L1050 1025
     Q1005 ${995 + ripple} 955 1050Q909 ${1110 - ripple} 853 1060
@@ -462,7 +606,7 @@ function ghostVeil(uid) {
   </g>`;
 }
 //#endregion
-//#region ../pebble-app/src/series/peek-accessory-options.js
+//#region src/series/peek-accessory-options.js
 function peekAccessoryOption(option, uid) {
 	switch (option) {
 		case "cap": return `<g data-accessory="sideways-cap">
@@ -511,7 +655,7 @@ function peekAccessoryOption(option, uid) {
 	}
 }
 //#endregion
-//#region ../pebble-app/src/series/party-details.js
+//#region src/series/party-details.js
 var frameArt = `<path d="M-119-60Q-120-83-93-86H91Q119-83 119-61L108 26Q103 81 58 86H-52Q-103 84-110 34Z" fill="#251b3f"/>
   <path d="M-99-59Q-99-67-87-67H85Q99-66 98-55L88 25Q83 65 53 67H-48Q-83 66-90 28Z" fill="#493566" fill-opacity=".83"/>
   <path d="M-92-56H-21L-75 12-86 8Z" fill="#b2b3ee" fill-opacity=".26"/>
@@ -536,7 +680,7 @@ var partyWineGlass = `<g data-accessory="party-wine-glass" transform="translate(
 </g>`;
 `${[26.5, 73.5].map((x) => `<g transform="translate(${x} 49) scale(.16)">${frameArt}</g>`).join("")}`;
 //#endregion
-//#region ../pebble-app/src/series/signature-details.js
+//#region src/series/signature-details.js
 var fx$2 = (kind, art, x, y, phase = 0) => `<g data-effect="${kind}" data-x="${x}" data-y="${y}" data-phase="${phase}">${art}</g>`;
 ({ ...EXTRA_SIGNATURES });
 function signatureDetails(id, uid) {
@@ -555,12 +699,7 @@ function signatureDetails(id, uid) {
   <ellipse cy="-52" rx="85" ry="22" fill="#bdd6c8"/><ellipse cy="-51" rx="69" ry="13" fill="#a57b4a"/>
   <path d="M-61-21L-54 32Q-51 48-33 52" fill="none" stroke="#f7fff1" stroke-width="9" stroke-linecap="round"/>
  </g>${fx$2("steam", "<path d=\"M574 785Q551 762 573 745M632 776Q611 750 634 726\" fill=\"none\" stroke=\"#d2eee0\" stroke-width=\"9\" stroke-linecap=\"round\"/>", 605, 780)}`;
-		case "focused": return `<g data-accessory="focus-band">
-  <path d="M302 472Q539 289 916 416L924 452Q549 328 301 512Z" fill="#d7e9ff" stroke="#92b9ef" stroke-width="4"/>
-  <path d="M306 487Q544 309 918 434" fill="none" stroke="#75a5ea" stroke-width="7"/>
-  <path d="M910 428Q970 394 986 409L966 452 1000 476Q947 489 912 444Z" fill="#bed7fa"/>
-  <circle cx="914" cy="439" r="19" fill="#edf6ff"/>
- </g>`;
+		case "focused": return focusedAccessories();
 		case "turbo": return turboDetails(uid);
 		case "starstruck": return `<g data-accessory="star-orbit">
   <ellipse cx="640" cy="239" rx="241" ry="63" transform="rotate(-13 640 239)" fill="none" stroke="#ddb4dd" stroke-width="7" opacity=".8"/>
@@ -602,7 +741,7 @@ function signatureDetails(id, uid) {
 	}
 }
 //#endregion
-//#region ../pebble-app/src/series/classic-accessories.js
+//#region src/series/classic-accessories.js
 var fx$1 = (kind, art, x = 0, y = 0, phase = 0) => `<g data-effect="${kind}" data-x="${x}" data-y="${y}" data-phase="${phase}">${art}</g>`;
 var star = (x, y, s = 1, color = "#ffdc83") => fx$1("twinkle", `<path transform="translate(${x} ${y}) scale(${s})" d="M0-22 7-7 22 0 7 7 0 22-7 7-22 0-7-7Z" fill="${color}"/>`, x, y, (x + y) % 7 / 7);
 var heart = (x, y, s = 1) => fx$1("heart", `<path transform="translate(${x} ${y}) scale(${s})" d="M0 24C-48-6-35-38-13-30Q0-27 0-15Q0-27 13-30C35-38 48-6 0 24Z" fill="#ec85bb"/>`, x, y, x % 11 / 11);
@@ -686,7 +825,7 @@ function classicAccessories(id, uid) {
 	}
 }
 //#endregion
-//#region ../pebble-app/src/nivoSnowy.js
+//#region src/nivoSnowy.js
 var element = (markup) => {
 	const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
 	group.innerHTML = markup;
@@ -763,7 +902,7 @@ function snowyShiver(pose, time) {
 	};
 }
 //#endregion
-//#region ../pebble-app/src/series/surface-patterns.js
+//#region src/series/surface-patterns.js
 var fleck = (x, y, r, color, opacity = 1) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${color}" opacity="${opacity}"/>`;
 function surfaceArt(id, uid) {
 	switch (id) {
@@ -967,7 +1106,7 @@ function applyIconGradient(svg, uid, skin) {
 	}));
 }
 //#endregion
-//#region ../pebble-app/src/series/skin-motion.js
+//#region src/series/skin-motion.js
 function createSkinMotion(svg) {
 	const parts = [...svg.querySelectorAll("[data-effect]")].map((node) => ({
 		node,
@@ -1190,7 +1329,7 @@ function createSkinMotion(svg) {
 	};
 }
 //#endregion
-//#region ../pebble-app/src/series/skin-gestures.js
+//#region src/series/skin-gestures.js
 var SKIN_MOTIONS = {
 	classic: [
 		"Small wave",
@@ -1295,10 +1434,10 @@ var SKIN_MOTIONS = {
 		2.4
 	],
 	focused: [
-		"Ready nod",
-		"准备点头",
-		"ready",
-		1.2
+		"Writing notes",
+		"写笔记",
+		"writing",
+		8
 	],
 	love: [
 		"Shy sway",
@@ -1560,7 +1699,7 @@ function applySkinGesture(id, pose) {
 	return p;
 }
 //#endregion
-//#region ../pebble-app/src/series/renderer.js
+//#region src/series/renderer.js
 var group = (markup) => {
 	const node = document.createElementNS("http://www.w3.org/2000/svg", "g");
 	node.innerHTML = markup;
@@ -1595,18 +1734,20 @@ function makeSeriesSkin(host, id, uid) {
 		if (id === "ghost") aura.setAttribute("mask", `url(#${uid}-ghost-body-fade)`);
 		motion.prepend(aura);
 	}
+	const focused = id === "focused" ? mountFocusedWriting(svg, uid) : null;
 	const animate = createSkinMotion(svg);
 	return { render(pose, time, active) {
-		rig.render(applySkinGesture(id, {
+		rig.render(focused ? focused.pose(pose, time, active) : applySkinGesture(id, {
 			...pose,
 			skinTimeMs: time,
 			skinMotion: active && !pose.peek && !pose.happy
 		}));
+		focused?.render(pose, time, active);
 		animate(time, active);
 	} };
 }
 //#endregion
-//#region ../pebble-app/src/series/catalog.js
+//#region src/series/catalog.js
 var SERIES_WORLDS = {
 	porcelain: {
 		day: ["#edf5fe", "#f9f8f1"],
@@ -1690,7 +1831,7 @@ var SERIES_WORLDS = {
 		night: ["#14233e", "#24385a"],
 		ink: "#7f9fda",
 		motif: "orbit",
-		note: "Quiet blue circles and a ready nod. One small thing at a time."
+		note: "Clear glasses and a little notebook. One small thing at a time."
 	},
 	love: {
 		day: ["#f7e3ee", "#fff3f5"],
@@ -1737,7 +1878,7 @@ var SERIES_WORLDS = {
 };
 var hasSeriesWorld = (id) => Object.hasOwn(SERIES_WORLDS, id);
 //#endregion
-//#region ../pebble-app/src/nivoMelting.js
+//#region src/nivoMelting.js
 function icecreamArtwork(uid) {
 	return `<g data-accessory="melting-icecream">
   <defs>
@@ -1828,7 +1969,7 @@ function meltingPose(pose, time) {
 	};
 }
 //#endregion
-//#region ../pebble-app/src/nivoIconSkins.js
+//#region src/nivoIconSkins.js
 var skins = {
 	love: {
 		coat: ["#ba517e", "#f4a6c7"],
@@ -2033,7 +2174,10 @@ function makeClassicSkin(host, look, uid) {
 	if (hasSeriesWorld(id) && id !== "snowy" && !hasIconSkinArtwork(id)) {
 		const rig = makeSeriesSkin(host, id, uid);
 		return { render(pose) {
-			rig.render(pose, pose.skinTimeMs || 0, !!pose.skinMotion);
+			rig.render({
+				...pose,
+				reacting: !!pose.skinReacting
+			}, pose.skinTimeMs || 0, !!pose.skinMotion);
 		} };
 	}
 	const rig = createRig(host, _nivo_body_default, uid, "Nivo", id);
