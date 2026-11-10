@@ -1,4 +1,4 @@
-import { idleAt, neutralPose } from './nivo-rig.js?v=8';
+import { idleAt, neutralPose } from './nivo-rig.js?v=9';
 
 const section = document.querySelector('#nivo-looks');
 if (section) {
@@ -14,7 +14,7 @@ if (section) {
     snowy: ['Snowy', '雪花', 'A red scarf, drifting snow, and a little winter shiver.', '红围巾、飘落的雪花，还有冬日里小小的颤抖。', '#e0f2fc'],
     blaze: ['Blaze', '烈焰', 'Warm ember light. A small flame that keeps going.', '温暖的余烬，一簇不肯熄灭的小火苗。', '#ffe7ce'],
     party: ['Party', '派对', 'A tiny party hat. Every little finish deserves a celebration.', '戴上小小派对帽，每一次完成都值得庆祝。', '#eee2fc'],
-    melting: ['Melting', '融化', 'Peach sorbet and soft drips. Some days, a little softness helps.', '蜜桃冰沙般的柔软，有些日子需要温柔一点。', '#fae7dc'],
+    melting: ['Melting', '融化', 'A scoop of peach sorbet and a tiny puddle of thawing ice.', '一球蜜桃冰沙，和一小滩融化的冰水。', '#fae7dc'],
     ghost: ['Ghost', '小幽灵', 'A drifting veil. Your quiet little companion.', '轻轻飘动的面纱，安静陪伴你的小伙伴。', '#e8ecf8'],
     gold: ['Pearl', '珍珠', 'Pearlescent light, shell-like curves, and a little treasure.', '珍珠微光、贝壳般的曲线，一份小小珍藏。', '#f5eaf2'],
     glitch: ['Glitch', '故障', 'Cyan and pink fragments. A tiny digital hiccup.', '青色与粉色的小碎片，一次可爱的数字小故障。', '#eee7f8'],
@@ -66,7 +66,7 @@ if (section) {
     for (const layer of layers) {
       layer.opacity = layer.from + ((layer.id === selected ? 1 : 0) - layer.from) * blend;
       layer.node.style.opacity = String(layer.opacity);
-      layer.rig.render(layer.id === 'deepsea' ? { ...pose, left: 0, right: 0 } : pose);
+      layer.rig.render(pose);
     }
     layers = layers.filter(layer => {
       if (blend === 1 && layer.id !== selected) { layer.node.remove(); return false; }
@@ -91,7 +91,6 @@ if (section) {
     if (!layers.some(layer => layer.id === id)) {
       const node = document.createElement('div'); node.className = 'look-layer'; node.dataset.lookLayer = id;
       const rig = api.makeClassicSkin(node, { id }, `collection-nivo-${++serial}`);
-      node.querySelector('svg').setAttribute('viewBox', id === 'deepsea' ? '87 59 1130 1130' : '160 170 970 970');
       node.querySelector('svg').setAttribute('aria-hidden', 'true');
       if (!layers.length) host.replaceChildren();
       host.append(node);
@@ -102,7 +101,7 @@ if (section) {
     transitionStart = performance.now();
     preview.dataset.selectedLook = id;
     preview.style.setProperty('--look-tint', looks[id][4]);
-    section.querySelector('.look-matching-icon').src = `assets/icons/${id}.png?v=20261109`;
+    section.querySelector('.look-matching-icon').src = buttons.find(button => button.dataset.look === id).querySelector('img').src;
     text(); resume();
     if (announce) section.querySelector('.look-announcement').textContent = t('selected', name());
   }
@@ -112,10 +111,10 @@ if (section) {
     failed = false;
     loading = (async () => {
       try {
-        const module = await import('./nivo-skins.js?v=3');
-        await Promise.all(['nivo-body.png', 'nivo-deepsea.webp'].map(file => {
-          const image = new Image(); image.src = new URL(file, import.meta.url).href; return image.decode();
-        }));
+        const module = await import('./nivo-skins.js?v=4');
+        const image = new Image();
+        image.src = new URL('nivo-body.png', import.meta.url).href;
+        await image.decode();
         api = module;
         select(selected);
         buttons.forEach(button => { button.disabled = false; });

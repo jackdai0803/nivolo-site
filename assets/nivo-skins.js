@@ -23,53 +23,59 @@ var leftTip = `M0 ${shoulderStart[1]} H${shoulderStart[0]} Q${shoulderControl.jo
 var rightTip = "M985 640 H1254 V910 H934 C961 852 984 737 985 640 Z";
 var leftWing = "M310 755 C290 752 257 772 229 803 C204 828 192 853 211 875 C231 900 275 902 310 884 C335 869 349 843 344 811 C339 783 325 762 310 755 Z";
 var rightWing = "M969 716 C993 721 1023 757 1045 795 C1065 828 1075 852 1057 871 C1036 892 995 882 964 866 C936 851 927 821 933 785 C937 751 950 725 969 716 Z";
-function createRig(container, source, id, label, appearance = "classic", deepSeaSource = null) {
-	const deepsea = appearance === "deepsea" && !!deepSeaSource;
-	const artwork = deepsea ? deepSeaSource : source;
-	const eyes = deepsea ? [{
-		name: "left",
-		cx: 481,
-		cy: 593,
-		rx: 102,
-		ry: 107
-	}, {
-		name: "right",
-		cx: 829,
-		cy: 493,
-		rx: 104,
-		ry: 109
-	}] : EYES;
-	const leftCut = deepsea ? "M0 718 H210 Q231 741 244 751 C287 737 332 763 344 812 C353 854 332 886 306 900 L285 960 H0 Z" : leftTip;
-	const rightCut = deepsea ? "M1054 672 H1254 V970 H1060 Q1030 916 1007 878 C948 843 943 800 963 750 Q981 711 1014 701 Q1034 691 1054 672 Z" : rightTip;
-	const leftWindow = deepsea ? leftCut : leftWing;
-	const rightWindow = deepsea ? rightCut : rightWing;
-	const beakWindow = deepsea ? "M568 638 Q568 600 611 576 Q674 531 759 581 L758 627 Q748 720 663 715 Q613 708 588 659 Z" : "M574 661 Q565 621 600 592 Q661 546 739 595 L737 632 Q737 714 660 716 Q612 710 591 665 Z";
+function createRig(container, source, id, label, appearance = "classic") {
+	const deepsea = appearance === "deepsea";
+	const artwork = source;
+	const eyes = EYES;
+	const leftCut = leftTip;
+	const rightCut = rightTip;
+	const leftWindow = leftWing;
+	const rightWindow = rightWing;
+	const beakWindow = "M574 661 Q565 621 600 592 Q661 546 739 595 L737 632 Q737 714 660 716 Q612 710 591 665 Z";
 	const image = (attrs = "") => `<use href="#${id}-art" ${attrs}/>`;
 	const mask = (name, cuts) => `<mask id="${id}-${name}" maskUnits="userSpaceOnUse" x="0" y="0" width="1254" height="1254" style="mask-type:luminance"><rect width="1254" height="1254" fill="white"/>${cuts}</mask>`;
-	container.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${deepsea ? "70 45 1120 1120" : "160 170 970 970"}" role="img" aria-label="${label}">
+	container.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="160 170 970 970" role="img" aria-label="${label}">
     <defs>
       <filter id="${id}-ocean-light" x="-15%" y="-15%" width="130%" height="130%" color-interpolation-filters="sRGB">
-        <feComponentTransfer in="SourceAlpha" result="solid"><feFuncA type="linear" slope="255" intercept="-127"/></feComponentTransfer>
-        <feGaussianBlur in="solid" stdDeviation="2" result="soft-solid"/>
-        <feMorphology in="soft-solid" operator="erode" radius="3" result="core"/>
-        <feComposite in="SourceGraphic" in2="core" operator="in" result="colour"/>
-        <feMorphology in="core" operator="dilate" radius="4" result="edge"/>
+        <feMorphology in="SourceAlpha" operator="erode" radius="2" result="core"/>
+        <feMorphology in="SourceAlpha" operator="dilate" radius="2" result="edge"/>
         <feComposite in="edge" in2="core" operator="out" result="hard-ring"/>
-        <feGaussianBlur in="hard-ring" stdDeviation="2.5" result="ring"/>
-        <feImage href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1254' height='1254'%3E%3Cdefs%3E%3ClinearGradient id='g' x2='0' y2='1'%3E%3Cstop stop-color='%234ee0ff'/%3E%3Cstop offset='.5' stop-color='%234cbbff'/%3E%3Cstop offset='1' stop-color='%23bc83ff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath fill='url(%23g)' d='M0 0h1254v1254H0z'/%3E%3C/svg%3E" x="0" y="0" width="1254" height="1254" result="gradient"/>
-        <feComposite in="gradient" in2="ring" operator="in" result="rim"/>
-        <feGaussianBlur in="rim" stdDeviation="10" result="glow"/>
+        <feGaussianBlur in="hard-ring" stdDeviation=".7" result="ring"/>
+        <feImage href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1254' height='1254'%3E%3Cdefs%3E%3ClinearGradient id='g' x2='0' y2='1'%3E%3Cstop stop-color='%2352eaff'/%3E%3Cstop offset='.55' stop-color='%2328bbff'/%3E%3Cstop offset='1' stop-color='%23b067ff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath fill='url(%23g)' d='M0 0h1254v1254H0z'/%3E%3C/svg%3E" x="0" y="0" width="1254" height="1254" result="gradient"/>
+        <feComposite in="gradient" in2="ring" operator="in" result="rim-soft"/>
+        <feComponentTransfer in="rim-soft" result="rim"><feFuncA type="linear" slope="1.5"/></feComponentTransfer>
+        <feGaussianBlur in="rim" stdDeviation="12" result="blur"/>
+        <feComponentTransfer in="blur" result="glow"><feFuncA type="linear" slope="3.5"/></feComponentTransfer>
+        <feGaussianBlur in="rim" stdDeviation="26" result="ambient"/>
+        <!-- Reflected ocean light sits just inside the moving silhouette. -->
+        <feMorphology in="SourceAlpha" operator="erode" radius="18" result="inner-core"/>
+        <feComposite in="SourceAlpha" in2="inner-core" operator="out" result="inner-edge"/>
+        <feGaussianBlur in="inner-edge" stdDeviation="12" result="inner-soft"/>
+        <feComposite in="gradient" in2="inner-soft" operator="in" result="inner-colour"/>
+        <feComposite in="inner-colour" in2="SourceAlpha" operator="in" result="inner-clipped"/>
+        <feComponentTransfer in="inner-clipped" result="reflected-light"><feFuncA type="linear" slope=".3"/></feComponentTransfer>
+        <!-- The real white face supplies its own cyan edge, including the eye rims. -->
+        <feColorMatrix in="SourceGraphic" type="luminanceToAlpha" result="face-luminance"/>
+        <feComponentTransfer in="face-luminance" result="face"><feFuncA type="discrete" tableValues="0 0 0 0 0 0 0 0 1 1"/></feComponentTransfer>
+        <feImage href="data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="1254" height="1254"><g fill="white">${eyes.map((e) => ellipse(e)).join("")}<path d="${beakWindow}"/></g></svg>`)}" x="0" y="0" width="1254" height="1254" result="face-features"/>
+        <feComposite in="face" in2="face-features" operator="arithmetic" k2="1" k3="1" result="face-filled"/>
+        <feMorphology in="face-filled" operator="dilate" radius="9" result="face-wide"/>
+        <feMorphology in="face-filled" operator="erode" radius="5" result="face-core"/>
+        <feComposite in="face-wide" in2="face-core" operator="out" result="face-edge"/>
+        <feGaussianBlur in="face-edge" stdDeviation="10" result="face-soft"/>
+        <feFlood flood-color="#65e1ff" flood-opacity=".48" result="face-colour"/>
+        <feComposite in="face-colour" in2="face-soft" operator="in" result="face-glow"/>
         <feFlood flood-color="#80dce9" flood-opacity="0" data-part="aurora-light" result="sparkle-colour"/>
         <feComposite in="sparkle-colour" in2="glow" operator="in" result="sparkle-glow"/>
-        <feMerge><feMergeNode in="glow"/><feMergeNode in="glow"/><feMergeNode in="sparkle-glow"/><feMergeNode in="rim"/><feMergeNode in="colour"/></feMerge>
+        <feMerge><feMergeNode in="ambient"/><feMergeNode in="glow"/><feMergeNode in="sparkle-glow"/><feMergeNode in="SourceGraphic"/><feMergeNode in="reflected-light"/><feMergeNode in="face-glow"/><feMergeNode in="rim"/></feMerge>
       </filter>
       <image id="${id}-art" href="${artwork}" width="1254" height="1254"/>
-      <clipPath id="${id}-perch-edge" clipPathUnits="userSpaceOnUse"><rect width="1254" height="${deepsea ? 770 : 798}"/></clipPath>
+      <clipPath id="${id}-perch-edge" clipPathUnits="userSpaceOnUse"><rect width="1254" height="798"/></clipPath>
       <clipPath id="${id}-beak-window"><path d="${beakWindow}"/></clipPath>
       <clipPath id="${id}-left-wing"><path d="${leftWindow}"/></clipPath>
       <clipPath id="${id}-right-wing"><path d="${rightWindow}"/></clipPath>
       ${eyes.map((e) => `<clipPath id="${id}-${e.name}-eye">${ellipse(e)}</clipPath>`).join("")}
-      ${mask("body-mask", `<path d="${leftCut}" fill="black" stroke="white" stroke-width="${deepsea ? 14 : 0}"/><path d="${rightCut}" fill="black" stroke="white" stroke-width="${deepsea ? 14 : 0}"/>`)}
+      ${mask("body-mask", `<path d="${leftCut}" fill="black" stroke="white" stroke-width="0"/><path d="${rightCut}" fill="black" stroke="white" stroke-width="0"/>`)}
     </defs>
     <g class="character" data-part="motion" ${deepsea ? `filter="url(#${id}-ocean-light)"` : ""}>
       <g data-part="left-flipper">${image(`clip-path="url(#${id}-left-wing)"`)}</g>
@@ -81,8 +87,8 @@ function createRig(container, source, id, label, appearance = "classic", deepSea
         <g data-part="${e.name}-eye">${image(`clip-path="url(#${id}-${e.name}-eye)"`)}</g>
         <path data-part="${e.name}-lid" fill="none" stroke="#111111" stroke-width="16" stroke-linecap="round" opacity="0" transform="translate(${e.cx} ${e.cy}) rotate(-17)" d="M-59 8 Q0 38 59 8"/>
       </g>`).join("")}
-      <!-- Deep-Sea’s intact beak is already on the torso. Its old overlay caught a pupil edge. -->
-      <g data-part="beak">${deepsea ? "" : image(`clip-path="url(#${id}-beak-window)"`)}</g>
+      <!-- Every appearance keeps Classic’s original beak and highlights. -->
+      <g data-part="beak">${image(`clip-path="url(#${id}-beak-window)"`)}</g>
     </g>
     <g data-part="SparkleBurst" fill="${deepsea ? "#9ae7ed" : "#f5bb43"}" opacity="0" aria-hidden="true">
       ${[
@@ -95,34 +101,32 @@ function createRig(container, source, id, label, appearance = "classic", deepSea
 	].map(([x, y], i) => `<path data-sparkle="${i}" data-x="${x}" data-y="${y}" d="M0 -16 Q3 -3 14 0 Q3 3 0 16 Q-3 3 -14 0 Q-3 -3 0 -16Z" transform="translate(${x} ${y})"/>`).join("")}
     </g>
   </svg>`;
+	if (deepsea) applyClassicCoat(container.querySelector("svg"), id, ["#070e27", "#0a1231"], `
+    <defs><radialGradient id="${id}-ocean-depth" cx=".48" cy=".65" r=".43"><stop stop-color="#2459b8" stop-opacity=".8"/><stop offset=".48" stop-color="#194391" stop-opacity=".7"/><stop offset="1" stop-color="#13347a" stop-opacity="0"/></radialGradient></defs>
+    <rect width="1254" height="1254" fill="url(#${id}-ocean-depth)"/>`);
 	const nodes = Object.fromEntries([...container.querySelectorAll("[data-part]")].map((el) => [el.dataset.part, el]));
-	const bodyArtwork = nodes.body.querySelector("use");
 	const sparkles = [...container.querySelectorAll("[data-sparkle]")];
 	return {
 		render(pose) {
 			if (deepsea) nodes["aurora-light"].setAttribute("flood-opacity", String(pose.sparkle * .16));
 			nodes.motion.setAttribute("transform", `translate(${pose.x} ${pose.y}) translate(635 650) rotate(${pose.rotate}) scale(${pose.sx} ${pose.sy}) translate(-635 -650)`);
-			nodes["left-flipper"].setAttribute("transform", `translate(0 ${pose.leftY || 0}) rotate(${pose.left} ${deepsea ? "310 850" : "320 815"})`);
-			nodes["right-flipper"].setAttribute("transform", `translate(0 ${pose.rightY || 0}) rotate(${pose.right} ${deepsea ? "995 815" : "965 785"})`);
-			const wholeSilhouette = deepsea && !pose.peek && pose.left === 0 && pose.right === 0;
-			bodyArtwork.setAttribute("mask", wholeSilhouette ? "none" : `url(#${id}-body-mask)`);
-			nodes["left-flipper"].setAttribute("opacity", wholeSilhouette ? "0" : "1");
-			nodes["right-flipper"].setAttribute("opacity", wholeSilhouette ? "0" : "1");
+			nodes["left-flipper"].setAttribute("transform", `translate(0 ${pose.leftY || 0}) rotate(${pose.left} 320 815)`);
+			nodes["right-flipper"].setAttribute("transform", `translate(0 ${pose.rightY || 0}) rotate(${pose.right} 965 785)`);
 			nodes.body.setAttribute("clip-path", pose.peek ? `url(#${id}-perch-edge)` : "none");
 			if (pose.peek) for (const [part, x, y] of [[
 				"left-flipper",
-				deepsea ? 310 : 320,
-				deepsea ? 850 : 815
+				320,
+				815
 			], [
 				"right-flipper",
-				deepsea ? 995 : 965,
-				deepsea ? 815 : 785
+				965,
+				785
 			]]) nodes[part].setAttribute("transform", `${nodes[part].getAttribute("transform")} translate(${x} ${y}) scale(1.35) translate(${-x} ${-y})`);
 			for (const eye of eyes) {
 				const openness = Math.max(.025, 1 - pose.blink);
 				const node = nodes[`${eye.name}-eye`];
 				node.setAttribute("transform", `translate(${eye.cx} ${eye.cy}) rotate(-17) scale(1 ${openness}) rotate(17) translate(${-eye.cx} ${-eye.cy})`);
-				node.setAttribute("opacity", String(clamp(deepsea ? (openness - .025) / .195 : openness / .22)));
+				node.setAttribute("opacity", String(clamp(openness / .22)));
 				const lid = nodes[`${eye.name}-lid`];
 				lid.setAttribute("opacity", String(clamp((pose.blink - .62) / .3)));
 				lid.setAttribute("d", pose.happy > .2 ? "M-59 10 Q0 -43 59 10" : "M-59 8 Q0 38 59 8");
@@ -149,10 +153,13 @@ function applyClassicCoat(svg, uid, colors, markings = "") {
 	};
 	const source = defs.querySelector(`[id="${uid}-art"]`);
 	source.id = `${uid}-classic-source`;
-	defs.append(element(`<filter id="${uid}-plumage-selection" color-interpolation-filters="sRGB"><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncR type="table" tableValues="1 .9 .8 .7 .6 .5 .4 .3 .2 .1 0"/><feFuncG type="table" tableValues="1 .9 .8 .7 .6 .5 .4 .3 .2 .1 0"/><feFuncB type="table" tableValues="1 .9 .8 .7 .6 .5 .4 .3 .2 .1 0"/></feComponentTransfer></filter>
+	const plumageCoverage = "1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 .75 .25 0 0";
+	defs.append(element(`<filter id="${uid}-opaque-art" color-interpolation-filters="sRGB"><feComponentTransfer><feFuncA type="linear" slope="0" intercept="1"/></feComponentTransfer></filter>
+ <mask id="${uid}-coat-silhouette" maskUnits="userSpaceOnUse" x="0" y="0" width="1254" height="1254" style="mask-type:alpha"><use href="#${uid}-classic-source"/></mask>
+ <filter id="${uid}-plumage-selection" color-interpolation-filters="sRGB"><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncR type="table" tableValues="${plumageCoverage}"/><feFuncG type="table" tableValues="${plumageCoverage}"/><feFuncB type="table" tableValues="${plumageCoverage}"/><feFuncA type="linear" slope="0" intercept="1"/></feComponentTransfer></filter>
  <mask id="${uid}-plumage-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="1254" height="1254" style="mask-type:luminance"><use href="#${uid}-classic-source" filter="url(#${uid}-plumage-selection)"/>${EYES.map((e) => `<ellipse cx="${e.cx}" cy="${e.cy}" rx="${e.rx + 14}" ry="${e.ry + 14}" fill="#000"/>`).join("")}<path d="M574 661Q565 621 600 592Q661 546 739 595L737 632Q737 714 660 716Q612 710 591 665Z" fill="#000"/></mask>
  <linearGradient id="${uid}-coat-gradient" x1="0" y1="0" x2=".5" y2="1"><stop stop-color="${colors[0]}"/><stop offset="1" stop-color="${colors[1]}"/></linearGradient>
- <g id="${uid}-art"><use href="#${uid}-classic-source"/><g mask="url(#${uid}-plumage-mask)"><rect width="1254" height="1254" fill="url(#${uid}-coat-gradient)"/><g>${markings}</g></g></g>`));
+ <g id="${uid}-art" mask="url(#${uid}-coat-silhouette)"><use href="#${uid}-classic-source" filter="url(#${uid}-opaque-art)"/><g mask="url(#${uid}-plumage-mask)"><rect width="1254" height="1254" fill="url(#${uid}-coat-gradient)"/><g>${markings}</g></g></g>`));
 	for (const part of [
 		"left-eye",
 		"right-eye",
@@ -743,6 +750,18 @@ function createSnowyMotion(svg) {
 		}
 	};
 }
+function snowyShiver(pose, time) {
+	const phase = time % 9750;
+	if (phase > 1100) return pose;
+	const progress = phase / 1100;
+	const strength = Math.sin(Math.PI * progress) ** 2;
+	return {
+		...pose,
+		x: pose.x + 4 * Math.sin(progress * Math.PI * 6) * strength,
+		left: pose.left - 3 * strength,
+		right: pose.right + 3 * strength
+	};
+}
 //#endregion
 //#region ../pebble-app/src/series/surface-patterns.js
 var fleck = (x, y, r, color, opacity = 1) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${color}" opacity="${opacity}"/>`;
@@ -766,9 +785,10 @@ function surfaceArt(id, uid) {
   <path d="M335 300C431 252 484 326 558 330Q637 353 697 297M310 954C399 904 479 935 528 976C574 1015 599 1058 657 1067Q753 1100 808 1005" fill="none" stroke="#c2e8c8" stroke-width="6" opacity=".7"/>
   <path d="M356 927Q373 888 424 874M511 960Q525 924 514 901M741 1081Q793 1089 838 1051M604 370Q603 344 627 320" fill="none" stroke="#89cfa9" stroke-width="4" opacity=".55"/>
   <path d="M870 330Q914 358 930 399L905 427Q908 370 870 330Z" fill="#a6dcb5" opacity=".5"/></g>`;
-		case "kintsugi": return `<defs><linearGradient id="${uid}-seam" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fae09a"/><stop offset=".55" stop-color="#c49339"/><stop offset="1" stop-color="#edc979"/></linearGradient></defs>
-  <g fill="none" stroke="url(#${uid}-seam)" stroke-linejoin="round" stroke-linecap="round"><path d="M733 260L708 309L726 343L705 366L713 391L689 418M958 768L897 805L867 853L878 888L841 923L821 975L833 1026L812 1106M327 870L382 914L399 953L387 1003L412 1084" stroke-width="8"/><path d="M708 309L666 302L642 278M726 343L766 353L786 386M867 853L826 841L797 860M841 923L795 916L763 943M821 975L870 998L889 1037M382 914L424 895L451 900" stroke-width="4"/></g>
-  <path d="M898 809L872 854L883 889M402 955L391 1002" fill="none" stroke="#ffedb1" stroke-width="2" opacity=".75"/>`;
+		case "kintsugi": return `<defs><linearGradient id="${uid}-seam" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fae09a"/><stop offset=".55" stop-color="#c49339"/><stop offset="1" stop-color="#edc979"/></linearGradient><filter id="${uid}-seam-soft" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="6"/></filter></defs>
+  <g stroke="url(#${uid}-seam)"><g id="${uid}-seam-lines" fill="none" stroke-linejoin="round" stroke-linecap="round"><path d="M733 260C728.8 268.2 709.2 295.2 708 309C706.8 322.8 726.5 333.5 726 343C725.5 352.5 707.2 358 705 366C702.8 374 715.7 382.3 713 391C710.3 399.7 693 413.5 689 418M958 768C947.8 774.2 912.2 790.8 897 805C881.8 819.2 870.2 839.2 867 853C863.8 866.8 882.3 876.3 878 888C873.7 899.7 850.5 908.5 841 923C831.5 937.5 822.3 957.8 821 975C819.7 992.2 834.5 1004.2 833 1026C831.5 1047.8 815.5 1092.7 812 1106M327 870C336.2 877.3 370 900.2 382 914C394 927.8 398.2 938.2 399 953C399.8 967.8 384.8 981.2 387 1003C389.2 1024.8 407.8 1070.5 412 1084" stroke-width="8"/><path d="M708 309C701 307.8 677 307.2 666 302C655 296.8 646 282 642 278M726 343C732.7 344.7 756 345.8 766 353C776 360.2 782.7 380.5 786 386M867 853C860.2 851 837.7 839.8 826 841C814.3 842.2 801.8 856.8 797 860M841 923C833.3 921.8 808 912.7 795 916C782 919.3 768.3 938.5 763 943M821 975C829.2 978.8 858.7 987.7 870 998C881.3 1008.3 885.8 1030.5 889 1037M382 914C389 910.8 412.5 897.3 424 895C435.5 892.7 446.5 899.2 451 900" stroke-width="4"/></g></g>
+  <g data-effect="kintsugi-glow" opacity="0" fill="none" stroke="#ffe4a0"><use href="#${uid}-seam-lines" filter="url(#${uid}-seam-soft)"/><use href="#${uid}-seam-lines" opacity=".8"/></g>
+  <path d="M898 809C893.7 816.5 874.5 840.7 872 854C869.5 867.3 881.2 883.2 883 889M402 955C400.2 962.8 392.8 994.2 391 1002" fill="none" stroke="#ffedb1" stroke-width="2" opacity=".75"/>`;
 		case "squished": return `<g fill="none" stroke="#d6cce5" stroke-width="8" stroke-linecap="round" opacity=".65"><path d="M374 393Q392 370 418 365M374 421Q397 399 429 395M821 330Q844 337 855 357M815 355Q836 363 844 382"/></g>`;
 		default: return "";
 	}
@@ -931,10 +951,6 @@ function applyIconGradient(svg, uid, skin) {
 	const colors = palettes[skin];
 	const gradient = svg.querySelector(`[id="${uid}-coat-gradient"]`);
 	if (!colors || !gradient) return;
-	if (skin === "porcelain" || skin === "gold") {
-		const channels = svg.querySelectorAll(`[id="${uid}-plumage-selection"] feFuncR, [id="${uid}-plumage-selection"] feFuncG, [id="${uid}-plumage-selection"] feFuncB`);
-		for (const channel of channels) channel.setAttribute("tableValues", "1 1 .8 .7 .6 .5 .4 .3 .2 .1 0");
-	}
 	const reversed = skin === "upsidedown";
 	for (const [key, value] of Object.entries({
 		gradientUnits: "userSpaceOnUse",
@@ -965,8 +981,11 @@ function createSkinMotion(svg) {
 		const t = active ? time / 1e3 : 0;
 		for (const { node, kind, x, y, phase } of parts) {
 			const wave = Math.sin(t * Math.PI * 2 / 3.6 + phase), slow = Math.sin(t * Math.PI * 2 / 5.2 + phase);
-			let dx = 0, dy = 0, sx = 1, sy = 1, rotate = 0, opacity = kind === "turbo-glow" ? .72 : kind === "turbo-charge" ? .18 : kind === "turbo-spark" ? .82 : 1;
+			let dx = 0, dy = 0, sx = 1, sy = 1, rotate = 0, opacity = kind === "kintsugi-glow" ? 0 : kind === "turbo-glow" ? .72 : kind === "turbo-charge" ? .18 : kind === "turbo-spark" ? .82 : 1;
 			if (active) switch (kind) {
+				case "kintsugi-glow":
+					opacity = .82 * (.5 - .5 * Math.cos(t * Math.PI * 2 / 4.8));
+					break;
 				case "anger-mark":
 					sx = sy = 1 + .06 * (.5 + .5 * wave);
 					break;
@@ -1718,6 +1737,97 @@ var SERIES_WORLDS = {
 };
 var hasSeriesWorld = (id) => Object.hasOwn(SERIES_WORLDS, id);
 //#endregion
+//#region ../pebble-app/src/nivoMelting.js
+function icecreamArtwork(uid) {
+	return `<g data-accessory="melting-icecream">
+  <defs>
+   <linearGradient id="${uid}-scoop" x1="0" y1="0" x2=".3" y2="1"><stop stop-color="#fff2d8"/><stop offset=".55" stop-color="#ffd8ba"/><stop offset="1" stop-color="#f4b492"/></linearGradient>
+   <linearGradient id="${uid}-cone" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f6d494"/><stop offset="1" stop-color="#dba060"/></linearGradient>
+   <clipPath id="${uid}-waffle"><path d="M721 254Q773 278 830 288L829 155Q828 147 822 153Z"/></clipPath>
+  </defs>
+  <path d="M721 254Q773 278 830 288L829 155Q828 147 822 153Z" fill="url(#${uid}-cone)" stroke="#d69d65" stroke-width="4" stroke-linejoin="round"/>
+  <g clip-path="url(#${uid}-waffle)" fill="none" stroke="#c58a53" stroke-width="4" opacity=".6">
+   <path d="M712 190 858 264M706 220 851 294M732 170 858 234M759 150 858 204M726 300 847 171M706 278 827 149M751 312 872 183"/>
+  </g>
+  <path d="M730 253 818 170" stroke="#ffe5b3" stroke-width="5" stroke-linecap="round" opacity=".75"/>
+  <path d="M667 322C653 304 665 282 686 280C689 255 715 244 738 254C754 231 787 233 804 251C833 242 861 259 864 285C890 287 906 310 895 332C915 354 894 376 873 369C860 387 835 381 822 367Q809 363 808 383L807 398Q805 412 793 410Q781 409 782 394L784 371Q764 375 745 366Q733 364 732 379L730 389Q726 403 715 398Q705 395 710 380L713 363C688 372 671 360 675 345Q652 343 667 322Z" fill="url(#${uid}-scoop)"/>
+  <path d="M686 296Q694 275 718 278M750 263Q771 251 789 265M848 283Q867 286 872 303" fill="none" stroke="#fff8e9" stroke-width="10" stroke-linecap="round" opacity=".85"/>
+  <path d="M683 337Q698 345 712 337M752 347Q767 351 779 343M836 347Q851 353 864 345" fill="none" stroke="#ecaa8d" stroke-width="5" stroke-linecap="round" opacity=".6"/>
+ </g>`;
+}
+function mountMeltingSkin(svg, uid) {
+	svg.querySelector("defs").insertAdjacentHTML("beforeend", `<linearGradient id="${uid}-frost" gradientUnits="userSpaceOnUse" x1="0" y1="845" x2="0" y2="1080"><stop stop-color="#edf8fa" stop-opacity="0"/><stop offset=".3" stop-color="#edf8fa" stop-opacity=".12"/><stop offset=".68" stop-color="#e2f3f6" stop-opacity=".8"/><stop offset="1" stop-color="#c4e6ed"/></linearGradient>`);
+	applyClassicCoat(svg, uid, ["#de7958", "#ffc39a"], `<rect y="845" width="1254" height="409" fill="url(#${uid}-frost)"/>`);
+	const motion = svg.querySelector("[data-part=\"motion\"]");
+	motion.insertAdjacentHTML("beforeend", icecreamArtwork(uid));
+	motion.insertAdjacentHTML("afterbegin", `<g data-accessory="thaw-edge" fill="#c4e6ed">
+  <path d="M466 1018Q491 1028 516 1037L509 1071Q506 1089 490 1087Q473 1085 474 1069Z"/>
+  <path d="M602 1042H665L657 1091Q653 1113 632 1111Q611 1109 610 1090Z"/>
+  <path d="M748 1010 798 993 789 1044Q786 1064 769 1065Q752 1064 752 1047Z"/>
+ </g>`);
+	motion.insertAdjacentHTML("beforeend", `<g data-accessory="thaw-drop" transform="translate(776 1077)"><path d="M0-12C-4-5-11 2-11 8A11 11 0 0 0 11 8C11 2 4-5 0-12Z" fill="#c4e9f1"/><path d="M-4 5V9" stroke="white" stroke-width="3" stroke-linecap="round"/></g>`);
+	const ground = document.createElementNS("http://www.w3.org/2000/svg", "g");
+	ground.innerHTML = "<ellipse cx=\"636\" cy=\"1165\" rx=\"207\" ry=\"26\" fill=\"#b8dce5\" opacity=\".4\"/><ellipse data-ripple cx=\"776\" cy=\"1165\" rx=\"25\" ry=\"5\" fill=\"none\" stroke=\"#a3d5e2\" stroke-width=\"4\" opacity=\".4\"/>";
+	motion.before(ground);
+	const drop = motion.querySelector("[data-accessory=\"thaw-drop\"]"), ripple = ground.querySelector("[data-ripple]");
+	motion.after(drop);
+	const clamp = (value) => Math.max(0, Math.min(1, value));
+	const smooth = (value) => {
+		const p = clamp(value);
+		return p * p * (3 - 2 * p);
+	};
+	const lowerParts = [
+		motion.querySelector("[data-accessory=\"thaw-edge\"]"),
+		drop,
+		ground
+	];
+	let release = null, previousTime = -1;
+	return (time, active, peek = false) => {
+		for (const node of lowerParts) node.setAttribute("visibility", peek ? "hidden" : "visible");
+		const p = time % 4400 / 4400;
+		const attached = new DOMPoint(776, 1077).matrixTransform(motion.transform.baseVal.consolidate().matrix);
+		if (time < previousTime || p < .3) release = null;
+		previousTime = time;
+		if (!release && p >= .3) release = {
+			x: attached.x,
+			y: attached.y
+		};
+		const origin = release || attached;
+		const grow = smooth(p / .3), fall = clamp((p - .3) / .2), land = smooth((p - .5) / .06);
+		let x = attached.x, y = attached.y, sx = .15 + .85 * grow, sy = .15 + .85 * grow, opacity = smooth(p / .12);
+		if (p >= .3) {
+			x = origin.x;
+			y = origin.y + (1144 - origin.y) * fall * fall + 18 * land;
+			sx = 1 - .12 * Math.sin(fall * Math.PI) + .45 * land;
+			sy = 1 + .18 * Math.sin(fall * Math.PI) - .85 * land;
+			opacity = 1 - land;
+		}
+		if (!active) {
+			x = attached.x;
+			y = attached.y;
+			sx = .7;
+			sy = .7;
+			opacity = .75;
+		}
+		drop.setAttribute("transform", `translate(${x} ${y}) scale(${sx} ${sy})`);
+		drop.setAttribute("opacity", opacity);
+		const spread = clamp((p - .5) / .38), expansion = 1 - (1 - spread) ** 3;
+		ripple.setAttribute("cx", String(origin.x));
+		ripple.setAttribute("rx", String(8 + 44 * expansion));
+		ripple.setAttribute("ry", String(2 + 7 * expansion));
+		ripple.setAttribute("opacity", active ? .55 * smooth(spread / .14) * (1 - smooth(spread)) : .3);
+	};
+}
+function meltingPose(pose, time) {
+	const settle = Math.sin(time % 4400 / 4400 * Math.PI) ** 2;
+	return {
+		...pose,
+		y: pose.y + 6 * settle,
+		sx: pose.sx * (1 + .012 * settle),
+		sy: pose.sy * (1 - .01 * settle)
+	};
+}
+//#endregion
 //#region ../pebble-app/src/nivoIconSkins.js
 var skins = {
 	love: {
@@ -1768,12 +1878,8 @@ var cupidArtwork = `<g data-accessory="cupid-curl">
   <path d="M-46-75H46M-33 67Q0 77 33 67" fill="none" stroke="#ffd79a" stroke-width="11" stroke-linecap="round"/>
   <path d="M0 24C-29 8-15-11 0 2C15-11 29 8 0 24Z" fill="#ffe0a5"/>
  </g>${fx("heart", "<path d=\"M1034 463C983 433 1006 401 1034 424C1062 401 1085 433 1034 463Z\" fill=\"#ed92bd\"/>", 1034, 437, .25)}`;
-var meltingArtwork = `<g data-accessory="sorbet-drips">
-  <ellipse cx="629" cy="1091" rx="245" ry="35" fill="#f5ad81" opacity=".7"/>
-  <path d="M377 866Q561 933 845 817L839 887Q836 919 814 919Q793 919 794 891L796 861 744 883 742 965Q738 999 715 995Q692 992 696 958L699 902 585 924 581 970Q577 994 558 992Q537 987 542 959L545 927 491 923 489 1007Q487 1035 465 1030Q445 1028 447 1001L449 912 386 893Z" fill="#ffe0c2"/>
-  ${fx("drop", "<path d=\"M829 962Q804 998 829 1000Q854 998 829 962Z\" fill=\"#ffe0c2\"/>", 829, 962)}
- </g>`;
 function mountNivoIconSkin(svg, uid, appearance) {
+	if (appearance === "melting") return mountMeltingSkin(svg, uid);
 	applyClassicCoat(svg, uid, skins[appearance].coat);
 	const motion = svg.querySelector("[data-part=\"motion\"]");
 	if (appearance === "love") {
@@ -1781,7 +1887,7 @@ function mountNivoIconSkin(svg, uid, appearance) {
 		motion.querySelector("[data-part=\"left-flipper\"]").insertAdjacentHTML("beforeend", cupidProps.arrow);
 		motion.querySelector("[data-part=\"right-flipper\"]").insertAdjacentHTML("beforeend", cupidProps.bow);
 		motion.insertAdjacentHTML("beforeend", cupidArtwork);
-	} else motion.insertAdjacentHTML("beforeend", meltingArtwork);
+	}
 	const effects = [...motion.querySelectorAll("[data-effect]")].map((node) => ({
 		node,
 		kind: node.dataset.effect,
@@ -1819,9 +1925,25 @@ function mountNivoIconSkin(svg, uid, appearance) {
 		}
 	};
 }
-//#endregion
-//#region \0nivo-deepsea
-var _nivo_deepsea_default = new URL("./nivo-deepsea.webp", "" + import.meta.url).href;
+function nivoIconSkinPose(appearance, pose, time, replay = false) {
+	if (appearance === "melting") return meltingPose(pose, time);
+	const { duration, period, offset } = skins[appearance];
+	const elapsed = (time / 1e3 + (replay ? 0 : offset)) % period;
+	if (elapsed > duration) return pose;
+	const progress = elapsed / duration;
+	const ease = Math.sin(Math.PI * progress) ** 2;
+	if (appearance === "love") return {
+		...pose,
+		rotate: pose.rotate + 2.4 * Math.sin(Math.PI * 2 * progress) * ease,
+		left: pose.left - 3 * ease
+	};
+	return {
+		...pose,
+		y: pose.y + 7 * ease,
+		sy: pose.sy * (1 - .012 * ease),
+		sx: pose.sx * (1 + .01 * ease)
+	};
+}
 //#endregion
 //#region \0website-nivo-skins
 var heroLooks = [
@@ -1914,16 +2036,23 @@ function makeClassicSkin(host, look, uid) {
 			rig.render(pose, pose.skinTimeMs || 0, !!pose.skinMotion);
 		} };
 	}
-	const rig = createRig(host, _nivo_body_default, uid, "Nivo", id, _nivo_deepsea_default);
+	const rig = createRig(host, _nivo_body_default, uid, "Nivo", id);
 	const svg = host.querySelector("svg");
+	if (id === "melting") svg.setAttribute("viewBox", "85 85 1120 1140");
 	let motion;
 	if (id === "snowy") {
 		applySnowyArtwork(svg, uid);
 		motion = createSnowyMotion(svg);
 	} else if (hasIconSkinArtwork(id)) motion = mountNivoIconSkin(svg, uid, id);
 	return { render(pose) {
+		const time = pose.skinTimeMs || 0;
+		const animate = !!pose.skinMotion && !pose.peek;
+		if (animate && !pose.skinReacting) {
+			if (id === "snowy") pose = snowyShiver(pose, time);
+			else if (motion) pose = nivoIconSkinPose(id, pose, time);
+		}
 		rig.render(pose);
-		motion?.(pose.skinTimeMs || 0, !!pose.skinMotion, pose.peek);
+		motion?.(time, animate, pose.peek);
 	} };
 }
 //#endregion

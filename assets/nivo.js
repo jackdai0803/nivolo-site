@@ -1,5 +1,5 @@
-import { createRig, idleAt, neutralPose, smallWinAt, celebrationAt, SMALL_WIN_MS, CELEBRATION_MS } from './nivo-rig.js?v=8';
-import { makeClassicSkin, heroLooks } from './nivo-skins.js?v=3';
+import { createRig, idleAt, neutralPose, smallWinAt, celebrationAt, SMALL_WIN_MS, CELEBRATION_MS } from './nivo-rig.js?v=9';
+import { makeClassicSkin, heroLooks } from './nivo-skins.js?v=4';
 
 const strings = {
   en: { pause: 'Pause animation', resume: 'Resume animation', off: 'Sound: off', on: 'Sound: on' },
@@ -60,7 +60,6 @@ if (controls) {
 // Snapshot of the shared app rig. Refresh both files when its artwork changes.
 const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
 const artwork = new URL('./nivo-body.png', import.meta.url).href;
-const deepSeaArtwork = new URL('./nivo-deepsea.webp', import.meta.url).href;
 // A calm swimming loop with a short hello, only for the Plus card.
 const plusIdleAt = (ms) => {
   const pose = idleAt(ms);
@@ -94,13 +93,8 @@ document.querySelectorAll('[data-nivo]').forEach((container, index) => {
     }
     const rig = autoCycle
       ? makeClassicSkin(layer, look, `site-nivo-${index}-${look.id}`)
-      : createRig(layer, artwork, `site-nivo-${index}-${look.id}`, 'Nivo', look.id, deepSeaArtwork);
-    if (autoCycle) {
-      // Fit the visible body, not the PNG canvas: Deep-Sea's silhouette is
-      // 1019px tall versus Classic's 875px. Preserve its own face/glow rig.
-      layer.querySelector('svg').setAttribute('viewBox', look.id === 'deepsea'
-        ? '87 59 1130 1130' : '160 170 970 970');
-    } else if (deepSea) layer.querySelector('svg').setAttribute('viewBox', '0 0 1254 1254');
+      : createRig(layer, artwork, `site-nivo-${index}-${look.id}`, 'Nivo', look.id);
+    if (deepSea && !autoCycle) layer.querySelector('svg').setAttribute('viewBox', '0 0 1254 1254');
     const character = { look, layer, rig, opacity: lookIndex === 0 ? 1 : 0, from: 0 };
     characters.set(lookIndex, character);
     return character;
@@ -160,6 +154,7 @@ document.querySelectorAll('[data-nivo]').forEach((container, index) => {
       pose.blink = Math.max(pose.blink, (hop / 24) ** 6);
       pose.skinTimeMs = clock;
       pose.skinMotion = moving;
+      pose.skinReacting = reacting;
     }
     for (const [lookIndex, character] of characters) {
       const { look, layer, rig } = character;
@@ -172,7 +167,7 @@ document.querySelectorAll('[data-nivo]').forEach((container, index) => {
           continue;
         }
       }
-      rig.render(autoCycle && look.id === 'deepsea' ? { ...pose, left: 0, right: 0 } : pose);
+      rig.render(pose);
     }
     if (moving) frame = requestAnimationFrame(render);
   };
@@ -184,11 +179,9 @@ document.querySelectorAll('[data-nivo]').forEach((container, index) => {
   if (autoCycle) {
     pauseButton?.addEventListener('click', resume);
     // Decode the shared artwork before the first automatic change.
-    Promise.all([artwork, deepSeaArtwork].map(src => {
-      const preload = new Image();
-      preload.src = src;
-      return preload.decode();
-    })).then(() => { ready = true; lastChange = clock; }).catch(() => {});
+    const preload = new Image();
+    preload.src = artwork;
+    preload.decode().then(() => { ready = true; lastChange = clock; }).catch(() => {});
   }
   if (demoNivo) {
     container.addEventListener('nivo-reaction', ({ detail }) => {

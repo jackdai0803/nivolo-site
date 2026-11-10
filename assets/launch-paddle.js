@@ -1,11 +1,10 @@
-import { createRig, idleAt, neutralPose } from './nivo-rig.js?v=8';
+import { createRig, idleAt, neutralPose } from './nivo-rig.js?v=9';
 
 // The launch page owns this rig so the flipper and its paddle share one motion.
 const container = document.querySelector('[data-launch-nivo]');
 const card = document.getElementById('launchCard');
 if (container && card) {
   const artwork = new URL('./nivo-body.png', import.meta.url).href;
-  const deepSeaArtwork = new URL('./nivo-deepsea.webp', import.meta.url).href;
   let appearance = 'classic';
   const strings = { en: { transform: 'Transform Nivo' }, zh: { transform: '变换 Nivo 的外观' } };
   const t = key => strings[document.documentElement.lang.startsWith('zh') ? 'zh' : 'en'][key];
@@ -17,7 +16,7 @@ if (container && card) {
     layer.setAttribute('aria-hidden', 'true');
     layer.style.opacity = look === 'classic' ? '1' : '0';
     container.append(layer);
-    const rig = createRig(layer, artwork, `launch-nivo-${look}`, 'Nivo', look, deepSeaArtwork);
+    const rig = createRig(layer, artwork, `launch-nivo-${look}`, 'Nivo', look);
     layer.querySelector('svg').setAttribute('viewBox', '160 170 970 970');
     const wing = layer.querySelector('[data-part="right-flipper"]');
     wing.insertAdjacentHTML('afterbegin', `<g data-launch-paddle opacity="0" aria-hidden="true">
@@ -32,10 +31,10 @@ if (container && card) {
     return { look, layer, rig, paddle: wing.querySelector('[data-launch-paddle]'), check: wing.querySelector('[data-launch-paddle-check]') };
   });
   container.dataset.nivoAppearance = appearance;
-  // Keep Classic visible until the other artwork is decoded.
+  // Both looks share the same artwork.
   let artworkReady = false;
   const preload = new Image();
-  preload.src = deepSeaArtwork;
+  preload.src = artwork;
   preload.decode().then(() => { artworkReady = true; container.disabled = false; }).catch(() => {});
   const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
   let frame = 0;
@@ -111,8 +110,7 @@ if (container && card) {
     for (const character of characters) {
       const { look, layer, rig, paddle, check } = character;
       layer.style.opacity = String(look === 'deepsea' ? deepSeaAmount : 1 - deepSeaAmount);
-      // Breathing and the hop move Deep-Sea as one silhouette, preserving his rim.
-      rig.render(look === 'deepsea' && !joined ? { ...pose, left: 0, right: 0 } : pose);
+      rig.render(pose);
       // Keep the paddle upright as the flipper lifts; its handle stays in the grip.
       paddle.setAttribute('transform', `rotate(${-pose.right + 80 - 66 * progress} 1039 819)`);
       paddle.setAttribute('opacity', String(joined ? Math.min(1, progress * 6) : 0));

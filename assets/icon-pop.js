@@ -89,7 +89,8 @@
   };
   var NEW_ICONS = { "early-supporter": true, porcelain: true, jade: true, kintsugi: true, deepsea: true };
   function iconSrc(id, large) {
-    return "assets/icons-3d/" + id + (large ? "-lg" : "") + (NEW_ICONS[id] ? ".jpg" : ".webp") + "?v=20261109";
+    var version = id === "melting" ? "20261110" : "20261109";
+    return "assets/icons-3d/" + id + (large ? "-lg" : "") + (NEW_ICONS[id] ? ".jpg" : ".webp") + "?v=" + version;
   }
 
   /* The artwork is a wide vista; on a portrait phone a cover-crop would show

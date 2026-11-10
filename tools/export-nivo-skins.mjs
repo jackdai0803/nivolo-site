@@ -17,19 +17,16 @@ await build({ configFile: false, root: site, logLevel: 'warn', plugins: [{
   resolveId(id) {
     if (id.endsWith('website-nivo-skins')) return '\0website-nivo-skins';
     if (id.endsWith('/nivo_body.png')) return '\0nivo-body';
-    if (id.endsWith('/nivo_deepsea.png')) return '\0nivo-deepsea';
   },
   load(id) {
     if (id === '\0nivo-body') return 'export default new URL("./nivo-body.png", import.meta.url).href;';
-    if (id === '\0nivo-deepsea') return 'export default new URL("./nivo-deepsea.webp", import.meta.url).href;';
     if (id === '\0website-nivo-skins') return `
       import { createRig } from ${modulePath('nivoRig.js')};
       import { makeSeriesSkin } from ${modulePath('series/renderer.js')};
       import { hasSeriesWorld } from ${modulePath('series/catalog.js')};
-      import { hasIconSkinArtwork, mountNivoIconSkin } from ${modulePath('nivoIconSkins.js')};
-      import { applySnowyArtwork, createSnowyMotion } from ${modulePath('nivoSnowy.js')};
+      import { hasIconSkinArtwork, mountNivoIconSkin, nivoIconSkinPose } from ${modulePath('nivoIconSkins.js')};
+      import { applySnowyArtwork, createSnowyMotion, snowyShiver } from ${modulePath('nivoSnowy.js')};
       import body from ${modulePath('assets/nivo_body.png')};
-      import deepsea from ${modulePath('assets/nivo_deepsea.png')};
       export const heroLooks = ${JSON.stringify(looks)};
       export function makeClassicSkin(host, look, uid) {
         const id = look.id;
@@ -37,12 +34,22 @@ await build({ configFile: false, root: site, logLevel: 'warn', plugins: [{
           const rig = makeSeriesSkin(host, id, uid);
           return { render(pose) { rig.render(pose, pose.skinTimeMs || 0, !!pose.skinMotion); } };
         }
-        const rig = createRig(host, body, uid, 'Nivo', id, deepsea);
+        const rig = createRig(host, body, uid, 'Nivo', id);
         const svg = host.querySelector('svg');
+        if (id === 'melting') svg.setAttribute('viewBox', '85 85 1120 1140');
         let motion;
         if (id === 'snowy') { applySnowyArtwork(svg, uid); motion = createSnowyMotion(svg); }
         else if (hasIconSkinArtwork(id)) motion = mountNivoIconSkin(svg, uid, id);
-        return { render(pose) { rig.render(pose); motion?.(pose.skinTimeMs || 0, !!pose.skinMotion, pose.peek); } };
+        return { render(pose) {
+          const time = pose.skinTimeMs || 0;
+          const animate = !!pose.skinMotion && !pose.peek;
+          if (animate && !pose.skinReacting) {
+            if (id === 'snowy') pose = snowyShiver(pose, time);
+            else if (motion) pose = nivoIconSkinPose(id, pose, time);
+          }
+          rig.render(pose);
+          motion?.(time, animate, pose.peek);
+        } };
       }`;
   }
 }], build: { emptyOutDir: false, outDir: resolve(site, 'assets'), minify: false,
