@@ -4,8 +4,8 @@ import { idleAt, neutralPose } from './nivo-rig.js?v=20261110-mascot-size';
 const section = document.querySelector('#nivo-looks');
 if (section) {
   const copy = {
-    en: { viewSnowy: 'Meet Snowy Nivo', eyebrow: 'One little companion. Many sides.', title: 'Find your Nivo.', intro: 'All your Nivos, together. Tap a look to meet them.', matching: 'Nivo + matching app icon', inspect: 'Explore icon ↗', pause: 'Pause Nivo', resume: 'Resume Nivo', swipe: 'Swipe to explore more looks →', choose: 'Choose a Nivo look', collection: 'Choose a collection', selected: '{name} selected', retry: 'Reload preview', unavailable: 'The preview could not load. Tap to try again.', garden: 'Explore the flower gardens ↗', founders: 'Meet the Early Supporter ↗', plus: 'Plus-exclusive', elements: 'Porcelain · 300 Krill. Jade · 500. Kintsugi · 800. Pearl · 50-day streak.', flowers: 'Eight flowers for everyone. Three Plus-exclusive editions.', supporters: 'A golden icon for the first 20 paying members.' },
-    zh: { viewSnowy: '认识雪花 Nivo', eyebrow: '同一位小伙伴，不一样的小个性。', title: '找到你的 Nivo。', intro: '所有 Nivo，一起看。轻点喜欢的外观，认识它。', matching: 'Nivo 与相配的应用图标', inspect: '探索图标 ↗', pause: '暂停 Nivo', resume: '继续 Nivo', swipe: '滑动探索更多外观 →', choose: '选择 Nivo 外观', collection: '选择系列', selected: '已选择{name}', retry: '重新加载预览', unavailable: '预览暂时未能加载，轻点重试。', garden: '探索花园 ↗', founders: '认识早期支持者 ↗', plus: 'Plus 专属', elements: '青花瓷 · 300 磷虾。翡翠 · 500。金缮 · 800。珍珠 · 连续记录 50 天。', flowers: '八款花卉向所有人开放，三款为 Plus 专属。', supporters: '赠予最初 20 位付费会员的金色图标。' },
+    en: { viewSnowy: 'Meet Snowy Nivo', eyebrow: 'One little companion. Many sides.', title: 'Find your Nivo.', intro: 'Tap a look to select it.', introHover: 'Hover to preview. Click to select.', matching: 'Nivo + matching app icon', inspect: 'Explore icon ↗', pause: 'Pause Nivo', resume: 'Resume Nivo', swipe: 'Swipe to explore more looks →', choose: 'Choose a Nivo look', collection: 'Choose a collection', selected: '{name} selected', retry: 'Reload preview', unavailable: 'The preview could not load. Tap to try again.', garden: 'Explore the flower gardens ↗', founders: 'Meet the Early Supporter ↗', plus: 'Plus-exclusive', elements: 'Porcelain · 300 Krill. Jade · 500. Kintsugi · 800. Pearl · 50-day streak.', flowers: 'Eight flowers for everyone. Three Plus-exclusive editions.', supporters: 'A golden icon for the first 20 paying members.' },
+    zh: { viewSnowy: '认识雪花 Nivo', eyebrow: '同一位小伙伴，不一样的小个性。', title: '找到你的 Nivo。', intro: '轻点外观，即可选中。', introHover: '悬停预览，点击选中。', matching: 'Nivo 与相配的应用图标', inspect: '探索图标 ↗', pause: '暂停 Nivo', resume: '继续 Nivo', swipe: '滑动探索更多外观 →', choose: '选择 Nivo 外观', collection: '选择系列', selected: '已选择{name}', retry: '重新加载预览', unavailable: '预览暂时未能加载，轻点重试。', garden: '探索花园 ↗', founders: '认识早期支持者 ↗', plus: 'Plus 专属', elements: '青花瓷 · 300 磷虾。翡翠 · 500。金缮 · 800。珍珠 · 连续记录 50 天。', flowers: '八款花卉向所有人开放，三款为 Plus 专属。', supporters: '赠予最初 20 位付费会员的金色图标。' },
   };
   // IDs match the production app. Only looks with an approved mascot are selectable.
   const looks = {
@@ -86,11 +86,12 @@ if (section) {
   const inspect = section.querySelector('.look-inspect');
   const snowyLink = document.querySelector('.benefit-icon-preview');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-  let api, flowerApi, loading, selected = 'classic', paused = false, visible = false, frame = 0, previous = null, elapsed = 0, serial = 0, failed = false;
+  let api, flowerApi, loading, selected = 'classic', chosen = 'classic', paused = false, visible = false, frame = 0, previous = null, elapsed = 0, serial = 0, failed = false;
   let layers = [], transitionStart = 0;
 
   function text() {
     section.querySelectorAll('[data-look-copy]').forEach(el => { el.textContent = t(el.dataset.lookCopy); });
+    section.querySelector('[data-look-copy="intro"]').textContent = t(hoverPreview.matches ? 'introHover' : 'intro');
     collectionHeadings.forEach(control => {
       const collection = collections.find(group => group.id === control.dataset.lookCollection);
       control.textContent = (zh() ? collection.zh : collection.name);
@@ -111,7 +112,7 @@ if (section) {
     pause.hidden = !api || reduced.matches;
     inspect.textContent = t(failed ? 'retry' : 'inspect');
     buttons.forEach(button => {
-      button.setAttribute('aria-pressed', String(button.dataset.look === selected));
+      button.setAttribute('aria-pressed', String(button.dataset.look === chosen));
       if (plusIds.has(button.dataset.look)) button.setAttribute('aria-description', t('plus'));
       button.querySelector('span').textContent = looks[button.dataset.look][zh() ? 1 : 0];
     });
@@ -169,6 +170,11 @@ if (section) {
     text(); resume();
     if (announce) section.querySelector('.look-announcement').textContent = t('selected', name());
   }
+  function choose(id) {
+    if (!api || !looks[id]) return;
+    chosen = id;
+    select(id, true);
+  }
   async function load() {
     if (api) return;
     if (loading) return loading;
@@ -191,21 +197,29 @@ if (section) {
   }
   const hoverPreview = matchMedia('(hover: hover) and (pointer: fine)');
   buttons.forEach(button => {
-    button.addEventListener('click', () => select(button.dataset.look, true));
+    button.addEventListener('click', () => choose(button.dataset.look));
     button.addEventListener('pointerenter', event => {
       if (hoverPreview.matches && event.pointerType === 'mouse' && !button.disabled) select(button.dataset.look);
     });
     button.addEventListener('focus', () => {
-      if (button.matches(':focus-visible')) select(button.dataset.look, true);
+      if (button.matches(':focus-visible')) select(button.dataset.look);
     });
   });
+  // Browsing is temporary; only activation changes the chosen look.
+  choices.addEventListener('pointerleave', event => {
+    if (event.pointerType === 'mouse') select(chosen);
+  });
+  choices.addEventListener('focusout', event => {
+    if (!choices.contains(event.relatedTarget)) select(chosen);
+  });
+  hoverPreview.addEventListener('change', text);
   pause.addEventListener('click', () => { paused = !paused; text(); resume(); });
   inspect.addEventListener('click', () => {
     if (failed) { load(); return; }
     document.dispatchEvent(new CustomEvent('nivo-icon-inspect', { detail: { id: selected, name: name(), story: story() } }));
   });
   function revealLook(id) {
-    select(id, true);
+    choose(id);
     const button = buttons.find(button => button.dataset.look === selected);
     button.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'instant' });
     section.scrollIntoView({ block: 'start', behavior: reduced.matches ? 'instant' : 'smooth' });
