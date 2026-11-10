@@ -23,6 +23,11 @@ var leftTip = `M0 ${shoulderStart[1]} H${shoulderStart[0]} Q${shoulderControl.jo
 var rightTip = "M985 640 H1254 V910 H934 C961 852 984 737 985 640 Z";
 var leftWing = "M310 755 C290 752 257 772 229 803 C204 828 192 853 211 875 C231 900 275 902 310 884 C335 869 349 843 344 811 C339 783 325 762 310 755 Z";
 var rightWing = "M969 716 C993 721 1023 757 1045 795 C1065 828 1075 852 1057 871 C1036 892 995 882 964 866 C936 851 927 821 933 785 C937 751 950 725 969 716 Z";
+var NIVO_FRAME = {
+	x: 90,
+	y: 40,
+	size: 1120
+};
 function createRig(container, source, id, label, appearance = "classic") {
 	const deepsea = appearance === "deepsea";
 	const artwork = source;
@@ -34,7 +39,8 @@ function createRig(container, source, id, label, appearance = "classic") {
 	const beakWindow = "M574 661 Q565 621 600 592 Q661 546 739 595 L737 632 Q737 714 660 716 Q612 710 591 665 Z";
 	const image = (attrs = "") => `<use href="#${id}-art" ${attrs}/>`;
 	const mask = (name, cuts) => `<mask id="${id}-${name}" maskUnits="userSpaceOnUse" x="0" y="0" width="1254" height="1254" style="mask-type:luminance"><rect width="1254" height="1254" fill="white"/>${cuts}</mask>`;
-	container.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="90 40 1120 1120" role="img" aria-label="${label}">
+	const { x, y, size } = NIVO_FRAME;
+	container.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${x} ${y} ${size} ${size}" role="img" aria-label="${label}">
     <defs>
       <filter id="${id}-ocean-light" x="-15%" y="-15%" width="130%" height="130%" color-interpolation-filters="sRGB">
         <feMorphology in="SourceAlpha" operator="erode" radius="2" result="core"/>
@@ -167,6 +173,75 @@ function applyClassicCoat(svg, uid, colors, markings = "") {
 	]) svg.querySelector(`[data-part="${part}"] use`).setAttribute("href", `#${uid}-classic-source`);
 }
 //#endregion
+//#region src/series/jade-details.js
+var NS = "http://www.w3.org/2000/svg";
+function jadeHorns(uid) {
+	return `<defs><linearGradient id="${uid}-horn" x1="0" y1="0" x2=".7" y2="1"><stop stop-color="#f1f2cb"/><stop offset=".55" stop-color="#c6dbad"/><stop offset="1" stop-color="#74a78a"/></linearGradient></defs>
+    <path d="M-24 17C-25-6-31-22-45-39C-53-49-61-60-55-67C-49-74-39-67-32-59L-22-47C-25-68-23-90-12-92C1-95 2-81 1-69C-2-41 9-27 22-8L26 17Z" fill="url(#${uid}-horn)"/>
+    <path d="M-13-76Q-18-48-5-23" fill="none" stroke="#f8f8df" stroke-width="5" stroke-linecap="round" opacity=".65"/>`;
+}
+function applyJade(svg, uid) {
+	svg.querySelector(`#${uid}-coat-gradient`).innerHTML = "<stop stop-color=\"#165c4a\"/><stop offset=\".5\" stop-color=\"#418d70\"/><stop offset=\"1\" stop-color=\"#99c4a4\"/>";
+	const markings = svg.querySelector(`[id="${uid}-art"] > g`).querySelector("g");
+	markings.innerHTML = `<defs>
+    <radialGradient id="${uid}-cloud"><stop stop-color="#e1f2cf" stop-opacity=".57"/><stop offset="1" stop-color="#c6e6c3" stop-opacity="0"/></radialGradient>
+    <filter id="${uid}-soft"><feGaussianBlur stdDeviation="13"/></filter>
+  </defs>
+  <ellipse cx="405" cy="354" rx="300" ry="180" fill="url(#${uid}-cloud)" transform="rotate(-24 405 354)"/>
+  <ellipse cx="770" cy="994" rx="350" ry="150" fill="url(#${uid}-cloud)" transform="rotate(-22 770 994)"/>
+  <g fill="none" stroke="#dcf0cd" filter="url(#${uid}-soft)" opacity=".3">
+    <path d="M250 400C465 255 530 412 720 280M260 1040C470 925 681 1140 946 820" stroke-width="42"/>
+  </g>
+  <g fill="none" stroke="#e3f4d3" stroke-linecap="round">
+    <path d="M340 399C433 318 488 355 550 358M685 1021C778 1015 864 961 900 907" stroke-width="3" opacity=".36"/>
+    <path d="M350 448Q380 392 423 371" stroke-width="13" opacity=".53"/>
+    <path d="M339 471l-4 10" stroke-width="8" opacity=".42"/>
+    <path d="M735 985q14 19 30-3M776 964q14 19 29-4M807 940q13 17 27-5" stroke-width="4" opacity=".23"/>
+  </g>`;
+	const motion = svg.querySelector("[data-part=\"motion\"]");
+	motion.querySelector("[data-series-accessories=\"jade\"]")?.remove();
+	const horns = document.createElementNS(NS, "g");
+	horns.dataset.jadeHorns = "";
+	horns.innerHTML = `<g transform="translate(414 369) rotate(-27) scale(1.22)">${jadeHorns(uid + "-left")}</g>
+    <g transform="translate(833 315) rotate(32) scale(1.22)">${jadeHorns(uid + "-right")}</g>`;
+	const tailPath = (bend) => `M344 905
+    C359 931 356 950 332 966
+    C296 990 238 998 210 979
+    C189 965 180 ${945 + bend} 195 ${938 + bend}
+    C208 ${931 + bend} 220 ${947 + bend} 211 ${960 + bend}
+    C241 ${946 + bend} 228 ${913 + bend} 202 ${913 + bend}
+    C160 ${910 + bend} 139 ${946 + bend} 153 987
+    C171 1043 254 1065 360 1083
+    C466 1101 582 1115 688 1084
+    C794 1053 897 981 938 905Z`;
+	const clip = document.createElementNS(NS, "clipPath");
+	clip.id = `${uid}-upper-outline`;
+	clip.innerHTML = "<rect width=\"1254\" height=\"907\"/>";
+	svg.querySelector("defs").append(clip);
+	svg.querySelector(`[id="${uid}-coat-silhouette"] use`).setAttribute("clip-path", `url(#${clip.id})`);
+	const paths = [];
+	for (const suffix of [
+		"coat-silhouette",
+		"plumage-mask",
+		"body-mask"
+	]) {
+		const path = document.createElementNS(NS, "path");
+		path.setAttribute("fill", "white");
+		path.setAttribute("d", tailPath(0));
+		path.dataset.jadeTail = suffix;
+		svg.querySelector(`[id="${uid}-${suffix}"]`).append(path);
+		paths.push(path);
+	}
+	markings.insertAdjacentHTML("beforeend", `<ellipse cx="255" cy="1020" rx="150" ry="82" fill="url(#${uid}-cloud)" opacity=".45"/>
+    <path d="M180 1001Q209 1031 253 1038M264 1040l13 2" fill="none" stroke="#e4efcc" stroke-width="6" stroke-linecap="round" opacity=".58"/>
+    <g fill="none" stroke="#d9e8ba" stroke-width="5" stroke-linecap="round" opacity=".75"><path d="M269 996q10 13 22 2M300 1004q11 14 24 1M333 1011q11 14 24 1"/></g>`);
+	motion.prepend(horns);
+	return (time, active) => {
+		const bend = active ? Math.sin(time / 1100) * 9 : 0;
+		for (const path of paths) path.setAttribute("d", tailPath(bend));
+	};
+}
+//#endregion
 //#region \0nivo-body
 var _nivo_body_default = new URL("./nivo-body.png", "" + import.meta.url).href;
 //#endregion
@@ -196,9 +271,9 @@ function detectiveCap(uid) {
  </g>`;
 }
 //#endregion
-//#region ../pebble-app/src/series/porcelain-details.js
-function blossom(uid, x, y, scale, angle, petalGradient = "porcelain-petal") {
-	const highlight = petalGradient === "lotus-petal" ? "#ffe4ef" : "#b2ccef";
+//#region src/series/porcelain-details.js
+function blossom(uid, x, y, scale, angle, petalGradient) {
+	const highlight = "#ffe4ef";
 	return `<g transform="translate(${x} ${y}) rotate(${angle}) scale(${scale})">
   ${[
 		0,
@@ -226,21 +301,49 @@ function blossom(uid, x, y, scale, angle, petalGradient = "porcelain-petal") {
 function porcelainDetails(uid) {
 	return `<g data-art="porcelain">
   <defs>
-    <linearGradient id="${uid}-porcelain-petal" gradientUnits="userSpaceOnUse" x1="-22" y1="-72" x2="15" y2="-8">
-      <stop stop-color="#4f7acb"/><stop offset=".5" stop-color="#235ab5"/><stop offset="1" stop-color="#14469a"/>
-    </linearGradient>
-    <radialGradient id="${uid}-porcelain-light" gradientUnits="userSpaceOnUse" cx="437" cy="392" r="510" gradientTransform="translate(0 -90) scale(1 1.23)">
-      <stop stop-color="#fff" stop-opacity=".82"/>
-      <stop offset=".62" stop-color="#fff" stop-opacity=".3"/>
-      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    <radialGradient id="${uid}-sheen" gradientUnits="userSpaceOnUse" cx="442" cy="443" r="455">
+      <stop stop-color="#d7ebff" stop-opacity=".58"/>
+      <stop offset=".53" stop-color="#b4d3f2" stop-opacity=".22"/>
+      <stop offset="1" stop-color="#b4d3f2" stop-opacity="0"/>
     </radialGradient>
+    <linearGradient id="${uid}-ink" gradientUnits="userSpaceOnUse" x1="585" y1="1000" x2="850" y2="812">
+      <stop stop-color="#244a87"/>
+      <stop offset="1" stop-color="#3d70ad"/>
+    </linearGradient>
+    <g id="${uid}-flower">
+      ${[
+		0,
+		72,
+		144,
+		216,
+		288
+	].map((angle) => `
+        <path transform="rotate(${angle})" fill="#2c5c9c"
+          d="M0-8C-15-14-28-35-20-48C-16-56-5-56 0-50C7-58 20-54 22-44C26-31 12-14 0-8Z"/>
+        <path transform="rotate(${angle})" d="M0-18Q-3-28-10-36" fill="none" stroke="#92b7dd"
+          stroke-opacity=".73" stroke-width="3.6" stroke-linecap="round"/>
+      `).join("")}
+      <circle r="7" fill="#d9e9f5"/>
+    </g>
   </defs>
-  <path d="M0 0H1254V1254H0Z" fill="url(#${uid}-porcelain-light)"/>
-  ${blossom(uid, 456, 395, .52, -18)}
-  ${blossom(uid, 733, 943, 1.08, 12)}
-  ${blossom(uid, 848, 839, .53, -22)}
-  <path d="M361 472Q401 380 483 322M403 1000Q429 1031 462 1041" fill="none" stroke="#fff" stroke-opacity=".82" stroke-width="12" stroke-linecap="round"/>
- </g>`;
+  <rect width="1254" height="1254" fill="url(#${uid}-sheen)"/>
+  <g fill="none" stroke="#f1f7fc" stroke-linecap="round">
+    <path d="M366 437Q405 372 462 352" stroke-width="13" opacity=".66"/>
+    <path d="M349 466l6-13" stroke-width="9" opacity=".52"/>
+    <path d="M400 975q22 36 59 49" stroke-width="10" opacity=".65"/>
+  </g>
+  <g data-porcelain-branch>
+    <g fill="url(#${uid}-ink)">
+      <path d="M560 1009Q687 996 789 911Q829 876 850 819Q827 886 789 923Q685 1011 560 1009Z"/>
+      <path d="M656 987Q623 990 611 952Q646 954 663 981Z"/>
+      <path d="M755 946Q790 920 819 950Q789 964 755 946Z"/>
+      <path d="M810 892Q797 874 805 847Q823 863 818 883Z"/>
+      <path d="M827 869Q848 841 879 858Q858 879 827 869Z"/>
+      <path d="M709 970Q710 939 695 912L700 912Q717 939 715 970Z"/>
+    </g>
+    <use href="#${uid}-flower" transform="translate(707 912) rotate(-11) scale(1.21)"/>
+    <use href="#${uid}-flower" transform="translate(849 811) rotate(16) scale(.66)"/>
+  </g> </g>`;
 }
 function porcelainHairpin(uid) {
 	return `<g data-accessory="porcelain-hairpin" transform="translate(-245 -15)">
@@ -933,7 +1036,7 @@ function surfaceArt(id, uid) {
 	}
 }
 //#endregion
-//#region ../pebble-app/src/series/icon-gradients.js
+//#region src/series/icon-gradients.js
 var palettes = {
 	toasty: [
 		"#80502f",
@@ -991,9 +1094,11 @@ var palettes = {
 		"#235844"
 	],
 	porcelain: [
-		"#fffdf7",
-		"#fafcff",
-		"#d9eaf7"
+		"#406a9d",
+		"#729bc7",
+		"#91b3d8",
+		"#c2dbef",
+		"#a7c3df"
 	],
 	jade: [
 		"#0b5b44",
@@ -1098,9 +1203,16 @@ function applyIconGradient(svg, uid, skin) {
 		y1: reversed ? "1100" : "210",
 		y2: reversed ? "210" : "1100"
 	})) gradient.setAttribute(key, value);
+	const offsets = skin === "porcelain" ? [
+		0,
+		.34,
+		.59,
+		.82,
+		1
+	] : null;
 	gradient.replaceChildren(...colors.map((color, index) => {
 		const stop = document.createElementNS("http://www.w3.org/2000/svg", "stop");
-		stop.setAttribute("offset", String(index / (colors.length - 1)));
+		stop.setAttribute("offset", String(offsets?.[index] ?? index / (colors.length - 1)));
 		stop.setAttribute("stop-color", color);
 		return stop;
 	}));
@@ -1705,14 +1817,16 @@ var group = (markup) => {
 	node.innerHTML = markup;
 	return node;
 };
-function makeSeriesSkin(host, id, uid) {
+function makeSeriesSkin(host, id, uid, { jadeDragon = true } = {}) {
 	const rig = createRig(host, _nivo_body_default, uid, "Nivo");
 	const svg = host.querySelector("svg");
 	svg.dataset.seriesSkin = id;
 	applyClassicCoat(svg, uid, ["#123e89", "#123e89"], surfaceArt(id, uid));
 	applyIconGradient(svg, uid, id);
 	const motion = svg.querySelector("[data-part=\"motion\"]");
-	motion.append(group(classicAccessories(id, uid)));
+	const accessories = group(classicAccessories(id, uid));
+	accessories.dataset.seriesAccessories = id;
+	motion.append(accessories);
 	if (id === "porcelain") motion.prepend(group(porcelainHairpinBack(uid)));
 	if (id === "gold") motion.querySelector("[data-part=\"right-flipper\"]").append(group(pearlSeashell(uid)));
 	if (id === "party") {
@@ -1733,6 +1847,7 @@ function makeSeriesSkin(host, id, uid) {
 		if (id === "ghost") aura.setAttribute("mask", `url(#${uid}-ghost-body-fade)`);
 		motion.prepend(aura);
 	}
+	const jade = id === "jade" && jadeDragon ? applyJade(svg, uid) : null;
 	const focused = id === "focused" ? mountFocusedWriting(svg, uid) : null;
 	const animate = createSkinMotion(svg);
 	return { render(pose, time, active) {
@@ -1742,6 +1857,7 @@ function makeSeriesSkin(host, id, uid) {
 			skinMotion: active && !pose.peek && !pose.happy
 		}));
 		focused?.render(pose, time, active);
+		jade?.(time, active);
 		animate(time, active);
 	} };
 }
@@ -1760,7 +1876,7 @@ var SERIES_WORLDS = {
 		night: ["#102b26", "#193c32"],
 		ink: "#71ab87",
 		motif: "jade",
-		note: "Mineral ribbons, soft green light, and a slow, calming breath."
+		note: "A little jade dragon with soft horns and a gently curling tail."
 	},
 	kintsugi: {
 		day: ["#eee9df", "#faf5eb"],

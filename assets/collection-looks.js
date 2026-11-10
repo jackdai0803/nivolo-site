@@ -19,7 +19,7 @@ if (section) {
     gold: ['Pearl', '珍珠', 'Fifty days of showing up. A little pearl, with all that quiet effort inside.', '坚持了五十天。一颗小珍珠，藏着每一天安静的努力。', '#f5eaf2'],
     glitch: ['Glitch', '故障', 'You went so far the ice started skipping. Almost nobody sees this one.', '你走得太远，冰面开始跳帧。几乎没人见过这一枚。', '#eee7f8'],
     porcelain: ['Porcelain', '青花瓷', 'Cobalt blossoms and a gently swaying hairpin.', '青花绽放，发簪轻轻摇曳。', '#edf5fe'],
-    jade: ['Jade', '翡翠', 'Flowing jade bands and a slow, calming breath.', '流动的翡翠纹路，伴着缓缓的呼吸。', '#e2efe5'],
+    jade: ['Jade', '翡翠', 'A little jade dragon with soft horns and a gently curling tail.', '柔和的龙角、轻卷的尾巴，一只温润的翡翠小龙。', '#e2efe5'],
     kintsugi: ['Kintsugi', '金缮', 'Quiet golden glints. Every repair belongs to the story.', '安静闪烁的金光，每一道修补都是故事的一部分。', '#eee9df'],
     relieved: ['Relieved', '松口气', 'The exhale that comes a few mornings in, when showing up stops feeling like a decision.', '坚持几天之后的那口气 —— 出现这件事，不再需要下决心了。', '#e5f0e8'],
     focused: ['Focused', '专注', 'Nothing exists but the next small thing. Nivo is extremely busy and would rather not be disturbed.', '世界只剩下手边这一件小事。Nivo 非常忙，暂时不想被打扰。', '#e4edfc'],
@@ -114,7 +114,7 @@ if (section) {
     failed = false;
     loading = (async () => {
       try {
-        const module = await import('./nivo-skins.js?v=20261110-mascot-size');
+        const module = await import('./nivo-skins.js?v=20261110-signature');
         const image = new Image();
         image.src = new URL('nivo-body.png', import.meta.url).href;
         await image.decode();
