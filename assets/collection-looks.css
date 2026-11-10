@@ -1,4 +1,4 @@
-/* The picker stays beside the character; on phones the icons become a swipeable rail. */
+/* Browse one collection beside the character, with the same groups as the app. */
 .look-explorer { display:grid; grid-template-columns:1.08fr 1fr; gap:clamp(24px,4vw,56px); margin:48px 0 24px; padding:clamp(20px,3.5vw,44px); background:var(--paper-2); border:1px solid var(--line); border-radius:var(--radius-lg); scroll-margin-top:100px; }
 .look-browser,.look-preview { min-width:0; }
 .look-eyebrow { margin:0 0 12px; color:var(--ink-3); font-size:12px; font-weight:600; letter-spacing:.06em; }
@@ -33,8 +33,8 @@
   .look-explorer { grid-template-columns:minmax(0,1fr); gap:12px; margin-top:28px; padding:24px 16px; }
   .look-browser h3 { font-size:32px; }
   .look-intro { max-width:30ch; margin-bottom:18px; }
-  .look-choices { grid-template-columns:none; grid-template-rows:repeat(2,auto); grid-auto-flow:column; grid-auto-columns:68px; overflow-x:auto; padding:4px 4px 12px; gap:8px; scroll-snap-type:x proximity; scrollbar-width:thin; scrollbar-color:var(--edge-line) transparent; }
-  .look-choice { scroll-snap-align:start; }
+  .look-choices { grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; }
+
   .look-swipe { display:block; margin:8px 0 0; font-size:11px; color:var(--ink-3); }
   .look-stage { max-height:250px; aspect-ratio:1.25; }
   .look-mascot { width:min(82%,270px); }
@@ -42,3 +42,11 @@
 }
 @media(prefers-reduced-motion:reduce) { .look-choice { transition:none; } .look-choice:active { transform:none; } }
 .look-announcement { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; border:0; }
+
+.look-collections { display:flex; flex-wrap:wrap; gap:8px; margin:0 0 18px; }
+.look-collections[hidden], .look-choice[hidden] { display:none; }
+.look-collections button { padding:10px 12px; min-height:44px; font-size:12px; line-height:1.3; }
+.look-collections button[aria-pressed="true"] { background:var(--blue-soft); border-color:var(--cyan); color:var(--ink); }
+.look-collections button:focus-visible, .look-collection-links a:focus-visible { outline:3px solid var(--cyan); outline-offset:3px; }
+.look-collection-links { display:flex; flex-wrap:wrap; gap:12px 18px; margin-top:18px; }
+.look-collection-links a { color:var(--ink-2); font-size:12px; line-height:1.5; text-underline-offset:3px; }
