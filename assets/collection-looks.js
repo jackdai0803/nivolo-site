@@ -4,8 +4,8 @@ import { idleAt, neutralPose } from './nivo-rig.js?v=20261110-mascot-size';
 const section = document.querySelector('#nivo-looks');
 if (section) {
   const copy = {
-    en: { viewSnowy: 'Meet Snowy Nivo', eyebrow: 'One little companion. Many sides.', title: 'Find your Nivo.', intro: 'Choose a collection. Find your kind of Nivo.', matching: 'Nivo + matching app icon', inspect: 'Explore icon ↗', pause: 'Pause Nivo', resume: 'Resume Nivo', swipe: 'Swipe to explore more looks →', choose: 'Choose a Nivo look', collection: 'Choose a collection', selected: '{name} selected', retry: 'Reload preview', unavailable: 'The preview could not load. Tap to try again.' },
-    zh: { viewSnowy: '认识雪花 Nivo', eyebrow: '同一位小伙伴，不一样的小个性。', title: '找到你的 Nivo。', intro: '选择一个系列，找到属于你的 Nivo。', matching: 'Nivo 与相配的应用图标', inspect: '探索图标 ↗', pause: '暂停 Nivo', resume: '继续 Nivo', swipe: '滑动探索更多外观 →', choose: '选择 Nivo 外观', collection: '选择系列', selected: '已选择{name}', retry: '重新加载预览', unavailable: '预览暂时未能加载，轻点重试。' },
+    en: { viewSnowy: 'Meet Snowy Nivo', eyebrow: 'One little companion. Many sides.', title: 'Find your Nivo.', intro: 'Every collection, all together. Find your kind of Nivo.', matching: 'Nivo + matching app icon', inspect: 'Explore icon ↗', pause: 'Pause Nivo', resume: 'Resume Nivo', swipe: 'Swipe to explore more looks →', choose: 'Choose a Nivo look', collection: 'Choose a collection', selected: '{name} selected', retry: 'Reload preview', unavailable: 'The preview could not load. Tap to try again.' },
+    zh: { viewSnowy: '认识雪花 Nivo', eyebrow: '同一位小伙伴，不一样的小个性。', title: '找到你的 Nivo。', intro: '所有系列，一起看。找到属于你的 Nivo。', matching: 'Nivo 与相配的应用图标', inspect: '探索图标 ↗', pause: '暂停 Nivo', resume: '继续 Nivo', swipe: '滑动探索更多外观 →', choose: '选择 Nivo 外观', collection: '选择系列', selected: '已选择{name}', retry: '重新加载预览', unavailable: '预览暂时未能加载，轻点重试。' },
   };
   // IDs match the production app. Only looks with an approved mascot are selectable.
   const looks = {
@@ -37,15 +37,24 @@ if (section) {
   const tiles = [...section.querySelectorAll('.look-choice')];
   const tileId = tile => tile.dataset.look || tile.dataset.extraIcon;
   const groups = collections.filter(collection => collection.ids.some(id => tiles.some(tile => tileId(tile) === id)));
-  const collectionControls = section.querySelector('.look-collections');
-  const collectionButtons = groups.map(collection => {
-    const button = document.createElement('button');
-    button.type = 'button'; button.className = 'btn-moonlit btn-moonlit--quiet';
-    button.dataset.lookCollection = collection.id;
-    button.disabled = true;
-    button.addEventListener('click', () => chooseCollection(collection.id));
-    collectionControls.append(button);
-    return button;
+  const choices = section.querySelector('.look-choices');
+  const collectionHeadings = groups.map(collection => {
+    const group = document.createElement('section');
+    group.className = 'look-collection';
+    const heading = document.createElement('h4');
+    heading.id = `look-collection-${collection.id}`;
+    heading.dataset.lookCollection = collection.id;
+    const row = document.createElement('div');
+    row.className = 'look-collection-choices';
+    row.setAttribute('role', 'group');
+    row.setAttribute('aria-labelledby', heading.id);
+    collection.ids.forEach(id => {
+      const tile = tiles.find(tile => tileId(tile) === id);
+      if (tile) row.append(tile);
+    });
+    group.append(heading, row);
+    choices.append(group);
+    return heading;
   });
   const collectionLinks = collections.filter(collection => ['flowers', 'supporters'].includes(collection.id)).map(collection => {
     const link = document.createElement('a');
@@ -54,24 +63,6 @@ if (section) {
     section.querySelector('.look-collection-links').append(link);
     return link;
   });
-  let activeCollection = 'originals';
-  function showCollection(id) {
-    const collection = groups.find(group => group.id === id);
-    if (!collection) return;
-    activeCollection = id;
-    tiles.forEach(tile => { tile.hidden = !collection.ids.includes(tileId(tile)); });
-    // Keep the tiles in the same order as the app, including icon-only looks.
-    collection.ids.forEach(id => {
-      const tile = tiles.find(tile => tileId(tile) === id);
-      if (tile) section.querySelector('.look-choices').append(tile);
-    });
-    collectionButtons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.lookCollection === id)));
-  }
-  function chooseCollection(id) {
-    showCollection(id);
-    const collection = groups.find(group => group.id === id);
-    if (!collection.ids.includes(selected)) select(collection.ids.find(id => looks[id]), true);
-  }
   const preview = section.querySelector('.look-preview');
   const host = section.querySelector('.look-mascot');
   const pause = section.querySelector('.look-pause');
@@ -83,8 +74,7 @@ if (section) {
 
   function text() {
     section.querySelectorAll('[data-look-copy]').forEach(el => { el.textContent = t(el.dataset.lookCopy); });
-    collectionControls.setAttribute('aria-label', t('collection'));
-    [...collectionButtons, ...collectionLinks].forEach(control => {
+    [...collectionHeadings, ...collectionLinks].forEach(control => {
       const collection = collections.find(group => group.id === (control.dataset.lookCollection || control.dataset.collectionLink));
       control.textContent = (zh() ? collection.zh : collection.name) + (control.tagName === 'A' ? ' ↗' : '');
     });
@@ -163,21 +153,25 @@ if (section) {
         await image.decode();
         api = module;
         select(selected);
-        [...buttons, ...collectionButtons].forEach(button => { button.disabled = false; });
+        buttons.forEach(button => { button.disabled = false; });
         inspect.disabled = false;
       } catch { failed = true; inspect.disabled = false; text(); }
       finally { loading = null; }
     })();
     return loading;
   }
-  buttons.forEach(button => button.addEventListener('click', () => select(button.dataset.look, true)));
+  buttons.forEach(button => button.addEventListener('click', () => {
+    select(button.dataset.look, true);
+    if (matchMedia('(max-width: 760px)').matches) {
+      preview.scrollIntoView({ block: 'center', behavior: reduced.matches ? 'instant' : 'smooth' });
+    }
+  }));
   pause.addEventListener('click', () => { paused = !paused; text(); resume(); });
   inspect.addEventListener('click', () => {
     if (failed) { load(); return; }
     document.dispatchEvent(new CustomEvent('nivo-icon-inspect', { detail: { id: selected, name: name(), story: story() } }));
   });
   function revealLook(id) {
-    showCollection(groups.find(group => group.ids.includes(id)).id);
     select(id, true);
     const button = buttons.find(button => button.dataset.look === selected);
     button.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'instant' });
@@ -208,7 +202,5 @@ if (section) {
   window.addEventListener('pagehide', () => cancelAnimationFrame(frame));
   window.addEventListener('pageshow', resume);
   new MutationObserver(text).observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });
-  showCollection(activeCollection);
-  collectionControls.hidden = false;
   text();
 }
