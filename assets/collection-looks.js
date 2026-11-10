@@ -4,8 +4,8 @@ import { idleAt, neutralPose } from './nivo-rig.js?v=20261110-mascot-size';
 const section = document.querySelector('#nivo-looks');
 if (section) {
   const copy = {
-    en: { viewSnowy: 'Meet Snowy Nivo', eyebrow: 'One little companion. Many sides.', title: 'Find your Nivo.', intro: 'Every collection, all together. Find your kind of Nivo.', matching: 'Nivo + matching app icon', inspect: 'Explore icon ↗', pause: 'Pause Nivo', resume: 'Resume Nivo', swipe: 'Swipe to explore more looks →', choose: 'Choose a Nivo look', collection: 'Choose a collection', selected: '{name} selected', retry: 'Reload preview', unavailable: 'The preview could not load. Tap to try again.' },
-    zh: { viewSnowy: '认识雪花 Nivo', eyebrow: '同一位小伙伴，不一样的小个性。', title: '找到你的 Nivo。', intro: '所有系列，一起看。找到属于你的 Nivo。', matching: 'Nivo 与相配的应用图标', inspect: '探索图标 ↗', pause: '暂停 Nivo', resume: '继续 Nivo', swipe: '滑动探索更多外观 →', choose: '选择 Nivo 外观', collection: '选择系列', selected: '已选择{name}', retry: '重新加载预览', unavailable: '预览暂时未能加载，轻点重试。' },
+    en: { viewSnowy: 'Meet Snowy Nivo', eyebrow: 'One little companion. Many sides.', title: 'Find your Nivo.', intro: 'Choose a collection. Meet your kind of Nivo.', matching: 'Nivo + matching app icon', inspect: 'Explore icon ↗', pause: 'Pause Nivo', resume: 'Resume Nivo', swipe: 'Swipe to explore more looks →', choose: 'Choose a Nivo look', collection: 'Choose a collection', selected: '{name} selected', retry: 'Reload preview', unavailable: 'The preview could not load. Tap to try again.', garden: 'Explore the flower gardens ↗', founders: 'Explore the Founder’s Gallery ↗', plus: 'Plus-exclusive', elements: 'Porcelain · 300 Krill. Jade · 500. Kintsugi · 800. Pearl · 50-day streak.', flowers: 'Eight flowers for everyone. Three Plus-exclusive editions.', supporters: 'A numbered painting and icon for the first 20 paying members.' },
+    zh: { viewSnowy: '认识雪花 Nivo', eyebrow: '同一位小伙伴，不一样的小个性。', title: '找到你的 Nivo。', intro: '选一个系列，认识属于你的 Nivo。', matching: 'Nivo 与相配的应用图标', inspect: '探索图标 ↗', pause: '暂停 Nivo', resume: '继续 Nivo', swipe: '滑动探索更多外观 →', choose: '选择 Nivo 外观', collection: '选择系列', selected: '已选择{name}', retry: '重新加载预览', unavailable: '预览暂时未能加载，轻点重试。', garden: '探索花园 ↗', founders: '探索创始者画廊 ↗', plus: 'Plus 专属', elements: '青花瓷 · 300 磷虾。翡翠 · 500。金缮 · 800。珍珠 · 连续记录 50 天。', flowers: '八款花卉向所有人开放，三款为 Plus 专属。', supporters: '赠予最初 20 位付费会员的编号画作与图标。' },
   };
   // IDs match the production app. Only looks with an approved mascot are selectable.
   const looks = {
@@ -33,35 +33,61 @@ if (section) {
   const t = (key, name = '') => copy[zh() ? 'zh' : 'en'][key].replace('{name}', name);
   const name = () => looks[selected][zh() ? 1 : 0];
   const story = () => looks[selected][zh() ? 3 : 2];
-  const buttons = [...section.querySelectorAll('[data-look]')];
-  const tiles = [...section.querySelectorAll('.look-choice')];
-  const tileId = tile => tile.dataset.look || tile.dataset.extraIcon;
-  const groups = collections.filter(collection => collection.ids.some(id => tiles.some(tile => tileId(tile) === id)));
+  const flowerTiles = [...document.querySelectorAll('[data-flower-choice]')];
+  const flowerIds = new Set(flowerTiles.map(tile => tile.dataset.flowerChoice));
+  const plusIds = new Set(['white-lotus', 'tree-peony', 'spider-lily']);
   const choices = section.querySelector('.look-choices');
+  for (const original of flowerTiles) {
+    const id = original.dataset.flowerChoice;
+    const en = original.querySelector('.flower-choice-name').textContent;
+    const cn = original.querySelector('.flower-choice-zh').textContent;
+    looks[id] = [en, cn, 'A Nivo look, a matching icon, and a little garden of your own.', '一款 Nivo、一枚相配图标，还有属于你的小花园。', '#e2efe5'];
+    const button = document.createElement('button');
+    button.className = 'look-choice'; button.type = 'button'; button.dataset.look = id;
+    button.disabled = true; button.setAttribute('aria-controls', 'look-preview');
+    button.append(original.querySelector('img').cloneNode());
+    const label = document.createElement('span'); label.textContent = en; button.append(label);
+    if (plusIds.has(id)) { const badge = document.createElement('small'); badge.className = 'look-plus'; badge.textContent = 'Plus'; button.append(badge); }
+    choices.append(button);
+  }
+  looks['early-supporter'] = ['Early Supporter', '早期支持者', 'A little reminder you were here first. A golden icon and a numbered painting for our first twenty paying members.', '纪念最早的相遇。赠予最初二十位付费会员的金色图标与编号画作。', '#f3e8cc'];
+  const supporter = document.createElement('button');
+  supporter.className = 'look-choice'; supporter.type = 'button'; supporter.dataset.look = 'early-supporter'; supporter.disabled = true; supporter.setAttribute('aria-controls', 'look-preview');
+  supporter.innerHTML = '<img src="assets/icons/early-supporter.png?v=20261109" width="160" height="160" alt="" loading="lazy" /><span>Early Supporter</span>';
+  choices.append(supporter);
+  const buttons = [...section.querySelectorAll('[data-look]')];
+  const groups = collections.filter(collection => collection.ids.some(id => looks[id]));
+  let activeCollection = groups[0].id;
+  const nav = section.querySelector('.look-collections');
+  const collectionButtons = [];
   const collectionHeadings = groups.map(collection => {
-    const group = document.createElement('section');
-    group.className = 'look-collection';
-    const heading = document.createElement('h4');
-    heading.id = `look-collection-${collection.id}`;
-    heading.dataset.lookCollection = collection.id;
-    const row = document.createElement('div');
-    row.className = 'look-collection-choices';
-    row.setAttribute('role', 'group');
-    row.setAttribute('aria-labelledby', heading.id);
-    collection.ids.forEach(id => {
-      const tile = tiles.find(tile => tileId(tile) === id);
-      if (tile) row.append(tile);
+    const control = document.createElement('button');
+    control.type = 'button'; control.className = 'look-collection-button'; control.dataset.collection = collection.id;
+    control.setAttribute('aria-controls', `look-group-${collection.id}`);
+    control.addEventListener('click', () => {
+      activeCollection = collection.id;
+      const id = collection.ids.find(id => looks[id]);
+      selected = id;
+      text();
+      if (api) select(id, true);
+      else load();
     });
-    group.append(heading, row);
-    choices.append(group);
+    collectionButtons.push(control); nav.append(control);
+    const group = document.createElement('section');
+    group.className = 'look-collection'; group.id = `look-group-${collection.id}`;
+    const heading = document.createElement('h4');
+    heading.id = `look-collection-${collection.id}`; heading.dataset.lookCollection = collection.id;
+    const row = document.createElement('div'); row.className = 'look-collection-choices';
+    row.setAttribute('role', 'group'); row.setAttribute('aria-labelledby', heading.id);
+    const ids = collection.id === 'flowers' ? [...collection.ids.filter(id => !plusIds.has(id)), ...collection.ids.filter(id => plusIds.has(id))] : collection.ids;
+    ids.forEach((id, index) => {
+      if (collection.id === 'flowers' && plusIds.has(id) && !plusIds.has(ids[index - 1])) {
+        const label = document.createElement('p'); label.className = 'look-plus-heading'; label.dataset.lookCopy = 'plus'; row.append(label);
+      }
+      const tile = buttons.find(tile => tile.dataset.look === id); if (tile) row.append(tile);
+    });
+    group.append(heading, row); choices.append(group);
     return heading;
-  });
-  const collectionLinks = collections.filter(collection => ['flowers', 'supporters'].includes(collection.id)).map(collection => {
-    const link = document.createElement('a');
-    link.href = collection.id === 'flowers' ? '#flower-edition' : '#founders';
-    link.dataset.collectionLink = collection.id;
-    section.querySelector('.look-collection-links').append(link);
-    return link;
   });
   const preview = section.querySelector('.look-preview');
   const host = section.querySelector('.look-mascot');
@@ -69,15 +95,31 @@ if (section) {
   const inspect = section.querySelector('.look-inspect');
   const snowyLink = document.querySelector('.benefit-icon-preview');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-  let api, loading, selected = 'classic', paused = false, visible = false, frame = 0, previous = null, elapsed = 0, serial = 0, failed = false;
+  let api, flowerApi, loading, selected = 'classic', paused = false, visible = false, frame = 0, previous = null, elapsed = 0, serial = 0, failed = false;
   let layers = [], transitionStart = 0;
 
   function text() {
     section.querySelectorAll('[data-look-copy]').forEach(el => { el.textContent = t(el.dataset.lookCopy); });
-    [...collectionHeadings, ...collectionLinks].forEach(control => {
-      const collection = collections.find(group => group.id === (control.dataset.lookCollection || control.dataset.collectionLink));
-      control.textContent = (zh() ? collection.zh : collection.name) + (control.tagName === 'A' ? ' ↗' : '');
+    collectionHeadings.forEach(control => {
+      const collection = collections.find(group => group.id === control.dataset.lookCollection);
+      control.textContent = (zh() ? collection.zh : collection.name);
     });
+    nav.setAttribute('aria-label', t('collection'));
+    collectionButtons.forEach(control => {
+      const collection = groups.find(group => group.id === control.dataset.collection);
+      control.textContent = zh() ? collection.zh : collection.name;
+      control.setAttribute('aria-pressed', String(collection.id === activeCollection));
+      section.querySelector(`#look-group-${collection.id}`).hidden = collection.id !== activeCollection;
+    });
+    const noteKey = activeCollection === 'treasures' ? 'elements' : ['flowers', 'supporters'].includes(activeCollection) ? activeCollection : null;
+    const note = section.querySelector('.look-collection-note');
+    note.textContent = noteKey ? t(noteKey) : ''; note.hidden = !noteKey;
+    const detail = section.querySelector('.look-detail-link');
+    detail.hidden = !['flowers', 'supporters'].includes(activeCollection);
+    detail.href = activeCollection === 'flowers' ? '#flower-edition' : '#founders';
+    detail.textContent = t(activeCollection === 'flowers' ? 'garden' : 'founders');
+    inspect.hidden = flowerIds.has(selected);
+    section.querySelector('.look-matching-icon').src = buttons.find(button => button.dataset.look === selected).querySelector('img').src;
     snowyLink?.setAttribute('aria-label', t('viewSnowy'));
     section.querySelector('.look-name').textContent = name();
     section.querySelector('.look-note').textContent = failed ? t('unavailable') : story();
@@ -89,6 +131,7 @@ if (section) {
     inspect.textContent = t(failed ? 'retry' : 'inspect');
     buttons.forEach(button => {
       button.setAttribute('aria-pressed', String(button.dataset.look === selected));
+      if (plusIds.has(button.dataset.look)) button.setAttribute('aria-description', t('plus'));
       button.querySelector('span').textContent = looks[button.dataset.look][zh() ? 1 : 0];
     });
   }
@@ -124,9 +167,13 @@ if (section) {
     if (!api || !looks[id]) return;
     if (id === 'focused' && selected !== id) elapsed = 0;
     selected = id;
+    activeCollection = groups.find(group => group.ids.includes(id)).id;
     if (!layers.some(layer => layer.id === id)) {
       const node = document.createElement('div'); node.className = 'look-layer'; node.dataset.lookLayer = id;
-      const rig = api.makeClassicSkin(node, { id }, `collection-nivo-${++serial}`);
+      const uid = `collection-nivo-${++serial}`;
+      const flower = flowerApi.flowers.find(flower => flower.id === id);
+      const flowerRig = flower && flowerApi.makeFlower(node, flower, uid);
+      const rig = flowerRig ? { render: pose => flowerRig.render(pose, pose.skinTimeMs, pose.skinMotion) } : api.makeClassicSkin(node, { id }, uid);
       node.querySelector('svg').setAttribute('aria-hidden', 'true');
       if (!layers.length) host.replaceChildren();
       host.append(node);
@@ -147,7 +194,8 @@ if (section) {
     failed = false;
     loading = (async () => {
       try {
-        const module = await import('./nivo-skins.js?v=20261110-remove-grumpy');
+        const [module, flowers] = await Promise.all([import('./nivo-skins.js?v=20261110-remove-grumpy'), import('./flower-art.js?v=20261110-mascot-size')]);
+        flowerApi = flowers;
         const image = new Image();
         image.src = new URL('nivo-body.png', import.meta.url).href;
         await image.decode();
@@ -162,9 +210,7 @@ if (section) {
   }
   buttons.forEach(button => button.addEventListener('click', () => {
     select(button.dataset.look, true);
-    if (matchMedia('(max-width: 760px)').matches) {
-      preview.scrollIntoView({ block: 'center', behavior: reduced.matches ? 'instant' : 'smooth' });
-    }
+
   }));
   pause.addEventListener('click', () => { paused = !paused; text(); resume(); });
   inspect.addEventListener('click', () => {

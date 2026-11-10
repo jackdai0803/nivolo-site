@@ -55,7 +55,7 @@
   <link rel="stylesheet" href="assets/editorial-concept.css?v=43" />
   <link rel="stylesheet" href="assets/app-screens.css?v=6" />
   <link rel="stylesheet" href="assets/nivo.css?v=8" />
-  <link rel="stylesheet" href="assets/collection-looks.css?v=20261110-all-collections" />
+  <link rel="stylesheet" href="assets/collection-looks.css?v=20261110-unified-browser" />
   <link rel="stylesheet" href="assets/app-opals.css?v=bf0a7f93abb4" />
   <link rel="stylesheet" href="assets/keepsakes.css?v=4" />
   <link rel="stylesheet" href="assets/flower-edition.css?v=20261110-grouped" />
@@ -81,7 +81,7 @@
     ]
   }
   </script>
-<!-- Nivolo release: all-nivo-collections-v2-2026-11-10 -->
+<!-- Nivolo release: unified-icon-browser-2026-11-10 -->
 </head>
 <body class="short-home premium-home">
   <a class="skip-link" href="#main">Skip to content</a>
@@ -133,6 +133,47 @@
     <div class="nivo-play-controls" data-nivo-controls hidden>
       <button type="button" class="nivo-sound" data-nivo-sound aria-pressed="false"><span aria-hidden="true">♪</span> <span data-nivo-sound-label></span></button>
     </div>
+
+      <article class="look-explorer" id="nivo-looks" aria-labelledby="look-explorer-title">
+        <div class="look-browser">
+          <p class="look-eyebrow" data-look-copy="eyebrow">One little companion. Many sides.</p>
+          <h3 id="look-explorer-title" data-look-copy="title">Find your Nivo.</h3>
+          <p class="look-intro" data-look-copy="intro">Choose a collection. Meet your kind of Nivo.</p>
+          <div class="look-collections" role="group" aria-label="Choose a collection"></div>
+          <div class="look-choices" role="group" aria-label="Choose a Nivo look">
+              <button class="look-choice" type="button" data-look="classic" aria-pressed="true" aria-controls="look-preview" disabled><img src="assets/icons/classic.png?v=20261109" width="160" height="160" alt="" loading="lazy" /><span>Classic</span></button>
+              <button class="look-choice" type="button" data-look="deepsea" aria-pressed="false" aria-controls="look-preview" disabled><img src="assets/icons/deepsea.png?v=20261109" width="160" height="160" alt="" loading="lazy" /><span>Deep-Sea</span></button>
+              <button class="look-choice" type="button" data-look="snowy" aria-pressed="false" aria-controls="look-preview" disabled><img src="assets/icons/snowy.png?v=20261109" width="160" height="160" alt="" loading="lazy" /><span>Snowy</span></button>
+              <button class="look-choice" type="button" data-look="blaze" aria-pressed="false" aria-controls="look-preview" disabled><img src="assets/icons/blaze.png?v=20261109" width="160" height="160" alt="" loading="lazy" /><span>Blaze</span></button>
+              <button class="look-choice" type="button" data-look="party" aria-pressed="false" aria-controls="look-preview" disabled><img src="assets/icons/party.png?v=20261109" width="160" height="160" alt="" loading="lazy" /><span>Party</span></button>
+              <button class="look-choice" type="button" data-look="melting" aria-pressed="false" aria-controls="look-preview" disabled><img src="assets/icons/melting.png?v=20261110" width="160" height="160" alt="" loading="lazy" /><span>Melting</span></button>
+              <button class="look-choice" type="button" data-look="ghost" aria-pressed="false" aria-controls="look-preview" disabled><img src="assets/icons/ghost.png?v=20261109" width="160" height="160" alt="" loading="lazy" /><span>Ghost</span></button>
+              <button class="look-choice" type="button" data-look="gold" aria-pressed="false" aria-controls="look-preview" disabled><img src="assets/icons/gold.png?v=20261109" width="160" height="160" alt="" loading="lazy" /><span>Pearl</span></button>
+              <button class="look-choice" type="button" data-look="glitch" aria-pressed="false" aria-controls="look-preview" disabled><img src="assets/icons/glitch.png?v=20261109" width="160" height="160" alt="" loading="lazy" /><span>Glitch</span></button>
+              <button class="look-choice" type="button" data-look="porcelain" aria-pressed="false" aria-controls="look-preview" disabled><img src="assets/icons/porcelain.png?v=20261110-signature" width="160" height="160" alt="" loading="lazy" /><span>Porcelain</span></button>
+              <button class="look-choice" type="button" data-look="jade" aria-pressed="false" aria-controls="look-preview" disabled><img src="assets/icons/jade.png?v=20261110-signature" width="160" height="160" alt="" loading="lazy" /><span>Jade</span></button>
+              <button class="look-choice" type="button" data-look="kintsugi" aria-pressed="false" aria-controls="look-preview" disabled><img src="assets/icons/kintsugi.png?v=20261110-signature" width="160" height="160" alt="" loading="lazy" /><span>Kintsugi</span></button>
+              <button class="look-choice" type="button" data-look="focused" aria-pressed="false" aria-controls="look-preview" disabled><img src="assets/icons/focused.png?v=20261110" width="160" height="160" alt="" loading="lazy" /><span>Focused</span></button>
+              <button class="look-choice" type="button" data-look="love" aria-pressed="false" aria-controls="look-preview" disabled><img src="assets/icons/love.png?v=20261109" width="160" height="160" alt="" loading="lazy" /><span>Love</span></button>
+              <button class="look-choice" type="button" data-look="starstruck" aria-pressed="false" aria-controls="look-preview" disabled><img src="assets/icons/starstruck.png?v=20261109" width="160" height="160" alt="" loading="lazy" /><span>Starstruck</span></button>
+              <button class="look-choice" type="button" data-look="champion" aria-pressed="false" aria-controls="look-preview" disabled><img src="assets/icons/champion.png?v=20261109" width="160" height="160" alt="" loading="lazy" /><span>Champion</span></button>
+              <button class="look-choice" type="button" data-look="sleepy" aria-pressed="false" aria-controls="look-preview" disabled><img src="assets/icons/sleepy.png?v=20261109" width="160" height="160" alt="" loading="lazy" /><span>Sleepy</span></button>
+              <button class="look-choice" type="button" data-look="rainy" aria-pressed="false" aria-controls="look-preview" disabled><img src="assets/icons/rainy.png?v=20261109" width="160" height="160" alt="" loading="lazy" /><span>Rainy</span></button>
+              <button class="look-choice" type="button" data-look="sick" aria-pressed="false" aria-controls="look-preview" disabled><img src="assets/icons/sick.png?v=20261109" width="160" height="160" alt="" loading="lazy" /><span>Sick</span></button>
+          </div>
+          <p class="look-collection-note"></p>
+        </div>
+        <div class="look-preview" id="look-preview" data-selected-look="classic">
+          <div class="look-stage" role="img" aria-label="Classic Nivo">
+            <div class="look-mascot"><svg viewBox="90 40 1120 1120" aria-hidden="true"><image href="assets/nivo-body.png" width="1254" height="1254" /></svg></div>
+          </div>
+          <div class="look-identity"><img class="look-matching-icon" src="assets/icons/classic.png?v=20261109" width="160" height="160" alt="" loading="lazy" /><div><p data-look-copy="matching">Nivo + matching app icon</p><h4 class="look-name">Classic</h4></div></div>
+          <p class="look-note">Your first Nivo. A familiar face for every small beginning.</p>
+          <a class="look-detail-link" hidden></a>
+          <div class="look-actions"><button type="button" class="look-inspect btn-moonlit" data-look-copy="inspect" disabled>Explore icon ↗</button><button type="button" class="look-pause btn-moonlit btn-moonlit--quiet" aria-pressed="false" data-look-copy="pause" hidden>Pause Nivo</button></div>
+          <p class="look-announcement sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
+        </div>
+      </article>
 
     <article class="editorial-feature editorial-feature--demo" id="try-nivolo" aria-labelledby="editorial-feature-title">
       <div class="editorial-orb editorial-orb--one" aria-hidden="true"></div>
@@ -334,70 +375,7 @@
         <p class="founder-feature-terms" data-founder-copy="featureTerms">Any paid membership counts. Free trials and launch-list signups do not reserve a place.</p>
       </article>
 
-      <section class="keepsakes reveal" id="keepsakes" aria-labelledby="keepsakes-title">
-        <header class="keepsakes-head">
-          <h3 id="keepsakes-title" data-site-copy="featuredIcons">The Elements Collection</h3>
-          <p data-site-copy="featuredIconsIntro">Jade, porcelain, gold, and pearl. Find your favourite finish.</p>
-        </header>
-        <div class="keepsakes-grid">
-          <article class="keepsake-card">
-            <img src="assets/icons/porcelain.png?v=20261110-signature" width="256" height="256" alt="Nivo with a blue glaze, a pink flower, and painted blue blossoms" data-site-alt="porcelainAlt" loading="lazy" />
-            <div><h4 data-site-copy="porcelainName">Porcelain</h4><p data-site-copy="porcelainCard">Blue glaze, painted blossoms, and a pink bloom.</p><span class="keepsake-price">300 <img src="assets/krill-token.png?v=2" width="20" height="20" alt="Krill" /></span></div>
-          </article>
-          <article class="keepsake-card">
-            <img src="assets/icons/jade.png?v=20261110-signature" width="256" height="256" alt="Nivo as a jade dragon with rounded horns and a curled tail" data-site-alt="jadeAlt" loading="lazy" />
-            <div><h4 data-site-copy="jadeName">Jade</h4><p data-site-copy="jadeCard">A little dragon carved from jade.</p><span class="keepsake-price">500 <img src="assets/krill-token.png?v=2" width="20" height="20" alt="Krill" /></span></div>
-          </article>
-          <article class="keepsake-card">
-            <img src="assets/icons/kintsugi.png?v=20261110-signature" width="256" height="256" alt="Nivo on charcoal with gold repair lines" data-site-alt="kintsugiAlt" loading="lazy" />
-            <div><h4 data-site-copy="kintsugiName">Kintsugi</h4><p data-site-copy="kintsugiCard">Every golden line is part of the story.</p><span class="keepsake-price">800 <img src="assets/krill-token.png?v=2" width="20" height="20" alt="Krill" /></span></div>
-          </article>
-          <article class="keepsake-card">
-            <img src="assets/icons/gold.png?v=20261109" width="256" height="256" alt="Nivo with pearlescent colours and an open shell holding a pearl" data-site-alt="pearlAlt" loading="lazy" />
-            <div><h4 data-site-copy="pearlName">Pearl</h4><p data-site-copy="pearlCard">A soft shimmer. A little pearl to treasure.</p><span class="keepsake-price" data-site-copy="pearlUnlock">50-day streak</span></div>
-          </article>
-        </div>
-        <p class="keepsakes-note" data-site-copy="featuredIconsNote">Unlock Porcelain, Jade, and Kintsugi with Krill. Earn Pearl with a 50-day streak.</p>
-      </section>
 
-      <article class="look-explorer" id="nivo-looks" aria-labelledby="look-explorer-title">
-        <div class="look-browser">
-          <p class="look-eyebrow" data-look-copy="eyebrow">One little companion. Many sides.</p>
-          <h3 id="look-explorer-title" data-look-copy="title">Find your Nivo.</h3>
-          <p class="look-intro" data-look-copy="intro">Every collection, all together. Find your kind of Nivo.</p>
-          <div class="look-choices" role="group" aria-label="Choose a Nivo look">
-              <button class="look-choice" type="button" data-look="classic" aria-pressed="true" aria-controls="look-preview" disabled><img src="assets/icons/classic.png?v=20261109" width="160" height="160" alt="" loading="lazy" /><span>Classic</span></button>
-              <button class="look-choice" type="button" data-look="deepsea" aria-pressed="false" aria-controls="look-preview" disabled><img src="assets/icons/deepsea.png?v=20261109" width="160" height="160" alt="" loading="lazy" /><span>Deep-Sea</span></button>
-              <button class="look-choice" type="button" data-look="snowy" aria-pressed="false" aria-controls="look-preview" disabled><img src="assets/icons/snowy.png?v=20261109" width="160" height="160" alt="" loading="lazy" /><span>Snowy</span></button>
-              <button class="look-choice" type="button" data-look="blaze" aria-pressed="false" aria-controls="look-preview" disabled><img src="assets/icons/blaze.png?v=20261109" width="160" height="160" alt="" loading="lazy" /><span>Blaze</span></button>
-              <button class="look-choice" type="button" data-look="party" aria-pressed="false" aria-controls="look-preview" disabled><img src="assets/icons/party.png?v=20261109" width="160" height="160" alt="" loading="lazy" /><span>Party</span></button>
-              <button class="look-choice" type="button" data-look="melting" aria-pressed="false" aria-controls="look-preview" disabled><img src="assets/icons/melting.png?v=20261110" width="160" height="160" alt="" loading="lazy" /><span>Melting</span></button>
-              <button class="look-choice" type="button" data-look="ghost" aria-pressed="false" aria-controls="look-preview" disabled><img src="assets/icons/ghost.png?v=20261109" width="160" height="160" alt="" loading="lazy" /><span>Ghost</span></button>
-              <button class="look-choice" type="button" data-look="gold" aria-pressed="false" aria-controls="look-preview" disabled><img src="assets/icons/gold.png?v=20261109" width="160" height="160" alt="" loading="lazy" /><span>Pearl</span></button>
-              <button class="look-choice" type="button" data-look="glitch" aria-pressed="false" aria-controls="look-preview" disabled><img src="assets/icons/glitch.png?v=20261109" width="160" height="160" alt="" loading="lazy" /><span>Glitch</span></button>
-              <button class="look-choice" type="button" data-look="porcelain" aria-pressed="false" aria-controls="look-preview" disabled><img src="assets/icons/porcelain.png?v=20261110-signature" width="160" height="160" alt="" loading="lazy" /><span>Porcelain</span></button>
-              <button class="look-choice" type="button" data-look="jade" aria-pressed="false" aria-controls="look-preview" disabled><img src="assets/icons/jade.png?v=20261110-signature" width="160" height="160" alt="" loading="lazy" /><span>Jade</span></button>
-              <button class="look-choice" type="button" data-look="kintsugi" aria-pressed="false" aria-controls="look-preview" disabled><img src="assets/icons/kintsugi.png?v=20261110-signature" width="160" height="160" alt="" loading="lazy" /><span>Kintsugi</span></button>
-              <button class="look-choice" type="button" data-look="focused" aria-pressed="false" aria-controls="look-preview" disabled><img src="assets/icons/focused.png?v=20261110" width="160" height="160" alt="" loading="lazy" /><span>Focused</span></button>
-              <button class="look-choice" type="button" data-look="love" aria-pressed="false" aria-controls="look-preview" disabled><img src="assets/icons/love.png?v=20261109" width="160" height="160" alt="" loading="lazy" /><span>Love</span></button>
-              <button class="look-choice" type="button" data-look="starstruck" aria-pressed="false" aria-controls="look-preview" disabled><img src="assets/icons/starstruck.png?v=20261109" width="160" height="160" alt="" loading="lazy" /><span>Starstruck</span></button>
-              <button class="look-choice" type="button" data-look="champion" aria-pressed="false" aria-controls="look-preview" disabled><img src="assets/icons/champion.png?v=20261109" width="160" height="160" alt="" loading="lazy" /><span>Champion</span></button>
-              <button class="look-choice" type="button" data-look="sleepy" aria-pressed="false" aria-controls="look-preview" disabled><img src="assets/icons/sleepy.png?v=20261109" width="160" height="160" alt="" loading="lazy" /><span>Sleepy</span></button>
-              <button class="look-choice" type="button" data-look="rainy" aria-pressed="false" aria-controls="look-preview" disabled><img src="assets/icons/rainy.png?v=20261109" width="160" height="160" alt="" loading="lazy" /><span>Rainy</span></button>
-              <button class="look-choice" type="button" data-look="sick" aria-pressed="false" aria-controls="look-preview" disabled><img src="assets/icons/sick.png?v=20261109" width="160" height="160" alt="" loading="lazy" /><span>Sick</span></button>
-          </div>
-          <div class="look-collection-links"></div>
-        </div>
-        <div class="look-preview" id="look-preview" data-selected-look="classic">
-          <div class="look-stage" role="img" aria-label="Classic Nivo">
-            <div class="look-mascot"><svg viewBox="90 40 1120 1120" aria-hidden="true"><image href="assets/nivo-body.png" width="1254" height="1254" /></svg></div>
-          </div>
-          <div class="look-identity"><img class="look-matching-icon" src="assets/icons/classic.png?v=20261109" width="160" height="160" alt="" loading="lazy" /><div><p data-look-copy="matching">Nivo + matching app icon</p><h4 class="look-name">Classic</h4></div></div>
-          <p class="look-note">Your first Nivo. A familiar face for every small beginning.</p>
-          <div class="look-actions"><button type="button" class="look-inspect btn-moonlit" data-look-copy="inspect" disabled>Explore icon ↗</button><button type="button" class="look-pause btn-moonlit btn-moonlit--quiet" aria-pressed="false" data-look-copy="pause" hidden>Pause Nivo</button></div>
-          <p class="look-announcement sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
-        </div>
-      </article>
       <details class="compact-disclosure collection-disclosure" id="full-collection">
         <summary>
           <span data-site-copy="krill">Meet the Krill</span><span class="disclosure-plus" aria-hidden="true">+</span>
@@ -749,7 +727,7 @@
   <!-- No ?v= on purpose: this is the one file edited at launch, and it should be the only edit. -->
   <script src="assets/store.js" defer></script>
   <script src="assets/contact.js?v=3" defer></script>
-  <script type="module" src="assets/collection-looks.js?v=20261110-remove-grumpy"></script>
+  <script type="module" src="assets/collection-looks.js?v=20261110-unified-browser"></script>
   <script src="assets/founders-gallery.js?v=10" defer></script>
   <script src="assets/app-opals.js?v=b5840d248847" defer></script>
   <script src="assets/editorial-concept.js?v=7726da03d44a" defer></script>
