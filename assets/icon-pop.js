@@ -663,6 +663,9 @@
       var selection = new CustomEvent("nivo-look-select", { detail: { id: id }, cancelable: true });
       if (document.dispatchEvent(selection)) openFor(id, name, para.textContent);
     }
+    wirePreview(el, opener, id, go);
+  }
+  function wirePreview(el, opener, id, go) {
     /* fetch this one's art and environment the moment there is any hint of
        intent, so by the time the click lands the pixels are already there */
     function prime() { warmScene(id); warmIcon(id, true); }
@@ -679,13 +682,12 @@
   Array.prototype.forEach.call(document.querySelectorAll("#collection .keepsake-card"), function (el) {
     attachPreview(el, el, el.querySelector("img"), el.querySelector("h4"), el.querySelector("p"));
   });
-  Array.prototype.forEach.call(document.querySelectorAll("[data-extra-icon]"), function (el) {
-    var id = el.dataset.extraIcon;
-    var head = el.querySelector("h5");
-    var story = el.querySelector("p");
-    head.textContent = t(id + "Name");
-    story.textContent = t(id + "Story");
-    attachPreview(el, el, el.querySelector("img"), head, story);
+  Array.prototype.forEach.call(document.querySelectorAll("button[data-extra-icon]"), function (button) {
+    var id = button.dataset.extraIcon;
+    button.querySelector("span").textContent = t(id + "Name");
+    wirePreview(button, button, id, function () {
+      openFor(id, t(id + "Name"), t(id + "Story"));
+    });
   });
 
   Array.prototype.forEach.call(document.querySelectorAll("[data-founder-icon]"), function (el) {
