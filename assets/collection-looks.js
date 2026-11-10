@@ -4,8 +4,8 @@ import { idleAt, neutralPose } from './nivo-rig.js?v=20261110-mascot-size';
 const section = document.querySelector('#nivo-looks');
 if (section) {
   const copy = {
-    en: { viewSnowy: 'Meet Snowy Nivo', eyebrow: 'One little companion. Many sides.', title: 'Find your Nivo.', intro: 'Choose a collection. Meet your kind of Nivo.', matching: 'Nivo + matching app icon', inspect: 'Explore icon ↗', pause: 'Pause Nivo', resume: 'Resume Nivo', swipe: 'Swipe to explore more looks →', choose: 'Choose a Nivo look', collection: 'Choose a collection', selected: '{name} selected', retry: 'Reload preview', unavailable: 'The preview could not load. Tap to try again.', garden: 'Explore the flower gardens ↗', founders: 'Explore the Founder’s Gallery ↗', plus: 'Plus-exclusive', elements: 'Porcelain · 300 Krill. Jade · 500. Kintsugi · 800. Pearl · 50-day streak.', flowers: 'Eight flowers for everyone. Three Plus-exclusive editions.', supporters: 'A numbered painting and icon for the first 20 paying members.' },
-    zh: { viewSnowy: '认识雪花 Nivo', eyebrow: '同一位小伙伴，不一样的小个性。', title: '找到你的 Nivo。', intro: '选一个系列，认识属于你的 Nivo。', matching: 'Nivo 与相配的应用图标', inspect: '探索图标 ↗', pause: '暂停 Nivo', resume: '继续 Nivo', swipe: '滑动探索更多外观 →', choose: '选择 Nivo 外观', collection: '选择系列', selected: '已选择{name}', retry: '重新加载预览', unavailable: '预览暂时未能加载，轻点重试。', garden: '探索花园 ↗', founders: '探索创始者画廊 ↗', plus: 'Plus 专属', elements: '青花瓷 · 300 磷虾。翡翠 · 500。金缮 · 800。珍珠 · 连续记录 50 天。', flowers: '八款花卉向所有人开放，三款为 Plus 专属。', supporters: '赠予最初 20 位付费会员的编号画作与图标。' },
+    en: { viewSnowy: 'Meet Snowy Nivo', eyebrow: 'One little companion. Many sides.', title: 'Find your Nivo.', intro: 'All your Nivos, together. Tap a look to meet them.', matching: 'Nivo + matching app icon', inspect: 'Explore icon ↗', pause: 'Pause Nivo', resume: 'Resume Nivo', swipe: 'Swipe to explore more looks →', choose: 'Choose a Nivo look', collection: 'Choose a collection', selected: '{name} selected', retry: 'Reload preview', unavailable: 'The preview could not load. Tap to try again.', garden: 'Explore the flower gardens ↗', founders: 'Explore the Founder’s Gallery ↗', plus: 'Plus-exclusive', elements: 'Porcelain · 300 Krill. Jade · 500. Kintsugi · 800. Pearl · 50-day streak.', flowers: 'Eight flowers for everyone. Three Plus-exclusive editions.', supporters: 'A numbered painting and icon for the first 20 paying members.' },
+    zh: { viewSnowy: '认识雪花 Nivo', eyebrow: '同一位小伙伴，不一样的小个性。', title: '找到你的 Nivo。', intro: '所有 Nivo，一起看。轻点喜欢的外观，认识它。', matching: 'Nivo 与相配的应用图标', inspect: '探索图标 ↗', pause: '暂停 Nivo', resume: '继续 Nivo', swipe: '滑动探索更多外观 →', choose: '选择 Nivo 外观', collection: '选择系列', selected: '已选择{name}', retry: '重新加载预览', unavailable: '预览暂时未能加载，轻点重试。', garden: '探索花园 ↗', founders: '探索创始者画廊 ↗', plus: 'Plus 专属', elements: '青花瓷 · 300 磷虾。翡翠 · 500。金缮 · 800。珍珠 · 连续记录 50 天。', flowers: '八款花卉向所有人开放，三款为 Plus 专属。', supporters: '赠予最初 20 位付费会员的编号画作与图标。' },
   };
   // IDs match the production app. Only looks with an approved mascot are selectable.
   const looks = {
@@ -58,21 +58,7 @@ if (section) {
   const buttons = [...section.querySelectorAll('[data-look]')];
   const groups = collections.filter(collection => collection.ids.some(id => looks[id]));
   let activeCollection = groups[0].id;
-  const nav = section.querySelector('.look-collections');
-  const collectionButtons = [];
   const collectionHeadings = groups.map(collection => {
-    const control = document.createElement('button');
-    control.type = 'button'; control.className = 'look-collection-button'; control.dataset.collection = collection.id;
-    control.setAttribute('aria-controls', `look-group-${collection.id}`);
-    control.addEventListener('click', () => {
-      activeCollection = collection.id;
-      const id = collection.ids.find(id => looks[id]);
-      selected = id;
-      text();
-      if (api) select(id, true);
-      else load();
-    });
-    collectionButtons.push(control); nav.append(control);
     const group = document.createElement('section');
     group.className = 'look-collection'; group.id = `look-group-${collection.id}`;
     const heading = document.createElement('h4');
@@ -86,7 +72,12 @@ if (section) {
       }
       const tile = buttons.find(tile => tile.dataset.look === id); if (tile) row.append(tile);
     });
-    group.append(heading, row); choices.append(group);
+    group.append(heading, row);
+    const noteKey = collection.id === 'treasures' ? 'elements' : ['flowers', 'supporters'].includes(collection.id) ? collection.id : null;
+    if (noteKey) {
+      const note = document.createElement('p'); note.className = 'look-collection-note'; note.dataset.lookCopy = noteKey; group.append(note);
+    }
+    choices.append(group);
     return heading;
   });
   const preview = section.querySelector('.look-preview');
@@ -104,16 +95,6 @@ if (section) {
       const collection = collections.find(group => group.id === control.dataset.lookCollection);
       control.textContent = (zh() ? collection.zh : collection.name);
     });
-    nav.setAttribute('aria-label', t('collection'));
-    collectionButtons.forEach(control => {
-      const collection = groups.find(group => group.id === control.dataset.collection);
-      control.textContent = zh() ? collection.zh : collection.name;
-      control.setAttribute('aria-pressed', String(collection.id === activeCollection));
-      section.querySelector(`#look-group-${collection.id}`).hidden = collection.id !== activeCollection;
-    });
-    const noteKey = activeCollection === 'treasures' ? 'elements' : ['flowers', 'supporters'].includes(activeCollection) ? activeCollection : null;
-    const note = section.querySelector('.look-collection-note');
-    note.textContent = noteKey ? t(noteKey) : ''; note.hidden = !noteKey;
     const detail = section.querySelector('.look-detail-link');
     detail.hidden = !['flowers', 'supporters'].includes(activeCollection);
     detail.href = activeCollection === 'flowers' ? '#flower-edition' : '#founders';
@@ -208,10 +189,16 @@ if (section) {
     })();
     return loading;
   }
-  buttons.forEach(button => button.addEventListener('click', () => {
-    select(button.dataset.look, true);
-
-  }));
+  const hoverPreview = matchMedia('(hover: hover) and (pointer: fine)');
+  buttons.forEach(button => {
+    button.addEventListener('click', () => select(button.dataset.look, true));
+    button.addEventListener('pointerenter', event => {
+      if (hoverPreview.matches && event.pointerType === 'mouse' && !button.disabled) select(button.dataset.look);
+    });
+    button.addEventListener('focus', () => {
+      if (button.matches(':focus-visible')) select(button.dataset.look, true);
+    });
+  });
   pause.addEventListener('click', () => { paused = !paused; text(); resume(); });
   inspect.addEventListener('click', () => {
     if (failed) { load(); return; }

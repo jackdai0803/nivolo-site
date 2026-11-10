@@ -55,7 +55,7 @@
   <link rel="stylesheet" href="assets/editorial-concept.css?v=43" />
   <link rel="stylesheet" href="assets/app-screens.css?v=6" />
   <link rel="stylesheet" href="assets/nivo.css?v=8" />
-  <link rel="stylesheet" href="assets/collection-looks.css?v=20261110-unified-browser" />
+  <link rel="stylesheet" href="assets/collection-looks.css?v=20261110-scan-all" />
   <link rel="stylesheet" href="assets/app-opals.css?v=bf0a7f93abb4" />
   <link rel="stylesheet" href="assets/keepsakes.css?v=4" />
   <link rel="stylesheet" href="assets/flower-edition.css?v=20261110-grouped" />
@@ -81,7 +81,7 @@
     ]
   }
   </script>
-<!-- Nivolo release: melting-exact-classic-eyes-2026-11-10 -->
+<!-- Nivolo release: scan-all-icons-2026-11-10 -->
 </head>
 <body class="short-home premium-home">
   <a class="skip-link" href="#main">Skip to content</a>
@@ -135,11 +135,12 @@
     </div>
 
       <article class="look-explorer" id="nivo-looks" aria-labelledby="look-explorer-title">
-        <div class="look-browser" id="collection">
+        <header class="look-heading" id="collection">
           <p class="look-eyebrow" data-look-copy="eyebrow">One little companion. Many sides.</p>
           <h3 id="look-explorer-title" data-look-copy="title">Find your Nivo.</h3>
-          <p class="look-intro" data-look-copy="intro">Choose a collection. Meet your kind of Nivo.</p>
-          <div class="look-collections" role="group" aria-label="Choose a collection"></div>
+          <p class="look-intro" data-look-copy="intro">All your Nivos, together. Tap a look to meet them.</p>
+        </header>
+        <div class="look-browser">
           <div class="look-choices" role="group" aria-label="Choose a Nivo look">
               <button class="look-choice" type="button" data-look="classic" aria-pressed="true" aria-controls="look-preview" disabled><img src="assets/icons/classic.png?v=20261109" width="160" height="160" alt="" loading="lazy" /><span>Classic</span></button>
               <button class="look-choice" type="button" data-look="deepsea" aria-pressed="false" aria-controls="look-preview" disabled><img src="assets/icons/deepsea.png?v=20261109" width="160" height="160" alt="" loading="lazy" /><span>Deep-Sea</span></button>
@@ -161,7 +162,6 @@
               <button class="look-choice" type="button" data-look="rainy" aria-pressed="false" aria-controls="look-preview" disabled><img src="assets/icons/rainy.png?v=20261109" width="160" height="160" alt="" loading="lazy" /><span>Rainy</span></button>
               <button class="look-choice" type="button" data-look="sick" aria-pressed="false" aria-controls="look-preview" disabled><img src="assets/icons/sick.png?v=20261109" width="160" height="160" alt="" loading="lazy" /><span>Sick</span></button>
           </div>
-          <p class="look-collection-note"></p>
         </div>
         <div class="look-preview" id="look-preview" data-selected-look="classic">
           <div class="look-stage" role="img" aria-label="Classic Nivo">
@@ -727,7 +727,7 @@
   <!-- No ?v= on purpose: this is the one file edited at launch, and it should be the only edit. -->
   <script src="assets/store.js" defer></script>
   <script src="assets/contact.js?v=3" defer></script>
-  <script type="module" src="assets/collection-looks.js?v=20261110-supporter-mascot"></script>
+  <script type="module" src="assets/collection-looks.js?v=20261110-scan-all"></script>
   <script src="assets/founders-gallery.js?v=10" defer></script>
   <script src="assets/app-opals.js?v=b5840d248847" defer></script>
   <script src="assets/editorial-concept.js?v=7726da03d44a" defer></script>
