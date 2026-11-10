@@ -1,4 +1,4 @@
-import { idleAt, neutralPose } from './nivo-rig.js?v=9';
+import { idleAt, neutralPose } from './nivo-rig.js?v=20261110-mascot-size';
 
 const section = document.querySelector('#nivo-looks');
 if (section) {
@@ -114,7 +114,7 @@ if (section) {
     failed = false;
     loading = (async () => {
       try {
-        const module = await import('./nivo-skins.js?v=6');
+        const module = await import('./nivo-skins.js?v=20261110-mascot-size');
         const image = new Image();
         image.src = new URL('nivo-body.png', import.meta.url).href;
         await image.decode();

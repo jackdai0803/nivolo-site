@@ -62,7 +62,7 @@ if(section){
  async function load(){
   if(api||loading)return;loading=true;
   try{
-   api=await import('./flower-art.js?v=20261109-flowers-final');
+   api=await import('./flower-art.js?v=20261110-mascot-size');
    const image=new Image();image.src=new URL('./nivo-body.png',import.meta.url).href;await image.decode();
    render();choices.forEach(b=>b.disabled=false);section.querySelector('.flower-controls').hidden=false;
   }catch{api=null;}finally{loading=false;}

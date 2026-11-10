@@ -34,7 +34,7 @@ function createRig(container, source, id, label, appearance = "classic") {
 	const beakWindow = "M574 661 Q565 621 600 592 Q661 546 739 595 L737 632 Q737 714 660 716 Q612 710 591 665 Z";
 	const image = (attrs = "") => `<use href="#${id}-art" ${attrs}/>`;
 	const mask = (name, cuts) => `<mask id="${id}-${name}" maskUnits="userSpaceOnUse" x="0" y="0" width="1254" height="1254" style="mask-type:luminance"><rect width="1254" height="1254" fill="white"/>${cuts}</mask>`;
-	container.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="160 170 970 970" role="img" aria-label="${label}">
+	container.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="90 40 1120 1120" role="img" aria-label="${label}">
     <defs>
       <filter id="${id}-ocean-light" x="-15%" y="-15%" width="130%" height="130%" color-interpolation-filters="sRGB">
         <feMorphology in="SourceAlpha" operator="erode" radius="2" result="core"/>
@@ -1708,7 +1708,6 @@ var group = (markup) => {
 function makeSeriesSkin(host, id, uid) {
 	const rig = createRig(host, _nivo_body_default, uid, "Nivo");
 	const svg = host.querySelector("svg");
-	svg.setAttribute("viewBox", "110 40 1080 1120");
 	svg.dataset.seriesSkin = id;
 	applyClassicCoat(svg, uid, ["#123e89", "#123e89"], surfaceArt(id, uid));
 	applyIconGradient(svg, uid, id);
@@ -2182,7 +2181,6 @@ function makeClassicSkin(host, look, uid) {
 	}
 	const rig = createRig(host, _nivo_body_default, uid, "Nivo", id);
 	const svg = host.querySelector("svg");
-	if (id === "melting") svg.setAttribute("viewBox", "85 85 1120 1140");
 	let motion;
 	if (id === "snowy") {
 		applySnowyArtwork(svg, uid);

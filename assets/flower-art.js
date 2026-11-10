@@ -685,7 +685,7 @@ function createRig(container, source, id, label, appearance = "classic", deepSea
 	const beakWindow = deepsea ? "M568 638 Q568 600 611 576 Q674 531 759 581 L758 627 Q748 720 663 715 Q613 708 588 659 Z" : "M574 661 Q565 621 600 592 Q661 546 739 595 L737 632 Q737 714 660 716 Q612 710 591 665 Z";
 	const image = (attrs = "") => `<use href="#${id}-art" ${attrs}/>`;
 	const mask = (name, cuts) => `<mask id="${id}-${name}" maskUnits="userSpaceOnUse" x="0" y="0" width="1254" height="1254" style="mask-type:luminance"><rect width="1254" height="1254" fill="white"/>${cuts}</mask>`;
-	container.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${deepsea ? "70 45 1120 1120" : "160 170 970 970"}" role="img" aria-label="${label}">
+	container.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="90 40 1120 1120" role="img" aria-label="${label}">
     <defs>
       <filter id="${id}-ocean-light" x="-15%" y="-15%" width="130%" height="130%" color-interpolation-filters="sRGB">
         <feComponentTransfer in="SourceAlpha" result="solid"><feFuncA type="linear" slope="255" intercept="-127"/></feComponentTransfer>
@@ -820,7 +820,6 @@ var defs = (uid, id) => softFlowerDefs(uid) + (isNewEdition(id) ? editionDefs(ui
 var gradient = (uid, colors, y1, y2) => `<linearGradient id="${uid}" gradientUnits="userSpaceOnUse" x1="0" x2="0" y1="${y1}" y2="${y2}">${colors.map((c, i) => `<stop offset="${i / 2}" stop-color="${c}"/>`).join("")}</linearGradient>`;
 function makeFlower(host, f, uid) {
 	const rig = createRig(host, _flower_body_default, uid, f.name), svg = host.querySelector("svg");
-	svg.setAttribute("viewBox", "110 40 1080 1120");
 	applyClassicCoat(svg, uid, [f.colors[0], f.colors[2]]);
 	const g = svg.querySelector(`[id="${uid}-coat-gradient"]`);
 	g.outerHTML = gradient(uid + "-coat-gradient", f.colors, 220, 1110);

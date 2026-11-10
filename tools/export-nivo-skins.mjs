@@ -36,7 +36,6 @@ await build({ configFile: false, root: site, logLevel: 'warn', plugins: [{
         }
         const rig = createRig(host, body, uid, 'Nivo', id);
         const svg = host.querySelector('svg');
-        if (id === 'melting') svg.setAttribute('viewBox', '85 85 1120 1140');
         let motion;
         if (id === 'snowy') { applySnowyArtwork(svg, uid); motion = createSnowyMotion(svg); }
         else if (hasIconSkinArtwork(id)) motion = mountNivoIconSkin(svg, uid, id);
