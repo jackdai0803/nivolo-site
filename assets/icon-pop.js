@@ -64,7 +64,6 @@
     kintsugi: keepsakeScene("kintsugi", "kintsugi"),
     deepsea: { wide: "assets/scenes/deepsea.jpg", tall: "assets/scenes/deepsea-portrait.jpg", effect: "" },
     classic: { wide: "assets/scenes/classic.webp?v=2", tall: "assets/scenes/classic-portrait.webp?v=2", effect: "aurora" },
-    grumpy: scene("grumpy", "pressure"),
     snowy: scene("snowy", "snow"),
     blaze: scene("blaze", "embers"),
     gold: scene("classic", "twinkles"),

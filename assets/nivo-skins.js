@@ -448,7 +448,6 @@ function pearlSeashell(uid) {
 //#region src/series/extra-skin-details.js
 var effect$1 = (kind, artwork, x, y, phase = 0) => `<g data-effect="${kind}" data-x="${x}" data-y="${y}" data-phase="${phase}">${artwork}</g>`;
 var EXTRA_SIGNATURES = {
-	grumpy: ["A little anger mark and a puff of steam", "小小生气符号与一团气鼓鼓的蒸汽"],
 	snowy: ["Carrot nose, red scarf and coal buttons", "胡萝卜鼻子、红围巾和煤炭纽扣"],
 	gold: ["Pearlescent sheen · 50-day streak", "珍珠光泽 · 连续坚持 50 天"],
 	glitch: ["A pixel antenna and drifting fragments", "像素天线与漂移碎片"],
@@ -456,11 +455,6 @@ var EXTRA_SIGNATURES = {
 };
 function extraSkinDetails(id, uid = "pearl-preview") {
 	switch (id) {
-		case "grumpy": return `<g data-accessory="grumpy-brows" fill="none" stroke="#4d1024" stroke-width="18" stroke-linecap="round">
-        <path d="M397 480Q452 480 514 500M749 414Q803 386 862 385"/>
-      </g>
-      ${effect$1("anger-mark", `<path d="M807 294Q833 297 832 323M851 294Q831 297 833 276M852 345Q831 343 833 323M807 344Q812 324 792 324" fill="none" stroke="#f0a0a8" stroke-width="13" stroke-linecap="round"/>`, 833, 320)}
-      ${effect$1("huff", `<path d="M1012 552Q1030 541 1040 548C1033 521 1059 508 1074 526C1099 511 1121 536 1108 555C1125 580 1097 598 1078 583Q1061 601 1044 581Q1021 582 1028 567Z" fill="#edc6cc"/><path d="M1014 589l23-7" stroke="#d895a3" stroke-width="8" stroke-linecap="round"/>`, 1060, 555)}`;
 		case "gold": return pearlAccessories(uid);
 		case "glitch": return `<g data-accessory="pixel-antenna">
         <path d="M592 243V203H638V156" fill="none" stroke="#b6389c" stroke-width="10" stroke-linejoin="miter"/>
@@ -911,7 +905,6 @@ function classicAccessories(id, uid) {
 		case "peekaboo": return fx$1("twinkle", "<path d=\"m265 458-12-22M238 489l-21-7M1030 407l15-19M1044 439l21-5\" stroke=\"#e3ec9c\" stroke-width=\"10\" stroke-linecap=\"round\"/>", 640, 470, .3);
 		case "ghost": return `${star(1034, 475, .75, "#9bc5ff")}${star(257, 640, .55, "#9bc5ff")}`;
 		case "melting": return fx$1("drop", "<path d=\"M439 923q-25 37 0 37t0-37\" fill=\"#ed8eb9\"/>", 439, 923, .2) + fx$1("drop", "<path d=\"M845 916q-20 31 0 31t0-31\" fill=\"#ed8eb9\"/>", 845, 916, .65);
-		case "grumpy": return "<path d=\"M386 461Q443 447 510 467M747 386Q806 356 861 357\" fill=\"none\" stroke=\"#4d1024\" stroke-width=\"18\" stroke-linecap=\"round\"/>" + fx$1("sigh", "<path d=\"M998 648q22-15 40-2M1008 666q18-9 32 1\" fill=\"none\" stroke=\"#ca91a6\" stroke-width=\"7\" stroke-linecap=\"round\"/>", 1e3, 650, .4);
 		case "snowy": return fx$1("confetti", "<circle cx=\"1032\" cy=\"500\" r=\"10\" fill=\"#b9e9ff\"/>", 1032, 500, .2) + fx$1("confetti", "<circle cx=\"253\" cy=\"626\" r=\"8\" fill=\"#b9e9ff\"/>", 253, 626, .7);
 		case "gold": return star(462, 902, .65, "#fff0b1") + star(831, 952, .42, "#fff0b1");
 		case "porcelain": return porcelainHairpin(uid) + star(839, 962, .45, "#fff") + star(406, 415, .32, "#fff");
@@ -1042,11 +1035,6 @@ var palettes = {
 		"#80502f",
 		"#aa7040",
 		"#d3a065"
-	],
-	grumpy: [
-		"#580f1e",
-		"#6d1225",
-		"#81162b"
 	],
 	snowy: [
 		"#5bbbf0",
@@ -1454,12 +1442,6 @@ var SKIN_MOTIONS = {
 		"原版轻柔漂浮",
 		"drift",
 		2.4
-	],
-	grumpy: [
-		"Little huff",
-		"轻轻哼气",
-		"huff",
-		1.4
 	],
 	snowy: [
 		"Tiny shiver",
@@ -1919,13 +1901,6 @@ var SERIES_WORLDS = {
 		ink: "#e5a15b",
 		motif: "ember",
 		note: "Warm ember light and a small flame that keeps going."
-	},
-	grumpy: {
-		day: ["#f3e4e9", "#faf3ef"],
-		night: ["#2c202d", "#3c2936"],
-		ink: "#bb8194",
-		motif: "cloud",
-		note: "A rosy cloud, a little huff, and room for an imperfect day."
 	},
 	sleepy: {
 		day: ["#eceafa", "#f8f5fd"],

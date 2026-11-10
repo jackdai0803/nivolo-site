@@ -1,4 +1,4 @@
-import { collections } from './nivo-collections.js?v=20261110-retire-grumpy';
+import { collections } from './nivo-collections.js?v=20261110-remove-grumpy';
 import { idleAt, neutralPose } from './nivo-rig.js?v=20261110-mascot-size';
 
 const section = document.querySelector('#nivo-looks');
@@ -147,7 +147,7 @@ if (section) {
     failed = false;
     loading = (async () => {
       try {
-        const module = await import('./nivo-skins.js?v=20261110-retire-grumpy');
+        const module = await import('./nivo-skins.js?v=20261110-remove-grumpy');
         const image = new Image();
         image.src = new URL('nivo-body.png', import.meta.url).href;
         await image.decode();
