@@ -1,6 +1,6 @@
 import { idleAt, neutralPose } from './nivo-rig.js?v=20261110-mascot-size';
 
-import { makeClassicSkin, heroLooks } from './nivo-skins.js?v=20261110-launch-collection';
+import { makeClassicSkin, heroLooks } from './nivo-skins.js?v=20261110-sick-care';
 import { makeFlower, flowers } from './flower-art.js?v=20261110-launch-collection';
 
 // The launch page owns this rig so the flipper and its paddle share one motion.

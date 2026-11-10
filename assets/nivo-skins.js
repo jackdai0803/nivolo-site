@@ -12,7 +12,7 @@ var EYES = [{
 	rx: 98,
 	ry: 98
 }];
-var clamp = (n, lo = 0, hi = 1) => Math.max(lo, Math.min(hi, n));
+var clamp$1 = (n, lo = 0, hi = 1) => Math.max(lo, Math.min(hi, n));
 var ellipse = (e, attrs = "") => `<ellipse cx="${e.cx}" cy="${e.cy}" rx="${e.rx}" ry="${e.ry}" ${attrs}/>`;
 var [shoulderStart, shoulderControl, shoulderEnd] = [
 	[252, 640],
@@ -132,9 +132,9 @@ function createRig(container, source, id, label, appearance = "classic") {
 				const openness = Math.max(.025, 1 - pose.blink);
 				const node = nodes[`${eye.name}-eye`];
 				node.setAttribute("transform", `translate(${eye.cx} ${eye.cy}) rotate(-17) scale(1 ${openness}) rotate(17) translate(${-eye.cx} ${-eye.cy})`);
-				node.setAttribute("opacity", String(clamp(openness / .22)));
+				node.setAttribute("opacity", String(clamp$1(openness / .22)));
 				const lid = nodes[`${eye.name}-lid`];
-				lid.setAttribute("opacity", String(clamp((pose.blink - .62) / .3)));
+				lid.setAttribute("opacity", String(clamp$1((pose.blink - .62) / .3)));
 				lid.setAttribute("d", pose.happy > .2 ? "M-59 10 Q0 -43 59 10" : "M-59 8 Q0 38 59 8");
 			}
 			nodes.SparkleBurst.setAttribute("opacity", String(pose.sparkle));
@@ -1429,6 +1429,48 @@ function createSkinMotion(svg) {
 	};
 }
 //#endregion
+//#region src/series/sick-details.js
+var compress = `<g data-accessory="cool-compress" transform="translate(570 358) rotate(-17) scale(1.4 1.5)">
+ <path d="M-108-25Q0-44 108-25L103 25Q0 40-103 25Z" fill="#477b77" opacity=".18" transform="translate(0 7)"/>
+ <path d="M-108-25Q0-44 108-25L103 25Q0 40-103 25Z" fill="#c5e8e9" stroke="#78b3b5" stroke-width="4" stroke-linejoin="round"/>
+ <path d="M-96-22Q0-36 96-22L94-9Q0-22-94-9Z" fill="#eaf8f5"/>
+ <path d="M-85 17Q0 28 85 17M-81-20-84 17M75-20 78 17" fill="none" stroke="#98cccd" stroke-width="3" stroke-linecap="round"/>
+</g>`;
+var tissue = `<g data-accessory="tissue-box" transform="translate(251 793) rotate(-9)">
+ <path d="M-82-20-48-45H93Q102-45 102-35V45L66 77-82 67Z" fill="#8fbcb7" stroke="#6f9f99" stroke-width="4" stroke-linejoin="round"/>
+ <path d="M-82-20-48-45H93Q102-45 102-35L66-10Z" fill="#d9ece4" stroke="#8fbcb7" stroke-width="3" stroke-linejoin="round"/>
+ <path d="M-82-20 66-10V77L-72 67Q-82 66-82 55Z" fill="#b9d8cb" stroke="#8fbcb7" stroke-width="3" stroke-linejoin="round"/>
+ <path d="M-69-8 53 0M-69 54 52 64" fill="none" stroke="#d9eade" stroke-width="3" stroke-linecap="round"/>
+ <ellipse cx="9" cy="-29" rx="39" ry="8" fill="#6f9891" transform="rotate(-4 9 -29)"/>
+ <path d="M-18-29Q-37-58-41-100Q-19-90-1-117Q9-91 39-103Q28-64 28-30Z" fill="#fffdf3" stroke="#c3d8ce" stroke-width="3" stroke-linejoin="round"/>
+ <path d="M-1-108Q-9-68 7-34M-32-90Q-15-73-8-55" fill="none" stroke="#dce9df" stroke-width="3" stroke-linecap="round"/>
+ <path d="M-7 42C-38 24-22 7-7 21C8 8 24 25-7 42Z" fill="#f4faf0"/>
+</g>`;
+var sniffle = `<g data-accessory="sniffle" fill="none" stroke="#a0b8a2" stroke-width="6" stroke-linecap="round"><path d="M975 674q23-12 42 2M983 694q19-6 31 3"/></g>`;
+var clamp = (value) => Math.max(0, Math.min(1, value));
+var smooth = (value) => {
+	const p = clamp(value);
+	return p * p * (3 - 2 * p);
+};
+var sickEyeSqueeze = (phase) => smooth((phase - .18) / .22) * (1 - smooth((phase - .68) / .28));
+function mountSickCare(svg) {
+	const motion = svg.querySelector("[data-part=\"motion\"]");
+	motion.insertAdjacentHTML("beforeend", compress + sniffle);
+	const box = document.createElementNS("http://www.w3.org/2000/svg", "g");
+	box.dataset.accessory = "held-box-layer";
+	box.innerHTML = tissue;
+	motion.append(box);
+	const flipper = svg.querySelector("[data-part=\"left-flipper\"]");
+	const puff = svg.querySelector("[data-accessory=\"sniffle\"]");
+	return (pose, phase, active) => {
+		box.setAttribute("transform", flipper.getAttribute("transform") || "");
+		box.setAttribute("visibility", pose.peek ? "hidden" : "visible");
+		const progress = clamp((phase - .35) / 1.2);
+		puff.setAttribute("opacity", active ? String(Math.sin(progress * Math.PI) ** 2 * .65) : "0");
+		puff.setAttribute("transform", `translate(${progress * 25} ${-progress * 12})`);
+	};
+}
+//#endregion
 //#region src/series/skin-gestures.js
 var SKIN_MOTIONS = {
 	classic: [
@@ -1619,13 +1661,17 @@ var SKIN_MOTIONS = {
 	]
 };
 var ids = Object.keys(SKIN_MOTIONS);
+function skinGesturePhase(id, time = 0, replay = false) {
+	const index = ids.indexOf(id), period = 6.4 + index % 4 * .4;
+	return (time / 1e3 + (replay ? 0 : index % 5 * .22)) % period;
+}
 function applySkinGesture(id, pose) {
 	const p = { ...pose };
 	if (!pose.skinMotion) return p;
 	const spec = SKIN_MOTIONS[id];
 	if (!spec) return p;
-	const index = ids.indexOf(id), duration = spec[3], period = 6.4 + index % 4 * .4;
-	const phase = ((pose.skinTimeMs || 0) / 1e3 + (pose.skinReplay ? 0 : index % 5 * .22)) % period;
+	const duration = spec[3];
+	const phase = skinGesturePhase(id, pose.skinTimeMs || 0, pose.skinReplay);
 	if (phase > duration) return p;
 	const u = phase / duration, e = Math.sin(Math.PI * u) ** 2, w = Math.sin(Math.PI * 2 * u) * e;
 	switch (spec[2]) {
@@ -1669,6 +1715,7 @@ function applySkinGesture(id, pose) {
 			p.rotate += 3 * w;
 			p.y += 10 * e;
 			p.left += 12 * e;
+			p.blink = Math.max(p.blink, sickEyeSqueeze(phase));
 			break;
 		case "sway":
 			p.x += 20 * w;
@@ -1831,13 +1878,16 @@ function makeSeriesSkin(host, id, uid, { jadeDragon = true } = {}) {
 	}
 	const jade = id === "jade" && jadeDragon ? applyJade(svg, uid) : null;
 	const focused = id === "focused" ? mountFocusedWriting(svg, uid) : null;
+	const sick = id === "sick" ? mountSickCare(svg) : null;
 	const animate = createSkinMotion(svg);
 	return { render(pose, time, active) {
+		const gestureActive = active && !pose.peek && !pose.happy && !(sick && pose.reacting);
 		rig.render(focused ? focused.pose(pose, time, active) : applySkinGesture(id, {
 			...pose,
 			skinTimeMs: time,
-			skinMotion: active && !pose.peek && !pose.happy
+			skinMotion: gestureActive
 		}));
+		sick?.(pose, skinGesturePhase(id, time, pose.skinReplay), gestureActive);
 		focused?.render(pose, time, active);
 		jade?.(time, active);
 		animate(time, active);
@@ -1914,7 +1964,7 @@ var SERIES_WORLDS = {
 		night: ["#172c27", "#2b4031"],
 		ink: "#8faa63",
 		motif: "steam",
-		note: "Olive-green plumage, rosy cheeks, and a tiny thermometer. Take it gently."
+		note: "A cooling cloth, a little tissue box, and a gentle sniffle. Take it gently."
 	},
 	relieved: {
 		day: ["#e5f0e8", "#f8f7ee"],
