@@ -2256,10 +2256,6 @@ var heroLooks = [
 		"name": "Kintsugi"
 	},
 	{
-		"id": "relieved",
-		"name": "Relieved"
-	},
-	{
 		"id": "focused",
 		"name": "Focused"
 	},
