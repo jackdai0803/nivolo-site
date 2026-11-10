@@ -3,8 +3,8 @@ import { idleAt, neutralPose } from './nivo-rig.js?v=20261110-mascot-size';
 const section = document.querySelector('#nivo-looks');
 if (section) {
   const copy = {
-    en: { moreIcons: 'More icons', viewSnowy: 'Meet Snowy Nivo', eyebrow: 'One little companion. Many sides.', title: 'Find your Nivo.', intro: 'Choose an icon. Meet the little character behind it.', matching: 'Nivo + matching app icon', inspect: 'Explore icon ↗', pause: 'Pause Nivo', resume: 'Resume Nivo', swipe: 'Swipe to explore more looks →', choose: 'Choose a Nivo look', selected: '{name} selected', retry: 'Reload preview', unavailable: 'The preview could not load. Tap to try again.' },
-    zh: { moreIcons: '更多图标', viewSnowy: '认识雪花 Nivo', eyebrow: '同一位小伙伴，不一样的小个性。', title: '找到你的 Nivo。', intro: '选一枚图标，认识它背后的小伙伴。', matching: 'Nivo 与相配的应用图标', inspect: '探索图标 ↗', pause: '暂停 Nivo', resume: '继续 Nivo', swipe: '滑动探索更多外观 →', choose: '选择 Nivo 外观', selected: '已选择{name}', retry: '重新加载预览', unavailable: '预览暂时未能加载，轻点重试。' },
+    en: { viewSnowy: 'Meet Snowy Nivo', eyebrow: 'One little companion. Many sides.', title: 'Find your Nivo.', intro: 'Choose an icon. Meet the little character behind it.', matching: 'Nivo + matching app icon', inspect: 'Explore icon ↗', pause: 'Pause Nivo', resume: 'Resume Nivo', swipe: 'Swipe to explore more looks →', choose: 'Choose a Nivo look', selected: '{name} selected', retry: 'Reload preview', unavailable: 'The preview could not load. Tap to try again.' },
+    zh: { viewSnowy: '认识雪花 Nivo', eyebrow: '同一位小伙伴，不一样的小个性。', title: '找到你的 Nivo。', intro: '选一枚图标，认识它背后的小伙伴。', matching: 'Nivo 与相配的应用图标', inspect: '探索图标 ↗', pause: '暂停 Nivo', resume: '继续 Nivo', swipe: '滑动探索更多外观 →', choose: '选择 Nivo 外观', selected: '已选择{name}', retry: '重新加载预览', unavailable: '预览暂时未能加载，轻点重试。' },
   };
   // IDs match the production app. Only looks with an approved mascot are selectable.
   const looks = {
