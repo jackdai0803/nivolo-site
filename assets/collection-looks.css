@@ -91,3 +91,5 @@
 @media(prefers-reduced-motion:reduce) { .look-collection-button { transition:none; } .look-collection-button:active { transform:none; } }
 
 .look-plus-heading { grid-column:1/-1; margin:8px 0 0; font-size:12px; font-weight:600; color:var(--ink-2); }
+
+.look-browser { scroll-margin-top:110px; }
