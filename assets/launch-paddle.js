@@ -1,4 +1,7 @@
-import { createRig, idleAt, neutralPose } from './nivo-rig.js?v=20261110-mascot-size';
+import { idleAt, neutralPose } from './nivo-rig.js?v=20261110-mascot-size';
+
+import { makeClassicSkin, heroLooks } from './nivo-skins.js?v=20261110-launch-collection';
+import { makeFlower, flowers } from './flower-art.js?v=20261110-launch-collection';
 
 // The launch page owns this rig so the flipper and its paddle share one motion.
 const container = document.querySelector('[data-launch-nivo]');
@@ -10,13 +13,22 @@ if (container && card) {
   const t = key => strings[document.documentElement.lang.startsWith('zh') ? 'zh' : 'en'][key];
   container.setAttribute('aria-label', t('transform'));
   container.replaceChildren();
-  const characters = ['classic', 'deepsea'].map(look => {
+  const looks = [...heroLooks, ...flowers, { id: 'early-supporter' }];
+  const characters = new Map();
+  function mount(index) {
+    if (characters.has(index)) return characters.get(index);
+    const look = looks[index].id;
     const layer = document.createElement('span');
     layer.className = 'launch-nivo-layer';
     layer.setAttribute('aria-hidden', 'true');
-    layer.style.opacity = look === 'classic' ? '1' : '0';
+    layer.style.opacity = '0';
+    layer.dataset.look = look;
     container.append(layer);
-    const rig = createRig(layer, artwork, `launch-nivo-${look}`, 'Nivo', look);
+    const flower = flowers.find(item => item.id === look);
+    const flowerRig = flower && makeFlower(layer, flower, `launch-nivo-${look}`);
+    const rig = flowerRig
+      ? { render: pose => flowerRig.render(pose, pose.skinTimeMs, pose.skinMotion) }
+      : makeClassicSkin(layer, looks[index], `launch-nivo-${look}`);
     const wing = layer.querySelector('[data-part="right-flipper"]');
     wing.insertAdjacentHTML('afterbegin', `<g data-launch-paddle opacity="0" aria-hidden="true">
       <rect x="1024" y="524" width="30" height="330" rx="15" fill="#e0c99f"/>
@@ -27,10 +39,12 @@ if (container && card) {
       <path d="M958 446 A90 90 0 0 1 1096 409" fill="none" stroke="#7bbb8c" stroke-width="8" stroke-linecap="round"/>
       <path data-launch-paddle-check pathLength="1" d="m988 478 34 34 69-78" fill="none" stroke="#fffef4" stroke-width="27" stroke-linecap="round" stroke-linejoin="round"/>
     </g>`);
-    return { look, layer, rig, paddle: wing.querySelector('[data-launch-paddle]'), check: wing.querySelector('[data-launch-paddle-check]') };
-  });
+    const character = { look, layer, rig, startedAt: idleClock, paddle: wing.querySelector('[data-launch-paddle]'), check: wing.querySelector('[data-launch-paddle-check]') };
+    characters.set(index, character);
+    return character;
+  }
   container.dataset.nivoAppearance = appearance;
-  // Both looks share the same artwork.
+  // All looks reuse the approved body artwork.
   let artworkReady = false;
   const preload = new Image();
   preload.src = artwork;
@@ -55,7 +69,7 @@ if (container && card) {
   function render(now) {
     cancelAnimationFrame(frame);
     if (previous !== null && visible && !document.hidden && !preference.matches && (!joined || manualChange) && artworkReady) {
-      const delta = Math.min(40, now - previous);
+      const delta = Math.max(0, Math.min(40, now - previous));
       idleClock += delta;
       const cycle = HOLD_MS + CHANGE_MS;
       const before = Math.floor(clock / cycle);
@@ -72,13 +86,13 @@ if (container && card) {
     const cycle = HOLD_MS + CHANGE_MS;
     const phase = Math.max(0, (clock % cycle - HOLD_MS) / CHANGE_MS);
     const blend = ease((phase - .32) / .28);
-    const fromDeepSea = Math.floor(clock / cycle) % 2 === 1;
-    let deepSeaAmount = appearance === 'deepsea' ? 1 : 0;
-    if (!preference.matches) {
-      deepSeaAmount = fromDeepSea ? 1 - blend : blend;
-      appearance = deepSeaAmount >= .5 ? 'deepsea' : 'classic';
-      container.dataset.nivoAppearance = appearance;
-    }
+    const fromIndex = Math.floor(clock / cycle) % looks.length;
+    const toIndex = (fromIndex + 1) % looks.length;
+    const currentIndex = preference.matches ? looks.findIndex(look => look.id === appearance) : fromIndex;
+    mount(currentIndex);
+    if (!preference.matches && phase > 0) mount(toIndex);
+    if (!preference.matches) appearance = looks[blend >= .5 ? toIndex : fromIndex].id;
+    container.dataset.nivoAppearance = appearance;
     container.style.transform = 'none';
     const elapsed = now - started;
     const progress = joined ? (animateArrival && !preference.matches ? ease(elapsed / 750) : 1) : 0;
@@ -106,10 +120,19 @@ if (container && card) {
       pose.happy = lift;
       pose.blink = lift;
     }
-    for (const character of characters) {
+    pose.skinTimeMs = idleClock;
+    pose.skinMotion = visible && !document.hidden && !preference.matches && !joined;
+    pose.skinReacting = joined;
+    for (const [index, character] of characters) {
       const { look, layer, rig, paddle, check } = character;
-      layer.style.opacity = String(look === 'deepsea' ? deepSeaAmount : 1 - deepSeaAmount);
-      rig.render(pose);
+      const opacity = preference.matches ? Number(index === currentIndex) : index === fromIndex ? 1 - blend : index === toIndex ? blend : 0;
+      if (opacity === 0 && index !== currentIndex && !(phase > 0 && index === toIndex)) {
+        layer.remove();
+        characters.delete(index);
+        continue;
+      }
+      layer.style.opacity = String(opacity);
+      rig.render(look === 'focused' ? { ...pose, skinTimeMs: idleClock - character.startedAt } : pose);
       // Keep the paddle upright as the flipper lifts; its handle stays in the grip.
       paddle.setAttribute('transform', `rotate(${-pose.right + 80 - 66 * progress} 1039 819)`);
       paddle.setAttribute('opacity', String(joined ? Math.min(1, progress * 6) : 0));
@@ -124,9 +147,9 @@ if (container && card) {
     if (!artworkReady) return;
     const cycle = HOLD_MS + CHANGE_MS;
     if (preference.matches) {
-      appearance = appearance === 'classic' ? 'deepsea' : 'classic';
+      appearance = looks[(looks.findIndex(look => look.id === appearance) + 1) % looks.length].id;
       container.dataset.nivoAppearance = appearance;
-      clock = appearance === 'deepsea' ? cycle : 0;
+      clock = looks.findIndex(look => look.id === appearance) * cycle;
       direction = 1;
       manualChange = false;
     } else {
@@ -142,7 +165,7 @@ if (container && card) {
     const next = card.classList.contains('is-joined');
     if (next !== joined) {
       joined = next;
-      clock = appearance === 'deepsea' ? HOLD_MS + CHANGE_MS : 0;
+      clock = looks.findIndex(look => look.id === appearance) * (HOLD_MS + CHANGE_MS);
       direction = 1;
       manualChange = false;
       started = performance.now();
@@ -153,7 +176,12 @@ if (container && card) {
   }
   new MutationObserver(update).observe(card, { attributes: true, attributeFilter: ['class'] });
   new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; update(); }).observe(container);
-  preference.addEventListener('change', update);
+  preference.addEventListener('change', () => {
+    clock = looks.findIndex(look => look.id === appearance) * (HOLD_MS + CHANGE_MS);
+    direction = 1;
+    manualChange = false;
+    update();
+  });
   document.addEventListener('visibilitychange', update);
   window.addEventListener('pagehide', () => cancelAnimationFrame(frame));
   window.addEventListener('pageshow', update);
