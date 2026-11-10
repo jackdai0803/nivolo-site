@@ -55,7 +55,7 @@
   <link rel="stylesheet" href="assets/editorial-concept.css?v=43" />
   <link rel="stylesheet" href="assets/app-screens.css?v=6" />
   <link rel="stylesheet" href="assets/nivo.css?v=8" />
-  <link rel="stylesheet" href="assets/collection-looks.css?v=2" />
+  <link rel="stylesheet" href="assets/collection-looks.css?v=20261110-gallery" />
   <link rel="stylesheet" href="assets/app-opals.css?v=bf0a7f93abb4" />
   <link rel="stylesheet" href="assets/keepsakes.css?v=4" />
   <link rel="stylesheet" href="assets/flower-edition.css?v=2" />
@@ -81,7 +81,7 @@
     ]
   }
   </script>
-<!-- Nivolo release: flower-plus-krill-2026-11-10 -->
+<!-- Nivolo release: unified-nivo-gallery-2026-11-10 -->
 </head>
 <body class="short-home premium-home">
   <a class="skip-link" href="#main">Skip to content</a>
@@ -255,7 +255,7 @@
         </li>
       </ol>
       <div class="compact-benefits" id="features">
-        <span class="benefit-icon-preview"><img src="assets/icons/snowy.png?v=20261109" alt="" width="48" height="48" /></span>
+        <a class="benefit-icon-preview" href="#nivo-looks" aria-label="Meet Snowy Nivo"><img src="assets/icons/snowy.png?v=20261109" alt="" width="48" height="48" /></a>
         <div><h3 data-site-copy="kindTitle">Room for real life.</h3><p data-site-copy="kindBody">Planned rest days and a free weekly freeze keep your streak safe when life gets in the way.</p></div>
       </div>
       <div class="app-screen-preview" aria-label="Inside Nivolo">
@@ -398,91 +398,21 @@
           <div class="look-actions"><button type="button" class="look-inspect btn-moonlit" data-look-copy="inspect" disabled>Explore icon ↗</button><button type="button" class="look-pause btn-moonlit btn-moonlit--quiet" aria-pressed="false" data-look-copy="pause" hidden>Pause Nivo</button></div>
           <p class="look-announcement sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
         </div>
+        <div class="look-extras" id="frozen-collection">
+          <h4 id="more-icons-title" data-look-copy="moreIcons">More icons</h4>
+          <ul aria-labelledby="more-icons-title">
+            <li data-extra-icon="repair"><img src="assets/icons/repair.png?v=20261109" width="160" height="160" alt="" loading="lazy" /><h5>Repair</h5><p hidden>A little bandage for a busy life. A streak freeze kept your place.</p></li>
+            <li data-extra-icon="upside_down"><img src="assets/icons/upside_down.png?v=20261109" width="160" height="160" alt="" loading="lazy" /><h5>Upside Down</h5><p hidden>Nivo keeps strange hours too. It all makes more sense after midnight.</p></li>
+            <li data-extra-icon="sick"><img src="assets/icons/sick.png?v=20261109" width="160" height="160" alt="" loading="lazy" /><h5>Sick</h5><p hidden>Everyone goes under sometimes. This one shows up for the getting back out.</p></li>
+          </ul>
+        </div>
       </article>
       <details class="compact-disclosure collection-disclosure" id="full-collection">
         <summary>
-          <span class="collection-preview-more" data-site-copy="collection">Meet the rest of the collection</span><span class="collection-preview-less" data-site-copy="collectionLess">Show less</span><span class="disclosure-plus" aria-hidden="true">+</span>
+          <span data-site-copy="krill">Meet the Krill</span><span class="disclosure-plus" aria-hidden="true">+</span>
         </summary>
         <div class="disclosure-body">
-      <div class="lore-tier reveal">
-        <p class="lore-tier-label">Start here</p>
-        <p class="lore-tier-note">The ones you'll meet in your first week or two</p>
-      </div>
-
-      <div class="lore-grid reveal" data-stagger="50">
-        <article class="lore-card">
-          <img class="lore-ic" src="assets/icons/grumpy.png?v=20261109" alt="" loading="lazy" width="160" height="160" />
-          <div>
-            <h3>Grumpy</h3>
-            <p>Some mornings the habit wins and the mood doesn't. He turns up anyway, and he'd like that noted.</p>
-          </div>
-        </article>
-        <article class="lore-card">
-          <img class="lore-ic" src="assets/icons/relieved.png?v=20261109" alt="" loading="lazy" width="160" height="160" />
-          <div>
-            <h3>Relieved</h3>
-            <p>The exhale that comes a few mornings in, when showing up stops feeling like a decision.</p>
-          </div>
-        </article>
-        <article class="lore-card">
-          <img class="lore-ic" src="assets/icons/focused.png?v=20261110" alt="" loading="lazy" width="160" height="160" />
-          <div>
-            <h3>Focused</h3>
-            <p>Nothing exists but the next small thing. Nivo is extremely busy and would rather not be disturbed.</p>
-          </div>
-        </article>
-        <article class="lore-card">
-          <img class="lore-ic" src="assets/icons/snowy.png?v=20261109" alt="" loading="lazy" width="160" height="160" />
-          <div>
-            <h3>Snowy</h3>
-            <p>Arrives after your first proper week. Nivo swears it always snows right before something starts to stick.</p>
-          </div>
-        </article>
-        <article class="lore-card">
-          <img class="lore-ic" src="assets/icons/love.png?v=20261109" alt="" loading="lazy" width="160" height="160" />
-          <div>
-            <h3>Love</h3>
-            <p>Somewhere in that first week a habit stops being a chore and starts being yours. He felt it before you did.</p>
-          </div>
-        </article>
-        <article class="lore-card">
-          <img class="lore-ic" src="assets/icons/melting.png?v=20261110" alt="" loading="lazy" width="160" height="160" />
-          <div>
-            <h3>Melting</h3>
-            <p>The face of a streak that nearly went. A freeze went off in the night, and he's still dripping with relief.</p>
-          </div>
-        </article>
-</div>
-
-      <div class="lore-more reveal" id="frozen-collection">
-        <div class="lore-more-body">
-        <div class="lore-tier">
-          <p class="lore-tier-label">Further out</p>
-          <p class="lore-tier-note">Rarer, stranger, harder-won</p>
-          <p class="lore-tier-note">Choose an icon to explore its world. Drag to turn it, or tap to flip it.</p>
-        </div>
-        <div class="frost" id="frost">
-        <ul class="lore-mini">
-          <li><img src="assets/icons/repair.png?v=20261109" alt="" loading="lazy" width="160" height="160" /><div><h3>Repair</h3><p data-site-copy="repairStory">A little bandage for a busy life. A streak freeze kept your place.</p></div></li>
-          <li><img src="assets/icons/sleepy.png?v=20261109" alt="" loading="lazy" width="160" height="160" /><div><h3>Sleepy</h3><p>Caught before sunrise. He didn't think anyone else was up either.</p></div></li>
-          <li><img src="assets/icons/upside_down.png?v=20261109" alt="" loading="lazy" width="160" height="160" /><div><h3>Upside Down</h3><p>Nivo keeps strange hours too. It all makes more sense after midnight.</p></div></li>
-          <li><img src="assets/icons/blaze.png?v=20261109" alt="" loading="lazy" width="160" height="160" /><div><h3>Blaze</h3><p>Carried up out of the old fire under the ice. It finds the ones who don't cool off.</p></div></li>
-          <li><img src="assets/icons/rainy.png?v=20261109" alt="" loading="lazy" width="160" height="160" /><div><h3>Rainy</h3><p>Grey days count double. This one's for the people who showed up anyway.</p></div></li>
-          <li><img src="assets/icons/sick.png?v=20261109" alt="" loading="lazy" width="160" height="160" /><div><h3>Sick</h3><p>Everyone goes under sometimes. This one shows up for the getting back out.</p></div></li>
-          <li><img src="assets/icons/party.png?v=20261109" alt="" loading="lazy" width="160" height="160" /><div><h3>Party</h3><p>He's held that confetti since the day you set the goal. Finishing it opens his hands.</p></div></li>
-          <li><img src="assets/icons/starstruck.png?v=20261109" alt="" loading="lazy" width="160" height="160" /><div><h3>Starstruck</h3><p>He looked at what you'd built and forgot how to blink.</p></div></li>
-          <li><img src="assets/icons/ghost.png?v=20261109" alt="" loading="lazy" width="160" height="160" /><div><h3>Ghost</h3><p>A long stretch of quiet, faithful days leaves something behind.</p></div></li>
-          <li><img src="assets/icons/gold.png?v=20261109" alt="" loading="lazy" width="160" height="160" /><div><h3 data-site-copy="pearlName">Pearl</h3><p data-site-copy="pearlStory">Fifty days of showing up. A little pearl, with all that quiet effort inside.</p></div></li>
-          <li><img src="assets/icons/champion.png?v=20261109" alt="" loading="lazy" width="160" height="160" /><div><h3>Champion</h3><p>There's a shelf in the ice for the very consistent. He won't come down.</p></div></li>
-          <li><img src="assets/icons/glitch.png?v=20261109" alt="" loading="lazy" width="160" height="160" /><div><h3>Glitch</h3><p>You went so far the ice started skipping. Almost nobody sees this one.</p></div></li>
-          <li class="lore-mini--soon"><img src="assets/icons/coming_soon.png?v=20261109" alt="" loading="lazy" width="160" height="160" /><div><h3>?</h3><p>A few more are still being drawn. You'll meet them when they're ready.</p></div></li>
-        </ul>
-        </div>
-        <p class="lore-more-note">A growing collection, with more to discover. <b>What each one takes is something you find out in the app.</b></p>
-        </div>
-      </div>
-
-          <div class="compact-krill"><h3 data-site-copy="krill">Meet the Krill</h3>
+          <div class="compact-krill">
           <div class="krill-family" id="krill" aria-label="Meet the Krill">
             <article class="krill-specimen">
               <img src="assets/krill-token.png?v=2" width="512" height="512" alt="Amber Krill with two curved antennae" loading="lazy" />
@@ -826,8 +756,8 @@
   <!-- No ?v= on purpose: this is the one file edited at launch, and it should be the only edit. -->
   <script src="assets/store.js" defer></script>
   <script src="assets/contact.js?v=3" defer></script>
-  <script src="assets/icon-pop.js?v=45" defer></script>
-  <script type="module" src="assets/collection-looks.js?v=3"></script>
+  <script src="assets/icon-pop.js?v=20261110-gallery" defer></script>
+  <script type="module" src="assets/collection-looks.js?v=20261110-gallery"></script>
   <script src="assets/founders-gallery.js?v=10" defer></script>
   <script src="assets/app-opals.js?v=b5840d248847" defer></script>
   <script src="assets/editorial-concept.js?v=3cf88eb1a4bb" defer></script>
