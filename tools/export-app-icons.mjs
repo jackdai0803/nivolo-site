@@ -24,7 +24,7 @@ for (const id of icons) {
 for (const file of fs.readdirSync(path.join(app,'src/assets/flowers')).filter(f => f.endsWith('.png'))) {
  await sharp(path.join(app,'src/assets/flowers',file)).resize(256,256).webp({quality:94}).toFile(path.join(site,'assets/flowers',file.replace('.png','-icon.webp')));
 }
-for (const file of ['index.html','founders.html','launch.html']) {
+for (const file of ['index.html','launch.html']) {
  const target=path.join(site,file);
  let html=fs.readFileSync(target,'utf8');
  html=html.replace(/(assets\/(?:icons\/[^"?]+\.png|flowers\/[^"?]+-icon\.webp))(?:\?v=[^"\s]+)?/g,'$1?v=20261109');

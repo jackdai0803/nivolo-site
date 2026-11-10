@@ -141,6 +141,12 @@ export default {
   async fetch(request, env, ctx) {
     if (env.SITE_OFFLINE === "true") return offlineResponse(request);
     const url = new URL(request.url);
+    if (["/founders", "/founders/", "/founders.html"].includes(url.pathname)) {
+      const destination = new URL("/", url);
+      if (url.searchParams.get("lang") === "zh") destination.searchParams.set("lang", "zh");
+      destination.hash = "founders";
+      return Response.redirect(destination.href, 301);
+    }
     if (url.pathname === "/api/early-supporter/status") {
       if (request.method !== "GET") return new Response(null, { status: 405, headers: { Allow: "GET" } });
       try {
