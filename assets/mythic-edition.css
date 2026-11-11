@@ -1,33 +1,33 @@
 /* A dedicated chapter for Nivo's nine little legends. */
-.mythic-edition{--myth-accent:#b58a43;background:#e9e5dc;color:#263440;scroll-margin-top:80px;overflow:hidden}
-.myth-heading{display:grid;grid-template-columns:1.3fr 1fr;column-gap:70px;align-items:end;margin-bottom:45px}
-.myth-eyebrow{grid-column:1/-1;font:650 12px/1.5 var(--font-body);letter-spacing:.12em;text-transform:uppercase;color:#716044;margin:0 0 18px}
-.myth-heading h2{font:400 clamp(40px,5.4vw,72px)/1.02 var(--font-serif);letter-spacing:-.035em;white-space:pre-line;margin:0}
-.myth-heading>p:last-child{font:400 17px/1.75 var(--font-body);color:#58636a;max-width:380px;margin:0 0 4px}
-.myth-feature{display:grid;grid-template-columns:1.25fr .75fr;align-items:center;gap:clamp(32px,6vw,80px)}
-.myth-showcase{min-width:0}
-.myth-stage{position:relative;isolation:isolate;aspect-ratio:400/340;overflow:hidden;border-radius:32px;background:#e4d3b5;box-shadow:0 22px 50px -35px #2b322d75}
-.myth-fallback{width:48%;height:auto;position:absolute;left:26%;top:24%;border-radius:24%}
+.mythic-edition{--myth-accent:#b58a43;background:#e9e5dc;color:#263440;scroll-margin-top:78px;padding-block:76px;overflow:hidden}
+.myth-heading{display:grid;grid-template-columns:1.15fr 1fr;gap:0 70px;align-items:end;margin-bottom:36px}
+.myth-eyebrow{grid-column:1/-1;font:600 11px/1.5 var(--font-body);letter-spacing:.12em;text-transform:uppercase;color:#716044;margin:0 0 16px}
+.myth-heading h2{font:400 clamp(40px,4.8vw,64px)/1.04 var(--font-serif);letter-spacing:-.03em;white-space:pre-line;margin:0}
+.myth-heading>p:last-child{font:400 16px/1.75 var(--font-body);color:#58636a;max-width:375px;margin:0 0 4px}
+.myth-feature{display:grid;grid-template-columns:1.15fr 1fr;align-items:center;gap:70px}
+.myth-showcase,.myth-story{min-width:0}
+.myth-stage{position:relative;isolation:isolate;aspect-ratio:400/290;overflow:hidden;border-radius:29px;background:#e4d3b5;box-shadow:0 18px 35px -28px #334a5250}
+.myth-fallback{width:28%;height:auto;position:absolute;left:36%;top:30%;border-radius:24%}
 .myth-stage[data-ready] .myth-fallback{display:none}
 .myth-scenery,.myth-nivo{position:absolute;inset:0;pointer-events:none}
 .myth-scenery>svg,.myth-nivo>svg{display:block;width:100%;height:100%}
-.myth-nivo{inset:0 6%;transform:scale(.84);transform-origin:50% 64%}
-.myth-toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-top:18px}
-.myth-light{display:flex;background:#dcd9d1;border-radius:100px;padding:3px}
-.mythic-edition button{font:600 12px/1.3 var(--font-body);cursor:pointer;transition:transform 120ms ease,background 120ms ease;corner-shape:superellipse(2)}
+.myth-nivo{inset:0 6%;transform:scale(.83);transform-origin:50% 65%}
+.myth-toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-top:15px}
+.myth-light{display:flex;background:#ffffff50;border:1px solid #566c6d25;border-radius:100px;padding:3px}
+.mythic-edition button{font:600 11px/1.3 var(--font-body);cursor:pointer;transition:transform 120ms ease,background 120ms ease;corner-shape:superellipse(2)}
 .mythic-edition button:active{transform:translateY(2px)}
 .mythic-edition button:focus-visible{outline:3px solid #657f8f;outline-offset:4px}
 .mythic-edition button:disabled{cursor:wait;opacity:.65}
-.myth-light button{border:0;border-radius:100px;background:transparent;padding:10px 17px;color:#59656c;min-height:40px}
+.myth-light button{border:0;border-radius:100px;background:transparent;padding:9px 16px;color:#59656c;min-height:38px}
 .myth-light button[aria-pressed=true]{background:#fffdf7;color:#283b45;box-shadow:0 1px 3px #26344017}
 .myth-motion{display:flex;gap:8px}
-.myth-motion button{border:1px solid #bbb7ae;border-radius:100px;padding:10px 15px;background:#f8f5ed;color:#34444c;min-height:42px}
+.myth-motion button{border:1px solid #bbb7ae;border-radius:100px;padding:10px 14px;background:#f8f5ed;color:#34444c;min-height:40px}
 .myth-motion button:first-child{box-shadow:0 3px 0 #c1bbae}
 .myth-motion button:first-child:active{box-shadow:0 1px 0 #c1bbae}
 .myth-hint{font-size:12px;color:#687077;text-align:center;margin:16px 0 0}
-.myth-access{display:inline-block;border:1px solid #bbb0a0;padding:8px 13px;border-radius:100px;font:600 11px/1.4 var(--font-body);color:#66563d;background:#fff8e750}
-.myth-origin{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:#677079;margin:29px 0 8px}
-.myth-name{font:450 clamp(39px,4vw,54px)/1.05 var(--font-serif);letter-spacing:-.025em;margin:0 0 12px}
+.myth-access{display:block;border-left:2px solid var(--myth-accent);padding-left:12px;margin:0 0 24px;font:600 11px/1.6 var(--font-body);color:#66563d}
+.myth-origin{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:#677079;margin:0 0 5px}
+.myth-name{font:400 clamp(30px,3.2vw,42px)/1.1 var(--font-serif);letter-spacing:-.02em;margin:0 0 12px}
 .myth-role{font-size:15px;line-height:1.6;color:#58636a;margin:0 0 25px}
 .myth-power{border-left:2px solid var(--myth-accent);padding-left:18px}
 .myth-power-name{font-size:15px;line-height:1.4;margin:0 0 8px}
@@ -38,12 +38,12 @@
 .myth-picker{border:0;border-top:1px solid #ccc7bb;padding:25px 0 0;margin:40px 0 0;min-width:0}
 .myth-picker legend{font-size:12px;font-weight:600;padding-right:15px;color:#59636a}
 .myth-choices{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:9px}
-.myth-choice{display:flex;flex-direction:column;align-items:center;gap:10px;border:1px solid transparent;border-radius:18px;padding:13px 4px;background:transparent;color:#4b5961;min-width:0}
-.myth-choice img{width:clamp(42px,5.7vw,67px);height:auto;border-radius:24%}
-.myth-choice span{font-size:11px}
+.myth-choice{display:flex;flex-direction:column;align-items:center;gap:8px;border:1px solid transparent;border-radius:15px;padding:10px 5px;background:transparent;color:#4b5961;min-width:0}
+.myth-choice img{width:45px;height:45px;border-radius:24%}
+.myth-choice span{font-size:10px}
 .myth-choice:hover{background:#f8f5ee90}
 .myth-choice[aria-pressed=true]{background:#fffaf0;border-color:#bbb09b;box-shadow:0 3px 0 #c9c0b0}
 .myth-includes{font-size:12px;line-height:1.7;color:#697078;text-align:center;margin:27px 0 0}
-@media(max-width:900px){.myth-heading{gap:22px}.myth-heading>p:last-child{font-size:15px}.myth-feature{grid-template-columns:1.12fr 1fr;gap:28px}.myth-choices{grid-template-columns:repeat(5,minmax(0,1fr))}.myth-choice img{width:56px}}
-@media(max-width:620px){.myth-heading{display:block;margin-bottom:28px}.myth-heading>p:last-child{margin-top:20px;max-width:420px}.myth-feature{grid-template-columns:1fr;gap:30px}.myth-stage{border-radius:25px}.myth-story{display:grid;grid-template-columns:1fr 1fr;gap:0 20px}.myth-access,.myth-origin,.myth-name,.myth-role{grid-column:1/-1}.myth-origin{margin-top:22px}.myth-role{margin-bottom:20px}.myth-world{margin:0}.myth-world-note,.myth-power-note{font-size:12px}.myth-picker{margin-top:30px}.myth-choices{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.myth-choice{padding:13px 6px}.myth-choice img{width:60px}.myth-choice span{font-size:12px}.myth-toolbar{justify-content:center}.myth-heading h2{font-size:clamp(37px,9vw,51px)}}
+@media(max-width:900px){.myth-heading,.myth-feature{gap:28px}.myth-choices{grid-template-columns:repeat(5,minmax(0,1fr))}.myth-choice img{width:42px;height:42px}}
+@media(max-width:620px){.mythic-edition{padding-block:54px}.myth-heading{display:block;margin-bottom:25px}.myth-heading>p:last-child{margin-top:18px;font-size:14px;max-width:none}.myth-feature{grid-template-columns:1fr;gap:27px}.myth-stage{border-radius:24px}.myth-story{display:grid;grid-template-columns:1fr 1fr;gap:0 20px}.myth-access,.myth-origin,.myth-name,.myth-role{grid-column:1/-1}.myth-access{margin-bottom:18px}.myth-name{font-size:34px}.myth-role{margin-bottom:20px}.myth-world{margin:0}.myth-world-note,.myth-power-note{font-size:12px}.myth-picker{margin-top:30px}.myth-choices{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.myth-choice{padding:10px 6px}.myth-choice img{width:45px;height:45px}.myth-choice span{font-size:10px}.myth-toolbar{justify-content:center}.myth-heading h2{font-size:clamp(38px,9vw,51px)}}
 @media(prefers-reduced-motion:reduce){.mythic-edition button{transition:none}}
