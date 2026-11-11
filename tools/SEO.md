@@ -1,8 +1,8 @@
 # Google Search maintenance
 
 Public pages use `https://nivolo.app/`, `/launch`, `/support`, and `/privacy`.
-Cloudflare redirects their `.html` aliases; the Worker permanently redirects
-the public `www` and HTTP variants while preserving query strings and form methods.
+The Worker permanently redirects their `.html` and trailing-slash aliases,
+plus public `www` and HTTP variants, while preserving queries and form methods.
 Keep canonical tags, social URLs, internal links and `sitemap.xml` aligned.
 
 After a significant page content, link or structured-data change, update that

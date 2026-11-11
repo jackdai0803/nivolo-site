@@ -90,6 +90,19 @@ test('canonical, local and private preview origins do not redirect', async () =>
   }
 });
 
+test('page aliases use permanent single-hop redirects, including www and query strings', async () => {
+  for (const [alias, target] of [
+    ['/index.html', '/'], ['/index', '/'], ['/index/', '/'],
+    ['/launch.html', '/launch'], ['/launch/', '/launch'],
+    ['/support.html', '/support'], ['/support/', '/support'],
+    ['/privacy.html', '/privacy'], ['/privacy/', '/privacy'],
+  ]) {
+    const response = await worker.fetch(new Request('http://www.nivolo.app' + alias + '?lang=zh'), env, {});
+    assert.equal(response.status, 308);
+    assert.equal(response.headers.get('Location'), 'https://nivolo.app' + target + '?lang=zh');
+  }
+});
+
 test('maintenance keeps a retryable 503 and retired founders links keep their target', async () => {
   const offline = await worker.fetch(new Request('https://nivolo.app/'), { ...env, SITE_OFFLINE: 'true' }, {});
   assert.equal(offline.status, 503);

@@ -1,4 +1,10 @@
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const PAGE_ALIASES = new Map([
+  ["/index", "/"], ["/index/", "/"], ["/index.html", "/"],
+  ["/launch.html", "/launch"], ["/launch/", "/launch"],
+  ["/support.html", "/support"], ["/support/", "/support"],
+  ["/privacy.html", "/privacy"], ["/privacy/", "/privacy"],
+]);
 const WELCOME_TEXT = `Hi there,
 
 Thanks for joining the Nivolo launch list! Nivolo is a habit app with a penguin buddy named Nivo, and we're still building it. We'll let you know as soon as it's ready to try.
@@ -143,10 +149,16 @@ export default {
     const url = new URL(request.url);
     // Consolidate the public aliases without redirecting local/private previews.
     // 308 preserves the method and body if a form is submitted on the www host.
-    if (["nivolo.app", "www.nivolo.app"].includes(url.hostname)
-      && (url.hostname !== "nivolo.app" || url.protocol !== "https:")) {
+    const redirectHost = ["nivolo.app", "www.nivolo.app"].includes(url.hostname)
+      && (url.hostname !== "nivolo.app" || url.protocol !== "https:");
+    const canonicalPath = PAGE_ALIASES.get(url.pathname);
+    if (redirectHost) {
       url.hostname = "nivolo.app";
       url.protocol = "https:";
+    }
+    if (canonicalPath) url.pathname = canonicalPath;
+    // The asset service otherwise uses temporary 307s for these aliases.
+    if (redirectHost || canonicalPath) {
       return Response.redirect(url.href, 308);
     }
     if (["/founders", "/founders/", "/founders.html"].includes(url.pathname)) {
