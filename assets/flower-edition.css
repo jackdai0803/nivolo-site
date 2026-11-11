@@ -1,70 +1,44 @@
-/* A quiet, dedicated home for the forthcoming Flower Edition. */
-.flower-edition{background:#eef0e9;scroll-margin-top:90px;color:#273c36}
-.flower-heading{max-width:720px;margin-bottom:42px}
-.flower-eyebrow{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin:0 0 16px;color:#526b5c}
-.flower-heading h2{font:800 clamp(38px,5vw,66px)/1.07 var(--font-display);letter-spacing:-.055em;margin:0 0 20px}
-.flower-heading>p:last-child{font-size:clamp(16px,1.8vw,19px);line-height:1.7;max-width:610px;color:#52635b}
-.flower-feature{display:grid;grid-template-columns:.72fr 1.28fr;gap:clamp(30px,6vw,80px);align-items:center}
-.flower-soon{display:inline-block;padding:7px 12px;border:1px solid #bccbc0;border-radius:100px;background:#ffffff69;color:#4c6657;font-size:11px;font-weight:650;letter-spacing:.02em}
-.flower-selected-zh{font-family:"Songti SC","Noto Serif SC",Georgia,serif;font-size:39px;letter-spacing:.14em;margin:25px 0 10px;color:#637660}
-.flower-selected-name{font:650 clamp(25px,3vw,35px)/1.15 var(--font-display);letter-spacing:-.035em;margin:0 0 14px}
-.flower-selected-note{font-size:16px;line-height:1.7;color:#52635b;max-width:320px;min-height:54px}
-.flower-matching{display:flex;align-items:center;gap:17px;margin:26px 0}
-.flower-matching img{width:76px;height:76px;border-radius:23%;box-shadow:0 4px 10px #193c2711}
-.flower-matching p{font-size:12px;line-height:1.85;color:#52635b;white-space:pre-line}
-.flower-availability{font-size:12px;line-height:1.7;max-width:270px;color:#647269}
-.flower-showcase{min-width:0;width:100%;max-width:520px;justify-self:end}
-.flower-controls{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;min-height:42px}
-.flower-controls[hidden]{display:none}
-.flower-controls button{font:650 12px/1.2 var(--font-body);cursor:pointer;min-height:40px;border-radius:100px;border:0;transition:background 120ms ease,transform 120ms ease}
-.flower-controls button:active,.flower-choice:active{transform:scale(.97)}
-.flower-light{display:flex;padding:3px;border:1px solid #c3cec2;border-radius:100px;background:#e0e6db}
-.flower-light button{padding:9px 17px;color:#53665a;background:transparent}
-.flower-light button[aria-pressed=true]{background:#fffefa;color:#2c4436;box-shadow:0 1px 3px #18382417}
-.flower-pause{padding:9px 13px;background:transparent;color:#506457}
-.flower-pause:hover{background:#e0e6db}
-.flower-stage{position:relative;isolation:isolate;aspect-ratio:400/340;border-radius:28px;overflow:hidden;background:#d4e5df;border:0}
+/* The Flower Edition uses the same composition as the other collection chapters. */
+.flower-edition{--flower-accent:#7c9275;background:#eef0e9;color:#293d45;scroll-margin-top:78px;padding-block:76px;overflow:hidden}
+.flower-heading{display:grid;grid-template-columns:1.15fr 1fr;gap:0 70px;align-items:end;margin-bottom:36px}
+.flower-eyebrow{grid-column:1/-1;color:#586c71;font:600 11px/1.5 var(--font-body);letter-spacing:.12em;text-transform:uppercase;margin:0 0 16px}
+.flower-heading h2{font:400 clamp(40px,4.8vw,64px)/1.04 var(--font-serif);letter-spacing:-.03em;margin:0;max-width:470px}
+.flower-heading>p:last-child{font-size:16px;line-height:1.75;max-width:375px;color:#5c6b71;margin:0 0 4px}
+.flower-feature{display:grid;grid-template-columns:1.15fr 1fr;gap:70px;align-items:center}
+.flower-showcase,.flower-story{min-width:0}
+.flower-stage{position:relative;isolation:isolate;aspect-ratio:400/290;border-radius:29px;overflow:hidden;background:#d4e5df;box-shadow:0 18px 35px -28px #334a5250}
 .flower-fallback{display:block;width:100%;height:100%;object-fit:cover}
 .flower-stage[data-ready] .flower-fallback{display:none}
 .flower-scenery,.flower-nivo{position:absolute;inset:0;pointer-events:none}
-.flower-scenery>svg,.flower-nivo>svg{width:100%;height:100%;display:block}
-.flower-nivo{padding:10px 24px 18px;transform:scale(.76);transform-origin:50% 65%}
-.flower-stage-caption{font-size:12px;line-height:1.6;text-align:center;color:#5f7164;margin:14px 0 0}
-.flower-picker{border:0;padding:0;margin:42px 0 0;min-width:0}
-.flower-picker legend{font:650 14px/1.5 var(--font-body);margin-bottom:17px;color:#435a4b}
-.flower-choices{display:grid;grid-template-columns:repeat(11,minmax(0,1fr));gap:8px}
-.flower-choice{display:flex;flex-direction:column;align-items:center;gap:7px;min-width:0;border:1px solid transparent;border-radius:18px;background:transparent;padding:12px 5px 10px;cursor:pointer;color:#475e50;transition:background 120ms ease,border-color 120ms ease,transform 120ms ease}
-.flower-choice img{width:clamp(40px,5vw,58px);height:auto;aspect-ratio:1;border-radius:23%}
-.flower-choice:hover{background:#ffffff80}
-.flower-choice[aria-pressed=true]{background:#fffefa;border-color:#a9bbab;box-shadow:0 3px 0 #c7d2c3}
-.flower-choice:disabled{cursor:default}
-.flower-choice-zh{font:500 15px/1.3 "Songti SC",Georgia,serif;letter-spacing:.08em}
-.flower-choice-name{font:500 10px/1.4 var(--font-body);text-align:center;min-height:28px}
-.flower-edition button:focus-visible{outline:3px solid #456f58;outline-offset:4px}
-.flower-announcement{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
-@media(max-width:1000px){.flower-feature{grid-template-columns:.85fr 1.15fr;gap:30px}.flower-choices{grid-template-columns:repeat(6,minmax(0,1fr))}.flower-choice img{width:54px}.flower-choice-name{font-size:11px;min-height:16px}}
-@media(max-width:680px){.flower-edition{padding-block:64px}.flower-heading{margin-bottom:27px}.flower-feature{display:flex;flex-direction:column;gap:22px;align-items:stretch}.flower-story{display:grid;grid-template-columns:1fr auto;column-gap:15px}.flower-soon{grid-column:1/-1;justify-self:start}.flower-selected-zh{margin:20px 0 7px;font-size:29px}.flower-selected-name{grid-column:1;margin-bottom:10px;font-size:26px}.flower-selected-note{grid-column:1;min-height:0;font-size:14px;max-width:none}.flower-matching{grid-column:2;grid-row:2/5;align-self:center;margin:0}.flower-matching img{width:65px;height:65px}.flower-matching p{display:none}.flower-availability{grid-column:1/-1;max-width:none;margin-top:14px;font-size:11px}.flower-stage{border-radius:23px}.flower-nivo{padding:5px 17px 12px}.flower-picker{margin-top:25px}.flower-choices{grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}.flower-choice{padding:10px 5px}.flower-choice img{width:49px}.flower-choice-name{min-height:29px;font-size:10px}}
-@media(prefers-reduced-motion:reduce){.flower-edition *{transition:none!important}}
-
-/* Plus editions are presented as small gilded keepsakes. */
-.flower-choice{position:relative}
-.flower-choices{row-gap:18px}
-.flower-choice[data-exclusive=true]{padding-top:19px;color:#fff3d8;border-color:#bd9d5f;background:radial-gradient(ellipse at 15% 0%,#456252,transparent 70%),linear-gradient(145deg,#29463b,#152d27);box-shadow:inset 0 0 0 3px #203c32,inset 0 0 0 4px #d8bc7840,0 3px 0 #a98b50}
-.flower-choice[data-exclusive=true] img{box-shadow:0 0 0 3px #f5dfac,0 5px 12px #071b2540}
-.flower-choice[data-exclusive=true]:hover{background:radial-gradient(ellipse at 15% 0%,#537461,transparent 70%),linear-gradient(145deg,#29463b,#152d27)}
-.flower-choice[data-exclusive=true][aria-pressed=true]{border-color:#f7d584;box-shadow:inset 0 0 0 3px #203c32,inset 0 0 0 4px #ebce8e80,0 3px 0 #947137,0 0 0 3px #c7a86235}
-.flower-exclusive-seal{position:absolute;z-index:2;top:-10px;left:50%;transform:translateX(-50%);display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:4px 8px;border:1px solid #b18a44;border-radius:8px;corner-shape:superellipse(2);background:linear-gradient(135deg,#fff3ce,#e7c27b 60%,#f7dfaa);color:#493919;font:750 10px/1.1 var(--font-body);letter-spacing:.06em;box-shadow:inset 0 1px 0 #fff9e9,0 2px 3px #10291e35;pointer-events:none;white-space:nowrap;width:max-content;overflow-wrap:normal}
-.flower-exclusive-seal::before,.flower-edition[data-exclusive=true] .flower-soon::before{content:"";width:10px;height:13px;flex:none;background:currentColor;clip-path:polygon(50% 0,63% 35%,100% 50%,63% 65%,50% 100%,37% 65%,0 50%,37% 35%)}
-.flower-edition[data-exclusive=true] .flower-soon{display:inline-flex;align-items:center;gap:8px;color:#f8e1ac;background:linear-gradient(135deg,#355345,#19392e);border-color:#b4965e;box-shadow:inset 0 0 0 2px #ffffff0c,0 3px 0 #a58a5340}
-.flower-edition[data-exclusive=true] .flower-stage{box-shadow:0 0 0 1px #ad8a49,0 7px 0 #c0a46c30,0 15px 30px #304c3614}
-.flower-edition[data-exclusive=true] .flower-stage::after{content:"";position:absolute;inset:7px;z-index:3;border:1px solid #fff2caba;border-radius:inherit;pointer-events:none;box-shadow:0 0 0 1px #9c7b3c40}
-.flower-choice[data-exclusive=true] > :not(.flower-exclusive-seal){position:relative;z-index:1}
-
-.flower-choices{grid-template-columns:repeat(8,minmax(0,1fr))}
-.flower-exclusive-group{max-width:420px;margin:30px auto 0}
-.flower-exclusive-group h3{margin:0 0 22px;text-align:center;font:650 14px/1.5 var(--font-body);color:#435a4b}
-.flower-choices-exclusive{grid-template-columns:repeat(3,minmax(0,1fr))}
-@media(max-width:1000px){.flower-choices:not(.flower-choices-exclusive){grid-template-columns:repeat(4,minmax(0,1fr))}}
-/* The garden joins the same quiet collection typography. */
-.flower-heading h2{font-family:var(--font-serif);font-weight:400;letter-spacing:-.03em;line-height:1.04}
-.flower-selected-name{font-family:var(--font-serif);font-weight:450;letter-spacing:-.02em}
+.flower-scenery>svg,.flower-nivo>svg{display:block;width:100%;height:100%}
+.flower-nivo{inset:0 6%;transform:scale(.83);transform-origin:50% 65%}
+.flower-controls{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:15px}
+.flower-controls[hidden],.flower-pause[hidden],.flower-retry[hidden]{display:none}
+.flower-light{display:flex;background:#ffffff50;border:1px solid #566c6d25;border-radius:100px;padding:3px}
+.flower-light button{padding:9px 16px;border:0;border-radius:100px;color:#53686e;background:transparent;min-height:38px;font:600 11px/1.3 var(--font-body);cursor:pointer}
+.flower-light button[aria-pressed=true]{background:#fffdf6;box-shadow:0 1px 3px #344a4920;color:#32494c}
+.flower-pause{font:500 11px/1.3 var(--font-body);padding:10px 14px;min-height:40px}
+.flower-soon{font:600 11px/1.6 var(--font-body);color:#52636a;border-left:2px solid var(--flower-accent);padding-left:12px;margin:0 0 24px}
+.flower-identity{display:flex;gap:15px;align-items:center;margin:0 0 18px}
+.flower-matching{flex:none}.flower-matching img{display:block;width:56px;height:56px;border-radius:24%}
+.flower-identity small{font-size:10px;color:#63747b;display:block;margin-bottom:5px}
+.flower-selected-name{font:400 clamp(30px,3.2vw,42px)/1.1 var(--font-serif);letter-spacing:-.02em;margin:0}
+.flower-selected-note{font-size:15px;line-height:1.8;color:#53656c;max-width:360px;margin:0 0 24px}
+.flower-picker{border:0;margin:0;padding:0;min-width:0}
+.flower-choices{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.flower-choice{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;min-width:0;padding:10px 5px;border:1px solid transparent;border-radius:15px;background:transparent;color:#52636b;cursor:pointer;font:500 10px/1.35 var(--font-body);transition:transform 120ms,background 120ms}
+.flower-choice img{display:block;width:45px;height:45px;border-radius:24%}
+.flower-choice-name,.flower-choice-zh{min-height:27px;display:flex;align-items:center;text-align:center;font:inherit}
+.flower-choice-zh{display:none}html[lang^=zh] .flower-choice-zh{display:flex}html[lang^=zh] .flower-choice-name{display:none}
+.flower-choice:hover{background:#fffdf580}
+.flower-choice[aria-pressed=true]{background:#fffdf5;border-color:var(--flower-accent);box-shadow:0 3px 0 #c8d2c2}
+.flower-choice:active{transform:translateY(2px)}
+.flower-choice:disabled{cursor:wait}
+.flower-exclusive-seal{position:absolute;top:4px;right:4px;padding:2px 4px;border-radius:5px;background:#e6e6d6;color:#5f654f;font:650 8px/1.2 var(--font-body)}
+.flower-availability{max-width:370px;font-size:11px;line-height:1.7;color:#647177;margin:20px 0 0}
+.flower-back,.flower-retry{display:inline-block;color:#4f646b;font:500 11px/1.5 var(--font-body);padding:10px 0;background:none;border:0;cursor:pointer;text-decoration:none;margin-top:24px}
+.flower-edition button:focus-visible,.flower-back:focus-visible{outline:3px solid #527f98;outline-offset:4px}
+.flower-sr-only,.flower-announcement{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
+@media(max-width:900px){.flower-heading,.flower-feature{gap:28px}.flower-choices{gap:5px}.flower-choice img{width:42px;height:42px}}
+@media(max-width:620px){.flower-edition{padding-block:54px}.flower-heading{display:block;margin-bottom:25px}.flower-heading h2{font-size:clamp(38px,9vw,51px)}.flower-heading>p:last-child{margin-top:18px;font-size:14px;max-width:none}.flower-feature{display:flex;flex-direction:column;align-items:stretch;gap:27px}.flower-stage{border-radius:24px}.flower-soon{margin-bottom:18px}.flower-selected-note{font-size:14px;max-width:none;margin-bottom:18px}.flower-selected-name{font-size:34px}.flower-choice img{width:45px;height:45px}.flower-back{margin-top:10px}}
+@media(prefers-reduced-motion:reduce){.flower-choice{transition:none}.flower-choice:active{transform:none}}

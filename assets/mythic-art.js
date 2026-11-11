@@ -1920,97 +1920,64 @@ var WARD_CENTER = {
 };
 function makePower(svg, f, u, motion) {
 	const layer = (key, art) => `<g data-power-part="${key}">${art}</g>`;
-	const rings = (color) => [
-		0,
-		1,
-		2
-	].map((i) => `<ellipse cx="650" cy="700" rx="${340 + i * 70}" ry="${360 + i * 50}" fill="none" stroke="${color}" stroke-width="${10 - i * 2}" opacity="${.68 - i * .14}"/>`).join("");
+	const trace = (d, color, width = 8) => line(d, color, width, "data-power-trace pathLength=\"1\" stroke-dasharray=\"1 1\"");
+	const particle = (i, art) => `<g data-power-particle="${i}">${art}</g>`;
+	const shield = "M650 215Q860 332 1030 333V660Q1015 925 650 1080Q285 925 270 660V333Q440 332 650 215Z";
 	let back = "", front = "";
+	svg.querySelector("defs").insertAdjacentHTML("beforeend", `<filter id="${u}-power-glow" x="-70%" y="-70%" width="240%" height="240%"><feDropShadow dx="0" dy="0" stdDeviation="11" flood-color="${f.id === "poseidon" ? "#b7f5e8" : f.id === "hades" ? "#c8a3e0" : "#ffe3a0"}" flood-opacity=".8"/></filter>`);
 	if (f.id === "anubis") {
-		svg.querySelector("defs").insertAdjacentHTML("beforeend", `<filter id="${u}-ward-glow" x="-80%" y="-80%" width="260%" height="260%"><feDropShadow dx="0" dy="0" stdDeviation="14" flood-color="#ffe3a0" flood-opacity=".95"/></filter>`);
-		back = layer("ward", `<ellipse cx="${WARD_CENTER.x}" cy="${WARD_CENTER.y}" rx="460" ry="465" fill="#d6ad54" fill-opacity=".1" stroke="#a8792e" stroke-width="25"/><ellipse cx="${WARD_CENTER.x}" cy="${WARD_CENTER.y}" rx="460" ry="465" fill="none" stroke="#ffe2a0" stroke-width="11"/><ellipse cx="${WARD_CENTER.x}" cy="${WARD_CENTER.y}" rx="418" ry="423" fill="none" stroke="#ce9d43" stroke-width="8"/>${Array.from({ length: 12 }, (_, i) => {
+		back = layer("ward", `<ellipse cx="${WARD_CENTER.x}" cy="${WARD_CENTER.y}" rx="460" ry="465" fill="#d6ad54" fill-opacity=".06" stroke="#a8792e" stroke-width="19"/><ellipse data-power-trace pathLength="1" stroke-dasharray="1 1" cx="${WARD_CENTER.x}" cy="${WARD_CENTER.y}" rx="460" ry="465" fill="none" stroke="#ffe2a0" stroke-width="11"/><ellipse cx="${WARD_CENTER.x}" cy="${WARD_CENTER.y}" rx="418" ry="423" fill="none" stroke="#ce9d43" stroke-width="5" opacity=".6"/>${Array.from({ length: 12 }, (_, i) => {
 			const a = i * Math.PI / 6;
-			return `<g transform="translate(${WARD_CENTER.x + 460 * Math.cos(a)} ${WARD_CENTER.y + 465 * Math.sin(a)}) rotate(${i * 30})">${gem(0, 0, "#ffe8ae", 27)}${gem(0, 0, "#b48636", 13)}</g>`;
+			return particle(i, `<g transform="translate(${WARD_CENTER.x + 460 * Math.cos(a)} ${WARD_CENTER.y + 465 * Math.sin(a)}) rotate(${i * 30})">${gem(0, 0, "#ffe8ae", 27)}${line("M-9-42H9M0-50V-34", "#e9c574", 5)}</g>`);
 		}).join("")}`);
 		front = layer("ankh-light", [
 			[190, 540],
 			[1110, 545],
 			[250, 870],
 			[1040, 880]
-		].map(([x, y]) => sparkle(x, y, 1.35, "#d4a13f")).join(""));
+		].map(([x, y]) => sparkle(x, y, 1.2, "#e5ba66")).join(""));
 	}
 	if (f.id === "horus") {
-		back = [-1, 1].map((s) => layer(s < 0 ? "wing-l" : "wing-r", `<g transform="translate(650 700) scale(${s} 1)">${path("M0 80Q130-190 470-365Q432-198 345-143L440-219Q406-80 285-31L375-94Q302 70 115 133Z", "#d3a75d", "opacity=\".68\"")}${[
+		back = [-1, 1].map((s) => layer(s < 0 ? "wing-l" : "wing-r", `<g transform="translate(650 700) scale(${s} 1)">${path("M0 80Q130-190 470-365Q432-198 345-143L440-219Q406-80 285-31L375-94Q302 70 115 133Z", gold(u), "opacity=\".82\"")}${[
 			0,
 			1,
 			2,
 			3
 		].map((i) => line(`M75 86Q${215 + i * 35} ${-30 - i * 55} ${340 + i * 28} ${-100 - i * 70}`, "#fff0b7", 6, "opacity=\".7\"")).join("")}</g>`)).join("");
-		front = layer("feathers", [-1, 1].map((s) => [
-			0,
-			1,
-			2
-		].map((i) => `<g transform="translate(${650 + s * (360 + i * 45)} ${670 + i * 90}) rotate(${s * 35})">${path("M0-45Q37-9 0 46Q-27 2 0-45Z", gold(u))}</g>`).join("")).join(""));
+		front = layer("feathers", Array.from({ length: 8 }, (_, i) => particle(i, path("M0-36Q25-8 0 37Q-20 2 0-36Z", gold(u)) + line("M0-22V24", "#fff2c7", 3))).join(""));
 	}
 	if (f.id === "athena") {
-		back = layer("shield", path("M650 215Q860 332 1030 333V660Q1015 925 650 1080Q285 925 270 660V333Q440 332 650 215Z", "#a5b888", "fill-opacity=\".12\" stroke=\"#a2b17a\" stroke-width=\"10\"") + line("M650 250Q840 360 995 362V657Q978 903 650 1042Q322 903 305 657V362Q460 360 650 250Z", "#d8dcae", 4));
-		front = layer("olives", [-1, 1].map((s) => [
-			0,
-			1,
-			2,
-			3
-		].map((i) => `<ellipse cx="${650 + s * (450 - i * 12)}" cy="${620 + i * 88}" rx="16" ry="38" fill="#a0b581" transform="rotate(${s * 30} ${650 + s * (450 - i * 12)} ${620 + i * 88})"/>`).join("")).join(""));
+		back = layer("shield", path(shield, "#a5b888", "fill-opacity=\".12\" stroke=\"#a2b17a\" stroke-width=\"7\"") + trace(shield, "#e4e9be", 12) + line("M650 250Q840 360 995 362V657Q978 903 650 1042Q322 903 305 657V362Q460 360 650 250Z", "#c5d1a2", 4));
+		front = layer("olives", Array.from({ length: 8 }, (_, i) => particle(i, "<ellipse rx=\"15\" ry=\"34\" fill=\"#a0b581\"/>" + line("M0-22V22", "#e1e7bd", 3))).join(""));
 	}
 	if (f.id === "poseidon") {
-		back = layer("tide", path("M70 980Q230 740 453 890Q740 1055 1000 793Q1134 680 1188 834Q1204 916 1124 934Q1169 850 1096 845Q1000 855 911 976Q570 1215 70 1085Z", "#72bcb5", "fill-opacity=\".62\"") + line("M90 976Q260 798 455 914Q765 1093 1033 821Q1127 744 1168 828", "#d1f1e7", 13));
-		front = layer("spray", [
-			0,
-			1,
-			2,
-			3,
-			4,
-			5
-		].map((i) => `<circle cx="${230 + i * 155}" cy="${835 + i % 2 * 115}" r="${10 + i % 3 * 6}" fill="#c9f1e6"/>`).join(""));
+		back = layer("tide", path("M70 990Q245 710 475 884Q728 1045 979 728Q1073 598 1175 739Q1230 845 1120 914Q1171 800 1098 792Q1043 789 949 957Q658 1202 70 1085Z", "#64aaa7", "fill-opacity=\".78\"") + line("M92 980Q256 777 477 912Q743 1063 1008 754Q1080 671 1140 747Q1178 793 1141 838", "#c6f3e7", 15) + line("M230 1030Q478 1134 755 1039", "#aadfd2", 8));
+		front = layer("foam", line("M185 1048Q300 1002 414 1051T677 1063T1005 1020", "#e0f8e9", 14, "opacity=\".8\"")) + layer("spray", Array.from({ length: 10 }, (_, i) => particle(i, `<ellipse rx="${8 + i % 3 * 3}" ry="${15 + i % 3 * 4}" fill="#c9f1e6"/>`)).join(""));
 	}
 	if (f.id === "artemis") {
-		back = layer("moon", `<g transform="translate(284 247)">${path("M36-107C-58-84-78 47 5 92C-131 72-141-91-34-125Q10-135 36-107Z", "#d4e4f1")}</g>`);
-		front = layer("moon-trail", line("M273 790Q251 544 226 328", "#c5e7ef", 9, "stroke-dasharray=\"10 19\"") + [
-			[226, 324],
-			[246, 480],
-			[261, 635]
-		].map(([x, y]) => sparkle(x, y, .9, "#e4f5f8")).join(""));
+		back = layer("moon", `<g transform="translate(216 200)">${path("M36-107C-58-84-78 47 5 92C-131 72-141-91-34-125Q10-135 36-107Z", "#d4e4f1")}</g>`);
+		front = layer("moon-trail", trace("M276 800Q248 545 221 275", "#d3edf3", 8)) + layer("moon-impact", `<circle cx="216" cy="200" r="74" fill="none" stroke="#d0e9f1" stroke-width="6"/>${Array.from({ length: 6 }, (_, i) => particle(i, sparkle(0, 0, .8, "#edf7fa"))).join("")}`);
 	}
 	if (f.id === "apollo") {
-		back = layer("sun", `<circle cx="650" cy="525" r="340" fill="#efc678" fill-opacity=".12" stroke="#e1b360" stroke-width="8"/>${Array.from({ length: 12 }, (_, i) => `<g transform="translate(650 525) rotate(${i * 30})">${line("M0-364V-421", "#d4a04f", 11)}</g>`).join("")}`);
-		front = layer("music", [
-			[1070, 760],
-			[1110, 610],
-			[1050, 440],
-			[960, 280]
-		].map(([x, y], i) => `<g transform="translate(${x} ${y}) rotate(${-12 + i * 9})">${path("M0 5V-58L44-71V-9H33V-53L12-47V5Z", "#d5a24d")}<ellipse cx="0" cy="6" rx="17" ry="11" fill="#d5a24d"/><ellipse cx="33" cy="-7" rx="17" ry="11" fill="#d5a24d"/></g>`).join(""));
+		back = layer("sun", `<circle cx="650" cy="525" r="340" fill="#efc678" fill-opacity=".12" stroke="#e1b360" stroke-width="7"/>${Array.from({ length: 12 }, (_, i) => `<g data-power-ray="${i}" transform="translate(650 525) rotate(${i * 30})">${line("M0-364V-428", "#d4a04f", 11)}</g>`).join("")}`);
+		front = layer("music", Array.from({ length: 5 }, (_, i) => particle(i, path("M0 5V-58L44-71V-9H33V-53L12-47V5Z", "#d5a24d") + "<ellipse cy=\"6\" rx=\"17\" ry=\"11\" fill=\"#d5a24d\"/><ellipse cx=\"33\" cy=\"-7\" rx=\"17\" ry=\"11\" fill=\"#d5a24d\"/>")).join(""));
 	}
 	if (f.id === "zeus") {
-		back = layer("cloud", path("M204 290Q180 226 249 213Q264 137 343 171Q385 117 442 173Q504 158 526 215Q588 218 574 280ZM735 225Q718 163 780 150Q797 91 861 122Q913 77 954 136Q1021 124 1038 180Q1106 183 1096 241Z", "#8298b1", "opacity=\".48\""));
-		front = layer("lightning", line("M1020 257L1010 422L1120 399L1048 586L1148 554L1080 735", "#dfbd78", 24) + line("M1020 257L1010 422L1120 399L1048 586L1148 554L1080 735", "#fff1c5", 8) + line("M1080 422L1160 485L1131 545", "#e1bf7d", 9));
+		back = [-1, 1].map((s) => layer(s < 0 ? "cloud-l" : "cloud-r", `<g transform="translate(${s < 0 ? 190 : 730} ${s < 0 ? 240 : 190})">${path("M0 48Q-18-16 49-27Q64-103 143-69Q185-123 242-67Q304-82 326-25Q388-22 374 40Z", "#8298b1", "opacity=\".58\"")}</g>`)).join("");
+		const bolt = "M1020 257L1010 422L1120 399L1048 586L1148 554L1080 785";
+		front = layer("lightning", trace(bolt, "#dfbd78", 29) + trace(bolt, "#fff5d7", 10) + trace("M1080 422L1160 485L1131 545", "#e1bf7d", 10)) + layer("strike-ground", "<ellipse cx=\"1055\" cy=\"1050\" rx=\"102\" ry=\"24\" fill=\"none\" stroke=\"#e8c988\" stroke-width=\"8\"/>") + layer("sparks", Array.from({ length: 6 }, (_, i) => particle(i, sparkle(0, 0, .7, "#edcf90"))).join(""));
 	}
 	if (f.id === "medusa") {
-		back = layer("gaze", rings("#91b188"));
-		front = layer("stones", [-1, 1].map((s) => [
+		back = layer("gaze", [
 			0,
 			1,
 			2
-		].map((i) => `<g transform="translate(${650 + s * (430 + i * 34)} ${780 + i * 95}) rotate(${s * (12 + i * 15)})">${path("M-24-28L15-38L36-5L20 26L-19 30L-36-1Z", "#94a08f", "stroke=\"#c5cdbb\" stroke-width=\"4\"")}</g>`).join("")).join(""));
+		].map((i) => `<g data-power-ripple="${i}"><ellipse cx="650" cy="700" rx="440" ry="440" fill="none" stroke="#8cae83" stroke-width="${9 - i * 2}"/></g>`).join(""));
+		front = layer("stones", Array.from({ length: 8 }, (_, i) => particle(i, path("M-24-28L15-38L36-5L20 26L-19 30L-36-1Z", "#94a08f", "stroke=\"#c5cdbb\" stroke-width=\"4\"") + line("M-24-28L-5-4L36-5M-5-4L-19 30", "#bdc6b2", 3))).join(""));
 	}
 	if (f.id === "hades") {
-		back = layer("gate", `<ellipse cx="650" cy="570" rx="470" ry="520" fill="#8f719f" fill-opacity=".08" stroke="#9e81ad" stroke-width="8"/>`);
-		front = layer("embers", [
-			0,
-			1,
-			2,
-			3,
-			4,
-			5
-		].map((i) => sparkle(220 + i * 170, 820 + i % 2 * 125, .55, "#ac8eba")).join(""));
+		back = layer("gate", path("M190 1090V515C190-65 1110-65 1110 515V1090Z", "#56365f", "fill-opacity=\".14\"") + trace("M190 1090V515C190-65 1110-65 1110 515V1090", "#aa89b8", 13) + line("M226 1080V515C226 3 1074 3 1074 515V1080", "#bda2c8", 4, "opacity=\".55\"") + line("M175 1090H345M955 1090H1125", "#8f719f", 15));
+		front = layer("embers", Array.from({ length: 8 }, (_, i) => particle(i, path("M0 20C-30 3-17-14 1-39C-2-13 25-9 17 10Q12 23 0 20Z", "#b49ac6") + path("M0 16Q-11 6 2-12Q16 11 0 16Z", "#e5d8ec"))).join(""));
 	}
 	const rear = group(back), fore = group(front);
 	for (const node of [rear, fore]) {
@@ -2018,52 +1985,126 @@ function makePower(svg, f, u, motion) {
 		node.setAttribute("opacity", "0");
 		node.setAttribute("pointer-events", "none");
 	}
-	motion.before(rear);
+	const hound = svg.querySelector("[data-cerberus-shadow]");
+	(f.id === "hades" && hound ? hound.parentElement : motion).before(rear);
 	svg.append(fore);
 	const nodes = Object.fromEntries([...svg.querySelectorAll("[data-power-part]")].map((n) => [n.dataset.powerPart, n]));
-	const set = (key, transform, opacity = 1) => {
+	const particles = [...svg.querySelectorAll("[data-power-particle]")], traces = [...svg.querySelectorAll("[data-power-trace]")], rays = [...svg.querySelectorAll("[data-power-ray]")], ripples = [...svg.querySelectorAll("[data-power-ripple]")];
+	const set = (key, transform = "", opacity = 1) => {
 		const n = nodes[key];
 		if (n) {
 			n.setAttribute("transform", transform);
 			n.setAttribute("opacity", String(opacity));
 		}
 	};
-	const bowFrame = svg.querySelector("[data-bow-frame]"), arrow = svg.querySelector("[data-bow-arrow]"), string = svg.querySelector("[data-bow-string]"), shadow = svg.querySelector("[data-cerberus-shadow]"), charm = svg.querySelector("[data-myth-motion=\"ankh\"]");
+	const center = (x, y, s, angle = 0) => `translate(${x} ${y}) rotate(${angle}) scale(${s}) translate(${-x} ${-y})`;
+	const bowFrame = svg.querySelector("[data-bow-frame]"), arrow = svg.querySelector("[data-bow-arrow]"), string = svg.querySelector("[data-bow-string]"), charm = svg.querySelector("[data-myth-motion=\"ankh\"]"), trident = svg.querySelector("[data-power-source=\"trident\"]");
 	return { render(ms) {
-		const q = ms === null ? 0 : clamp01(ms / POWER_MS), e = powerStrength(ms);
+		const q = ms === null ? 0 : clamp01(ms / POWER_MS), e = powerStrength(ms), charge = smooth(q / .3), release = smooth((q - .3) / .18), settle = 1 - smooth((q - .72) / .28);
 		rear.setAttribute("opacity", String(e));
 		fore.setAttribute("opacity", String(e));
 		if (f.id === "anubis") rear.setAttribute("transform", motion.getAttribute("transform") || "");
-		const reveal = smooth((q - .08) / .35);
-		set("ward", `translate(${WARD_CENTER.x} ${WARD_CENTER.y}) scale(${.48 + reveal * .56}) rotate(${reveal * 12}) translate(${-WARD_CENTER.x} ${-WARD_CENTER.y})`, smooth((q - .06) / .15));
-		set("ankh-light", `translate(0 ${-q * 95})`, .85);
-		if (charm) if (e > 0) charm.setAttribute("filter", `url(#${u}-ward-glow)`);
-		else charm.removeAttribute("filter");
-		set("wing-l", `rotate(${-e * 8} 650 700)`);
-		set("wing-r", `rotate(${e * 8} 650 700)`);
-		set("feathers", `translate(0 ${q * 160 - 60})`, .7);
-		set("shield", `translate(650 650) scale(${.92 + e * .08}) translate(-650 -650)`);
-		set("olives", `translate(0 ${-q * 90})`, .85);
-		set("tide", `translate(${(1 - e) * -220} ${55 * (1 - e)})`);
-		set("spray", `translate(0 ${-Math.sin(q * Math.PI) * 180})`, .75);
-		set("moon", `translate(0 ${-e * 28})`);
-		set("moon-trail", "translate(0 0)", smooth((q - .34) / .12) * (1 - smooth((q - .72) / .18)));
-		set("sun", `rotate(${q * 25} 650 525)`);
-		set("music", `translate(0 ${-q * 100})`, .85);
-		set("cloud", `translate(${e * 14} ${-e * 15})`);
-		set("lightning", "translate(0 0)", smooth((q - .28) / .1) * (1 - smooth((q - .61) / .19)));
-		set("gaze", `translate(650 700) scale(${.8 + q * .3}) translate(-650 -700)`);
-		set("stones", `translate(0 ${-Math.sin(q * Math.PI) * 150})`);
-		set("gate", `translate(650 570) scale(${.95 + e * .05}) translate(-650 -570)`);
-		set("embers", `translate(0 ${-q * 190})`, .8);
-		if (shadow) shadow.setAttribute("opacity", String(.3 + e * .23));
+		const traced = f.id === "zeus" ? smooth((q - .3) / .12) : f.id === "artemis" ? smooth((q - .35) / .17) : smooth((q - .05) / .42);
+		for (const node of traces) node.setAttribute("stroke-dashoffset", String(1 - traced));
+		set("ward", center(WARD_CENTER.x, WARD_CENTER.y, .78 + charge * .22 + release * .015));
+		set("ankh-light", `translate(0 ${-release * 55})`, release * .8);
+		for (const source of [charm, trident]) if (source) if (e > .2) source.setAttribute("filter", `url(#${u}-power-glow)`);
+		else source.removeAttribute("filter");
+		const spread = .3 + .7 * smooth((q - .08) / .36);
+		set("wing-l", `translate(650 700) rotate(${18 * (1 - spread)}) scale(${spread} ${.74 + .26 * spread}) translate(-650 -700)`);
+		set("wing-r", `translate(650 700) rotate(${-18 * (1 - spread)}) scale(${spread} ${.74 + .26 * spread}) translate(-650 -700)`);
+		set("shield", center(650, 650, .84 + .16 * charge));
+		set("tide", `translate(${-190 * (1 - release)} ${80 * (1 - release) + 30 * (1 - settle)})`);
+		set("foam", `translate(${(release - .5) * 85} ${15 * (1 - settle)})`, release * .8);
+		set("moon", `translate(0 ${-charge * 10})`, .6 + .4 * release);
+		set("moon-trail", "", smooth((q - .34) / .07) * (1 - smooth((q - .53) / .15)));
+		const impact = smooth((q - .48) / .22);
+		set("moon-impact", center(216, 200, .4 + impact * .9), smooth((q - .48) / .05) * (1 - smooth((q - .64) / .16)));
+		set("sun", center(650, 525, .8 + .2 * charge, release * 12));
+		rays.forEach((n, i) => n.setAttribute("opacity", String(smooth((q - .12 - i * .018) / .16))));
+		set("cloud-l", `translate(${-105 * (1 - charge)} ${-18 * charge})`);
+		set("cloud-r", `translate(${100 * (1 - charge)} ${-18 * charge})`);
+		set("lightning", "", smooth((q - .29) / .04) * (1 - smooth((q - .55) / .22)));
+		set("strike-ground", center(1055, 1050, .5 + release * .7), smooth((q - .42) / .08) * (1 - smooth((q - .63) / .2)));
+		ripples.forEach((n, i) => {
+			const r = clamp01((q - .18 - i * .11) / .48);
+			n.setAttribute("transform", center(650, 700, .65 + r * .5));
+			n.setAttribute("opacity", String(Math.sin(r * Math.PI) * .65));
+		});
+		set("gate", `translate(650 1090) scale(${.72 + .28 * charge} 1) translate(-650 -1090)`);
+		if (hound) hound.setAttribute("opacity", String(.3 + e * release * .38));
+		particles.forEach((node, i) => {
+			let x = 0, y = 0, a = 0, s = 1, opacity = 1;
+			const side = i % 2 ? 1 : -1, index = Math.floor(i / 2);
+			if (f.id === "anubis") opacity = smooth((q - .08 - i * .023) / .12);
+			if (f.id === "horus") {
+				const p = clamp01((q - .3 - index * .035) / .6);
+				x = 650 + side * (325 + index * 44 + Math.sin(p * Math.PI) * 45);
+				y = 545 + index * 92 + p * 215;
+				a = side * (20 + Math.sin(p * 5 + index) * 18);
+				opacity = Math.sin(p * Math.PI) * .85;
+			}
+			if (f.id === "athena") {
+				const p = smooth((q - .18 - index * .055) / .27);
+				x = 650 + side * (453 - index * 13);
+				y = 925 - index * 88 - p * 55;
+				a = side * (28 + 10 * p);
+				s = .6 + .4 * p;
+				opacity = p;
+			}
+			if (f.id === "poseidon") {
+				const p = clamp01((q - .33 - index * .025) / .47);
+				x = 650 + side * (280 + index * 43 + p * 55);
+				y = 970 - Math.sin(p * Math.PI) * (180 + index * 36);
+				a = side * p * 40;
+				opacity = Math.sin(p * Math.PI) * .9;
+			}
+			if (f.id === "artemis") {
+				const a0 = i * Math.PI / 3;
+				x = 216 + Math.cos(a0) * (75 + impact * 60);
+				y = 200 + Math.sin(a0) * (75 + impact * 60);
+				s = .5 + .6 * impact;
+			}
+			if (f.id === "apollo") {
+				const p = clamp01((q - .18 - i * .065) / .52);
+				x = 1050 + Math.sin(p * 4 + i * .7) * 65;
+				y = 770 - p * 560;
+				a = Math.sin(p * 4 + i) * 14;
+				s = .75 + .25 * p;
+				opacity = Math.sin(p * Math.PI);
+			}
+			if (f.id === "zeus") {
+				const p = clamp01((q - .4 - i * .012) / .32);
+				x = 1070 + Math.cos(i * Math.PI / 3) * p * 100;
+				y = 800 + Math.sin(i * Math.PI / 3) * p * 150;
+				s = 1 - p * .6;
+				opacity = Math.sin(p * Math.PI);
+			}
+			if (f.id === "medusa") {
+				const lift = smooth((q - .16 - index * .04) / .24) * settle;
+				x = 650 + side * (432 + index * 24 + Math.sin(q * 6 + index) * 15 * lift);
+				y = 1010 - index * 92 - lift * (150 + index * 10);
+				a = side * (12 + index * 15 + release * 42) * lift;
+				s = .65 + index * .13;
+				opacity = smooth((q - .1 - index * .04) / .12);
+			}
+			if (f.id === "hades") {
+				const p = clamp01((q - .17 - index * .04) / .66);
+				x = 650 + side * (420 + Math.sin(p * 6 + index) * 32);
+				y = 1055 - p * (380 + index * 40);
+				a = side * Math.sin(p * 5) * 12;
+				s = .6 + .5 * Math.sin(p * Math.PI);
+				opacity = Math.sin(p * Math.PI) * .9;
+			}
+			node.setAttribute("transform", `translate(${x} ${y}) rotate(${a}) scale(${s})`);
+			node.setAttribute("opacity", String(opacity));
+		});
 		if (bowFrame) bowFrame.setAttribute("transform", `translate(276 827) rotate(${22 + e * 63}) scale(1.08)`);
 		if (arrow && string) {
-			const draw = smooth(q / .32), shot = smooth((q - .36) / .28), reset = smooth((q - .8) / .2);
-			const pull = ms === null ? 0 : draw * (1 - shot) * 46;
+			const draw = smooth(q / .31), shot = smooth((q - .35) / .14), reset = smooth((q - .85) / .15), pull = ms === null ? 0 : draw * (1 - shot) * 65;
 			string.setAttribute("d", `M-62-168L${28 + pull} 0L-62 168`);
-			arrow.setAttribute("transform", `translate(${ms === null ? 0 : pull - shot * (1 - reset) * 620} 0)`);
-			arrow.setAttribute("opacity", String(ms === null ? 1 : shot < .8 ? 1 : reset));
+			arrow.setAttribute("transform", `translate(${ms === null ? 0 : pull - shot * (1 - reset) * 660} 0)`);
+			arrow.setAttribute("opacity", String(ms === null ? 1 : shot < .96 ? 1 : reset));
 		}
 	} };
 }
@@ -2145,7 +2186,7 @@ function makeMyth(host, f, u, label = f.name, { tintedEyes = true } = {}) {
 		motion.append(group(`<g transform="translate(431 1073) rotate(-7)">${path("M-45-12Q0-46 45-12L50 17Q0 40-52 17Z", "#a86d44")}${line("M-26-15L-4 13L22-20", gold(u), 10)}<g transform="translate(-40 1) rotate(-35) scale(.38)"><g data-myth-motion="sandal">${wing(u)}</g></g></g><g transform="translate(738 1058) rotate(-15)">${path("M-45-12Q0-46 45-12L50 17Q0 40-52 17Z", "#a86d44")}${line("M-26-15L-4 13L22-20", gold(u), 10)}<g transform="translate(40 1) scale(-.38 .38) rotate(-35)"><g data-myth-motion="sandal">${wing(u)}</g></g></g>`));
 	}
 	if (f.id === "poseidon") {
-		attach("right-flipper", `<g transform="translate(1032 828) rotate(6) scale(.86)">${trident(u)}</g>`, [
+		attach("right-flipper", `<g data-power-source="trident" transform="translate(1032 828) rotate(6) scale(.86)">${trident(u)}</g>`, [
 			1031,
 			828,
 			28,
@@ -2207,20 +2248,23 @@ function makeMyth(host, f, u, label = f.name, { tintedEyes = true } = {}) {
 			p.y -= Math.max(0, Math.sin(time / 420)) * 6;
 		}
 		const strength = powerStrength(powerMs);
+		const powerQ = powerMs === null ? 0 : clamp01(powerMs / POWER_MS), release = smooth((powerQ - .3) / .18);
 		if (strength) if (f.id === "anubis") {
-			p.left += 16 * strength;
-			p.right -= 16 * strength;
+			p.left += (7 + release * 14) * strength;
+			p.right -= (7 + release * 14) * strength;
 			p.y -= 18 * strength;
 		} else if (f.id === "horus") {
-			p.left += 28 * strength;
-			p.right -= 28 * strength;
-			p.y -= 32 * strength;
+			p.left += (10 + release * 25) * strength;
+			p.right -= (10 + release * 25) * strength;
+			p.y -= (14 + release * 35) * strength;
 		} else if (f.id === "poseidon" || f.id === "zeus") {
-			p.right -= 23 * strength;
-			p.y -= 7 * strength;
+			p.right -= (12 + release * 15) * strength;
+			p.y += (8 - 20 * release) * strength;
+			p.rotate += (f.id === "zeus" ? 2 : -2) * Math.sin(powerQ * Math.PI) * strength;
 		} else if (f.id === "artemis") {
 			p.left += 12 * strength;
 			p.rotate -= 3 * strength;
+			p.x += Math.sin(clamp01((powerQ - .35) / .17) * Math.PI) * 9 * strength;
 		} else if (f.id === "apollo") {
 			p.right -= 12 * strength;
 			p.left += 8 * strength;
@@ -2247,10 +2291,14 @@ function makeMyth(host, f, u, label = f.name, { tintedEyes = true } = {}) {
 				node.setAttribute("opacity", active ? String(Math.sin(phase * Math.PI) * .85) : String(.4 + index * .15));
 			}
 			if (kind === "star" || kind === "sunlight") node.setAttribute("opacity", active ? String(.48 + .5 * (.5 + .5 * Math.sin(time / 650 + index))) : ".8");
-			if (kind === "string") node.setAttribute("opacity", active ? String(.48 + .52 * (.5 + .5 * Math.sin(time / 260 + index * .9))) : "1");
-			if (kind === "snake") node.setAttribute("transform", `rotate(${active ? Math.sin(time / 1050 + index * 1.4) * (2.5 + strength * 4.5) : 0} 0 -12)`);
+			if (kind === "string") {
+				const pluck = clamp01((powerQ - .18 - index * .065) / .15), vibration = Math.sin(pluck * Math.PI * 6) * (1 - pluck) * strength;
+				node.setAttribute("transform", `translate(${vibration * 4} 0)`);
+				node.setAttribute("opacity", String(strength ? .7 + .3 * Math.abs(vibration) : active ? .48 + .52 * (.5 + .5 * Math.sin(time / 260 + index * .9)) : 1));
+			}
+			if (kind === "snake") node.setAttribute("transform", `rotate(${active ? Math.sin(time / 1050 + index * 1.4) * 2.5 + Math.sin(clamp01((powerQ - .08 - index * .035) / .4) * Math.PI) * strength * 9 : 0} 0 -12)`);
 			if (kind === "hound-head") node.setAttribute("transform", `rotate(${active ? Math.sin(time / 1900 + index * 1.8) * 2 : 0} 0 145)`);
-			if (kind === "hound-shadow") node.setAttribute("transform", `translate(0 ${active ? Math.sin(time / 2400) * 6 : 0}) translate(650 570) scale(${1 + strength * .045}) translate(-650 -570)`);
+			if (kind === "hound-shadow") node.setAttribute("transform", `translate(0 ${active ? Math.sin(time / 2400) * 6 : 0}) translate(650 570) scale(${1 + strength * release * .09}) translate(-650 -570)`);
 			if (kind === "lightning-glint") {
 				const phase = time % 5600 / 5600;
 				const glow = phase < .2 ? Math.sin(phase / .2 * Math.PI) ** 2 : 0;

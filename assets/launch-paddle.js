@@ -1,5 +1,5 @@
 import { myths } from './mythic-catalog.js?v=20261111-mythic';
-import { makeMyth } from './mythic-art.js?v=20261111-mythic';
+import { makeMyth } from './mythic-art.js?v=20261111-powers';
 import { idleAt, neutralPose } from './nivo-rig.js?v=20261110-mascot-size';
 
 import { makeClassicSkin, heroLooks } from './nivo-skins.js?v=20261110-sick-care';
