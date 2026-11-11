@@ -166,19 +166,19 @@ test('all HTML launch CTAs are links before scripts load; store enhancement reta
     assert.ok(tags.length);
     for (const tag of tags) {
       assert.equal(tag[1], 'a');
-      assert.match(tag[0], new RegExp('href="' + (file === '404.html' ? '/' : '') + 'launch.html"'));
+      assert.match(tag[0], /href="\/launch"/);
     }
     assert.ok([...html.matchAll(/data-soon="([^"]+)"/g)].every((m) => m[1] === 'Join the launch list'));
   }
   const label = { getAttribute: (name) => name === 'data-live' ? 'Get the app' : 'Join the launch list' };
   const link = {
-    href: '/launch.html', classList: { remove() {} },
-    getAttribute: () => '/launch.html',
+    href: '/launch', classList: { remove() {} },
+    getAttribute: () => '/launch',
     querySelector: () => label,
   };
   const document = { querySelectorAll: () => [link] };
   runInNewContext(read('assets/store.js'), { document });
-  assert.equal(link.href, '/launch.html');
+  assert.equal(link.href, '/launch');
   assert.equal(label.textContent, 'Join the launch list');
   const live = read('assets/store.js').replace('var APP_STORE_URL = "";', 'var APP_STORE_URL = "https://apps.apple.com/app/test";');
   runInNewContext(live, { document });

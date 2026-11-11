@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nivolo — Habits that hold, even when you don&rsquo;t</title>
+  <title>Nivolo — Gentle Habit Tracker &amp; Goal Planner for iPhone</title>
   <script>document.documentElement.classList.add("reveal-ready");</script>
-  <meta name="description" content="Build habits one small step at a time with Nivo. Set goals, schedule reminders, earn Krill and collect a gem for each goal you finish. Free on iPhone, with no account required." />
+  <meta name="description" content="Build daily habits and reach your goals with Nivolo for iPhone. Take small steps, set reminders, and earn rewards with Nivo. Free core tools, no account needed." />
   <link rel="canonical" href="https://nivolo.app/" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
   <meta name="theme-color" content="#F2F1EE" />
   <link rel="manifest" href="site.webmanifest" />
 
@@ -14,16 +15,17 @@
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Nivolo" />
   <meta property="og:url" content="https://nivolo.app/" />
-  <meta property="og:title" content="Nivolo — Habits that hold, even when you don’t" />
-  <meta property="og:description" content="One small action a day, a free freeze for when life wins, and a penguin who's extremely proud of you." />
+  <meta property="og:title" content="Nivolo — Gentle Habit Tracker &amp; Goal Planner for iPhone" />
+  <meta property="og:description" content="Build daily habits and reach your goals with Nivolo for iPhone. Take small steps, set reminders, and earn rewards with Nivo. Free core tools, no account needed." />
   <meta property="og:image" content="https://nivolo.app/assets/og-image-nivo.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt" content="Nivolo — the cozy habit app, with Nivo the penguin" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Nivolo — Habits that hold, even when you don’t" />
-  <meta name="twitter:description" content="One small action a day, a free freeze for when life wins, and a penguin who's extremely proud of you." />
+  <meta name="twitter:title" content="Nivolo — Gentle Habit Tracker &amp; Goal Planner for iPhone" />
+  <meta name="twitter:description" content="Build daily habits and reach your goals with Nivolo for iPhone. Take small steps, set reminders, and earn rewards with Nivo. Free core tools, no account needed." />
   <meta name="twitter:image" content="https://nivolo.app/assets/og-image-nivo.png" />
+  <meta name="twitter:image:alt" content="Nivolo — the cozy habit app, with Nivo the penguin" />
 
   <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png?v=5" />
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png?v=5" />
@@ -65,23 +67,87 @@
   <link rel="stylesheet" href="assets/first-step-demo.css?v=4" />
 
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": "Nivolo",
-    "applicationCategory": "LifestyleApplication",
-    "operatingSystem": "iOS",
-    "url": "https://nivolo.app/",
-    "description": "Build habits one small step at a time with Nivo. Set goals, schedule reminders, earn Krill and collect a gem for each goal you finish.",
-    "inLanguage": ["en", "zh-Hans"],
-    "offers": [
-      { "@type": "Offer", "price": "0", "priceCurrency": "USD", "name": "Free" },
-      { "@type": "Offer", "price": "7.99", "priceCurrency": "USD", "name": "Nivolo Plus — monthly" },
-      { "@type": "Offer", "price": "49.99", "priceCurrency": "USD", "name": "Nivolo Plus — yearly" }
-    ]
-  }
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://nivolo.app/#website",
+      "name": "Nivolo",
+      "url": "https://nivolo.app/",
+      "publisher": {
+        "@id": "https://nivolo.app/#organization"
+      }
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://nivolo.app/#organization",
+      "name": "Nivolo",
+      "url": "https://nivolo.app/",
+      "logo": "https://nivolo.app/assets/app-icon.png",
+      "email": "support@nivolo.app"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "Nivolo",
+      "applicationCategory": "LifestyleApplication",
+      "operatingSystem": "iOS",
+      "url": "https://nivolo.app/",
+      "description": "Build daily habits and reach your goals with Nivolo for iPhone. Take small steps, set reminders, and earn rewards with Nivo. Free core tools, no account needed.",
+      "inLanguage": [
+        "en",
+        "zh-Hans",
+        "es",
+        "fr",
+        "de",
+        "ja",
+        "pt-BR",
+        "it",
+        "ko",
+        "nl",
+        "id",
+        "vi",
+        "hi",
+        "zh-Hant"
+      ],
+      "offers": [
+        {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD",
+          "name": "Free"
+        },
+        {
+          "@type": "Offer",
+          "price": "7.99",
+          "priceCurrency": "USD",
+          "name": "Nivolo Plus — monthly"
+        },
+        {
+          "@type": "Offer",
+          "price": "49.99",
+          "priceCurrency": "USD",
+          "name": "Nivolo Plus — yearly"
+        }
+      ],
+      "@id": "https://nivolo.app/#app",
+      "image": "https://nivolo.app/assets/app-icon.png",
+      "publisher": {
+        "@id": "https://nivolo.app/#organization"
+      },
+      "featureList": [
+        "Habit tracking",
+        "Goal planning",
+        "Scheduled reminders",
+        "Streak freezes and planned rest days",
+        "Collectible rewards",
+        "iPhone widget"
+      ]
+    }
+  ]
+}
   </script>
-<!-- Nivolo release: remove-collection-directory-2026-11-11 -->
+<!-- Nivolo release: google-search-foundations-2026-11-11 -->
   <link rel="stylesheet" href="assets/mythic-edition.css?v=20261111-size" />
 </head>
 <body class="short-home premium-home">
@@ -89,14 +155,14 @@
 
   <nav>
     <div class="nav-pill">
-      <a class="logo" href="index.html"><span class="logo-mark"><img src="assets/nivo-mark.png?v=1" width="128" height="128" alt="" /></span>nivolo</a>
+      <a class="logo" href="/"><span class="logo-mark"><img src="assets/nivo-mark.png?v=1" width="128" height="128" alt="" /></span>nivolo</a>
       <div class="nav-links">
         <a class="nav-plain" href="#features">Features</a>
         <a class="nav-plain" href="#pricing">Pricing</a>
         <a class="nav-plain" href="#faq">FAQ</a>
         <a class="nav-plain" href="#contact">Support</a>
         <!-- assets/store.js upgrades this launch.html link when an App Store URL is available. -->
-        <a class="nav-cta btn-moonlit" data-store href="launch.html"><span data-live="Get the app" data-soon="Join the launch list">Join the launch list</span></a>
+        <a class="nav-cta btn-moonlit" data-store href="/launch"><span data-live="Get the app" data-soon="Join the launch list">Join the launch list</span></a>
       </div>
       <details class="phone-menu">
         <summary class="btn-moonlit btn-moonlit--quiet"><span class="phone-menu-label" data-site-copy="menu">Menu</span><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" /></svg></summary>
@@ -115,17 +181,17 @@
   <header class="editorial-hero" aria-labelledby="editorial-title">
     <span class="editorial-kicker">A little closer to what matters.</span>
 
-    <div class="editorial-lockup" id="editorial-title" aria-label="Nivolo">
+    <h1 class="editorial-lockup" id="editorial-title" aria-label="Nivolo">
       <span>Nivolo</span>
       <span class="editorial-lockup-mark" aria-hidden="true">
         <span class="site-nivo" data-nivo data-nivo-cycle><svg viewBox="90 40 1120 1120"><image href="assets/nivo-body.png" width="1254" height="1254" /></svg></span>
       </span>
-    </div>
+    </h1>
 
     <p class="editorial-sub" data-site-copy="heroBody">Make room for what matters. One small step at a time.</p>
 
     <div class="editorial-actions">
-      <a class="nav-cta btn-moonlit" data-store href="launch.html"><span data-live="Get the app" data-soon="Join the launch list" data-site-store-label>Join the launch list</span></a>
+      <a class="nav-cta btn-moonlit" data-store href="/launch"><span data-live="Get the app" data-soon="Join the launch list" data-site-store-label>Join the launch list</span></a>
       <a class="editorial-how" href="#try-nivolo" data-site-copy="heroHow">Try a small step ↓</a>
     </div>
 
@@ -144,10 +210,10 @@
 
       <div class="editorial-feature-copy">
         <p class="editorial-feature-meta" data-site-copy="previewEyebrow">ONE SMALL STEP, TODAY</p>
-        <h1 class="editorial-sticker" id="editorial-feature-title">
+        <h2 class="editorial-sticker" id="editorial-feature-title">
           <span data-site-copy="previewTitleFirst">Starting is</span>
           <span data-site-copy="previewTitleSecond">the hard part.</span>
-        </h1>
+        </h2>
         <p class="editorial-feature-intro" data-site-copy="previewBody">Give Nivo one small action. See what happens next.</p>
         <div class="editorial-feature-tags" aria-label="Nivolo highlights">
           <span data-site-copy="previewStep">One clear step</span>
@@ -173,7 +239,7 @@
         </div>
         <p class="demo-status" role="status" aria-live="polite" aria-atomic="true"></p>
         <div class="demo-outcome-link">
-        <a class="demo-own-goal" data-demo-own data-store href="launch.html" hidden><span data-demo-copy="ownGoal">Make room for your own goal</span><span aria-hidden="true">↗</span></a>
+        <a class="demo-own-goal" data-demo-own data-store href="/launch" hidden><span data-demo-copy="ownGoal">Make room for your own goal</span><span aria-hidden="true">↗</span></a>
         <p class="demo-note" data-demo-copy="note">Just a preview. Your own journey starts in the app.</p>
         </div>
       </div>
@@ -529,7 +595,7 @@ For our first twenty.</h2><p data-chapter-copy="intro">A little reminder you wer
           <p>Your goals, streaks, Krill, gems and local profile live on your iPhone, not in a Nivolo account or user database.</p>
       <details class="privacy-disclosure">
         <summary data-site-copy="data">How AI and icon checks use data</summary>
-        <p class="privacy-fine">If you allow AI sharing, plan drafts send the goal text you submit and Plus insights can send weekly counts. A random app ID also checks your Early Supporter icon; your profile stays on your phone. <a href="privacy.html">Read the privacy policy</a>.</p>
+        <p class="privacy-fine">If you allow AI sharing, plan drafts send the goal text you submit and Plus insights can send weekly counts. A random app ID also checks your Early Supporter icon; your profile stays on your phone. <a href="/privacy">Read the privacy policy</a>.</p>
       </details>
     </div>
   </aside>
@@ -563,7 +629,7 @@ For our first twenty.</h2><p data-chapter-copy="intro">A little reminder you wer
             <li><span class="collector-check" aria-hidden="true">✓</span>Krill, goal gems &amp; the shop</li>
             <li><span class="collector-check" aria-hidden="true">✓</span>Widgets &amp; reminders</li>
           </ul>
-          <a class="collector-cta btn-moonlit" href="launch.html" data-store><span data-live="Get Nivolo free" data-soon="Join the launch list">Join the launch list</span></a>
+          <a class="collector-cta btn-moonlit" href="/launch" data-store><span data-live="Get Nivolo free" data-soon="Join the launch list">Join the launch list</span></a>
           <p class="collector-plan-note">No subscription needed.</p>
         </article>
 
@@ -597,7 +663,7 @@ For our first twenty.</h2><p data-chapter-copy="intro">A little reminder you wer
             <li><span class="collector-check" aria-hidden="true">✓</span><span data-site-copy="deepseaBenefit">Exclusive Deep-Sea app icon</span></li>
             <li><span class="collector-check" aria-hidden="true">✓</span>A streak freeze every day</li>
           </ul>
-          <a class="collector-cta btn-moonlit" href="launch.html" data-store><span data-live="Explore Plus in the app" data-soon="Join the launch list">Join the launch list</span></a>
+          <a class="collector-cta btn-moonlit" href="/launch" data-store><span data-live="Explore Plus in the app" data-soon="Join the launch list">Join the launch list</span></a>
           <p class="collector-plan-note">Optional subscription. Cancel in Apple ID settings.</p>
         </article>
       </div>
@@ -693,7 +759,7 @@ For our first twenty.</h2><p data-chapter-copy="intro">A little reminder you wer
         <h2>Your first goal takes <em>30&nbsp;seconds.</em></h2>
         <div class="closing-act">
           <!-- assets/store.js upgrades this launch.html link when an App Store URL is available. -->
-          <a class="btn-light btn-moonlit" data-store href="launch.html">
+          <a class="btn-light btn-moonlit" data-store href="/launch">
             <svg viewBox="0 0 384 512" fill="currentColor" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
             <span data-live="Download on the App Store" data-soon="Join the launch list">Join the launch list</span>
           </a>
@@ -712,24 +778,24 @@ For our first twenty.</h2><p data-chapter-copy="intro">A little reminder you wer
         <div class="footer-cols">
           <div class="footer-col">
             <h3>Nivolo</h3>
-            <a href="index.html#features">Features</a>
-            <a href="index.html#collection">The collection</a>
+            <a href="/#features">Features</a>
+            <a href="/#collection">The collection</a>
             <a href="#flower-edition" data-flower-copy="edition">The Flower Edition</a>
             <a href="#mythic-edition" data-myth-copy="edition">The Mythic Edition</a>
-            <a href="index.html#pricing">Pricing</a>
-            <a href="index.html#faq">FAQ</a>
+            <a href="/#pricing">Pricing</a>
+            <a href="/#faq">FAQ</a>
           </div>
           <div class="footer-col">
             <h3>Help</h3>
             <a href="#contact" data-contact-copy="contact">Contact us</a>
-            <a href="support.html">Support</a>
-            <a href="privacy.html">Privacy Policy</a>
+            <a href="/support">Support</a>
+            <a href="/privacy">Privacy Policy</a>
           </div>
           <div class="footer-col">
             <h3>Get it</h3>
             <!-- assets/store.js upgrades this launch.html link when an App Store URL is available. -->
-            <a class="footer-download btn-moonlit" data-store href="launch.html"><span data-live="App Store" data-soon="Join the launch list">Join the launch list</span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg></a>
-            <a class="footer-domain" href="index.html">nivolo.app</a>
+            <a class="footer-download btn-moonlit" data-store href="/launch"><span data-live="App Store" data-soon="Join the launch list">Join the launch list</span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg></a>
+            <a class="footer-domain" href="/">nivolo.app</a>
           </div>
         </div>
       </div>

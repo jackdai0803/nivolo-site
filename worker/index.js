@@ -34,7 +34,7 @@ const json = (body, status = 200) => new Response(JSON.stringify(body), {
 });
 
 const redirectToForm = (request, state) => {
-  const url = new URL("/launch.html", request.url);
+  const url = new URL("/launch", request.url);
   url.searchParams.set(state === "joined" ? "joined" : "error", state === "joined" ? "1" : state);
   return Response.redirect(url, 303);
 };
@@ -141,6 +141,14 @@ export default {
   async fetch(request, env, ctx) {
     if (env.SITE_OFFLINE === "true") return offlineResponse(request);
     const url = new URL(request.url);
+    // Consolidate the public aliases without redirecting local/private previews.
+    // 308 preserves the method and body if a form is submitted on the www host.
+    if (["nivolo.app", "www.nivolo.app"].includes(url.hostname)
+      && (url.hostname !== "nivolo.app" || url.protocol !== "https:")) {
+      url.hostname = "nivolo.app";
+      url.protocol = "https:";
+      return Response.redirect(url.href, 308);
+    }
     if (["/founders", "/founders/", "/founders.html"].includes(url.pathname)) {
       const destination = new URL("/", url);
       if (url.searchParams.get("lang") === "zh") destination.searchParams.set("lang", "zh");

@@ -10,7 +10,7 @@
 
    Example:  var APP_STORE_URL = "https://apps.apple.com/app/id0000000000"; */
 var APP_STORE_URL = "";
-var LAUNCH_ALERT_URL = "launch.html";
+var LAUNCH_ALERT_URL = "/launch";
 
 (function () {
   "use strict";
