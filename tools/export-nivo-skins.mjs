@@ -54,3 +54,4 @@ await build({ configFile: false, root: site, logLevel: 'warn', plugins: [{
 }], build: { emptyOutDir: false, outDir: resolve(site, 'assets'), minify: false,
  lib: { entry: 'website-nivo-skins', formats: ['es'], fileName: () => 'nivo-skins.js' } } });
 console.log(`Exported ${looks.length} current production looks.`);
+await import('./export-deepsea-idle.mjs');

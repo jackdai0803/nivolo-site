@@ -1,5 +1,6 @@
 import { createRig, idleAt, neutralPose, smallWinAt, celebrationAt, SMALL_WIN_MS, CELEBRATION_MS } from './nivo-rig.js?v=20261110-mascot-size';
 import { makeClassicSkin, heroLooks } from './nivo-skins.js?v=20261110-sick-care';
+import { withLightweightIdle } from './nivo-idle.js?v=1';
 
 const strings = {
   en: { pause: 'Pause animation', resume: 'Resume animation', off: 'Sound: off', on: 'Sound: on' },
@@ -91,9 +92,10 @@ document.querySelectorAll('[data-nivo]').forEach((container, index) => {
       layer.dataset.look = look.id;
       container.append(layer);
     }
-    const rig = autoCycle
+    const sourceRig = autoCycle
       ? makeClassicSkin(layer, look, `site-nivo-${index}-${look.id}`)
       : createRig(layer, artwork, `site-nivo-${index}-${look.id}`, 'Nivo', look.id);
+    const rig = withLightweightIdle(sourceRig, layer, look.id);
     const character = { look, layer, rig, startedAt: 0, opacity: lookIndex === 0 ? 1 : 0, from: 0 };
     characters.set(lookIndex, character);
     return character;

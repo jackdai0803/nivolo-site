@@ -1631,6 +1631,8 @@ footer {
   overflow: hidden;
 }
 .ipop-overlay.open { opacity: 1; pointer-events: auto; }
+/* The closed viewer remains mounted for its fade, but its effects can rest. */
+.ipop-overlay:not(.open) * { animation-play-state: paused; }
 .ipop-overlay.has-scene {
   background: rgba(3, 8, 20, 0.24);
   backdrop-filter: none;

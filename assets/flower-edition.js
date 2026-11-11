@@ -73,7 +73,9 @@ if(section){
  choices.forEach(b=>b.addEventListener('click',()=>{selected=b.dataset.flowerChoice;elapsed=0;render(true);}));
  themes.forEach(b=>b.addEventListener('click',()=>{night=b.dataset.flowerTheme==='midnight';render(true);}));
  pause.addEventListener('click',()=>{paused=!paused;text();resume();});
- const observer=new IntersectionObserver(([entry])=>{visible=entry.isIntersecting;if(visible)load();resume();},{rootMargin:'120px'});observer.observe(section);
+ // Load just before arrival, but animate only while the mascot itself is visible.
+ new IntersectionObserver(entries=>{if(entries.some(entry=>entry.isIntersecting))load();},{rootMargin:'120px'}).observe(section);
+ new IntersectionObserver(([entry])=>{visible=entry.isIntersecting;resume();}).observe(stage);
  reduced.addEventListener('change',()=>{text();resume();});
  document.addEventListener('visibilitychange',resume);
  window.addEventListener('pagehide',()=>cancelAnimationFrame(frame));window.addEventListener('pageshow',resume);

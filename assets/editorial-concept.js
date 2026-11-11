@@ -310,6 +310,24 @@
     billing.hidden = false;
   }
 
+  // Decorative loops should not keep repainting while their section is hidden.
+  const loopingArt = [...document.querySelectorAll('.editorial-scene')];
+  const visibleArt = new Set();
+  const updateLoops = () => loopingArt.forEach(el => {
+    el.style.animationPlayState = visibleArt.has(el) && !document.hidden && !reducedMotion.matches ? 'running' : 'paused';
+  });
+  const loopObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) visibleArt.add(entry.target);
+      else visibleArt.delete(entry.target);
+    });
+    updateLoops();
+  });
+  loopingArt.forEach(el => loopObserver.observe(el));
+  document.addEventListener('visibilitychange', updateLoops);
+  reducedMotion.addEventListener('change', updateLoops);
+  updateLoops();
+
   const chapter = document.querySelector(".midnight-chapter");
   if (!chapter) return;
 
