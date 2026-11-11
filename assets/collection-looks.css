@@ -1,18 +1,6 @@
-/* A short directory, followed by one calm chapter for each collection. */
-.editorial-hero .collection-overview{max-width:1080px;margin:42px auto 52px;padding:0 clamp(8px,2vw,24px);text-align:left;scroll-margin-top:100px}
-.collection-overview header{display:grid;grid-template-columns:1fr 1fr;gap:10px 36px;align-items:end;margin-bottom:24px;scroll-margin-top:100px}
-.collection-overview-eyebrow{grid-column:1/-1;margin:0;font:600 11px/1.5 var(--font-body);color:#647782;letter-spacing:.08em}
-.collection-overview h2{font:400 clamp(32px,4vw,46px)/1.06 var(--font-serif);letter-spacing:-.025em;margin:0;color:#263e4c}
-.collection-overview header>p:last-child{font-size:14px;line-height:1.6;color:#657078;margin:0;max-width:350px;justify-self:end}
-.collection-overview .collection-directory{position:static;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;width:auto;padding:0;box-shadow:none;background:none;border:0;z-index:auto}
-.collection-link{display:flex;align-items:center;gap:12px;padding:13px 16px;border:1px solid #d9dedf;border-radius:17px;background:#ffffff80;color:#334b58;text-decoration:none;min-width:0;transition:background 120ms,transform 120ms}
-.collection-link img{width:40px;height:40px;flex:none;border-radius:24%}
-.collection-link strong{display:block;font:600 12px/1.4 var(--font-body)}
-.collection-link small{display:block;font:400 10px/1.5 var(--font-body);color:#657580;margin-top:3px}
-.collection-link-arrow{margin-left:auto;color:#687e8b;font-size:17px}
-.collection-link:hover{background:#fff}.collection-link:active{transform:translateY(2px)}
+/* One calm chapter for each Nivo collection. */
 .collection-chapter{background:var(--chapter-paper);color:#293d45;scroll-margin-top:78px;padding-block:76px;overflow:hidden}
-.chapter-heading{display:grid;grid-template-columns:1.15fr 1fr;gap:0 70px;align-items:end;margin-bottom:36px}
+.chapter-heading{scroll-margin-top:100px;display:grid;grid-template-columns:1.15fr 1fr;gap:0 70px;align-items:end;margin-bottom:36px}
 .chapter-eyebrow{grid-column:1/-1;color:#586c71;font:600 11px/1.5 var(--font-body);letter-spacing:.12em;text-transform:uppercase;margin:0 0 16px}
 .chapter-heading h2{font:400 clamp(40px,4.8vw,64px)/1.04 var(--font-serif);letter-spacing:-.03em;white-space:pre-line;margin:0}
 .chapter-heading>p:last-child{font-size:16px;line-height:1.75;max-width:375px;color:#5c6b71;margin:0 0 4px}
@@ -45,15 +33,14 @@
 .chapter-choice img{width:45px;height:45px;border-radius:24%}
 .chapter-choice[aria-pressed=true]{background:#fffdf5;border-color:var(--chapter-accent);box-shadow:0 3px 0 color-mix(in srgb,var(--chapter-accent) 35%,var(--chapter-paper))}
 .chapter-choice:hover{background:#fffdf580}.chapter-choice:active{transform:translateY(2px)}
-.chapter-inspect,.chapter-back{display:inline-block;color:#4f646b;font:500 12px/1.5 var(--font-body);text-underline-offset:4px;background:none;border:0;cursor:pointer;padding:10px 0;text-decoration:underline}
+.chapter-inspect{display:inline-block;color:#4f646b;font:500 12px/1.5 var(--font-body);text-underline-offset:4px;background:none;border:0;cursor:pointer;padding:10px 0;text-decoration:underline}
 .chapter-terms{max-width:350px;color:#647177;font-size:11px;line-height:1.7;margin:12px 0 0}
-.chapter-back{margin-top:24px;font-size:11px;text-decoration:none}
 .chapter-inspect:disabled{opacity:.5;cursor:wait}
-.collection-link:focus-visible,.collection-chapter button:focus-visible,.chapter-back:focus-visible{outline:3px solid #527f98;outline-offset:4px}
+.collection-chapter button:focus-visible{outline:3px solid #527f98;outline-offset:4px}
 .chapter-pause[hidden]{display:none}
 #full-collection .compact-krill{margin:0;padding:0;border:0}
-@media(max-width:900px){.chapter-heading,.chapter-feature{gap:28px}.chapter-choice{min-width:60px;padding-inline:5px}.chapter-choice img{width:42px;height:42px}.chapter-picker{gap:5px}.collection-link{padding:12px;gap:9px}}
-@media(max-width:620px){.editorial-hero .collection-overview{margin:32px auto;padding:0 4px}.collection-overview header{display:block;margin-bottom:20px}.collection-overview h2{margin-top:10px}.collection-overview header>p:last-child{margin-top:12px}.collection-overview .collection-directory{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.collection-link{gap:9px;padding:11px 9px;border-radius:14px}.collection-link img{width:32px;height:32px}.collection-link strong{font-size:10px}.collection-link small{font-size:9px}.collection-link-arrow{font-size:13px}.collection-chapter{padding-block:54px}.chapter-heading{display:block;margin-bottom:25px}.chapter-heading h2{font-size:clamp(38px,9vw,51px)}.chapter-heading>p:last-child{margin-top:18px;font-size:14px;max-width:none}.chapter-feature{display:flex;flex-direction:column;align-items:stretch;gap:27px}.chapter-stage{border-radius:24px}.chapter-access{margin-bottom:18px}.chapter-note{min-height:0;font-size:14px;max-width:none;margin-bottom:18px}.chapter-picker{gap:8px}.chapter-choice{min-width:60px;padding:10px 8px}.chapter-choice img{width:45px;height:45px}.chapter-identity h3{font-size:34px}.chapter-back{margin-top:10px}}
-@media(max-width:360px){.collection-link-arrow{display:none}.chapter-choice{min-width:55px;padding-inline:6px}.chapter-picker{gap:5px}}
-@media(prefers-reduced-motion:reduce){.collection-link,.chapter-choice{transition:none}.collection-link:active,.chapter-choice:active{transform:none}}
+@media(max-width:900px){.chapter-heading,.chapter-feature{gap:28px}.chapter-choice{min-width:60px;padding-inline:5px}.chapter-choice img{width:42px;height:42px}.chapter-picker{gap:5px}}
+@media(max-width:620px){.collection-chapter{padding-block:54px}.chapter-heading{display:block;margin-bottom:25px}.chapter-heading h2{font-size:clamp(38px,9vw,51px)}.chapter-heading>p:last-child{margin-top:18px;font-size:14px;max-width:none}.chapter-feature{display:flex;flex-direction:column;align-items:stretch;gap:27px}.chapter-stage{border-radius:24px}.chapter-access{margin-bottom:18px}.chapter-note{min-height:0;font-size:14px;max-width:none;margin-bottom:18px}.chapter-picker{gap:8px}.chapter-choice{min-width:60px;padding:10px 8px}.chapter-choice img{width:45px;height:45px}.chapter-identity h3{font-size:34px}}
+@media(max-width:360px){.chapter-choice{min-width:55px;padding-inline:6px}.chapter-picker{gap:5px}}
+@media(prefers-reduced-motion:reduce){.chapter-choice{transition:none}.chapter-choice:active{transform:none}}
 .chapter-announcement,.myth-announcement{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}

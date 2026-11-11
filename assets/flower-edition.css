@@ -36,9 +36,9 @@
 .flower-choice:disabled{cursor:wait}
 .flower-exclusive-seal{position:absolute;top:4px;right:4px;padding:2px 4px;border-radius:5px;background:#e6e6d6;color:#5f654f;font:650 8px/1.2 var(--font-body)}
 .flower-availability{max-width:370px;font-size:11px;line-height:1.7;color:#647177;margin:20px 0 0}
-.flower-back,.flower-retry{display:inline-block;color:#4f646b;font:500 11px/1.5 var(--font-body);padding:10px 0;background:none;border:0;cursor:pointer;text-decoration:none;margin-top:24px}
-.flower-edition button:focus-visible,.flower-back:focus-visible{outline:3px solid #527f98;outline-offset:4px}
+.flower-retry{display:inline-block;color:#4f646b;font:500 11px/1.5 var(--font-body);padding:10px 0;background:none;border:0;cursor:pointer;text-decoration:none;margin-top:24px}
+.flower-edition button:focus-visible{outline:3px solid #527f98;outline-offset:4px}
 .flower-sr-only,.flower-announcement{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
 @media(max-width:900px){.flower-heading,.flower-feature{gap:28px}.flower-choices{gap:5px}.flower-choice img{width:42px;height:42px}}
-@media(max-width:620px){.flower-edition{padding-block:54px}.flower-heading{display:block;margin-bottom:25px}.flower-heading h2{font-size:clamp(38px,9vw,51px)}.flower-heading>p:last-child{margin-top:18px;font-size:14px;max-width:none}.flower-feature{display:flex;flex-direction:column;align-items:stretch;gap:27px}.flower-stage{border-radius:24px}.flower-soon{margin-bottom:18px}.flower-selected-note{font-size:14px;max-width:none;margin-bottom:18px}.flower-selected-name{font-size:34px}.flower-choice img{width:45px;height:45px}.flower-back{margin-top:10px}}
+@media(max-width:620px){.flower-edition{padding-block:54px}.flower-heading{display:block;margin-bottom:25px}.flower-heading h2{font-size:clamp(38px,9vw,51px)}.flower-heading>p:last-child{margin-top:18px;font-size:14px;max-width:none}.flower-feature{display:flex;flex-direction:column;align-items:stretch;gap:27px}.flower-stage{border-radius:24px}.flower-soon{margin-bottom:18px}.flower-selected-note{font-size:14px;max-width:none;margin-bottom:18px}.flower-selected-name{font-size:34px}.flower-choice img{width:45px;height:45px}}
 @media(prefers-reduced-motion:reduce){.flower-choice{transition:none}.flower-choice:active{transform:none}}
