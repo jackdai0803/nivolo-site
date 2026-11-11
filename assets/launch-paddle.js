@@ -3,6 +3,7 @@ import { makeMyth } from './mythic-art.js?v=20261111-powers';
 import { idleAt, neutralPose } from './nivo-rig.js?v=20261110-mascot-size';
 
 import { makeClassicSkin, heroLooks } from './nivo-skins.js?v=20261110-sick-care';
+import { withLightweightIdle } from './nivo-idle.js?v=1';
 import { makeFlower, flowers } from './flower-art.js?v=20261110-launch-collection';
 
 // The launch page owns this rig so the flipper and its paddle share one motion.
@@ -30,9 +31,10 @@ if (container && card) {
     const flowerRig = flower && makeFlower(layer, flower, `launch-nivo-${look}`);
     const myth = myths.find(item => item.id === look);
     const mythRig = myth && makeMyth(layer, myth, `launch-nivo-${look}`);
-    const rig = mythRig ? { render: pose => mythRig.render(pose, pose.skinTimeMs, pose.skinMotion) } : flowerRig
+    const sourceRig = mythRig ? { render: pose => mythRig.render(pose, pose.skinTimeMs, pose.skinMotion) } : flowerRig
       ? { render: pose => flowerRig.render(pose, pose.skinTimeMs, pose.skinMotion) }
       : makeClassicSkin(layer, looks[index], `launch-nivo-${look}`);
+    const rig = withLightweightIdle(sourceRig, layer, look);
     const wing = layer.querySelector('[data-part="right-flipper"]');
     wing.insertAdjacentHTML('afterbegin', `<g data-launch-paddle opacity="0" aria-hidden="true">
       <rect x="1024" y="524" width="30" height="330" rx="15" fill="#e0c99f"/>
