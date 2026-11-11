@@ -62,6 +62,22 @@ export const collections = [
     ]
   },
   {
+    "id": "mythic",
+    "name": "Mythic Edition",
+    "zh": "神话系列",
+    "ids": [
+      "anubis",
+      "horus",
+      "athena",
+      "poseidon",
+      "artemis",
+      "apollo",
+      "zeus",
+      "medusa",
+      "hades"
+    ]
+  },
+  {
     "id": "flowers",
     "name": "Flower Edition",
     "zh": "花之系列",

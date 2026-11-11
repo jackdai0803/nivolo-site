@@ -1,3 +1,5 @@
+import { myths } from './mythic-catalog.js?v=20261111-mythic';
+import { makeMyth } from './mythic-art.js?v=20261111-mythic';
 import { idleAt, neutralPose } from './nivo-rig.js?v=20261110-mascot-size';
 
 import { makeClassicSkin, heroLooks } from './nivo-skins.js?v=20261110-sick-care';
@@ -13,7 +15,7 @@ if (container && card) {
   const t = key => strings[document.documentElement.lang.startsWith('zh') ? 'zh' : 'en'][key];
   container.setAttribute('aria-label', t('transform'));
   container.replaceChildren();
-  const looks = [...heroLooks, ...flowers, { id: 'early-supporter' }];
+  const looks = [...heroLooks, ...flowers, ...myths, { id: 'early-supporter' }];
   const characters = new Map();
   function mount(index) {
     if (characters.has(index)) return characters.get(index);
@@ -26,7 +28,9 @@ if (container && card) {
     container.append(layer);
     const flower = flowers.find(item => item.id === look);
     const flowerRig = flower && makeFlower(layer, flower, `launch-nivo-${look}`);
-    const rig = flowerRig
+    const myth = myths.find(item => item.id === look);
+    const mythRig = myth && makeMyth(layer, myth, `launch-nivo-${look}`);
+    const rig = mythRig ? { render: pose => mythRig.render(pose, pose.skinTimeMs, pose.skinMotion) } : flowerRig
       ? { render: pose => flowerRig.render(pose, pose.skinTimeMs, pose.skinMotion) }
       : makeClassicSkin(layer, looks[index], `launch-nivo-${look}`);
     const wing = layer.querySelector('[data-part="right-flipper"]');

@@ -1,11 +1,12 @@
-import { collections } from './nivo-collections.js?v=20261110-remove-grumpy';
+import { myths } from './mythic-catalog.js?v=20261111-mythic';
+import { collections } from './nivo-collections.js?v=20261111-mythic';
 import { idleAt, neutralPose } from './nivo-rig.js?v=20261110-mascot-size';
 
 const section = document.querySelector('#nivo-looks');
 if (section) {
   const copy = {
-    en: { viewSnowy: 'Meet Snowy Nivo', eyebrow: 'One little companion. Many sides.', title: 'Find your Nivo.', intro: 'Tap a look to select it.', introHover: 'Hover to preview. Click to select.', matching: 'Nivo + matching app icon', inspect: 'Explore icon ↗', pause: 'Pause Nivo', resume: 'Resume Nivo', swipe: 'Swipe to explore more looks →', choose: 'Choose a Nivo look', collection: 'Choose a collection', selected: '{name} selected', retry: 'Reload preview', unavailable: 'The preview could not load. Tap to try again.', garden: 'Explore the flower gardens ↗', founders: 'Meet the Early Supporter ↗', plus: 'Plus-exclusive', elements: 'Porcelain · 300 Krill. Jade · 500. Kintsugi · 800. Pearl · 50-day streak.', flowers: 'Eight flowers for everyone. Three Plus-exclusive editions.', supporters: 'A golden icon for the first 20 paying members.' },
-    zh: { viewSnowy: '认识雪花 Nivo', eyebrow: '同一位小伙伴，不一样的小个性。', title: '找到你的 Nivo。', intro: '轻点外观，即可选中。', introHover: '悬停预览，点击选中。', matching: 'Nivo 与相配的应用图标', inspect: '探索图标 ↗', pause: '暂停 Nivo', resume: '继续 Nivo', swipe: '滑动探索更多外观 →', choose: '选择 Nivo 外观', collection: '选择系列', selected: '已选择{name}', retry: '重新加载预览', unavailable: '预览暂时未能加载，轻点重试。', garden: '探索花园 ↗', founders: '认识早期支持者 ↗', plus: 'Plus 专属', elements: '青花瓷 · 300 磷虾。翡翠 · 500。金缮 · 800。珍珠 · 连续记录 50 天。', flowers: '八款花卉向所有人开放，三款为 Plus 专属。', supporters: '赠予最初 20 位付费会员的金色图标。' },
+    en: { myths: 'Explore the Mythic Edition ↗', mythic: 'Nine Plus-exclusive legends. 900 Krill each.', viewSnowy: 'Meet Snowy Nivo', eyebrow: 'One little companion. Many sides.', title: 'Find your Nivo.', intro: 'Tap a look to select it.', introHover: 'Hover to preview. Click to select.', matching: 'Nivo + matching app icon', inspect: 'Explore icon ↗', pause: 'Pause Nivo', resume: 'Resume Nivo', swipe: 'Swipe to explore more looks →', choose: 'Choose a Nivo look', collection: 'Choose a collection', selected: '{name} selected', retry: 'Reload preview', unavailable: 'The preview could not load. Tap to try again.', garden: 'Explore the flower gardens ↗', founders: 'Meet the Early Supporter ↗', plus: 'Plus-exclusive', elements: 'Porcelain · 300 Krill. Jade · 500. Kintsugi · 800. Pearl · 50-day streak.', flowers: 'Eight flowers for everyone. Three Plus-exclusive editions.', supporters: 'A golden icon for the first 20 paying members.' },
+    zh: { myths: '探索神话系列 ↗', mythic: '九位 Plus 专属传奇，每款 900 磷虾。', viewSnowy: '认识雪花 Nivo', eyebrow: '同一位小伙伴，不一样的小个性。', title: '找到你的 Nivo。', intro: '轻点外观，即可选中。', introHover: '悬停预览，点击选中。', matching: 'Nivo 与相配的应用图标', inspect: '探索图标 ↗', pause: '暂停 Nivo', resume: '继续 Nivo', swipe: '滑动探索更多外观 →', choose: '选择 Nivo 外观', collection: '选择系列', selected: '已选择{name}', retry: '重新加载预览', unavailable: '预览暂时未能加载，轻点重试。', garden: '探索花园 ↗', founders: '认识早期支持者 ↗', plus: 'Plus 专属', elements: '青花瓷 · 300 磷虾。翡翠 · 500。金缮 · 800。珍珠 · 连续记录 50 天。', flowers: '八款花卉向所有人开放，三款为 Plus 专属。', supporters: '赠予最初 20 位付费会员的金色图标。' },
   };
   // IDs match the production app. Only looks with an approved mascot are selectable.
   const looks = {
@@ -50,6 +51,15 @@ if (section) {
     if (plusIds.has(id)) { const badge = document.createElement('small'); badge.className = 'look-plus'; badge.textContent = 'Plus'; button.append(badge); }
     choices.append(button);
   }
+  for (const myth of myths) {
+    looks[myth.id] = [myth.name, myth.zh, myth.role, '一位传奇、一枚图标，还有自己的世界与力量。', myth.scene[0]];
+    plusIds.add(myth.id);
+    const button = document.createElement('button');
+    button.className = 'look-choice'; button.type = 'button'; button.dataset.look = myth.id; button.disabled = true;
+    button.setAttribute('aria-controls', 'look-preview');
+    button.innerHTML = `<img src="assets/myths/${myth.id}-icon.webp?v=20261111" width="256" height="256" alt="" loading="lazy" /><span>${myth.name}</span><small class="look-plus">Plus</small>`;
+    choices.append(button);
+  }
   looks['early-supporter'] = ['Early Supporter', '早期支持者', 'A little reminder you were here first. A golden icon for our first twenty paying members.', '纪念最早的相遇。赠予最初二十位付费会员的金色图标。', '#f3e8cc'];
   const supporter = document.createElement('button');
   supporter.className = 'look-choice'; supporter.type = 'button'; supporter.dataset.look = 'early-supporter'; supporter.disabled = true; supporter.setAttribute('aria-controls', 'look-preview');
@@ -73,7 +83,7 @@ if (section) {
       const tile = buttons.find(tile => tile.dataset.look === id); if (tile) row.append(tile);
     });
     group.append(heading, row);
-    const noteKey = collection.id === 'treasures' ? 'elements' : ['flowers', 'supporters'].includes(collection.id) ? collection.id : null;
+    const noteKey = collection.id === 'treasures' ? 'elements' : ['flowers', 'supporters', 'mythic'].includes(collection.id) ? collection.id : null;
     if (noteKey) {
       const note = document.createElement('p'); note.className = 'look-collection-note'; note.dataset.lookCopy = noteKey; group.append(note);
     }
@@ -86,7 +96,7 @@ if (section) {
   const inspect = section.querySelector('.look-inspect');
   const snowyLink = document.querySelector('.benefit-icon-preview');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-  let api, flowerApi, loading, selected = 'classic', chosen = 'classic', paused = false, visible = false, frame = 0, previous = null, elapsed = 0, serial = 0, failed = false;
+  let api, flowerApi, mythApi, loading, selected = 'classic', chosen = 'classic', paused = false, visible = false, frame = 0, previous = null, elapsed = 0, serial = 0, failed = false;
   let layers = [], transitionStart = 0;
 
   function text() {
@@ -97,10 +107,10 @@ if (section) {
       control.textContent = (zh() ? collection.zh : collection.name);
     });
     const detail = section.querySelector('.look-detail-link');
-    detail.hidden = !['flowers', 'supporters'].includes(activeCollection);
-    detail.href = activeCollection === 'flowers' ? '#flower-edition' : '#founders';
-    detail.textContent = t(activeCollection === 'flowers' ? 'garden' : 'founders');
-    inspect.hidden = flowerIds.has(selected);
+    detail.hidden = !['flowers', 'supporters', 'mythic'].includes(activeCollection);
+    detail.href = activeCollection === 'mythic' ? '#mythic-edition' : activeCollection === 'flowers' ? '#flower-edition' : '#founders';
+    detail.textContent = t(activeCollection === 'mythic' ? 'myths' : activeCollection === 'flowers' ? 'garden' : 'founders');
+    inspect.hidden = flowerIds.has(selected) || myths.some(myth => myth.id === selected);
     section.querySelector('.look-matching-icon').src = buttons.find(button => button.dataset.look === selected).querySelector('img').src;
     snowyLink?.setAttribute('aria-label', t('viewSnowy'));
     section.querySelector('.look-name').textContent = name();
@@ -155,7 +165,9 @@ if (section) {
       const uid = `collection-nivo-${++serial}`;
       const flower = flowerApi.flowers.find(flower => flower.id === id);
       const flowerRig = flower && flowerApi.makeFlower(node, flower, uid);
-      const rig = flowerRig ? { render: pose => flowerRig.render(pose, pose.skinTimeMs, pose.skinMotion) } : api.makeClassicSkin(node, { id }, uid);
+      const myth = myths.find(myth => myth.id === id);
+      const mythRig = myth && mythApi.makeMyth(node, myth, uid);
+      const rig = mythRig ? { render: pose => mythRig.render(pose, pose.skinTimeMs, pose.skinMotion) } : flowerRig ? { render: pose => flowerRig.render(pose, pose.skinTimeMs, pose.skinMotion) } : api.makeClassicSkin(node, { id }, uid);
       node.querySelector('svg').setAttribute('aria-hidden', 'true');
       if (!layers.length) host.replaceChildren();
       host.append(node);
@@ -181,8 +193,8 @@ if (section) {
     failed = false;
     loading = (async () => {
       try {
-        const [module, flowers] = await Promise.all([import('./nivo-skins.js?v=20261110-sick-care'), import('./flower-art.js?v=20261110-mascot-size')]);
-        flowerApi = flowers;
+        const [module, flowers, mythic] = await Promise.all([import('./nivo-skins.js?v=20261110-sick-care'), import('./flower-art.js?v=20261110-mascot-size'), import('./mythic-art.js?v=20261111-mythic')]);
+        flowerApi = flowers; mythApi = mythic;
         const image = new Image();
         image.src = new URL('nivo-body.png', import.meta.url).href;
         await image.decode();

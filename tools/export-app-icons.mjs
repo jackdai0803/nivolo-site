@@ -24,6 +24,10 @@ for (const id of icons) {
 for (const file of fs.readdirSync(path.join(app,'src/assets/flowers')).filter(f => f.endsWith('.png'))) {
  await sharp(path.join(app,'src/assets/flowers',file)).resize(256,256).webp({quality:94}).toFile(path.join(site,'assets/flowers',file.replace('.png','-icon.webp')));
 }
+fs.mkdirSync(path.join(site,'assets/myths'),{recursive:true});
+for (const file of fs.readdirSync(path.join(app,'src/assets/myths')).filter(f => f.endsWith('.png'))) {
+ await sharp(path.join(app,'src/assets/myths',file)).resize(256,256).webp({quality:94}).toFile(path.join(site,'assets/myths',file.replace('.png','-icon.webp')));
+}
 for (const file of ['index.html','launch.html']) {
  const target=path.join(site,file);
  let html=fs.readFileSync(target,'utf8');
