@@ -1,6 +1,6 @@
-import { createRig, idleAt, neutralPose, smallWinAt, celebrationAt, SMALL_WIN_MS, CELEBRATION_MS } from './nivo-rig.js?v=20261110-mascot-size';
-import { makeClassicSkin, heroLooks } from './nivo-skins.js?v=20261110-sick-care';
-import { withLightweightIdle } from './nivo-idle.js?v=1';
+import { createRig, idleAt, neutralPose, smallWinAt, celebrationAt, SMALL_WIN_MS, CELEBRATION_MS } from './nivo-rig.js?v=20261112-nivo-soft-edge';
+import { makeClassicSkin, heroLooks } from './nivo-skins.js?v=20261112-nivo-soft-edge';
+import { withLightweightIdle } from './nivo-idle.js?v=20261112-nivo-soft-edge';
 
 const strings = {
   en: { pause: 'Pause animation', resume: 'Resume animation', off: 'Sound: off', on: 'Sound: on' },

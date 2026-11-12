@@ -221,7 +221,9 @@ export function applyClassicCoat(svg, uid, colors, markings = '') {
  const source=defs.querySelector(`[id="${uid}-art"]`);source.id=`${uid}-classic-source`;
  const plumageCoverage = '1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 .75 .25 0 0';
  defs.append(element(`<filter id="${uid}-opaque-art" color-interpolation-filters="sRGB"><feComponentTransfer><feFuncA type="linear" slope="0" intercept="1"/></feComponentTransfer></filter>
- <mask id="${uid}-coat-silhouette" maskUnits="userSpaceOnUse" x="0" y="0" width="1254" height="1254" style="mask-type:alpha"><use href="#${uid}-classic-source"/></mask>
+ <!-- Clean only the outer alpha fringe; colour, face and accessories stay sharp. -->
+ <filter id="${uid}-coat-edge" x="-2%" y="-2%" width="104%" height="104%"><feMorphology in="SourceAlpha" operator="erode" radius="2"/><feGaussianBlur stdDeviation=".65"/></filter>
+ <mask id="${uid}-coat-silhouette" maskUnits="userSpaceOnUse" x="0" y="0" width="1254" height="1254" style="mask-type:alpha"><use href="#${uid}-classic-source" filter="url(#${uid}-coat-edge)"/></mask>
  <filter id="${uid}-plumage-selection" color-interpolation-filters="sRGB"><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncR type="table" tableValues="${plumageCoverage}"/><feFuncG type="table" tableValues="${plumageCoverage}"/><feFuncB type="table" tableValues="${plumageCoverage}"/><feFuncA type="linear" slope="0" intercept="1"/></feComponentTransfer></filter>
  <mask id="${uid}-plumage-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="1254" height="1254" style="mask-type:luminance"><use href="#${uid}-classic-source" filter="url(#${uid}-plumage-selection)"/>${EYES.map(e=>`<ellipse cx="${e.cx}" cy="${e.cy}" rx="${e.rx+14}" ry="${e.ry+14}" fill="#000"/>`).join('')}<path d="M574 661Q565 621 600 592Q661 546 739 595L737 632Q737 714 660 716Q612 710 591 665Z" fill="#000"/></mask>
  <linearGradient id="${uid}-coat-gradient" x1="0" y1="0" x2=".5" y2="1"><stop stop-color="${colors[0]}"/><stop offset="1" stop-color="${colors[1]}"/></linearGradient>
