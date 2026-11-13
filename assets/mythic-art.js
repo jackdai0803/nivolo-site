@@ -1782,13 +1782,13 @@ function ankh(u) {
 function owl(u) {
 	return `<g>${path("M-67 37Q-80-5-62-39L-68-75Q-38-73-24-55Q0-65 24-55Q42-74 68-75L62-39Q80-5 67 37Q54 79 0 80Q-54 79-67 37Z", `url(#${u}-bronze)`, "stroke=\"#765034\" stroke-width=\"5\"")}${path("M-58 17Q-66-36-30-40Q-9-41 0-23Q9-41 30-40Q66-36 58 17Q44 61 0 65Q-44 61-58 17Z", "#fff0ca")}${[-29, 29].map((x) => `<circle cx="${x}" cy="-5" r="23" fill="#fffdf0"/><g data-myth-motion="owl-eye"><ellipse cx="${x}" cy="-4" rx="12" ry="15" fill="#273b3e"/><circle cx="${x - 4}" cy="-10" r="5" fill="white"/></g>`).join("")}${path("M-10 14Q0 9 10 14L0 29Z", gold(u))}${line("M-18 42l8 7M10 49l8-7", "#cfab6d", 5)}${path("M-65-4Q-88 19-59 55L-43 41Z", "#9b6b42")}${path("M65-4Q88 19 59 55L43 41Z", "#9b6b42")}${line("M-38 78H-17M17 78H38", gold(u), 10)}</g>`;
 }
-function cerberusShadow(u) {
+function cerberusShadow(u, { compact = false } = {}) {
 	const head = path("M-78 96Q-101 34-75-26L-90-101Q-53-92-23-59Q0-68 23-59Q53-92 90-101L75-26Q101 34 78 96L54 169H-54Z", "currentColor") + path("M-44-2Q-26-11-10-1L-14 7Q-31 10-44-2ZM44-2Q26-11 10-1L14 7Q31 10 44-2Z", "var(--hound-eyes, #dac5df)") + path("M-24 25Q0 9 24 25L30 58Q0 85-30 58Z", "var(--hound-eyes, #dac5df)", "opacity=\".38\"") + path("M-13 48Q0 40 13 48L0 61Z", "currentColor");
 	const profile = path("M-64 155Q-85 60-60 10L-58-90L-16-58L20-91L27-34Q60-24 68 5L121 24Q132 31 124 45L94 65Q72 79 45 80L40 155Z", "currentColor") + path("M18-11Q34-16 45-6L32 1Q21 0 18-11Z", "var(--hound-eyes, #dac5df)");
-	return `<defs><linearGradient id="${u}-hound-fade" gradientUnits="userSpaceOnUse" x1="0" y1="100" x2="0" y2="1050"><stop offset="0" stop-color="white"/><stop offset=".55" stop-color="white" stop-opacity=".8"/><stop offset="1" stop-color="white" stop-opacity="0"/></linearGradient><mask id="${u}-hound-mask" maskUnits="userSpaceOnUse" x="100" y="-35" width="1100" height="1210"><rect x="100" y="-35" width="1100" height="1210" fill="url(#${u}-hound-fade)"/></mask></defs><g data-cerberus-shadow mask="url(#${u}-hound-mask)" opacity=".3" style="color:var(--hound-shadow, #493251)"><g data-myth-motion="hound-shadow">${path("M227 382Q350 313 471 368Q650 219 826 369Q983 318 1089 387L1040 685Q1018 934 652 1050Q286 934 257 685Z", "currentColor")}${[
+	return `<defs><linearGradient id="${u}-hound-fade" gradientUnits="userSpaceOnUse" x1="0" y1="${compact ? 0 : 100}" x2="0" y2="${compact ? 330 : 1050}"><stop offset="0" stop-color="white"/><stop offset=".55" stop-color="white" stop-opacity=".8"/><stop offset="1" stop-color="white" stop-opacity="0"/></linearGradient><mask id="${u}-hound-mask" maskUnits="userSpaceOnUse" x="100" y="-35" width="1100" height="1210"><rect x="100" y="-35" width="1100" height="1210" fill="url(#${u}-hound-fade)"/></mask></defs><g data-cerberus-shadow mask="url(#${u}-hound-mask)" opacity=".3" style="color:var(--hound-shadow, #493251)"><g data-myth-motion="hound-shadow">${path(compact ? "M227 250Q350 190 471 250Q650 210 826 250Q983 190 1089 250L1040 330H257Z" : "M227 382Q350 313 471 368Q650 219 826 369Q983 318 1089 387L1040 685Q1018 934 652 1050Q286 934 257 685Z", "currentColor")}${[
 		[
 			305,
-			282,
+			compact ? 170 : 282,
 			-12,
 			1.12
 		],
@@ -1800,7 +1800,7 @@ function cerberusShadow(u) {
 		],
 		[
 			1e3,
-			282,
+			compact ? 170 : 282,
 			12,
 			1.12
 		]
@@ -2352,7 +2352,7 @@ function mythIcon(f, u, label = f.name, { tintedEyes = true, splash = false, lay
  ${eyeTint(u, EYE_COLORS[f.id])}
 
  </defs>${layer === "foreground" ? "" : `<rect width="256" height="${height}" fill="url(#${u}-coat)"/><rect width="256" height="${height}" fill="url(#${u}-sheen)"/>`}
- ${layer === "background" ? "" : `<g data-icon-art transform="translate(0 ${offset})">${f.id === "hades" ? `<g transform="translate(0 45) scale(.204)" opacity=".45">${cerberusShadow(u)}</g>` : ""}<use href="#${u}-face"/>
+ ${layer === "background" ? "" : `<g data-icon-art transform="translate(0 ${offset})">${f.id === "hades" ? `<g data-icon-companion transform="translate(50 215) scale(.12)" opacity=".9">${cerberusShadow(u, { compact: true })}</g>` : ""}<use href="#${u}-face"/>
  ${[[
 		67.5,
 		119.5,
@@ -2362,7 +2362,7 @@ function mythIcon(f, u, label = f.name, { tintedEyes = true, splash = false, lay
 		119.5,
 		classic_right_eye_default
 	]].map(([x, y, href]) => `<g data-icon-eye data-pivot="${x},${y}"><image href="${href}" width="256" height="256" ${tintedEyes ? `filter="url(#${u}-eye-tint)"` : ""}/></g>`).join("")}
-
+ 
  ${iconHeadpiece(f.id, u)}
  ${iconDetails(f, u)}</g>`}</svg>`;
 }
