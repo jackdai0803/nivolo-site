@@ -1916,7 +1916,7 @@ function powerStrength(ms) {
 	const q = ms / POWER_MS;
 	return smooth(q / .18) * (1 - smooth((q - .74) / .26));
 }
-var WARD_CENTER = {
+var BODY_CENTER = {
 	x: 634.5,
 	y: 657.5
 };
@@ -1928,9 +1928,9 @@ function makePower(svg, f, u, motion) {
 	let back = "", front = "";
 	svg.querySelector("defs").insertAdjacentHTML("beforeend", `<filter id="${u}-power-glow" x="-70%" y="-70%" width="240%" height="240%"><feDropShadow dx="0" dy="0" stdDeviation="11" flood-color="${f.id === "poseidon" ? "#b7f5e8" : f.id === "hades" ? "#c8a3e0" : "#ffe3a0"}" flood-opacity=".8"/></filter>`);
 	if (f.id === "anubis") {
-		back = layer("ward", `<ellipse cx="${WARD_CENTER.x}" cy="${WARD_CENTER.y}" rx="460" ry="465" fill="#d6ad54" fill-opacity=".06" stroke="#a8792e" stroke-width="19"/><ellipse data-power-trace pathLength="1" stroke-dasharray="1 1" cx="${WARD_CENTER.x}" cy="${WARD_CENTER.y}" rx="460" ry="465" fill="none" stroke="#ffe2a0" stroke-width="11"/><ellipse cx="${WARD_CENTER.x}" cy="${WARD_CENTER.y}" rx="418" ry="423" fill="none" stroke="#ce9d43" stroke-width="5" opacity=".6"/>${Array.from({ length: 12 }, (_, i) => {
+		back = layer("ward", `<ellipse cx="${BODY_CENTER.x}" cy="${BODY_CENTER.y}" rx="460" ry="465" fill="#d6ad54" fill-opacity=".06" stroke="#a8792e" stroke-width="19"/><ellipse data-power-trace pathLength="1" stroke-dasharray="1 1" cx="${BODY_CENTER.x}" cy="${BODY_CENTER.y}" rx="460" ry="465" fill="none" stroke="#ffe2a0" stroke-width="11"/><ellipse cx="${BODY_CENTER.x}" cy="${BODY_CENTER.y}" rx="418" ry="423" fill="none" stroke="#ce9d43" stroke-width="5" opacity=".6"/>${Array.from({ length: 12 }, (_, i) => {
 			const a = i * Math.PI / 6;
-			return particle(i, `<g transform="translate(${WARD_CENTER.x + 460 * Math.cos(a)} ${WARD_CENTER.y + 465 * Math.sin(a)}) rotate(${i * 30})">${gem(0, 0, "#ffe8ae", 27)}${line("M-9-42H9M0-50V-34", "#e9c574", 5)}</g>`);
+			return particle(i, `<g transform="translate(${BODY_CENTER.x + 460 * Math.cos(a)} ${BODY_CENTER.y + 465 * Math.sin(a)}) rotate(${i * 30})">${gem(0, 0, "#ffe8ae", 27)}${line("M-9-42H9M0-50V-34", "#e9c574", 5)}</g>`);
 		}).join("")}`);
 		front = layer("ankh-light", [
 			[190, 540],
@@ -1940,7 +1940,7 @@ function makePower(svg, f, u, motion) {
 		].map(([x, y]) => sparkle(x, y, 1.2, "#e5ba66")).join(""));
 	}
 	if (f.id === "horus") {
-		back = [-1, 1].map((s) => layer(s < 0 ? "wing-l" : "wing-r", `<g transform="translate(650 700) scale(${s} 1)">${path("M0 80Q130-190 470-365Q432-198 345-143L440-219Q406-80 285-31L375-94Q302 70 115 133Z", gold(u), "opacity=\".82\"")}${[
+		back = [-1, 1].map((s) => layer(s < 0 ? "wing-l" : "wing-r", `<g transform="translate(${BODY_CENTER.x} 700) scale(${s} 1)">${path("M0 80Q130-190 470-365Q432-198 345-143L440-219Q406-80 285-31L375-94Q302 70 115 133Z", gold(u), "opacity=\".82\"")}${[
 			0,
 			1,
 			2,
@@ -1949,7 +1949,7 @@ function makePower(svg, f, u, motion) {
 		front = layer("feathers", Array.from({ length: 8 }, (_, i) => particle(i, path("M0-36Q25-8 0 37Q-20 2 0-36Z", gold(u)) + line("M0-22V24", "#fff2c7", 3))).join(""));
 	}
 	if (f.id === "athena") {
-		back = layer("shield", path(shield, "#a5b888", "fill-opacity=\".12\" stroke=\"#a2b17a\" stroke-width=\"7\"") + trace(shield, "#e4e9be", 12) + line("M650 250Q840 360 995 362V657Q978 903 650 1042Q322 903 305 657V362Q460 360 650 250Z", "#c5d1a2", 4));
+		back = layer("shield", `<g data-power-body-frame transform="translate(${BODY_CENTER.x} ${BODY_CENTER.y}) scale(1.24 1.14) translate(-650 -647.5)">` + path(shield, "#a5b888", "fill-opacity=\".12\" stroke=\"#a2b17a\" stroke-width=\"7\"") + trace(shield, "#e4e9be", 12) + line("M650 250Q840 360 995 362V657Q978 903 650 1042Q322 903 305 657V362Q460 360 650 250Z", "#c5d1a2", 4) + "</g>");
 		front = layer("olives", Array.from({ length: 8 }, (_, i) => particle(i, "<ellipse rx=\"15\" ry=\"34\" fill=\"#a0b581\"/>" + line("M0-22V22", "#e1e7bd", 3))).join(""));
 	}
 	if (f.id === "poseidon") {
@@ -1961,7 +1961,7 @@ function makePower(svg, f, u, motion) {
 		front = layer("moon-trail", trace("M276 800Q248 545 221 275", "#d3edf3", 8)) + layer("moon-impact", `<circle cx="216" cy="200" r="74" fill="none" stroke="#d0e9f1" stroke-width="6"/>${Array.from({ length: 6 }, (_, i) => particle(i, sparkle(0, 0, .8, "#edf7fa"))).join("")}`);
 	}
 	if (f.id === "apollo") {
-		back = layer("sun", `<circle cx="650" cy="525" r="340" fill="#efc678" fill-opacity=".12" stroke="#e1b360" stroke-width="7"/>${Array.from({ length: 12 }, (_, i) => `<g data-power-ray="${i}" transform="translate(650 525) rotate(${i * 30})">${line("M0-364V-428", "#d4a04f", 11)}</g>`).join("")}`);
+		back = layer("sun", `<circle cx="${BODY_CENTER.x}" cy="525" r="340" fill="#efc678" fill-opacity=".12" stroke="#e1b360" stroke-width="7"/>${Array.from({ length: 12 }, (_, i) => `<g data-power-ray="${i}" transform="translate(${BODY_CENTER.x} 525) rotate(${i * 30})">${line("M0-364V-428", "#d4a04f", 11)}</g>`).join("")}`);
 		front = layer("music", Array.from({ length: 5 }, (_, i) => particle(i, path("M0 5V-58L44-71V-9H33V-53L12-47V5Z", "#d5a24d") + "<ellipse cy=\"6\" rx=\"17\" ry=\"11\" fill=\"#d5a24d\"/><ellipse cx=\"33\" cy=\"-7\" rx=\"17\" ry=\"11\" fill=\"#d5a24d\"/>")).join(""));
 	}
 	if (f.id === "zeus") {
@@ -1974,7 +1974,7 @@ function makePower(svg, f, u, motion) {
 			0,
 			1,
 			2
-		].map((i) => `<g data-power-ripple="${i}"><ellipse cx="650" cy="700" rx="440" ry="440" fill="none" stroke="#8cae83" stroke-width="${9 - i * 2}"/></g>`).join(""));
+		].map((i) => `<g data-power-ripple="${i}"><ellipse cx="${BODY_CENTER.x}" cy="${BODY_CENTER.y}" rx="440" ry="440" fill="none" stroke="#8cae83" stroke-width="${9 - i * 2}"/></g>`).join(""));
 		front = layer("stones", Array.from({ length: 8 }, (_, i) => particle(i, path("M-24-28L15-38L36-5L20 26L-19 30L-36-1Z", "#94a08f", "stroke=\"#c5cdbb\" stroke-width=\"4\"") + line("M-24-28L-5-4L36-5M-5-4L-19 30", "#bdc6b2", 3))).join(""));
 	}
 	if (f.id === "hades") {
@@ -1982,6 +1982,13 @@ function makePower(svg, f, u, motion) {
 		front = layer("embers", Array.from({ length: 8 }, (_, i) => particle(i, path("M0 20C-30 3-17-14 1-39C-2-13 25-9 17 10Q12 23 0 20Z", "#b49ac6") + path("M0 16Q-11 6 2-12Q16 11 0 16Z", "#e5d8ec"))).join(""));
 	}
 	const rear = group(back), fore = group(front);
+	const followsBody = [
+		"anubis",
+		"horus",
+		"athena",
+		"apollo",
+		"medusa"
+	].includes(f.id);
 	for (const node of [rear, fore]) {
 		node.dataset.power = f.id;
 		node.setAttribute("opacity", "0");
@@ -2005,24 +2012,28 @@ function makePower(svg, f, u, motion) {
 		const q = ms === null ? 0 : clamp01(ms / POWER_MS), e = powerStrength(ms), charge = smooth(q / .3), release = smooth((q - .3) / .18), settle = 1 - smooth((q - .72) / .28);
 		rear.setAttribute("opacity", String(e));
 		fore.setAttribute("opacity", String(e));
-		if (f.id === "anubis") rear.setAttribute("transform", motion.getAttribute("transform") || "");
+		if (followsBody) {
+			const poseTransform = motion.getAttribute("transform") || "";
+			rear.setAttribute("transform", poseTransform);
+			fore.setAttribute("transform", poseTransform);
+		}
 		const traced = f.id === "zeus" ? smooth((q - .3) / .12) : f.id === "artemis" ? smooth((q - .35) / .17) : smooth((q - .05) / .42);
 		for (const node of traces) node.setAttribute("stroke-dashoffset", String(1 - traced));
-		set("ward", center(WARD_CENTER.x, WARD_CENTER.y, .78 + charge * .22 + release * .015));
+		set("ward", center(BODY_CENTER.x, BODY_CENTER.y, .78 + charge * .22 + release * .015));
 		set("ankh-light", `translate(0 ${-release * 55})`, release * .8);
 		for (const source of [charm, trident]) if (source) if (e > .2) source.setAttribute("filter", `url(#${u}-power-glow)`);
 		else source.removeAttribute("filter");
 		const spread = .3 + .7 * smooth((q - .08) / .36);
-		set("wing-l", `translate(650 700) rotate(${18 * (1 - spread)}) scale(${spread} ${.74 + .26 * spread}) translate(-650 -700)`);
-		set("wing-r", `translate(650 700) rotate(${-18 * (1 - spread)}) scale(${spread} ${.74 + .26 * spread}) translate(-650 -700)`);
-		set("shield", center(650, 650, .84 + .16 * charge));
+		set("wing-l", `translate(${BODY_CENTER.x} 700) rotate(${18 * (1 - spread)}) scale(${spread} ${.74 + .26 * spread}) translate(${-BODY_CENTER.x} -700)`);
+		set("wing-r", `translate(${BODY_CENTER.x} 700) rotate(${-18 * (1 - spread)}) scale(${spread} ${.74 + .26 * spread}) translate(${-BODY_CENTER.x} -700)`);
+		set("shield", center(BODY_CENTER.x, BODY_CENTER.y, .84 + .16 * charge));
 		set("tide", `translate(${-190 * (1 - release)} ${80 * (1 - release) + 30 * (1 - settle)})`);
 		set("foam", `translate(${(release - .5) * 85} ${15 * (1 - settle)})`, release * .8);
 		set("moon", `translate(0 ${-charge * 10})`, .6 + .4 * release);
 		set("moon-trail", "", smooth((q - .34) / .07) * (1 - smooth((q - .53) / .15)));
 		const impact = smooth((q - .48) / .22);
 		set("moon-impact", center(216, 200, .4 + impact * .9), smooth((q - .48) / .05) * (1 - smooth((q - .64) / .16)));
-		set("sun", center(650, 525, .8 + .2 * charge, release * 12));
+		set("sun", center(BODY_CENTER.x, 525, .8 + .2 * charge, release * 12));
 		rays.forEach((n, i) => n.setAttribute("opacity", String(smooth((q - .12 - i * .018) / .16))));
 		set("cloud-l", `translate(${-105 * (1 - charge)} ${-18 * charge})`);
 		set("cloud-r", `translate(${100 * (1 - charge)} ${-18 * charge})`);
@@ -2030,7 +2041,7 @@ function makePower(svg, f, u, motion) {
 		set("strike-ground", center(1055, 1050, .5 + release * .7), smooth((q - .42) / .08) * (1 - smooth((q - .63) / .2)));
 		ripples.forEach((n, i) => {
 			const r = clamp01((q - .18 - i * .11) / .48);
-			n.setAttribute("transform", center(650, 700, .65 + r * .5));
+			n.setAttribute("transform", center(BODY_CENTER.x, BODY_CENTER.y, .65 + r * .5));
 			n.setAttribute("opacity", String(Math.sin(r * Math.PI) * .65));
 		});
 		set("gate", `translate(650 1090) scale(${.72 + .28 * charge} 1) translate(-650 -1090)`);
@@ -2041,14 +2052,14 @@ function makePower(svg, f, u, motion) {
 			if (f.id === "anubis") opacity = smooth((q - .08 - i * .023) / .12);
 			if (f.id === "horus") {
 				const p = clamp01((q - .3 - index * .035) / .6);
-				x = 650 + side * (325 + index * 44 + Math.sin(p * Math.PI) * 45);
+				x = BODY_CENTER.x + side * (325 + index * 44 + Math.sin(p * Math.PI) * 45);
 				y = 545 + index * 92 + p * 215;
 				a = side * (20 + Math.sin(p * 5 + index) * 18);
 				opacity = Math.sin(p * Math.PI) * .85;
 			}
 			if (f.id === "athena") {
 				const p = smooth((q - .18 - index * .055) / .27);
-				x = 650 + side * (453 - index * 13);
+				x = BODY_CENTER.x + side * (500 - index * 15);
 				y = 925 - index * 88 - p * 55;
 				a = side * (28 + 10 * p);
 				s = .6 + .4 * p;
@@ -2084,7 +2095,7 @@ function makePower(svg, f, u, motion) {
 			}
 			if (f.id === "medusa") {
 				const lift = smooth((q - .16 - index * .04) / .24) * settle;
-				x = 650 + side * (432 + index * 24 + Math.sin(q * 6 + index) * 15 * lift);
+				x = BODY_CENTER.x + side * (432 + index * 24 + Math.sin(q * 6 + index) * 15 * lift);
 				y = 1010 - index * 92 - lift * (150 + index * 10);
 				a = side * (12 + index * 15 + release * 42) * lift;
 				s = .65 + index * .13;

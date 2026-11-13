@@ -68,7 +68,7 @@ if (section) {
     if (api || loading) return loading;
     loading = (async () => {
       try {
-        api = await import('./mythic-art.js?v=20261112-nivo-soft-edge');
+        api = await import('./mythic-art.js?v=20261113-power-alignment');
         const image = new Image(); image.src = new URL('./nivo-body.png', import.meta.url); await image.decode();
         failed = false; select(selected.id);
         section.querySelectorAll('button').forEach(button => button.disabled = false);
