@@ -192,6 +192,8 @@ export function createRig(container, source, id, label, appearance = "classic") 
         lid.setAttribute('opacity', String(clamp((pose.blink - .62) / .3)));
         lid.setAttribute('d', pose.happy > .2 ? 'M-59 10 Q0 -43 59 10' : 'M-59 8 Q0 38 59 8');
       }
+      // The surrounding sparkle burst shares the character's jump, tilt and scale.
+      nodes.SparkleBurst.setAttribute('transform', nodes.motion.getAttribute('transform'));
       nodes.SparkleBurst.setAttribute('opacity', String(pose.sparkle));
       for (const [index, star] of sparkles.entries()) {
         star.setAttribute('opacity', index < (pose.sparkleLimit ?? sparkles.length) ? '1' : '0');

@@ -1,10 +1,10 @@
 import { myths } from './mythic-catalog.js?v=20261111-mythic';
-import { makeMyth } from './mythic-art.js?v=20261113-power-alignment';
-import { idleAt, neutralPose } from './nivo-rig.js?v=20261112-nivo-soft-edge';
+import { makeMyth } from './mythic-art.js?v=20261113-all-effect-alignment';
+import { idleAt, neutralPose } from './nivo-rig.js?v=20261113-all-effect-alignment';
 
-import { makeClassicSkin, heroLooks } from './nivo-skins.js?v=20261112-nivo-soft-edge';
-import { withLightweightIdle } from './nivo-idle.js?v=20261112-nivo-soft-edge';
-import { makeFlower, flowers } from './flower-art.js?v=20261112-nivo-soft-edge';
+import { makeClassicSkin, heroLooks } from './nivo-skins.js?v=20261113-all-effect-alignment';
+import { withLightweightIdle } from './nivo-idle.js?v=20261113-all-effect-alignment';
+import { makeFlower, flowers } from './flower-art.js?v=20261113-all-effect-alignment';
 
 // The launch page owns this rig so the flipper and its paddle share one motion.
 const container = document.querySelector('[data-launch-nivo]');

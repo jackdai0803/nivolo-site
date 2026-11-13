@@ -501,6 +501,7 @@ function createRig(container, source, id, label, appearance = "classic") {
 				lid.setAttribute("opacity", String(clamp((pose.blink - .62) / .3)));
 				lid.setAttribute("d", pose.happy > .2 ? "M-59 10 Q0 -43 59 10" : "M-59 8 Q0 38 59 8");
 			}
+			nodes.SparkleBurst.setAttribute("transform", nodes.motion.getAttribute("transform"));
 			nodes.SparkleBurst.setAttribute("opacity", String(pose.sparkle));
 			for (const [index, star] of sparkles.entries()) {
 				star.setAttribute("opacity", index < (pose.sparkleLimit ?? sparkles.length) ? "1" : "0");
@@ -1982,13 +1983,6 @@ function makePower(svg, f, u, motion) {
 		front = layer("embers", Array.from({ length: 8 }, (_, i) => particle(i, path("M0 20C-30 3-17-14 1-39C-2-13 25-9 17 10Q12 23 0 20Z", "#b49ac6") + path("M0 16Q-11 6 2-12Q16 11 0 16Z", "#e5d8ec"))).join(""));
 	}
 	const rear = group(back), fore = group(front);
-	const followsBody = [
-		"anubis",
-		"horus",
-		"athena",
-		"apollo",
-		"medusa"
-	].includes(f.id);
 	for (const node of [rear, fore]) {
 		node.dataset.power = f.id;
 		node.setAttribute("opacity", "0");
@@ -2012,11 +2006,9 @@ function makePower(svg, f, u, motion) {
 		const q = ms === null ? 0 : clamp01(ms / POWER_MS), e = powerStrength(ms), charge = smooth(q / .3), release = smooth((q - .3) / .18), settle = 1 - smooth((q - .72) / .28);
 		rear.setAttribute("opacity", String(e));
 		fore.setAttribute("opacity", String(e));
-		if (followsBody) {
-			const poseTransform = motion.getAttribute("transform") || "";
-			rear.setAttribute("transform", poseTransform);
-			fore.setAttribute("transform", poseTransform);
-		}
+		const poseTransform = motion.getAttribute("transform") || "";
+		rear.setAttribute("transform", poseTransform);
+		fore.setAttribute("transform", poseTransform);
 		const traced = f.id === "zeus" ? smooth((q - .3) / .12) : f.id === "artemis" ? smooth((q - .35) / .17) : smooth((q - .05) / .42);
 		for (const node of traces) node.setAttribute("stroke-dashoffset", String(1 - traced));
 		set("ward", center(BODY_CENTER.x, BODY_CENTER.y, .78 + charge * .22 + release * .015));
@@ -2169,7 +2161,7 @@ function makeMyth(host, f, u, label = f.name, { tintedEyes = true } = {}) {
 			flipper: motion.querySelector(`[data-part="${part}"]`)
 		});
 	};
-	let ornament = null, effects = null;
+	let ornament = null, effects = null, companion = null;
 	if (f.id === "anubis" || f.id === "horus") motion.append(group(collar(u, f.id === "anubis" ? "#315f83" : "#34669b")));
 	if (f.id === "anubis") {
 		const chin = fit.collar.find(([x]) => x === 0)[1];
@@ -2193,7 +2185,10 @@ function makeMyth(host, f, u, label = f.name, { tintedEyes = true } = {}) {
 		motion.append(group(`${path("M352 741Q452 801 560 801L398 953Q343 866 352 741Z", c)}${gem(387, 798, f.id === "hades" ? "#b3829b" : f.id === "athena" ? "#dcc18a" : "#cfdee1", 23)}`));
 	}
 	if (f.id === "athena") attach("left-flipper", `<g transform="translate(278 779) scale(.86)"><g data-myth-motion="owl">${owl(u)}</g></g>`);
-	if (f.id === "hades") motion.before(group(cerberusShadow(u)));
+	if (f.id === "hades") {
+		companion = group(cerberusShadow(u));
+		motion.before(companion);
+	}
 	if (f.id === "hermes") {
 		motion.append(group(`${line("M405 775Q638 854 854 898", "#8f5b3c", 31)}${line("M405 775Q638 854 854 898", "#e9bc80", 6)}<g transform="translate(799 954) rotate(-12)">${path("M-72-53Q0-80 75-53L72 46Q0 74-72 46Z", "#a86d44")}${path("M-72-53Q0-80 75-53L73-9Q0 23-72-9Z", "#d5a471")}${line("M-61 32Q0 52 61 32", "#eac08c", 4)}${path("M-15-22H16V7H-15Z", gold(u))}</g>`));
 		motion.append(group(`<g transform="translate(431 1073) rotate(-7)">${path("M-45-12Q0-46 45-12L50 17Q0 40-52 17Z", "#a86d44")}${line("M-26-15L-4 13L22-20", gold(u), 10)}<g transform="translate(-40 1) rotate(-35) scale(.38)"><g data-myth-motion="sandal">${wing(u)}</g></g></g><g transform="translate(738 1058) rotate(-15)">${path("M-45-12Q0-46 45-12L50 17Q0 40-52 17Z", "#a86d44")}${line("M-26-15L-4 13L22-20", gold(u), 10)}<g transform="translate(40 1) scale(-.38 .38) rotate(-35)"><g data-myth-motion="sandal">${wing(u)}</g></g></g>`));
@@ -2287,6 +2282,9 @@ function makeMyth(host, f, u, label = f.name, { tintedEyes = true } = {}) {
 			p.right -= 7 * strength;
 		}
 		rig.render(p);
+		const poseTransform = motion.getAttribute("transform") || "";
+		effects?.setAttribute("transform", poseTransform);
+		companion?.setAttribute("transform", poseTransform);
 		for (const { node, prop, part, pivot, flipper } of attachments) {
 			node.setAttribute("transform", flipper.getAttribute("transform"));
 			const armAngle = part === "left-flipper" ? p.left : p.right;

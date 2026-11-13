@@ -1,4 +1,4 @@
-import { deepseaIdle } from './deepsea-idle-data.js?v=20261112-nivo-soft-edge';
+import { deepseaIdle } from './deepsea-idle-data.js?v=20261113-all-effect-alignment';
 
 // The stills are captured from the approved rig, including its full glow.
 // Keep event reactions live; idle motion and blinking reuse the captured art.

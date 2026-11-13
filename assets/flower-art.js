@@ -766,6 +766,7 @@ function createRig(container, source, id, label, appearance = "classic", deepSea
 				lid.setAttribute("opacity", String(clamp((pose.blink - .62) / .3)));
 				lid.setAttribute("d", pose.happy > .2 ? "M-59 10 Q0 -43 59 10" : "M-59 8 Q0 38 59 8");
 			}
+			nodes.SparkleBurst.setAttribute("transform", nodes.motion.getAttribute("transform"));
 			nodes.SparkleBurst.setAttribute("opacity", String(pose.sparkle));
 			for (const [index, star] of sparkles.entries()) {
 				star.setAttribute("opacity", index < (pose.sparkleLimit ?? sparkles.length) ? "1" : "0");
@@ -837,7 +838,7 @@ function makeFlower(host, f, uid) {
 	svg.querySelector("defs").insertAdjacentHTML("beforeend", `<filter id="${uid}-soft-silhouette" x="-2%" y="-2%" width="104%" height="104%" color-interpolation-filters="sRGB"><feMorphology in="SourceAlpha" operator="erode" radius="7" result="inset-edge"/><feGaussianBlur in="inset-edge" stdDeviation="1.1" result="soft-edge"/><feComposite in="SourceGraphic" in2="soft-edge" operator="in"/></filter>` + defs(uid, f.id));
 	svg.querySelector(`[id="${uid}-art"]`).setAttribute("filter", `url(#${uid}-soft-silhouette)`);
 	svg.querySelector("[data-part=\"motion\"]").insertAdjacentHTML("beforeend", `<g data-flower-fit transform="${placement(f.id)}">${arrangement(uid, f.id)}</g>`);
-	if (f.id === "plum-blossom") svg.insertAdjacentHTML("beforeend", "<g data-petal opacity=\"0\"><path d=\"M-9-3Q-14-24 5-19Q22-6 0 12Q-9 8-9-3Z\" fill=\"#e8a2b8\"/></g>");
+	if (f.id === "plum-blossom") svg.querySelector("[data-part=\"motion\"]").insertAdjacentHTML("beforeend", "<g data-petal opacity=\"0\"><path d=\"M-9-3Q-14-24 5-19Q22-6 0 12Q-9 8-9-3Z\" fill=\"#e8a2b8\"/></g>");
 	const petal = svg.querySelector("[data-petal]");
 	return { render(pose = neutralPose(), time = 0, active = false) {
 		rig.render(pose);
