@@ -9,7 +9,7 @@ const copy={
  zh:{matching:'Nivo 与配套应用图标',day:'日间',night:'午夜',pause:'暂停 Nivo',play:'播放 Nivo',inspect:'探索图标 ↗',retry:'重新加载预览',error:'预览暂时无法加载，请重试。',terms:'任何付费会员方案均可。免费试用与加入上线通知名单不占名额。',choose:'选择 Nivo',selected:'已选中',free:'从一开始就属于你',plus:'Nivolo Plus 会员包含',krill:'{n} 磷虾',streak:'连续记录 {n} 天',goal:'完成一个目标',freeze:'使用一次连续记录保护',comeback:'休息后重新开始',early:'上午 8 点前记录',nightUnlock:'午夜后记录',bigday:'一天内记录 5 次行动',count:'累计 {n} 次行动',supporter:'献给最初 20 位付费会员'}
 };
 const t=(key,n)=>copy[cn()?'zh':'en'][key]?.replace('{n}',n) || key;
-const icon=id=>id==='love'?'assets/icons/love.png?v=20261113-clean-beak':`assets/icons/${id}.png?v=20261110-classic-eyes`;
+const icon=id=>id==='love'?'assets/icons/love.png?v=20261113-clean-beak':`assets/icons/${id}.png?v=${["jade","porcelain","gold","champion","relieved"].includes(id)?'20261113-retina':'20261110-classic-eyes'}`;
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 let rendererPromise;
 function renderer(){return rendererPromise ||= import('./nivo-skins.js?v=20261113-all-effect-alignment').catch(error=>{rendererPromise=null;throw error})}
