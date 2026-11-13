@@ -1,19 +1,19 @@
 {
-  "sourceHash": "2e2883801ea497b6312f98df9238fe5ec15e1c29afcca602924ced6a5c9b1246",
-  "capturedAt": "2026-11-12T06:52:47.168Z",
+  "sourceHash": "6b630f6478ce395f2f4b128c18f7738d38922943aad24acd080f53e570e0218c",
+  "capturedAt": "2026-11-13T02:38:02.848Z",
   "viewport": {
     "width": 393,
     "height": 852
   },
   "files": {
-    "current-home.webp": "45b0d519afe2fc32d5ba88b328e4a2e96a567f9fe8fe1bc2b150f1dad686118b",
-    "current-new-goal.webp": "c57f0de395628af04d20765a4bc3af2d87fe39e4f95e698a68c11053e21e167a",
-    "current-log-action.webp": "c7114d5be1feba8ee403579b1e32df90c98416f92931452f53a88063b5424ad9",
-    "current-rest.webp": "fd0513deaea42493a6308fb384f280547956ea4a19f9d18a58d69ae173bbfb35",
-    "current-store.webp": "0bbd1565e146347701d8587cfa30cdc23b21545d17734265b0f2c62b39c3b861",
-    "current-achievements.webp": "959f7b6f928e172f88bea3fca3a33453eaafbd10bf9038f2382e340e4aeff475",
-    "current-gem-detail.webp": "0ea81edc224f02b632ae64f7cb232a3d5161d909886f2ffb0a0a11c54044f480",
-    "current-profile.webp": "85d949f24a12a40cb527ac03498fcdab65739011bcf9b843d0fe2178b2586c4d",
+    "current-home.webp": "695e6e1f22250d827dc4a78e55b4896b7b7a105ddfb8b4561fad8f8d5cf88600",
+    "current-new-goal.webp": "6be7f0d1a2f5790db407a286c500f68316435369c1170918e513726551be598a",
+    "current-log-action.webp": "abf5a1dc3d569919dcdbbd1cd6f51b8274635fb4b74c7432aad22604b5f71fd6",
+    "current-rest.webp": "1490cc7a3405d1ea296426a4b0713faee909a6a8a666b3d853b7d923556ae437",
+    "current-store.webp": "0dda28d98f4ea349bbfe1595f2556f728649d18fd2d3ce096f05e2bd566a33b4",
+    "current-achievements.webp": "8bc692e6237945b710e0906169f627c117a797406dbf63710bd998bf22e8e0aa",
+    "current-gem-detail.webp": "79be02fddd323cce84d7ab1a4764061846403d3ee20ce4761c2edf481792f255",
+    "current-profile.webp": "bd2a2088dfbbdaa09008993bdb2754104a9d92c4e717c994084d3e059d45e45b",
     "current-action-card.webp": "abb660ebbe9e581d999107dd5aaaf28a24288d2833b1a71fce0d52b712db957a",
     "current-gem-art.webp": "fa93d27a93e25f8cb180105628c27758424133eb523726f7a6660c1ee419d7c8",
     "current-gem-variants.webp": "130670968f3cb0d5dc4c07ed87202a737ba09c56d93f441aaccb69ae78e5a0fc"
