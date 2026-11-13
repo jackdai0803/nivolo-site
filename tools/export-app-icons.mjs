@@ -9,7 +9,8 @@ const app = path.resolve(site, '../pebble-app');
 const source = fs.readFileSync(path.join(app, 'src/App.jsx'), 'utf8').split('const MASCOT_ICON_LOOKS')[0];
 const icons = [...source.matchAll(/\{ id: "([^"]+)",\s*name: "([^"]+)"[^\n]+/g)].filter(m => !m[0].includes('retired: true')).map(m => m[1]);
 const jpg = new Set(['early-supporter','porcelain','jade','kintsugi','deepsea']);
-for (const id of icons) {
+const selected = new Set(process.argv.slice(2));
+for (const id of icons.filter(id => !selected.size || selected.has(id))) {
  const websiteId = id === 'upsidedown' ? 'upside_down' : id;
  const preview = path.join(app, `src/assets/appicons/${id}.png`);
  const native = path.join(app, `ios/App/App/Assets.xcassets/AppIcon-${id}.appiconset/AppIcon-${id}.png`);
@@ -21,17 +22,17 @@ for (const id of icons) {
   await (jpg.has(id) ? image.jpeg({quality:94}) : image.webp({quality:94})).toFile(path.join(site, `assets/icons-3d/${websiteId}${suffix}.${extension}`));
  }
 }
-for (const file of fs.readdirSync(path.join(app,'src/assets/flowers')).filter(f => f.endsWith('.png'))) {
+if (!selected.size) for (const file of fs.readdirSync(path.join(app,'src/assets/flowers')).filter(f => f.endsWith('.png'))) {
  await sharp(path.join(app,'src/assets/flowers',file)).resize(256,256).webp({quality:94}).toFile(path.join(site,'assets/flowers',file.replace('.png','-icon.webp')));
 }
 fs.mkdirSync(path.join(site,'assets/myths'),{recursive:true});
-for (const file of fs.readdirSync(path.join(app,'src/assets/myths')).filter(f => f.endsWith('.png'))) {
+if (!selected.size) for (const file of fs.readdirSync(path.join(app,'src/assets/myths')).filter(f => f.endsWith('.png'))) {
  await sharp(path.join(app,'src/assets/myths',file)).resize(256,256).webp({quality:94}).toFile(path.join(site,'assets/myths',file.replace('.png','-icon.webp')));
 }
-for (const file of ['index.html','launch.html']) {
+if (!selected.size) for (const file of ['index.html','launch.html']) {
  const target=path.join(site,file);
  let html=fs.readFileSync(target,'utf8');
  html=html.replace(/(assets\/(?:icons\/[^"?]+\.png|flowers\/[^"?]+-icon\.webp))(?:\?v=[^"\s]+)?/g,'$1?v=20261109');
  fs.writeFileSync(target,html);
 }
-console.log(`Exported ${icons.length} current app icons and all flower thumbnails.`);
+console.log(`Exported ${selected.size || icons.length} current app icons${selected.size ? "" : " and all flower thumbnails"}.`);
