@@ -56,7 +56,7 @@ if(section){
   const f=api.flowers.find(f=>f.id===selected);
   scenery.innerHTML=api.sceneArt(f,'website-flower-scene',night,'card');
   nivo.replaceChildren();rig=api.makeFlower(nivo,f,'website-flower-nivo');
-  section.querySelector('.flower-matching img').src=`assets/flowers/${selected}-icon.webp?v=20261109`;
+  section.querySelector('.flower-matching img').src=`assets/flowers/${selected}-icon.webp?v=20261113-flowers-right`;
   for(const b of themes)b.setAttribute('aria-pressed',String((b.dataset.flowerTheme==='midnight')===night));
   text();stage.dataset.ready='';resume();
   if(announce)section.querySelector('.flower-announcement').textContent=`${stories[selected][lang()==='zh'?1:0]} · ${t(night?'midnight':'day')}`;
