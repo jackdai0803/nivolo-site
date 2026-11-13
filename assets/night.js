@@ -91,7 +91,7 @@
   var SPAWN_GAP = Math.max(50, Math.round(1350 / Math.max(1, POUR_ROSTER.length)));
   var REPOUR_GAP = Math.max(130, Math.round(4800 / ROSTER.length));
 
-  function iconSrc(name) { return "assets/icons/" + name + ".png"; }
+  function iconSrc(name) { return "assets/icons/" + name + ".png" + (name === "love" ? "?v=20261113-clean-beak" : ""); }
 
   /* Static fallback: icons resting in the bowl, no physics. */
   function staticFallback() {
