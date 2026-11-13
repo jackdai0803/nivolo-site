@@ -92,7 +92,7 @@
   };
   var NEW_ICONS = { "early-supporter": true, porcelain: true, jade: true, kintsugi: true, deepsea: true };
   function iconSrc(id, large) {
-    var version = ["rainy","sleepy","sick"].indexOf(id) !== -1 ? "20261113-normal-eyes" : ["jade","porcelain","gold","champion","relieved"].indexOf(id) !== -1 ? "20261113-retina" : id === "love" ? "20261113-clean-beak" : (id === "porcelain" || id === "jade") ? "20261110-signature"
+    var version = ["rainy","sleepy","sick"].indexOf(id) !== -1 ? "20261113-smooth-beak" : ["jade","porcelain","gold","champion","relieved"].indexOf(id) !== -1 ? "20261113-retina" : id === "love" ? "20261113-clean-beak" : (id === "porcelain" || id === "jade") ? "20261110-signature"
       : id === "melting" ? "20261110-classic-eyes"
       : id === "focused" ? "20261110" : "20261109";
     return "assets/icons-3d/" + id + (large ? "-lg" : "") + (NEW_ICONS[id] ? ".jpg" : ".webp") + "?v=" + version;
@@ -505,7 +505,7 @@
        of the tile sitting empty while it downloads. */
     tile.classList.remove("icon-ready");
     tile.classList.remove("icon-instant");
-    front.style.backgroundImage = 'url("' + (collectible ? iconSrc(id, false) : 'assets/icons/' + id + '.png?v=' + (['rainy','sleepy','sick'].includes(id) ? '20261113-normal-eyes' : '20261109')) + '")';
+    front.style.backgroundImage = 'url("' + (collectible ? iconSrc(id, false) : 'assets/icons/' + id + '.png?v=' + (['rainy','sleepy','sick'].includes(id) ? '20261113-smooth-beak' : '20261109')) + '")';
     img.onload = function () { tile.classList.add("icon-ready"); };
     if (layered) {
       setSrc(img, layered.bg);
