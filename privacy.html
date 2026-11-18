@@ -52,13 +52,13 @@
 
   <main id="main" tabindex="-1" class="page">
     <h1>Privacy Policy</h1>
-    <p class="updated">Last updated: November 10, 2026 · Applies to the Nivolo iOS app and nivolo.app</p>
+    <p class="updated">Last updated: November 17, 2026 · Applies to the Nivolo iOS app and nivolo.app</p>
 
     <p class="lede">Nivolo is a habit and goal app built to be private by default. It has no cloud account system, analytics, advertising, or trackers. Almost everything you create lives only on your iPhone. This policy explains the exceptions in detail — what leaves your device, when, who processes it, how long it is kept, and what you can ask us to do about it.</p>
 
     <div class="card">
       <p><strong>The short version</strong></p>
-      <p>Your goals, actions, streaks, Krill, gems, name, birthday and any email you enter <strong>inside the app</strong> are stored on your device. With AI sharing enabled, goal text can be sent for a plan draft or reminder suggestion you request; your name, birthday and in-app email are not sent to us.</p>
+      <p>Your goals, actions, streaks, Krill, gems, name, birthday and any email you enter <strong>inside the app</strong> are stored on your device. With AI sharing enabled, goal text can be sent for a plan draft or reminder suggestion you request. Chat sends your messages and recent replies when you tap Send, with optional goal context. Your profile name, birthday and in-app email are not attached; personal details you type into a message are included in that message.</p>
       <p>The <strong>AI goal plan</strong> sends what you enter when you request a draft. After you allow AI sharing, the <strong>AI weekly insight</strong> for eligible Plus members can send summary counts automatically when the app opens or the language changes, if it has no saved result for that week and language. Requests use a random app ID rather than your name or email. Section 3 explains exactly how this works.</p>
       <p>If you voluntarily join the website launch list, we keep the email address you submit only long enough to send the one launch message. We do not run analytics, ads, or trackers, and we do not sell personal information.</p>
       <p>The limited Early Supporter icon is for our first 20 verified paying supporters. Our server verifies Apple-signed purchase records and keeps a hash of each winning subscription identifier; the public count contains no personal information.</p>
@@ -130,6 +130,10 @@
     <h3>AI reminder suggestion</h3>
     <p>If you ask Nivolo Plus to suggest a reminder time, it sends your goal title, the availability you type, and your language to generate a draft. Our server verifies the signed subscription record described above. You review and save the time before a reminder is scheduled.</p>
 
+    <h3>Talk to Nivo</h3>
+    <p>For Plus chat, tapping Send shares your message, up to 15 recent conversation messages (12,000 characters in total), and your language. If you turn on “Include my active goals”, up to three active goal titles and their current step titles are included. This option is off by default. Your action text, full activity history and profile fields are not attached. Our server verifies the signed subscription record described above and applies a separate allowance of 20 messages per day.</p>
+    <p>Up to 80 messages are saved on your device with your other app data. The chat header lets you clear this local conversation. Our server processes the recent conversation to produce a reply without saving it. Clearing the chat does not remove data already processed or retained by the AI provider under its own retention rules. Turning off AI sharing stops future chat requests; a request already submitted may have been processed. Nivo can suggest next steps, but cannot change goals, log actions or schedule reminders.</p>
+
     <h3>AI weekly insight</h3>
     <p>With AI sharing enabled, Plus members with at least five logged actions can receive an automatic weekly "Nivo's take" insight when the app opens or the language changes, if it has not already saved an insight for that week and language. This sends <strong>summary counts only</strong> — never your goal text or your name. Specifically: your current streak length, how many actions you logged this week and last week, your most active weekday, how many goals are active, how many goals you completed this week, your total Krill earned, and your language setting, together with the signed subscription record described above. The result is saved on your device.</p>
 
@@ -138,7 +142,7 @@
     <ul>
       <li>Against your <strong>random app ID</strong>: how many free plan drafts it has used, and the last couple of session identifiers.</li>
       <li>Against your <strong>network's IP address</strong>: how many new free drafts were started from that network today — this stops one device from resetting its free drafts by reinstalling.</li>
-      <li>Against your <strong>subscription's transaction identifier</strong> (Plus only): how many plans were drafted today and insights written this week.</li>
+      <li>Against your <strong>subscription's transaction identifier</strong> (Plus only): how many plans were drafted and chat messages sent today, and insights written this week.</li>
       <li>Short per-minute request limits, held by Cloudflare's rate limiter.</li>
     </ul>
 
@@ -168,7 +172,7 @@
           </tr>
           <tr>
             <td><strong>Anthropic</strong> (Claude API)</td>
-            <td>Generates plans, reminder suggestions and insights in regions Anthropic supports</td>
+            <td>Generates chat replies, plans, reminder suggestions and insights in regions Anthropic supports</td>
             <td>Only the text, language and activity summaries needed for the feature, forwarded by our server. Under Anthropic's commercial API terms, inputs and outputs are not used to train their models, and they are deleted from Anthropic's systems within their published retention window. Anthropic does not receive your IP address, your name, or any identifier from your device.</td>
           </tr>
           <tr>
@@ -217,10 +221,10 @@
         </thead>
         <tbody>
           <tr><td>Everything stored on your device (section 2)</td><td>Until you delete it in the app, reset the app, or delete the app. We cannot delete it for you, and we cannot see it.</td></tr>
-          <tr><td>AI prompt text and weekly stats</td><td>Not stored by us. Processed in memory to produce a response, then discarded. Anthropic holds it only for the short period described in their API retention policy.</td></tr>
+          <tr><td>AI prompt text, chat windows and weekly stats</td><td>Not stored by us. Processed in memory to produce a response, then discarded. Anthropic holds it only for the short period described in their API retention policy.</td></tr>
           <tr><td>Per-minute request limits</td><td>Held in Cloudflare's rate limiter for about a minute; not stored by us.</td></tr>
           <tr><td>Per-network daily count of new free drafts (keyed by IP address)</td><td>Expires automatically after 2 days.</td></tr>
-          <tr><td>Plus daily plan count and weekly insight count (keyed by the subscription's transaction identifier)</td><td>Expire automatically after 2 and 14 days.</td></tr>
+          <tr><td>Plus daily plan/chat counts and weekly insight count (keyed by the subscription's transaction identifier)</td><td>Expire automatically after 2 and 14 days.</td></tr>
           <tr><td>Free-draft record against your random app ID</td><td>Kept while it is needed to apply the free limit. It holds a count and the last couple of session identifiers, nothing else.</td></tr>
           <tr><td>Early Supporter award</td><td>The hash of each of the 20 winning subscription identifiers and its award number is retained for the lifetime of the reward, so places are never reissued. No personal profile or email is included.</td></tr>
           <tr><td>Your signed subscription record</td><td>Checked in memory on each request and then discarded; only the transaction identifier is used as a counter key, as above.</td></tr>
