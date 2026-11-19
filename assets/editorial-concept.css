@@ -1676,6 +1676,17 @@ body.nav-on-midnight nav .motto--lockup {
 .short-home .collector-plan { padding: 26px; }
 .short-home .collector-benefits { gap: 12px; margin-block: 18px 24px; }
 .short-home .collector-plan-note { min-height: 0; }
+.collector-offer { margin-top: auto; padding: 14px; border: 1px solid #568196; border-radius: 16px; background: #0e3145; }
+.collector-offer .collector-price-area { min-height: 0; }
+.collector-offer .collector-billing { display: grid; gap: 3px; width: 100%; margin: 0; padding: 0; background: transparent; }
+.collector-offer .collector-billing[hidden] { display: none; }
+.collector-offer .collector-billing button { display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px 12px; border-radius: 10px; box-shadow: none; }
+.collector-offer .collector-billing button::before { content: ""; flex: none; box-sizing: border-box; width: 16px; height: 16px; border: 2px solid currentColor; border-radius: 50%; corner-shape: round; }
+.collector-offer .collector-billing button[aria-pressed="true"]::before { border-width: 5px; }
+.collector-offer .collector-billing button strong { margin-left: auto; font: inherit; font-weight: 750; font-variant-numeric: tabular-nums; }
+.collector-offer .collector-billing:not([hidden]) + div .collector-price { display: none; }
+.collector-offer .collector-price-note { margin: 10px 0 14px; min-height: 0; line-height: 1.45; }
+.collector-offer .collector-plan-note { margin-top: 10px; }
 .short-home .faq-disclosure { max-width: var(--w-narrow); margin: 20px auto 0; }
 .short-home .faq-disclosure .faq { margin: 0; }
 .short-home .cta { padding: 50px 0 60px; }
