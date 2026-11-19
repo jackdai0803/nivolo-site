@@ -1,3 +1,4 @@
+import { accentPose } from './edition-motion.js?v=1';
 const section=document.querySelector('#flower-edition');
 if(section){
  const lang=()=>document.documentElement.lang.startsWith('zh')?'zh':'en';
@@ -48,7 +49,7 @@ if(section){
   for(const b of choices){const id=b.dataset.flowerChoice;b.setAttribute('aria-pressed',String(id===selected));b.setAttribute('aria-label',zh?b.querySelector('.flower-choice-zh').textContent:b.querySelector('.flower-choice-name').textContent);}
   stage.setAttribute('aria-label',`${story[zh?1:0]}. ${story[zh?3:2]}`);
  }
- function draw(){if(rig)rig.render(!reduced.matches?api.idleAt(elapsed):api.neutralPose(),elapsed,!reduced.matches);}
+ function draw(){if(rig)rig.render(!reduced.matches?accentPose(api.idleAt(elapsed),selected,elapsed):api.neutralPose(),elapsed,!reduced.matches);}
  function tick(now){frame=0;if(last!==null)elapsed+=Math.min(now-last,50);last=now;draw();if(visible&&!document.hidden&&!paused&&!reduced.matches)frame=requestAnimationFrame(tick);}
  function resume(){cancelAnimationFrame(frame);frame=0;last=null;draw();if(rig&&visible&&!document.hidden&&!paused&&!reduced.matches)frame=requestAnimationFrame(tick);}
  function render(announce=false){

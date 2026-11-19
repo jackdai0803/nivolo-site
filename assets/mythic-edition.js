@@ -1,3 +1,4 @@
+import { accentPose } from './edition-motion.js?v=1';
 import { myths, powers, worlds, zh, price } from './mythic-catalog.js?v=20261111-mythic';
 const section = document.querySelector('#mythic-edition');
 if (section) {
@@ -39,7 +40,7 @@ if (section) {
   function draw() {
     if (!rig) return;
     const power = reduced.matches ? api.POWER_MS * .48 : powerStart === null ? null : elapsed - powerStart;
-    const pose = reduced.matches ? api.neutralPose() : api.idleAt(elapsed);
+    const pose = reduced.matches ? api.neutralPose() : accentPose(api.idleAt(elapsed), selected.id, elapsed);
     rig.render(pose, elapsed, !reduced.matches, power !== null && power <= api.POWER_MS ? power : null);
   }
   function tick(now) {

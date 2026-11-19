@@ -1,3 +1,4 @@
+import { accentPose } from './edition-motion.js?v=1';
 import { createRig, idleAt, neutralPose, smallWinAt, celebrationAt, SMALL_WIN_MS, CELEBRATION_MS } from './nivo-rig.js?v=20261113-all-effect-alignment';
 import { makeClassicSkin, heroLooks } from './nivo-skins.js?v=20261113-all-effect-alignment';
 import { withLightweightIdle } from './nivo-idle.js?v=20261113-all-effect-alignment';
@@ -168,7 +169,8 @@ document.querySelectorAll('[data-nivo]').forEach((container, index) => {
           continue;
         }
       }
-      rig.render(look.id === 'focused' ? { ...pose, skinTimeMs: clock - character.startedAt } : pose);
+      const lookPose = autoCycle && moving && !reacting ? accentPose(pose, look.id, clock) : pose;
+      rig.render(look.id === 'focused' ? { ...lookPose, skinTimeMs: clock - character.startedAt } : lookPose);
     }
     if (moving) frame = requestAnimationFrame(render);
   };

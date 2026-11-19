@@ -58,3 +58,21 @@
 /* Stack appearances for the automatic crossfade. */
 .nivo-look { position: absolute; inset: 0; }
 .nivo-look > svg { display: block; width: 100%; height: 100%; overflow: visible; }
+
+/* Let powers use the margin between the portrait and the painted stage. */
+.myth-nivo > svg { overflow: visible; }
+
+/* Keep Cerberus's ears inside its own shadow mask, including at full lift. */
+svg[data-myth="hades"] [data-myth-motion="hound-shadow"] { translate: 16px 51px; scale: .975; }
+
+/* Diffuse the outer gold band. The pendant remains the source of the light. */
+svg[data-myth="anubis"] [data-power-part="ward"] > ellipse:first-child {
+  fill: #ffeac4;
+  fill-opacity: .10;
+  stroke: #ffdf94;
+  stroke-width: 68;
+  opacity: .32;
+  filter: blur(37px);
+}
+svg[data-myth="anubis"] [data-power-part="ward"] > :not(:first-child) { display: none; }
+svg[data-myth="anubis"] [data-power-part="ankh-light"] > * { opacity: .32; }

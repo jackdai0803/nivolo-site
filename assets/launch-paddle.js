@@ -1,3 +1,4 @@
+import { accentPose } from './edition-motion.js?v=1';
 import { myths } from './mythic-catalog.js?v=20261111-mythic';
 import { makeMyth } from './mythic-art.js?v=20261113-all-effect-alignment';
 import { idleAt, neutralPose } from './nivo-rig.js?v=20261113-all-effect-alignment';
@@ -138,7 +139,8 @@ if (container && card) {
         continue;
       }
       layer.style.opacity = String(opacity);
-      rig.render(look === 'focused' ? { ...pose, skinTimeMs: idleClock - character.startedAt } : pose);
+      const lookPose = pose.skinMotion ? accentPose(pose, look, idleClock) : pose;
+      rig.render(look === 'focused' ? { ...lookPose, skinTimeMs: idleClock - character.startedAt } : lookPose);
       // Keep the paddle upright as the flipper lifts; its handle stays in the grip.
       paddle.setAttribute('transform', `rotate(${-pose.right + 80 - 66 * progress} 1039 819)`);
       paddle.setAttribute('opacity', String(joined ? Math.min(1, progress * 6) : 0));

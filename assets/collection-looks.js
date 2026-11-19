@@ -1,3 +1,4 @@
+import { accentPose } from './edition-motion.js?v=1';
 import {collections} from './nivo-collections.js?v=20261111-mythic';
 import {chapters,looks,destinations} from './collection-chapters-data.js?v=20261111-chapters';
 import {unlocks,worlds} from './collection-unlocks.js?v=20261111-chapters';
@@ -31,7 +32,7 @@ for(const section of document.querySelectorAll('[data-chapter]')){
   inspect.textContent=t(failed?'retry':'inspect');
   section.querySelectorAll('[data-chapter-light]').forEach(button=>button.setAttribute('aria-pressed',String((button.dataset.chapterLight==='night')===night)));
  }
- function draw(){if(!rig)return;const pose=reduced.matches?neutralPose():idleAt(elapsed);pose.skinTimeMs=elapsed;pose.skinMotion=!reduced.matches;rig.render(pose)}
+ function draw(){if(!rig)return;const pose=reduced.matches?neutralPose():accentPose(idleAt(elapsed),selected,elapsed);pose.skinTimeMs=elapsed;pose.skinMotion=!reduced.matches;rig.render(pose)}
  function tick(now){frame=0;if(previous!==null)elapsed+=Math.min(50,now-previous);previous=now;draw();if(visible&&!paused&&!document.hidden&&!reduced.matches)frame=requestAnimationFrame(tick)}
  function resume(){cancelAnimationFrame(frame);frame=0;previous=null;draw();if(rig&&visible&&!paused&&!document.hidden&&!reduced.matches)frame=requestAnimationFrame(tick)}
  function world(){stage.dataset.look=selected;stage.dataset.night=String(night);const world=worlds[selected];stage.toggleAttribute('data-painted-home',!night);background.hidden=night&&!world;if(!night)background.src=`assets/painted-homes/${selected}.webp`;else if(world)background.src=`assets/collection-worlds/${selected}-night.svg?v=20261112-champion`;const colors=world?.[night?'night':'day'] || (selected==='deepsea'?(night?['#10223e','#194367']:['#c9e9ed','#6d9eaf']):selected==='early-supporter'?(night?['#342c31','#66513f']:['#f4e8c8','#dcc996']):(night?['#1c3045','#46627b']:['#e4eff5','#c7dde5']));stage.style.setProperty('--scene-top',colors[0]);stage.style.setProperty('--scene-bottom',colors[1])}
