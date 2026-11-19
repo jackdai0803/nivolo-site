@@ -55,14 +55,12 @@ if (section) {
   }
   function world() {
     if (!api) return;
-    stage.toggleAttribute('data-painted-home', !night);
-    if (night) scenery.innerHTML = api.sceneArt(selected, `myth-world-${++serial}`, night, 'card');
-    else {
-      const painting = new Image();
-      painting.alt = '';
-      painting.src = `assets/painted-homes/${selected.id}.webp`;
-      scenery.replaceChildren(painting);
-    }
+    stage.setAttribute('data-painted-home', '');
+    stage.dataset.night = String(night);
+    const painting = new Image();
+    painting.alt = '';
+    painting.src = `assets/${night ? 'painted-midnight-homes' : 'painted-homes'}/${selected.id}.webp`;
+    scenery.replaceChildren(painting);
   }
   function select(id, announce = false) {
     selected = myths.find(m => m.id === id); elapsed = 0; powerStart = 0; paused = false;

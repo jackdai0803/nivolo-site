@@ -55,13 +55,11 @@ if(section){
  function render(announce=false){
   if(!api)return;
   const f=api.flowers.find(f=>f.id===selected);
-  stage.toggleAttribute('data-painted-home',!night);
-  if(night)scenery.innerHTML=api.sceneArt(f,'website-flower-scene',night,'card');
-  else {
-   const painting=new Image();painting.alt='';
-   painting.src=`assets/painted-homes/${selected}.webp`;
-   scenery.replaceChildren(painting);
-  }
+  stage.setAttribute('data-painted-home','');
+  stage.dataset.night=String(night);
+  const painting=new Image();painting.alt='';
+  painting.src=`assets/${night?'painted-midnight-homes':'painted-homes'}/${selected}.webp`;
+  scenery.replaceChildren(painting);
   nivo.replaceChildren();rig=api.makeFlower(nivo,f,'website-flower-nivo');
   section.querySelector('.flower-matching img').src=`assets/flowers/${selected}-icon.webp?v=20261113-flowers-right`;
   for(const b of themes)b.setAttribute('aria-pressed',String((b.dataset.flowerTheme==='midnight')===night));
