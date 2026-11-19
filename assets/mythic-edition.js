@@ -1,3 +1,4 @@
+import { mountPaintedMotion } from './painted-motion.js?v=20261118-painted-motion';
 import { accentPose } from './edition-motion.js?v=1';
 import { myths, powers, worlds, zh, price } from './mythic-catalog.js?v=20261118-sun-owl';
 const section = document.querySelector('#mythic-edition');
@@ -14,7 +15,7 @@ if (section) {
   const replay = section.querySelector('[data-myth-replay]'), pause = section.querySelector('[data-myth-pause]');
   const choices = [...section.querySelectorAll('[data-myth-choice]')];
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-  let selected = myths[0], night = false, paused = false, visible = false, api, rig, loading, failed = false;
+  let selected = myths[0], night = false, paused = false, visible = false, api, rig, loading, motion, failed = false;
   let elapsed = 0, powerStart = 0, last = null, frame = 0, serial = 0;
   function text() {
     document.querySelectorAll('[data-myth-copy]').forEach(el => el.textContent = t(el.dataset.mythCopy));
@@ -50,6 +51,7 @@ if (section) {
     if (visible && !document.hidden && !paused && !reduced.matches) frame = requestAnimationFrame(tick);
   }
   function resume() {
+    motion?.setPaused(paused);
     cancelAnimationFrame(frame); frame = 0; last = null; draw();
     if (rig && visible && !document.hidden && !paused && !reduced.matches) frame = requestAnimationFrame(tick);
   }
@@ -60,7 +62,9 @@ if (section) {
     const painting = new Image();
     painting.alt = '';
     painting.src = `assets/${night ? 'painted-midnight-homes' : 'painted-homes'}/${selected.id}.webp`;
+    motion?.destroy();
     scenery.replaceChildren(painting);
+    motion = mountPaintedMotion(scenery, selected.id, { night, paused });
   }
   function select(id, announce = false) {
     selected = myths.find(m => m.id === id); elapsed = 0; powerStart = 0; paused = false;

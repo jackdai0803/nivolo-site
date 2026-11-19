@@ -1,3 +1,4 @@
+import { mountPaintedMotion } from './painted-motion.js?v=20261118-painted-motion';
 import { accentPose } from './edition-motion.js?v=1';
 const section=document.querySelector('#flower-edition');
 if(section){
@@ -27,7 +28,7 @@ if(section){
  const stage=section.querySelector('.flower-stage'),nivo=section.querySelector('.flower-nivo'),scenery=section.querySelector('.flower-scenery');
  const choices=[...section.querySelectorAll('[data-flower-choice]')],themes=[...section.querySelectorAll('[data-flower-theme]')],pause=section.querySelector('.flower-pause');
  const reduced=matchMedia('(prefers-reduced-motion: reduce)');
- let api,rig,selected='white-lotus',night=false,paused=false,visible=false,loading=false,frame=0,last=null,elapsed=0;
+ let api,rig,selected='white-lotus',night=false,paused=false,visible=false,loading=false,frame=0,last=null,elapsed=0,motion;
  function text(){
   document.querySelectorAll('[data-flower-copy]').forEach(el=>{el.textContent=t(el.dataset.flowerCopy);});
   section.querySelector('[data-flower-label]').setAttribute('aria-label',t('lighting'));
@@ -51,7 +52,7 @@ if(section){
  }
  function draw(){if(rig)rig.render(!reduced.matches?accentPose(api.idleAt(elapsed),selected,elapsed):api.neutralPose(),elapsed,!reduced.matches);}
  function tick(now){frame=0;if(last!==null)elapsed+=Math.min(now-last,50);last=now;draw();if(visible&&!document.hidden&&!paused&&!reduced.matches)frame=requestAnimationFrame(tick);}
- function resume(){cancelAnimationFrame(frame);frame=0;last=null;draw();if(rig&&visible&&!document.hidden&&!paused&&!reduced.matches)frame=requestAnimationFrame(tick);}
+ function resume(){motion?.setPaused(paused);cancelAnimationFrame(frame);frame=0;last=null;draw();if(rig&&visible&&!document.hidden&&!paused&&!reduced.matches)frame=requestAnimationFrame(tick);}
  function render(announce=false){
   if(!api)return;
   const f=api.flowers.find(f=>f.id===selected);
@@ -59,7 +60,9 @@ if(section){
   stage.dataset.night=String(night);
   const painting=new Image();painting.alt='';
   painting.src=`assets/${night?'painted-midnight-homes':'painted-homes'}/${selected}.webp`;
+  motion?.destroy();
   scenery.replaceChildren(painting);
+  motion=mountPaintedMotion(scenery,selected,{night,paused});
   nivo.replaceChildren();rig=api.makeFlower(nivo,f,'website-flower-nivo');
   section.querySelector('.flower-matching img').src=`assets/flowers/${selected}-icon.webp?v=20261113-flowers-right`;
   for(const b of themes)b.setAttribute('aria-pressed',String((b.dataset.flowerTheme==='midnight')===night));

@@ -1,3 +1,4 @@
+import { mountPaintedMotion } from './painted-motion.js?v=20261118-painted-motion';
 import { accentPose } from './edition-motion.js?v=1';
 import {collections} from './nivo-collections.js?v=20261111-mythic';
 import {chapters,looks,destinations} from './collection-chapters-data.js?v=20261111-chapters';
@@ -19,7 +20,7 @@ for(const section of document.querySelectorAll('[data-chapter]')){
  const group=collections.find(c=>c.id===section.dataset.chapter),data=chapters[group.id];
  const stage=section.querySelector('.chapter-stage'),host=section.querySelector('.chapter-nivo'),background=section.querySelector('.chapter-world'),pause=section.querySelector('[data-chapter-pause]'),inspect=section.querySelector('.chapter-inspect');
  const buttons=[...section.querySelectorAll('[data-chapter-choice]')];
- let selected=data.representative,night=false,paused=false,visible=false,api,rig,loading,failed=false,elapsed=0,previous=null,frame=0;
+ let selected=data.representative,night=false,paused=false,visible=false,api,rig,loading,failed=false,elapsed=0,previous=null,frame=0,motion;
  function text(){
   section.querySelectorAll('[data-chapter-copy]').forEach(el=>{const key=el.dataset.chapterCopy;el.textContent=key==='collection'?(cn()?group.zh:group.name):['title','intro'].includes(key)?data[key][cn()?1:0]:t(key)});
   const look=looks[selected],name=look[cn()?1:0];stage.setAttribute('aria-label',`${name} Nivo`);
@@ -34,8 +35,20 @@ for(const section of document.querySelectorAll('[data-chapter]')){
  }
  function draw(){if(!rig)return;const pose=reduced.matches?neutralPose():accentPose(idleAt(elapsed),selected,elapsed);pose.skinTimeMs=elapsed;pose.skinMotion=!reduced.matches;rig.render(pose)}
  function tick(now){frame=0;if(previous!==null)elapsed+=Math.min(50,now-previous);previous=now;draw();if(visible&&!paused&&!document.hidden&&!reduced.matches)frame=requestAnimationFrame(tick)}
- function resume(){cancelAnimationFrame(frame);frame=0;previous=null;draw();if(rig&&visible&&!paused&&!document.hidden&&!reduced.matches)frame=requestAnimationFrame(tick)}
- function world(){stage.dataset.look=selected;stage.dataset.night=String(night);const world=worlds[selected];stage.setAttribute('data-painted-home','');background.hidden=false;background.src=`assets/${night?'painted-midnight-homes':'painted-homes'}/${selected}.webp`;const colors=world?.[night?'night':'day'] || (selected==='deepsea'?(night?['#10223e','#194367']:['#c9e9ed','#6d9eaf']):selected==='early-supporter'?(night?['#342c31','#66513f']:['#f4e8c8','#dcc996']):(night?['#1c3045','#46627b']:['#e4eff5','#c7dde5']));stage.style.setProperty('--scene-top',colors[0]);stage.style.setProperty('--scene-bottom',colors[1])}
+ function resume(){motion?.setPaused(paused);cancelAnimationFrame(frame);frame=0;previous=null;draw();if(rig&&visible&&!paused&&!document.hidden&&!reduced.matches)frame=requestAnimationFrame(tick)}
+ function world(){
+  stage.dataset.look=selected;
+  stage.dataset.night=String(night);
+  const world=worlds[selected];
+  stage.setAttribute('data-painted-home','');
+  background.hidden=false;
+  background.src=`assets/${night?'painted-midnight-homes':'painted-homes'}/${selected}.webp`;
+  motion?.destroy();
+  motion=mountPaintedMotion(stage,selected,{night,before:host,paused});
+  const colors=world?.[night?'night':'day'] || (selected==='deepsea'?(night?['#10223e','#194367']:['#c9e9ed','#6d9eaf']):selected==='early-supporter'?(night?['#342c31','#66513f']:['#f4e8c8','#dcc996']):(night?['#1c3045','#46627b']:['#e4eff5','#c7dde5']));
+  stage.style.setProperty('--scene-top',colors[0]);
+  stage.style.setProperty('--scene-bottom',colors[1]);
+ }
  function select(id,announce=false){if(!group.ids.includes(id))return;selected=id;elapsed=0;if(api){rig=withLightweightIdle(api.makeClassicSkin(host,{id},`chapter-nivo-${++serial}`),host,id);host.querySelector('svg').setAttribute('aria-hidden','true');stage.dataset.ready='true'}world();text();resume();if(announce)section.querySelector('.chapter-announcement').textContent=looks[id][cn()?1:0]+t('selected')}
  async function load(){if(api)return;if(loading)return loading;loading=(async()=>{try{const module=await renderer();const image=new Image();image.src=new URL('./nivo-body.png',import.meta.url);await image.decode();api=module;failed=false;select(selected);section.querySelectorAll('button').forEach(b=>b.disabled=false)}catch{failed=true;inspect.disabled=false;text()}finally{loading=null}})();return loading}
  buttons.forEach(button=>button.addEventListener('click',()=>select(button.dataset.chapterChoice,true)));
