@@ -52,7 +52,17 @@ if (section) {
     cancelAnimationFrame(frame); frame = 0; last = null; draw();
     if (rig && visible && !document.hidden && !paused && !reduced.matches) frame = requestAnimationFrame(tick);
   }
-  function world() { if (api) scenery.innerHTML = api.sceneArt(selected, `myth-world-${++serial}`, night, 'card'); }
+  function world() {
+    if (!api) return;
+    stage.toggleAttribute('data-painted-home', !night);
+    if (night) scenery.innerHTML = api.sceneArt(selected, `myth-world-${++serial}`, night, 'card');
+    else {
+      const painting = new Image();
+      painting.alt = '';
+      painting.src = `assets/painted-homes/${selected.id}.webp`;
+      scenery.replaceChildren(painting);
+    }
+  }
   function select(id, announce = false) {
     selected = myths.find(m => m.id === id); elapsed = 0; powerStart = 0; paused = false;
     if (api) {

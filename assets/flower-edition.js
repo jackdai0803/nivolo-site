@@ -54,7 +54,13 @@ if(section){
  function render(announce=false){
   if(!api)return;
   const f=api.flowers.find(f=>f.id===selected);
-  scenery.innerHTML=api.sceneArt(f,'website-flower-scene',night,'card');
+  stage.toggleAttribute('data-painted-home',!night);
+  if(night)scenery.innerHTML=api.sceneArt(f,'website-flower-scene',night,'card');
+  else {
+   const painting=new Image();painting.alt='';
+   painting.src=`assets/painted-homes/${selected}.webp`;
+   scenery.replaceChildren(painting);
+  }
   nivo.replaceChildren();rig=api.makeFlower(nivo,f,'website-flower-nivo');
   section.querySelector('.flower-matching img').src=`assets/flowers/${selected}-icon.webp?v=20261113-flowers-right`;
   for(const b of themes)b.setAttribute('aria-pressed',String((b.dataset.flowerTheme==='midnight')===night));
