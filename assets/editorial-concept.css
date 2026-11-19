@@ -1678,13 +1678,24 @@ body.nav-on-midnight nav .motto--lockup {
 .short-home .collector-plan-note { min-height: 0; }
 .collector-offer { margin-top: auto; padding: 14px; border: 1px solid #568196; border-radius: 16px; background: #0e3145; }
 .collector-offer .collector-price-area { min-height: 0; }
-.collector-offer .collector-billing { display: grid; gap: 3px; width: 100%; margin: 0; padding: 0; background: transparent; }
+.collector-offer .collector-billing { --billing-gap: 3px; position: relative; isolation: isolate; display: grid; grid-auto-rows: 1fr; gap: var(--billing-gap); width: 100%; margin: 0; padding: 0; background: transparent; }
 .collector-offer .collector-billing[hidden] { display: none; }
-.collector-offer .collector-billing button { display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px 12px; border-radius: 10px; box-shadow: none; }
+.collector-offer .collector-billing::before { content: ""; position: absolute; grid-area: 1 / 1 / 2 / 2; inset: 0; z-index: -1; border-radius: 10px; background: #275268; pointer-events: none; }
+.collector-offer .collector-billing:has([data-billing-period="yearly"][aria-pressed="true"])::before { transform: translateY(calc(100% + var(--billing-gap))); }
+.collector-offer .collector-billing button { display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px 12px; border-radius: 10px; background: transparent; color: #d3e4ed; box-shadow: none; }
+.collector-offer .collector-billing button:active { transform: none; }
+.collector-offer .collector-billing button[aria-pressed="true"] { color: #fff; background: transparent; box-shadow: none; }
 .collector-offer .collector-billing button::before { content: ""; flex: none; box-sizing: border-box; width: 16px; height: 16px; border: 2px solid currentColor; border-radius: 50%; corner-shape: round; }
 .collector-offer .collector-billing button[aria-pressed="true"]::before { border-width: 5px; }
 .collector-offer .collector-billing button strong { margin-left: auto; font: inherit; font-weight: 750; font-variant-numeric: tabular-nums; }
 .collector-offer .collector-billing:not([hidden]) + div .collector-price { display: none; }
+.collector-note-stack { display: grid; }
+.collector-note-stack > .collector-price-note { grid-area: 1 / 1; }
+.collector-note-stack > [aria-hidden="true"] { visibility: hidden; }
+@media (prefers-reduced-motion: no-preference) {
+  .collector-offer .collector-billing::before { transition: transform 220ms cubic-bezier(.2, .8, .2, 1); }
+  .collector-offer .collector-billing button::before { transition: border-width 140ms ease-out; }
+}
 .collector-offer .collector-price-note { margin: 10px 0 14px; min-height: 0; line-height: 1.45; }
 .collector-offer .collector-plan-note { margin-top: 10px; }
 .short-home .faq-disclosure { max-width: var(--w-narrow); margin: 20px auto 0; }
