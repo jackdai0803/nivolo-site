@@ -32,6 +32,9 @@
 .collector-art::before { content: ""; position: absolute; width: 215px; height: 145px; border-radius: 50%; corner-shape: round; background: #e1eff3; transform: rotate(-13deg); z-index: -1; }
 /* Deep-Sea Nivo already carries its own rim light; no separate backdrop glow. */
 .collector-art--plus::before { content: none; }
+.collector-guest { position: absolute; z-index: -1; top: 0; width: min(40%, 126px); height: auto; pointer-events: none; }
+.collector-guest--anubis { right: 53%; }
+.collector-guest--peony { left: 53%; }
 .collector-icon { position: absolute; width: 96px; height: 96px; object-fit: contain; border-radius: var(--radius-icon); filter: drop-shadow(0 12px 14px #0c203b28); }
 .collector-icon--classic { width: 112px; height: 112px; left: calc(50% - 86px); top: 49px; transform: rotate(-10deg); border-radius: var(--radius-icon); }
 .collector-gem { position: absolute; left: calc(50% + 12px); top: 105px; transform: rotate(12deg); }
