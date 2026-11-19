@@ -2072,7 +2072,7 @@ function makePower(svg, f, u, motion) {
 function makeMyth(host, f, u, label = f.name, { tintedEyes = true } = {}) {
 	const rig = createRig(host, _mythic_body_default, u, label);
 	const svg = host.querySelector("svg");
-	svg.setAttribute("viewBox", "30 -75 1200 1280");
+	if (f.id === "artemis") svg.setAttribute("viewBox", `${NIVO_FRAME.x - 26} ${NIVO_FRAME.y} ${NIVO_FRAME.size} ${NIVO_FRAME.size}`);
 	svg.dataset.myth = f.id;
 	svg.querySelector("defs").insertAdjacentHTML("beforeend", defs(u));
 	applyClassicCoat(svg, u, [f.colors[0], f.colors[2]], surface(f, u));
