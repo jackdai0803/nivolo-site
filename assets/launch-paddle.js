@@ -1,6 +1,6 @@
 import { accentPose } from './edition-motion.js?v=1';
-import { myths } from './mythic-catalog.js?v=20261111-mythic';
-import { makeMyth } from './mythic-art.js?v=20261113-all-effect-alignment';
+import { myths } from './mythic-catalog.js?v=20261118-sun-owl';
+import { makeMyth } from './mythic-art.js?v=20261118-sun-owl';
 import { idleAt, neutralPose } from './nivo-rig.js?v=20261113-all-effect-alignment';
 
 import { makeClassicSkin, heroLooks } from './nivo-skins.js?v=20261113-all-effect-alignment';

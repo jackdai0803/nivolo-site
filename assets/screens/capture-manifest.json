@@ -1,19 +1,19 @@
 {
-  "sourceHash": "8d22c3c47c1df80c312385a693781deaffc0fc906af997c60561d0bd28a5af83",
-  "capturedAt": "2026-11-19T01:31:13.680Z",
+  "sourceHash": "438348be0b5fc862eee51490cbaf6205473067abd82255e604e7c25ab4c2fe46",
+  "capturedAt": "2026-11-19T01:40:04.538Z",
   "viewport": {
     "width": 393,
     "height": 852
   },
   "files": {
-    "current-home.webp": "a6e80a4b31afa70e99068fc924fc66f5d17b9159758001749caa1347daef8c5a",
-    "current-new-goal.webp": "bc6626560ac700cdd56c0c35d1d6f7bed83c26b80e9e79f8cea7feccaf98bb8e",
+    "current-home.webp": "ca835fff63f6ea1c2a111b646d2206d6c160526584288555f9d2714c8d06abdb",
+    "current-new-goal.webp": "58d5c4ccb33e4c9059a7c707a9cbb60279be3aafd85877bea1af926ae24cbe46",
     "current-log-action.webp": "eb9dfa0ed3056f0fe44162313a362332fc6c0876224ac3dfa94ede6a5e07faf0",
-    "current-rest.webp": "0e4987e85b148b0f4cbe4f95f8bd38f8ec46eea87373633b9fb012d232dd210b",
-    "current-store.webp": "d90eb068b9e51cdd4d2e79616cb5f39c06718e0262fe8ebcfeeb456da942bd19",
-    "current-achievements.webp": "22a5a2355231cb8169227306d5aab54de1586ffa496a4c36de1e24ed50cf5d87",
-    "current-gem-detail.webp": "3122a640523e5030a01a3651f57733225b3ffddb809f083a8408be2018651567",
-    "current-profile.webp": "811be25ada2c301dd7e424ef1b370676897465f5e889e4e0f42c60907b65166f",
+    "current-rest.webp": "fe6984a03a0e08b7f333bedda1c0ad093d77252c5f057b8f00136063ae86c3ab",
+    "current-store.webp": "e747738bb22c0542087c6a16e4d2750a562a3bc832192a3c2293075ab5c2ac6f",
+    "current-achievements.webp": "2a77142b0e30f3dfedcb554cee486611aeb82bad13c4102a0f3b98a8fd7aa848",
+    "current-gem-detail.webp": "dbf00b6cd5035ed4fa04fad10aa933a31f8394c9c49b3c4cc75f2fc5449a8068",
+    "current-profile.webp": "26c2817330c92e5f363d0a8c400bc7ea14a260624147884534bf70d57f3fa662",
     "current-action-card.webp": "b8ac0938222138f7f26153063d6ea3eabfb87854b54b497fd2f32480ac0453fb",
     "current-gem-art.webp": "fa93d27a93e25f8cb180105628c27758424133eb523726f7a6660c1ee419d7c8",
     "current-gem-variants.webp": "130670968f3cb0d5dc4c07ed87202a737ba09c56d93f441aaccb69ae78e5a0fc"

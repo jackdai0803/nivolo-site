@@ -1780,7 +1780,7 @@ function ankh(u) {
 	return path(d, "#91602f", "transform=\"translate(0 5)\"") + path(d, gold(u), "fill-rule=\"evenodd\" stroke=\"#a67535\" stroke-width=\"4\"") + line("M-10 69V102M-47 34H-24M28 34H49", "#fff5c9", 6) + line("M-24-30C-44-55-28-85-8-91", "#fff5c9", 6) + `<circle cy="37" r="16" fill="#a27335"/><circle cy="34" r="12" fill="#1d6488"/><ellipse cx="-3" cy="30" rx="4" ry="5" fill="#85d8de"/>`;
 }
 function owl(u) {
-	return `<g>${path("M-67 37Q-80-5-62-39L-68-75Q-38-73-24-55Q0-65 24-55Q42-74 68-75L62-39Q80-5 67 37Q54 79 0 80Q-54 79-67 37Z", `url(#${u}-bronze)`, "stroke=\"#765034\" stroke-width=\"5\"")}${path("M-58 17Q-66-36-30-40Q-9-41 0-23Q9-41 30-40Q66-36 58 17Q44 61 0 65Q-44 61-58 17Z", "#fff0ca")}${[-29, 29].map((x) => `<circle cx="${x}" cy="-5" r="23" fill="#fffdf0"/><g data-myth-motion="owl-eye"><ellipse cx="${x}" cy="-4" rx="12" ry="15" fill="#273b3e"/><circle cx="${x - 4}" cy="-10" r="5" fill="white"/></g>`).join("")}${path("M-10 14Q0 9 10 14L0 29Z", gold(u))}${line("M-18 42l8 7M10 49l8-7", "#cfab6d", 5)}${path("M-65-4Q-88 19-59 55L-43 41Z", "#9b6b42")}${path("M65-4Q88 19 59 55L43 41Z", "#9b6b42")}${line("M-38 78H-17M17 78H38", gold(u), 10)}</g>`;
+	return `<g>${path("M-67 37Q-80-5-62-39L-68-75Q-38-73-24-55Q0-65 24-55Q42-74 68-75L62-39Q80-5 67 37Q54 79 0 80Q-54 79-67 37Z", `url(#${u}-bronze)`, "stroke=\"#765034\" stroke-width=\"5\"")}${path("M-58 17Q-66-36-30-40Q-9-41 0-23Q9-41 30-40Q66-36 58 17Q44 61 0 65Q-44 61-58 17Z", "#fff0ca")}${[-29, 29].map((x) => `<circle cx="${x}" cy="-5" r="23" fill="#fffdf0"/><g data-myth-motion="owl-eye"><ellipse cx="${x}" cy="-4" rx="12" ry="15" fill="#273b3e"/><circle cx="${x - 4}" cy="-10" r="5" fill="white"/></g>`).join("")}${path("M-10 14Q0 9 10 14L0 29Z", gold(u))}${line("M-18 42l8 7M10 49l8-7", "#cfab6d", 5)}${path("M-65-4Q-88 19-59 55L-43 41Z", "#9b6b42", "data-myth-motion=\"owl-wing-left\"")}${path("M65-4Q88 19 59 55L43 41Z", "#9b6b42", "data-myth-motion=\"owl-wing-right\"")}${line("M-38 78H-17M17 78H38", gold(u), 10)}</g>`;
 }
 function cerberusShadow(u, { compact = false } = {}) {
 	const head = path("M-78 96Q-101 34-75-26L-90-101Q-53-92-23-59Q0-68 23-59Q53-92 90-101L75-26Q101 34 78 96L54 169H-54Z", "currentColor") + path("M-44-2Q-26-11-10-1L-14 7Q-31 10-44-2ZM44-2Q26-11 10-1L14 7Q31 10 44-2Z", "var(--hound-eyes, #dac5df)") + path("M-24 25Q0 9 24 25L30 58Q0 85-30 58Z", "var(--hound-eyes, #dac5df)", "opacity=\".38\"") + path("M-13 48Q0 40 13 48L0 61Z", "currentColor");
@@ -1881,7 +1881,6 @@ function makePower(svg, f, u, motion) {
 	const layer = (key, art) => `<g data-power-part="${key}">${art}</g>`;
 	const trace = (d, color, width = 8) => line(d, color, width, "data-power-trace pathLength=\"1\" stroke-dasharray=\"1 1\"");
 	const particle = (i, art) => `<g data-power-particle="${i}">${art}</g>`;
-	const shield = "M650 215Q860 332 1030 333V660Q1015 925 650 1080Q285 925 270 660V333Q440 332 650 215Z";
 	let back = "", front = "";
 	svg.querySelector("defs").insertAdjacentHTML("beforeend", `<filter id="${u}-power-glow" x="-70%" y="-70%" width="240%" height="240%"><feDropShadow dx="0" dy="0" stdDeviation="11" flood-color="${f.id === "poseidon" ? "#b7f5e8" : f.id === "hades" ? "#c8a3e0" : "#ffe3a0"}" flood-opacity=".8"/></filter>`);
 	if (f.id === "anubis") {
@@ -1905,10 +1904,7 @@ function makePower(svg, f, u, motion) {
 		].map((i) => line(`M75 86Q${215 + i * 35} ${-30 - i * 55} ${340 + i * 28} ${-100 - i * 70}`, "#fff0b7", 6, "opacity=\".7\"")).join("")}</g>`)).join("");
 		front = layer("feathers", Array.from({ length: 8 }, (_, i) => particle(i, path("M0-36Q25-8 0 37Q-20 2 0-36Z", gold(u)) + line("M0-22V24", "#fff2c7", 3))).join(""));
 	}
-	if (f.id === "athena") {
-		back = layer("shield", `<g data-power-body-frame transform="translate(${BODY_CENTER.x} ${BODY_CENTER.y}) scale(1.24 1.14) translate(-650 -647.5)">` + path(shield, "#a5b888", "fill-opacity=\".12\" stroke=\"#a2b17a\" stroke-width=\"7\"") + trace(shield, "#e4e9be", 12) + line("M650 250Q840 360 995 362V657Q978 903 650 1042Q322 903 305 657V362Q460 360 650 250Z", "#c5d1a2", 4) + "</g>");
-		front = layer("olives", Array.from({ length: 8 }, (_, i) => particle(i, "<ellipse rx=\"15\" ry=\"34\" fill=\"#a0b581\"/>" + line("M0-22V22", "#e1e7bd", 3))).join(""));
-	}
+	if (f.id === "athena") front = layer("olive-trail", Array.from({ length: 5 }, (_, i) => particle(i, path("M0 26Q-22-2 1-33Q21-8 0 26Z", i % 2 ? "#809565" : "#acbc84", "stroke=\"#546d50\" stroke-width=\"2\"") + line("M0 20L1-23", "#e7dfad", 3))).join(""));
 	if (f.id === "poseidon") {
 		back = layer("tide", path("M70 990Q245 710 475 884Q728 1045 979 728Q1073 598 1175 739Q1230 845 1120 914Q1171 800 1098 792Q1043 789 949 957Q658 1202 70 1085Z", "#64aaa7", "fill-opacity=\".78\"") + line("M92 980Q256 777 477 912Q743 1063 1008 754Q1080 671 1140 747Q1178 793 1141 838", "#c6f3e7", 15) + line("M230 1030Q478 1134 755 1039", "#aadfd2", 8));
 		front = layer("foam", line("M185 1048Q300 1002 414 1051T677 1063T1005 1020", "#e0f8e9", 14, "opacity=\".8\"")) + layer("spray", Array.from({ length: 10 }, (_, i) => particle(i, `<ellipse rx="${8 + i % 3 * 3}" ry="${15 + i % 3 * 4}" fill="#c9f1e6"/>`)).join(""));
@@ -1918,7 +1914,7 @@ function makePower(svg, f, u, motion) {
 		front = layer("moon-trail", trace("M276 800Q248 545 221 275", "#d3edf3", 8)) + layer("moon-impact", `<circle cx="216" cy="200" r="74" fill="none" stroke="#d0e9f1" stroke-width="6"/>${Array.from({ length: 6 }, (_, i) => particle(i, sparkle(0, 0, .8, "#edf7fa"))).join("")}`);
 	}
 	if (f.id === "apollo") {
-		back = layer("sun", `<circle cx="${BODY_CENTER.x}" cy="525" r="340" fill="#efc678" fill-opacity=".12" stroke="#e1b360" stroke-width="7"/>${Array.from({ length: 12 }, (_, i) => `<g data-power-ray="${i}" transform="translate(${BODY_CENTER.x} 525) rotate(${i * 30})">${line("M0-364V-428", "#d4a04f", 11)}</g>`).join("")}`);
+		back = layer("sun", `<circle r="438" fill="#efc678" fill-opacity=".12" stroke="#e1b360" stroke-width="7"/>` + Array.from({ length: 12 }, (_, i) => `<g data-power-ray="${i}" transform="rotate(${i * 30})">${line("M0-458V-500", "#d4a04f", 11)}</g>`).join(""));
 		front = layer("music", Array.from({ length: 5 }, (_, i) => particle(i, path("M0 5V-58L44-71V-9H33V-53L12-47V5Z", "#d5a24d") + "<ellipse cy=\"6\" rx=\"17\" ry=\"11\" fill=\"#d5a24d\"/><ellipse cx=\"33\" cy=\"-7\" rx=\"17\" ry=\"11\" fill=\"#d5a24d\"/>")).join(""));
 	}
 	if (f.id === "zeus") {
@@ -1974,14 +1970,13 @@ function makePower(svg, f, u, motion) {
 		const spread = .3 + .7 * smooth((q - .08) / .36);
 		set("wing-l", `translate(${BODY_CENTER.x} 700) rotate(${18 * (1 - spread)}) scale(${spread} ${.74 + .26 * spread}) translate(${-BODY_CENTER.x} -700)`);
 		set("wing-r", `translate(${BODY_CENTER.x} 700) rotate(${-18 * (1 - spread)}) scale(${spread} ${.74 + .26 * spread}) translate(${-BODY_CENTER.x} -700)`);
-		set("shield", center(BODY_CENTER.x, BODY_CENTER.y, .84 + .16 * charge));
 		set("tide", `translate(${-190 * (1 - release)} ${80 * (1 - release) + 30 * (1 - settle)})`);
 		set("foam", `translate(${(release - .5) * 85} ${15 * (1 - settle)})`, release * .8);
 		set("moon", `translate(0 ${-charge * 10})`, .6 + .4 * release);
 		set("moon-trail", "", smooth((q - .34) / .07) * (1 - smooth((q - .53) / .15)));
 		const impact = smooth((q - .48) / .22);
 		set("moon-impact", center(216, 200, .4 + impact * .9), smooth((q - .48) / .05) * (1 - smooth((q - .64) / .16)));
-		set("sun", center(BODY_CENTER.x, 525, .8 + .2 * charge, release * 12));
+		set("sun", `translate(${BODY_CENTER.x} ${BODY_CENTER.y}) rotate(${release * 12}) scale(${.8 + .2 * charge})`);
 		rays.forEach((n, i) => n.setAttribute("opacity", String(smooth((q - .12 - i * .018) / .16))));
 		set("cloud-l", `translate(${-105 * (1 - charge)} ${-18 * charge})`);
 		set("cloud-r", `translate(${100 * (1 - charge)} ${-18 * charge})`);
@@ -2006,12 +2001,12 @@ function makePower(svg, f, u, motion) {
 				opacity = Math.sin(p * Math.PI) * .85;
 			}
 			if (f.id === "athena") {
-				const p = smooth((q - .18 - index * .055) / .27);
-				x = BODY_CENTER.x + side * (500 - index * 15);
-				y = 925 - index * 88 - p * 55;
-				a = side * (28 + 10 * p);
-				s = .6 + .4 * p;
-				opacity = p;
+				const drift = clamp01((q - .19 - i * .055) / .45);
+				x = 220 + 32 * Math.sin(drift * 5 + i * .8);
+				y = 735 - i * 48 + drift * 72;
+				a = -28 + drift * 95 + i * 15;
+				s = .72 + .16 * Math.sin(drift * Math.PI);
+				opacity = .9 * Math.sin(drift * Math.PI) ** 2;
 			}
 			if (f.id === "poseidon") {
 				const p = clamp01((q - .33 - index * .025) / .47);
@@ -2213,6 +2208,7 @@ function makeMyth(host, f, u, label = f.name, { tintedEyes = true } = {}) {
 		}
 		const strength = powerStrength(powerMs);
 		const powerQ = powerMs === null ? 0 : clamp01(powerMs / POWER_MS), release = smooth((powerQ - .3) / .18);
+		const owlFlight = f.id === "athena" ? smooth((powerQ - .1) / .32) * (1 - smooth((powerQ - .56) / .31)) : 0;
 		if (strength) if (f.id === "anubis") {
 			p.left += (7 + release * 14) * strength;
 			p.right -= (7 + release * 14) * strength;
@@ -2250,7 +2246,15 @@ function makeMyth(host, f, u, label = f.name, { tintedEyes = true } = {}) {
 			const kind = node.dataset.mythMotion, index = Number(node.dataset.index || 0);
 			if (kind === "ankh") node.setAttribute("transform", `rotate(${active ? breath * 5 : 0} -12 -100)`);
 			if (kind === "wing-left" || kind === "wing-right" || kind === "sandal") node.setAttribute("transform", `rotate(${active ? flap * 8 : 0})`);
-			if (kind === "owl") node.setAttribute("transform", `rotate(${active ? breath * 3 : 0} 0 65)`);
+			if (kind === "owl") {
+				const drift = owlFlight * Math.sin(powerQ * Math.PI * 2);
+				node.setAttribute("transform", `translate(${-90 * owlFlight - 17 * drift} ${-318 * owlFlight}) rotate(${(active ? breath * 3 : 0) - 8 * drift} 0 65)`);
+			}
+			if (kind === "owl-wing-left" || kind === "owl-wing-right") {
+				const side = kind === "owl-wing-left" ? -1 : 1;
+				const flap = owlFlight * (58 + 25 * Math.cos(powerQ * Math.PI * 12));
+				node.setAttribute("transform", `rotate(${-side * flap} ${side * 65} -4)`);
+			}
 			if (kind === "owl-eye") node.setAttribute("opacity", active && time % 5700 > 5300 && time % 5700 < 5450 ? ".15" : "1");
 			if (kind === "bubble") {
 				const phase = (time / 4400 + index * .28) % 1;
