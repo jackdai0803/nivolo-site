@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import {collections} from '../assets/nivo-collections.js';
 import {chapters,looks,destinations} from '../assets/collection-chapters-data.js';
 const escape=value=>String(value).replaceAll('&','&amp;').replaceAll('"','&quot;').replaceAll('<','&lt;');
-const icon=id=>`assets/icons/${id}.png?v=20261110-classic-eyes`;
+const icon=id=>`assets/icons/${id}.png?v=${id==='gold'?'20261120-icon-contrast':'20261110-classic-eyes'}`;
 function chapter(group){const data=chapters[group.id],id=data.representative,look=looks[id],destination=destinations[group.id];return `<section class="collection-chapter section" id="${destination}" data-chapter="${group.id}" style="--chapter-paper:${data.color};--chapter-accent:${data.accent}" aria-labelledby="${destination}-title">
   <div class="wrap">
     <header class="chapter-heading"${group.id==='originals'?' id="collection"':''}><p class="chapter-eyebrow" data-chapter-copy="collection">${escape(group.name)}</p><h2 id="${destination}-title" data-chapter-copy="title">${escape(data.title[0])}</h2><p data-chapter-copy="intro">${escape(data.intro[0])}</p></header>
