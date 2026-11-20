@@ -32,6 +32,18 @@
 .collector-art::before { content: ""; position: absolute; width: 215px; height: 145px; border-radius: 50%; corner-shape: round; background: #e1eff3; transform: rotate(-13deg); z-index: -1; }
 /* Deep-Sea Nivo already carries its own rim light; no separate backdrop glow. */
 .collector-art--plus::before { content: none; }
+.collector-reel {
+  position: absolute; z-index: 3; width: min(140px, 54%); aspect-ratio: 1; overflow: hidden;
+  border-radius: 24%; opacity: 0; visibility: hidden; pointer-events: none;
+  box-shadow: 0 0 0 1px #d4f6ff70, 0 6px 22px #041c3480;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .collector-reel { transition: opacity 220ms ease-out, visibility 0s 220ms; }
+  .is-showing-reel .collector-reel { opacity: 1; visibility: visible; transition-delay: 0s; }
+  .collector-art--plus > :not(.collector-reel), .collector-plan--plus > :is(.collector-nivo-caption, .collector-benefits, .collector-offer) { transition: opacity 220ms ease-out; }
+  .is-showing-reel .collector-art--plus > :not(.collector-reel),
+  .is-showing-reel > :is(.collector-nivo-caption, .collector-benefits, .collector-offer) { opacity: 0; pointer-events: none; }
+}
 .collector-guest { position: absolute; z-index: -1; top: 0; width: min(40%, 126px); height: auto; pointer-events: none; }
 .collector-guest--anubis { right: 53%; }
 .collector-guest--peony { left: 53%; }
