@@ -32,18 +32,16 @@
 .collector-art::before { content: ""; position: absolute; width: 215px; height: 145px; border-radius: 50%; corner-shape: round; background: #e1eff3; transform: rotate(-13deg); z-index: -1; }
 /* Deep-Sea Nivo already carries its own rim light; no separate backdrop glow. */
 .collector-art--plus::before { content: none; }
-.collector-reel {
-  position: absolute; z-index: 3; height: 100%; aspect-ratio: 1; max-width: 100%;
-  opacity: 0; visibility: hidden; pointer-events: none;
+.collector-dive:not([hidden]) {
+  position: absolute; z-index: 3; inset: 0; display: grid; place-items: center; grid-template: 100% / 100%;
+  pointer-events: none; clip-path: inset(-28px -8px -10px); animation: plusDiveCurtain var(--dive-duration) both;
 }
+.collector-dive .plus-dive-stage { display: block; transform: scale(.84); }
+.short-home .collector-dive .plus-dive-stage { transform: scale(.65); }
 @media (prefers-reduced-motion: no-preference) {
-  .collector-reel { transition: opacity 220ms ease-out, visibility 0s 220ms; }
-  .collector-plan--plus:not(.is-showing-reel) .collector-reel :is(.plus-reel-pose, .plus-reel-strip),
-  .collector-plan--plus:not(.is-showing-reel) .collector-reel::after { animation-play-state: paused; }
-  .is-showing-reel .collector-reel { opacity: 1; visibility: visible; transition-delay: 0s; }
-  .collector-art--plus > :not(.collector-reel), .collector-plan--plus > :is(.collector-nivo-caption, .collector-benefits, .collector-offer) { transition: opacity 220ms ease-out; }
-  .is-showing-reel .collector-art--plus > :not(.collector-reel),
-  .is-showing-reel > :is(.collector-nivo-caption, .collector-benefits, .collector-offer) { opacity: 0; pointer-events: none; }
+  .collector-art--plus > :not(.collector-dive), .collector-plan--plus > :is(.collector-nivo-caption, .collector-benefits, .collector-offer) { transition: opacity 220ms ease-out; }
+  .is-showing-dive .collector-art--plus > :not(.collector-dive),
+  .is-showing-dive > :is(.collector-nivo-caption, .collector-benefits, .collector-offer) { opacity: 0; pointer-events: none; }
 }
 .collector-guest { position: absolute; z-index: -1; top: 0; width: min(40%, 126px); height: auto; pointer-events: none; }
 .collector-guest--anubis { right: 53%; }

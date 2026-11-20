@@ -1,0 +1,293 @@
+/* Original 2.7-second Plus dive, shared with the website pricing card. */
+.plus-intro, .collector-dive { --dive-duration: 2700ms; }
+
+.plus-intro {
+  z-index: 2;
+  isolation: isolate;
+  background: radial-gradient(ellipse at 50% 46%, transparent 14%, #030e3599 92%), var(--plus-ocean) center / cover, #061735;
+  color: #fff;
+  animation: plusDiveCurtain var(--dive-duration) both;
+  place-items: center;
+  display: grid;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.plus-intro:before, .plus-intro:after {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+}
+
+.plus-intro:before {
+  animation: plusDiveDepth var(--dive-duration) both;
+  background: #020a1d;
+}
+
+.plus-intro:after {
+  transform-origin: 50% 55%;
+  background: radial-gradient(at 50% 55%, #70f9ff88, #087eae44 30%, #0000 66%), conic-gradient(from 162deg at 56% -10%, #0000, #70ecff40 6deg, #0000 10deg 15deg, #b8fdff59 19deg, #0000 23deg);
+  animation: 1.28s 1.08s both plusDiveLight;
+}
+
+.plus-dive-scene {
+  z-index: 1;
+  text-align: center;
+  position: relative;
+}
+
+.plus-dive-stage {
+  width: 260px;
+  height: 246px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.plus-dive-ripple {
+  background: #37aad459;
+  border: 2px solid #a6fbff;
+  border-radius: 50%;
+  width: 184px;
+  height: 24px;
+  animation: 2.3s both plusDiveRipple;
+  position: absolute;
+  bottom: 1px;
+  left: 38px;
+  box-shadow: 0 0 16px #4cdeff, inset 0 0 12px #84dfff;
+}
+
+.plus-dive-ripple:before, .plus-dive-ripple:after {
+  content: "";
+  border-radius: inherit;
+  border: 2px solid #a1faff;
+  animation: .85s cubic-bezier(.16, .67, .32, 1) .95s both plusDiveWave;
+  position: absolute;
+  inset: -3px;
+}
+
+.plus-dive-ripple:after {
+  border-color: #c8adff;
+  animation-delay: 1.19s;
+}
+
+.plus-dive-waterline {
+  clip-path: inset(-120px -60px 0);
+  position: absolute;
+  inset: 0 0 12px;
+}
+
+.plus-dive-before, .plus-dive-after {
+  transform-origin: 50% 85%;
+  position: absolute;
+  bottom: 0;
+  left: calc(50% - 104px);
+}
+
+.plus-dive-before {
+  animation: 1s both plusDiveDown;
+}
+
+.plus-dive-after {
+  animation: 1.12s 1.1s both plusDiveUp;
+}
+
+.plus-dive-scene strong {
+  color: #effdff;
+  letter-spacing: -.045em;
+  text-shadow: 0 2px 20px #3ccaff80;
+  margin-top: 20px;
+  font-size: clamp(38px, 10vw, 58px);
+  font-weight: 850;
+  line-height: 1.05;
+  animation: .55s 1.48s both plusDiveTitle;
+  display: block;
+}
+
+.plus-dive-spray {
+  height: 0;
+  position: absolute;
+  inset: auto 0 12px;
+}
+
+.plus-dive-spray i {
+  background: linear-gradient(#eff, #68e7ff 55%, #699aff44);
+  border-radius: 60% 60% 50% 50%;
+  width: 8px;
+  height: 18px;
+  animation: .72s cubic-bezier(.15, .66, .35, 1) 1.14s both plusDiveSpray;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  box-shadow: 0 0 9px #51dcff;
+}
+
+.plus-dive-spray i:first-child {
+  --dx: -145px;
+  --dy: -64px;
+  --angle: -65deg;
+}
+
+.plus-dive-spray i:nth-child(2) {
+  --dx: -103px;
+  --dy: -125px;
+  --angle: -37deg;
+}
+
+.plus-dive-spray i:nth-child(3) {
+  --dx: 99px;
+  --dy: -136px;
+  --angle: 32deg;
+}
+
+.plus-dive-spray i:nth-child(4) {
+  --dx: 142px;
+  --dy: -70px;
+  --angle: 62deg;
+}
+
+@keyframes plusDiveDown {
+  0%, 15% {
+    transform: none;
+  }
+
+  40% {
+    transform: translateY(10px) rotate(5deg) scale(1.15, .78);
+  }
+
+  63% {
+    animation-timing-function: ease-in;
+    transform: translate(-10px, -46px) rotate(-19deg) scale(.94, 1.07);
+  }
+
+  to {
+    transform: translate(10px, 125%) rotate(24deg) scale(.86, 1.13);
+  }
+}
+
+@keyframes plusDiveUp {
+  0% {
+    animation-timing-function: cubic-bezier(.13, .72, .22, 1);
+    transform: translate(7px, 128%) rotate(13deg) scale(.82, 1.18);
+  }
+
+  48% {
+    transform: translate(-5px, -48px) rotate(-12deg) scale(1.21);
+  }
+
+  73% {
+    transform: translateY(4px) rotate(4deg) scale(1.18, 1.03);
+  }
+
+  to {
+    transform: translateY(-5px) scale(1.13);
+  }
+}
+
+@keyframes plusDiveDepth {
+  0%, 14% {
+    opacity: .05;
+  }
+
+  37%, 42% {
+    opacity: .9;
+  }
+
+  64%, to {
+    opacity: .14;
+  }
+}
+
+@keyframes plusDiveLight {
+  0% {
+    opacity: 0;
+    transform: scale(.65);
+  }
+
+  34% {
+    opacity: 1;
+  }
+
+  to {
+    opacity: .34;
+    transform: scale(1.16);
+  }
+}
+
+@keyframes plusDiveRipple {
+  0%, 25% {
+    opacity: .5;
+    transform: scale(.75);
+  }
+
+  42% {
+    opacity: .92;
+    transform: scale(.44, .52);
+  }
+
+  60% {
+    opacity: 1;
+    transform: scale(1.34, 1.22);
+  }
+
+  to {
+    opacity: .68;
+    transform: scale(.98);
+  }
+}
+
+@keyframes plusDiveWave {
+  0% {
+    opacity: .95;
+    transform: scale(.6);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(2.9, 2.5);
+  }
+}
+
+@keyframes plusDiveSpray {
+  0% {
+    opacity: 0;
+    transform: translate(0,0) rotate(var(--angle)) scale(.35);
+  }
+
+  19% {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+    transform: translate(var(--dx),var(--dy)) rotate(var(--angle)) scale(.65);
+  }
+}
+
+@keyframes plusDiveTitle {
+  0% {
+    opacity: 0;
+    transform: translateY(16px) scale(.85);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes plusDiveCurtain {
+  0%, 91% {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plus-intro, .plus-intro *, .plus-intro::before, .plus-intro::after,
+  .collector-dive, .collector-dive *, .plus-dive-ripple::before, .plus-dive-ripple::after { animation: none; }
+}

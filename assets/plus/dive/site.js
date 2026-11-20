@@ -2,8 +2,8 @@
   const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
   const card = document.querySelector(".collector-plan--plus");
   const art = card?.querySelector(".collector-art--plus");
-  const strip = art?.querySelector(".plus-reel-strip");
-  if (!strip || reducedMotion.matches) return;
+  const dive = art?.querySelector(".collector-dive");
+  if (!dive || reducedMotion.matches) return;
   let started = false;
   let visible = false;
   let timer;
@@ -11,7 +11,8 @@
     visible = false;
     observer.disconnect();
     clearTimeout(timer);
-    card.classList.remove("is-showing-reel");
+    dive.hidden = true;
+    card.classList.remove("is-showing-dive");
     reducedMotion.removeEventListener("change", finish);
     document.removeEventListener("visibilitychange", onVisibility);
     card.removeEventListener("focusin", finish);
@@ -22,19 +23,21 @@
     if (!visible) { if (started) finish(); return; }
     if (started || document.hidden || reducedMotion.matches) return;
     started = true;
-    strip.src = strip.dataset.src;
-    try { await strip.decode(); } catch { finish(); return; }
+    try {
+      await Promise.all([...dive.querySelectorAll("img")].map(image => {
+        image.src = image.dataset.src;
+        return image.decode();
+      }));
+    } catch { finish(); return; }
     if (!visible || card.contains(document.activeElement)) { finish(); return; }
-    card.classList.add("is-showing-reel");
-    strip.classList.add("is-playing");
+    card.classList.add("is-showing-dive");
+    dive.hidden = false;
     // An interrupted or disabled CSS animation must always give the offer back.
-    timer = setTimeout(finish, 5100);
+    timer = setTimeout(finish, 3200);
   }, { threshold: [0, .5] });
-  strip.addEventListener("animationend", event => {
-    if (!visible || event.animationName !== "plusMascotCycle") return;
-    clearTimeout(timer);
-    timer = setTimeout(finish, 520);
-  }, { once: true });
+  dive.addEventListener("animationend", event => {
+    if (event.target === dive && event.animationName === "plusDiveCurtain") finish();
+  });
   card.addEventListener("focusin", finish);
   reducedMotion.addEventListener("change", finish);
   document.addEventListener("visibilitychange", onVisibility);
