@@ -28,10 +28,10 @@
     card.classList.add("is-showing-reel");
     strip.classList.add("is-playing");
     // An interrupted or disabled CSS animation must always give the offer back.
-    timer = setTimeout(finish, 4000);
+    timer = setTimeout(finish, 5100);
   }, { threshold: [0, .5] });
-  strip.addEventListener("animationend", () => {
-    if (!visible) return;
+  strip.addEventListener("animationend", event => {
+    if (!visible || event.animationName !== "plusMascotCycle") return;
     clearTimeout(timer);
     timer = setTimeout(finish, 520);
   }, { once: true });

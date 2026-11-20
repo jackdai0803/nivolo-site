@@ -33,11 +33,13 @@
 /* Deep-Sea Nivo already carries its own rim light; no separate backdrop glow. */
 .collector-art--plus::before { content: none; }
 .collector-reel {
-  position: absolute; z-index: 3; height: 100%; aspect-ratio: 1; max-width: 100%; overflow: hidden;
+  position: absolute; z-index: 3; height: 100%; aspect-ratio: 1; max-width: 100%;
   opacity: 0; visibility: hidden; pointer-events: none;
 }
 @media (prefers-reduced-motion: no-preference) {
   .collector-reel { transition: opacity 220ms ease-out, visibility 0s 220ms; }
+  .collector-plan--plus:not(.is-showing-reel) .collector-reel :is(.plus-reel-pose, .plus-reel-strip),
+  .collector-plan--plus:not(.is-showing-reel) .collector-reel::after { animation-play-state: paused; }
   .is-showing-reel .collector-reel { opacity: 1; visibility: visible; transition-delay: 0s; }
   .collector-art--plus > :not(.collector-reel), .collector-plan--plus > :is(.collector-nivo-caption, .collector-benefits, .collector-offer) { transition: opacity 220ms ease-out; }
   .is-showing-reel .collector-art--plus > :not(.collector-reel),
