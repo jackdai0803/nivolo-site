@@ -220,6 +220,8 @@ export function applyClassicCoat(svg, uid, colors, markings = '') {
  // Replace the grey transition pixels too, but leave near-white facial texture.
  // Apply the PNG alpha once, after recolouring: layering a translucent coat over
  // a translucent dark edge otherwise leaves a charcoal fringe on pale skins.
+ // Composite the coat with its dark base before WebKit clips each moving part.
+ // Otherwise the base shows through the antialiased edge at both shoulders.
  const source=defs.querySelector(`[id="${uid}-art"]`);source.id=`${uid}-classic-source`;
  const plumageCoverage = '1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 .75 .25 0 0';
  defs.append(element(`<filter id="${uid}-opaque-art" color-interpolation-filters="sRGB"><feComponentTransfer><feFuncA type="linear" slope="0" intercept="1"/></feComponentTransfer></filter>
@@ -229,7 +231,7 @@ export function applyClassicCoat(svg, uid, colors, markings = '') {
  <filter id="${uid}-plumage-selection" color-interpolation-filters="sRGB"><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncR type="table" tableValues="${plumageCoverage}"/><feFuncG type="table" tableValues="${plumageCoverage}"/><feFuncB type="table" tableValues="${plumageCoverage}"/><feFuncA type="linear" slope="0" intercept="1"/></feComponentTransfer></filter>
  <mask id="${uid}-plumage-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="1254" height="1254" style="mask-type:luminance"><use href="#${uid}-classic-source" filter="url(#${uid}-plumage-selection)"/>${EYES.map(e=>`<ellipse cx="${e.cx}" cy="${e.cy}" rx="${e.rx+14}" ry="${e.ry+14}" fill="#000"/>`).join('')}<path d="M574 661Q565 621 600 592Q661 546 739 595L737 632Q737 714 660 716Q612 710 591 665Z" fill="#000"/></mask>
  <linearGradient id="${uid}-coat-gradient" x1="0" y1="0" x2=".5" y2="1"><stop stop-color="${colors[0]}"/><stop offset="1" stop-color="${colors[1]}"/></linearGradient>
- <g id="${uid}-art" mask="url(#${uid}-coat-silhouette)"><use href="#${uid}-classic-source" filter="url(#${uid}-opaque-art)"/><g mask="url(#${uid}-plumage-mask)"><rect width="1254" height="1254" fill="url(#${uid}-coat-gradient)"/><g>${markings}</g></g></g>`));
+ <g id="${uid}-art" style="isolation:isolate" mask="url(#${uid}-coat-silhouette)"><use href="#${uid}-classic-source" filter="url(#${uid}-opaque-art)"/><g mask="url(#${uid}-plumage-mask)"><rect width="1254" height="1254" fill="url(#${uid}-coat-gradient)"/><g>${markings}</g></g></g>`));
  for(const part of ['left-eye','right-eye','beak']){
   svg.querySelector(`[data-part="${part}"] use`).setAttribute('href',`#${uid}-classic-source`);
  }

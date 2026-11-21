@@ -168,7 +168,7 @@ function applyClassicCoat(svg, uid, colors, markings = "") {
  <filter id="${uid}-plumage-selection" color-interpolation-filters="sRGB"><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncR type="table" tableValues="${plumageCoverage}"/><feFuncG type="table" tableValues="${plumageCoverage}"/><feFuncB type="table" tableValues="${plumageCoverage}"/><feFuncA type="linear" slope="0" intercept="1"/></feComponentTransfer></filter>
  <mask id="${uid}-plumage-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="1254" height="1254" style="mask-type:luminance"><use href="#${uid}-classic-source" filter="url(#${uid}-plumage-selection)"/>${EYES.map((e) => `<ellipse cx="${e.cx}" cy="${e.cy}" rx="${e.rx + 14}" ry="${e.ry + 14}" fill="#000"/>`).join("")}<path d="M574 661Q565 621 600 592Q661 546 739 595L737 632Q737 714 660 716Q612 710 591 665Z" fill="#000"/></mask>
  <linearGradient id="${uid}-coat-gradient" x1="0" y1="0" x2=".5" y2="1"><stop stop-color="${colors[0]}"/><stop offset="1" stop-color="${colors[1]}"/></linearGradient>
- <g id="${uid}-art" mask="url(#${uid}-coat-silhouette)"><use href="#${uid}-classic-source" filter="url(#${uid}-opaque-art)"/><g mask="url(#${uid}-plumage-mask)"><rect width="1254" height="1254" fill="url(#${uid}-coat-gradient)"/><g>${markings}</g></g></g>`));
+ <g id="${uid}-art" style="isolation:isolate" mask="url(#${uid}-coat-silhouette)"><use href="#${uid}-classic-source" filter="url(#${uid}-opaque-art)"/><g mask="url(#${uid}-plumage-mask)"><rect width="1254" height="1254" fill="url(#${uid}-coat-gradient)"/><g>${markings}</g></g></g>`));
 	for (const part of [
 		"left-eye",
 		"right-eye",
@@ -524,12 +524,8 @@ function mountFocusedWriting(svg, uid) {
 	const ink = [...bookArt.querySelectorAll("[data-writing]")];
 	const lengths = ink.map((p) => p.getTotalLength());
 	const handLayers = {};
-	for (const [part, d] of Object.entries({
-		"left-flipper": "M283 770C263 780 244 790 229 803C204 828 192 853 211 875C231 900 275 902 310 884C330 873 343 853 345 831",
-		"right-flipper": "M990 736C1012 751 1032 773 1045 795C1065 828 1075 852 1057 871C1036 892 995 882 964 866C942 854 931 833 932 809"
-	})) {
+	for (const part of ["left-flipper", "right-flipper"]) {
 		const flipper = revised.querySelector(`[data-part="${part}"]`);
-		flipper.insertAdjacentHTML("beforeend", `<path data-hand-edge d="${d}" fill="none" stroke="#073f9a" stroke-opacity=".72" stroke-width="1.6" vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round"/>`);
 		const layer = document.createElementNS("http://www.w3.org/2000/svg", "g");
 		layer.dataset.handLayer = part;
 		layer.setAttribute("mask", `url(#${uid}-plumage-mask)`);
@@ -1867,11 +1863,15 @@ function makeSeriesSkin(host, id, uid, { jadeDragon = true } = {}) {
 	}
 	if (id === "ghost") {
 		svg.querySelector("defs").append(group(`<linearGradient id="${uid}-ghost-fade" gradientUnits="userSpaceOnUse" x1="0" y1="760" x2="0" y2="1110"><stop stop-color="white"/><stop offset=".5" stop-color="#b3b3b3"/><stop offset="1" stop-color="#242424"/></linearGradient><mask id="${uid}-ghost-body-fade" maskUnits="userSpaceOnUse" x="0" y="0" width="1254" height="1254" style="mask-type:luminance"><rect width="1254" height="1254" fill="url(#${uid}-ghost-fade)"/></mask>`));
-		for (const part of [
-			"body",
+		const plumage = group("");
+		const parts = [
 			"left-flipper",
-			"right-flipper"
-		]) motion.querySelector(`[data-part="${part}"]`).setAttribute("mask", `url(#${uid}-ghost-body-fade)`);
+			"right-flipper",
+			"body"
+		].map((part) => motion.querySelector(`[data-part="${part}"]`));
+		parts[0].before(plumage);
+		plumage.append(...parts);
+		plumage.setAttribute("mask", `url(#${uid}-ghost-body-fade)`);
 	}
 	if (id === "ghost" || id === "glitch") {
 		svg.querySelector("defs").append(group(`<filter id="${uid}-aura" x="-15%" y="-15%" width="130%" height="130%"><feMorphology in="SourceAlpha" operator="dilate" radius="5" result="edge"/><feGaussianBlur in="edge" stdDeviation="${id === "glitch" ? 2 : 8}" result="soft"/><feFlood flood-color="${id === "ghost" ? "#a4c7ef" : "#b12cae"}"/><feComposite in2="soft" operator="in"/></filter>`));

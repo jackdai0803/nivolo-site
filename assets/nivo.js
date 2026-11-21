@@ -1,7 +1,7 @@
 import { accentPose } from './edition-motion.js?v=1';
-import { createRig, idleAt, neutralPose, smallWinAt, celebrationAt, SMALL_WIN_MS, CELEBRATION_MS } from './nivo-rig.js?v=20261113-all-effect-alignment';
-import { makeClassicSkin, heroLooks } from './nivo-skins.js?v=20261113-all-effect-alignment';
-import { withLightweightIdle } from './nivo-idle.js?v=20261113-all-effect-alignment';
+import { createRig, idleAt, neutralPose, smallWinAt, celebrationAt, SMALL_WIN_MS, CELEBRATION_MS } from './nivo-rig.js?v=20261120-flippers';
+import { makeClassicSkin, heroLooks } from './nivo-skins.js?v=20261120-flippers';
+import { withLightweightIdle } from './nivo-idle.js?v=20261120-flippers';
 
 const strings = {
   en: { pause: 'Pause animation', resume: 'Resume animation', off: 'Sound: off', on: 'Sound: on' },
