@@ -52,7 +52,7 @@
 
   <main id="main" tabindex="-1" class="page">
     <h1>Privacy Policy</h1>
-    <p class="updated">Last updated: November 17, 2026 · Applies to the Nivolo iOS app and nivolo.app</p>
+    <p class="updated">Last updated: November 22, 2026 · Applies to the Nivolo iOS app and nivolo.app</p>
 
     <p class="lede">Nivolo is a habit and goal app built to be private by default. It has no cloud account system, analytics, advertising, or trackers. Almost everything you create lives only on your iPhone. This policy explains the exceptions in detail — what leaves your device, when, who processes it, how long it is kept, and what you can ask us to do about it.</p>
 
@@ -125,7 +125,7 @@
       <li>Your <strong>random app ID</strong> and a session identifier, so a redraft of the same goal counts once.</li>
       <li>If you are a Nivolo Plus member, <strong>Apple's signed record of your subscription</strong> (the StoreKit transaction the App Store gives the app). Our server checks Apple's signature on it to confirm the membership. It contains the product, the purchase and renewal dates, the App Store country, transaction identifiers and the price — never your name, Apple ID, email address or payment details.</li>
     </ul>
-    <p>This text is used once, to generate that plan, and is returned to your device. Please avoid typing anything you would not want processed by a third-party AI provider — health details, financial details, or other people's personal information — into a goal you send to the AI. Writing goals by hand instead sends nothing at all.</p>
+    <p>In supported regions, after you accept the updated AI sharing notice, Cloudflare runs Google’s Gemma model to draft your plan. The goal text is processed on Cloudflare’s infrastructure. Older app versions use Anthropic for drafts. In mainland China, Alibaba Cloud processes drafts when available. This text is used once, to generate that plan, and is returned to your device. Please avoid typing anything you would not want processed by a third-party AI provider — health details, financial details, or other people's personal information — into a goal you send to the AI. Writing goals by hand instead sends nothing at all.</p>
 
     <h3>AI reminder suggestion</h3>
     <p>If you ask Nivolo Plus to suggest a reminder time, it sends your goal title, the availability you type, and your language to generate a draft. Our server verifies the signed subscription record described above. You review and save the time before a reminder is scheduled.</p>
@@ -167,12 +167,12 @@
           </tr>
           <tr>
             <td><strong>Cloudflare</strong></td>
-            <td>Hosts nivolo.app, our AI server, the Early Supporter record, and the launch list (Workers, Durable Objects, and KV); provides DNS and email routing</td>
+            <td>Runs the Gemma goal-drafting model through Workers AI and hosts nivolo.app, our AI server, the Early Supporter record, and the launch list (Workers, Durable Objects, and KV); provides DNS and email routing</td>
             <td>The AI request contents in transit, your IP address as an ordinary part of making a network connection (and as the key of short-lived rate limits), the fair-use counters described above, Apple-signed purchase records used to verify Early Supporter eligibility and the stored hashes of winning subscription identifiers, and the email address you voluntarily submit to the launch list.</td>
           </tr>
           <tr>
             <td><strong>Anthropic</strong> (Claude API)</td>
-            <td>Generates chat replies, plans, reminder suggestions and insights in regions Anthropic supports</td>
+            <td>Generates chat replies, reminder suggestions, insights and goal drafts from older app versions in regions Anthropic supports</td>
             <td>Only the text, language and activity summaries needed for the feature, forwarded by our server. Under Anthropic's commercial API terms, inputs and outputs are not used to train their models, and they are deleted from Anthropic's systems within their published retention window. Anthropic does not receive your IP address, your name, or any identifier from your device.</td>
           </tr>
           <tr>
@@ -221,7 +221,7 @@
         </thead>
         <tbody>
           <tr><td>Everything stored on your device (section 2)</td><td>Until you delete it in the app, reset the app, or delete the app. We cannot delete it for you, and we cannot see it.</td></tr>
-          <tr><td>AI prompt text, chat windows and weekly stats</td><td>Not stored by us. Processed in memory to produce a response, then discarded. Anthropic holds it only for the short period described in their API retention policy.</td></tr>
+          <tr><td>AI prompt text, chat windows and weekly stats</td><td>Not stored by us. Processed in memory to produce a response, then discarded. For requests sent to Anthropic, its published API retention window applies.</td></tr>
           <tr><td>Per-minute request limits</td><td>Held in Cloudflare's rate limiter for about a minute; not stored by us.</td></tr>
           <tr><td>Per-network daily count of new free drafts (keyed by IP address)</td><td>Expires automatically after 2 days.</td></tr>
           <tr><td>Free daily chat usage (keyed by random app ID)</td><td>Expires automatically after 2 days.</td></tr>
@@ -245,7 +245,7 @@
     </ul>
 
     <h2 id="transfers" class="anchor">10. International transfers</h2>
-    <p>Cloudflare Workers run at edge locations worldwide, so an AI request or launch-list signup is typically handled near you; Anthropic processes AI request text on infrastructure in the United States, and launch-list notifications are delivered to a Google-hosted inbox. If you are in the EEA or the UK, this data may be transferred outside your region. These transfers rely on the providers' Standard Contractual Clauses and equivalent safeguards. App data described in section 2 never leaves your device.</p>
+    <p>Cloudflare Workers run at edge locations worldwide, so an AI request or launch-list signup is typically handled near you; Cloudflare processes Gemma goal drafts on its infrastructure, Anthropic processes the AI requests routed to it on infrastructure in the United States, and launch-list notifications are delivered to a Google-hosted inbox. If you are in the EEA or the UK, this data may be transferred outside your region. These transfers rely on the providers' Standard Contractual Clauses and equivalent safeguards. App data described in section 2 never leaves your device.</p>
 
     <h2 id="rights" class="anchor">11. Your privacy rights</h2>
     <p>Depending on where you live, you may have the right to access, correct, delete, restrict or object to the processing of your personal data, to withdraw consent, and to data portability. Here is how each one works in practice for an app with no cloud account system:</p>
