@@ -1,19 +1,19 @@
 {
-  "sourceHash": "7ed1c2e3842069263b5a56409c03bc3477178d60df3b8e8fcbc48d7be7ce1b29",
-  "capturedAt": "2026-11-22T18:20:09.196Z",
+  "sourceHash": "db6f41f418a09cfd0f72653b6e3f5e098259ef8843d7777ce5a3508658d28ae7",
+  "capturedAt": "2026-11-22T19:02:20.990Z",
   "viewport": {
     "width": 393,
     "height": 852
   },
   "files": {
-    "current-home.webp": "e035358de3ab8797a827d270ec78a7097916fd2cef778260cff9f11549ca7875",
-    "current-new-goal.webp": "7e102e05f9c476367bfbb836eb907fd524d3b5a69733467810fd8daf27a8deda",
+    "current-home.webp": "3d4dff02d0cd8e98187fe9b8f21a78e8e58e84b2e435d3145e44ff18852dfbf6",
+    "current-new-goal.webp": "d1bf2038cce321554305bb3c90975784d19ad45d889e93918aab18d3db0e0adb",
     "current-log-action.webp": "41dd6a8cf3f6e78e3322d8c807ff92f0929b8a56ede828c76379bf1a638eecc1",
     "current-rest.webp": "48ce80ca734c4bbd3519e2d0e0c5a0ec5c9d74ac107c6c4b36aca5a8792508b8",
-    "current-store.webp": "f5b38ffbe8d131cbf759f922792e01d40cd6febaf119488c68d07b51c2aa1142",
+    "current-store.webp": "58d41f03ca0259e5b26731ac85238b5e2ce778538b8fd46f4692497a9006a2d0",
     "current-achievements.webp": "b4b047dbbfd8605f45d40d33f1c662058ce16e9481b04c165be516ac863cf4cd",
-    "current-gem-detail.webp": "0b3c0134ce2738cd3728c4a8c0d1d33529ae401c0e571eee6028b5b4dd090207",
-    "current-profile.webp": "2e1b39767542fca4bd97ba0c8fc8938ddbb855a37da5c1c491c40e45223b779d",
+    "current-gem-detail.webp": "1a7cad6d37b31be02df83862ee83e127997d78d202716280fde720849430c873",
+    "current-profile.webp": "219d338ff9f7d8b870553001aa8fd14ecdeef5b09f72ef4b3fe1429023092d9b",
     "current-action-card.webp": "27eef0df63740950daf23c56ca5d9de6e54624034ae5d3aef2905a0609ec07cf",
     "current-gem-art.webp": "fa93d27a93e25f8cb180105628c27758424133eb523726f7a6660c1ee419d7c8",
     "current-gem-variants.webp": "130670968f3cb0d5dc4c07ed87202a737ba09c56d93f441aaccb69ae78e5a0fc"
