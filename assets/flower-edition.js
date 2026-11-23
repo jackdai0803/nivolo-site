@@ -1,4 +1,4 @@
-import { mountPaintedMotion } from './painted-motion.js?v=20261122-ambient-scenes';
+import { mountPaintedMotion } from './painted-motion.js?v=20261122-scene-trios';
 import { accentPose } from './edition-motion.js?v=1';
 const section=document.querySelector('#flower-edition');
 if(section){

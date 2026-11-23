@@ -1,4 +1,4 @@
-import { mountPaintedMotion } from './painted-motion.js?v=20261122-ambient-scenes';
+import { mountPaintedMotion } from './painted-motion.js?v=20261122-scene-trios';
 import { accentPose } from './edition-motion.js?v=1';
 import {collections} from './nivo-collections.js?v=20261111-mythic';
 import {chapters,looks,destinations} from './collection-chapters-data.js?v=20261111-chapters';

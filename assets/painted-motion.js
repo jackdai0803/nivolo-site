@@ -1,46 +1,185 @@
 // Positions are measured on a 180 × 390 copy of each portrait. The transparent
 // scene uses the painting's cover crop on Home, banners, and website stages.
+// Shared entries run in both themes. Each theme completes a set of three subjects.
 const scenes = {
-  classic: { birds: [8, 62, 145, 36], waves: [60, 147, 110], lights: [[30, 116, 3]] },
-  deepsea: { bubbles: [25, 158], waves: [85, 157, 128] },
-  snowy: { snow: [82, 66], lights: [[26, 126, 4], [59, 125, 2.5]] },
-  blaze: { embers: [141, 126], dayLights: [[141, 125, 6]], lights: [[141, 130, 5]] },
-  rainy: { rain: [63, 148], waves: [64, 153, 82], lights: [[148, 81, 4]] },
-  melting: { waves: [68, 155, 100], lights: [[105, 106, 4], [162, 102, 4], [77, 117, 2]] },
-  sleepy: { motes: [48, 93], dayLights: [[70, 115, 3]], lights: [[115, 95, 4], [69, 114, 2.5]] },
-  focused: { motes: [89, 98], dayLights: [[144, 83, 7]], lights: [[144, 83, 8], [96, 100, 2]] },
-  love: { petals: [19, 39, '#e58b90'], lights: [[30, 59, 7], [171, 102, 3]] },
-  sick: { motes: [68, 81], dayLights: [[160, 95, 7]], lights: [[160, 97, 8]] },
-  party: { petals: [29, 45, '#eea486'], lights: [[164, 103, 3]], fireflies: [112, 111] },
-  starstruck: { stars: [51, 26], lights: [[131, 94, 3], [150, 91, 2]] },
-  champion: { birds: [37, 76, 128, 53], lights: [[42, 45, 4], [26, 63, 3], [115, 157, 3]] },
-  ghost: { motes: [99, 103], fireflies: [73, 118] },
-  glitch: { motes: [113, 105], lights: [[68, 123, 2], [34, 92, 3, '#b7b0ff']] },
-  porcelain: { birds: [41, 62, 111, 37], lights: [[108, 101, 2.5], [138, 91, 3]] },
-  jade: { waves: [67, 158, 98], lights: [[105, 97, 3], [138, 92, 4], [63, 132, 2]] },
-  kintsugi: { motes: [66, 87], lights: [[101, 42, 7]] },
-  gold: { waves: [67, 154, 94], lights: [[150, 48, 4], [142, 102, 4]] },
-  'early-supporter': { motes: [71, 90], lights: [[146, 100, 4], [58, 122, 3]] },
-  anubis: { birds: [8, 84, 99, 60], lights: [[158, 129, 4], [93, 126, 4]] },
-  horus: { birds: [67, 63, 164, 41], lights: [[164, 90, 4], [22, 122, 4]] },
-  athena: { birds: [38, 83, 111, 56], lights: [[105, 92, 3], [147, 99, 3]] },
-  poseidon: { bubbles: [129, 139], waves: [83, 156, 125] },
-  artemis: { birds: [34, 87, 117, 69], waves: [86, 154, 81] },
-  apollo: { birds: [23, 86, 97, 62], lights: [[150, 88, 4], [54, 141, 2]] },
-  zeus: { birds: [36, 96, 158, 70], lights: [[42, 106, 5], [118, 124, 4]] },
-  medusa: { motes: [73, 104], lights: [[158, 123, 4], [47, 125, 3]] },
-  hades: { waves: [91, 153, 112], dayLights: [[129, 94, 3]], lights: [[130, 94, 4], [174, 89, 4]] },
-  'plum-blossom': { petals: [36, 44, '#d9819a'], lights: [[29, 57, 7], [119, 99, 3]] },
-  jasmine: { petals: [28, 41, '#fff0bd'], lights: [[144, 21, 4], [87, 96, 3]] },
-  camellia: { petals: [150, 54, '#db7271'], lights: [[18, 73, 4]] },
-  magnolia: { petals: [29, 43, '#f8dfdf'], lights: [[28, 136, 4]] },
-  orchid: { waves: [76, 154, 84], lights: [[141, 45, 6]] },
-  osmanthus: { petals: [42, 37, '#eec166'], lights: [[126, 114, 3]], fireflies: [81, 116] },
-  crabapple: { petals: [47, 40, '#ebaaa0'], lights: [[29, 74, 5], [79, 31, 3]] },
-  peony: { petals: [22, 90, '#e99199'], lights: [[34, 43, 6], [63, 62, 3]] },
-  'white-lotus': { waves: [76, 150, 103], lights: [[130, 153, 6], [35, 134, 3]] },
-  'tree-peony': { petals: [146, 58, '#de9385'], lights: [[141, 84, 6]] },
-  'spider-lily': { waves: [81, 152, 97], fireflies: [135, 109] },
+  classic: {
+    waves: [60, 147, 110],
+    day: { birds: [8, 62, 145, 36], snow: [40, 72] },
+    night: { lights: [[30, 116, 3]], stars: [109, 45] },
+  },
+  deepsea: {
+    bubbles: [25, 158], waves: [85, 157, 128],
+    day: { fish: [150, 105, -70] },
+    night: { fish: [135, 116, -68] },
+  },
+  snowy: {
+    snow: [82, 66],
+    day: { birds: [15, 66, 89, 47], mist: [22, 140, 34] },
+    night: { lights: [[26, 126, 4], [59, 125, 2.5]], stars: [103, 47] },
+  },
+  blaze: {
+    embers: [141, 126],
+    day: { lights: [[141, 125, 6]], smoke: [141, 121] },
+    night: { lights: [[141, 130, 5]], smoke: [141, 125] },
+  },
+  rainy: {
+    rain: [63, 148], waves: [64, 153, 82],
+    day: { drizzle: [42, 83] },
+    night: { lights: [[148, 81, 4]] },
+  },
+  melting: {
+    waves: [68, 155, 100],
+    day: { petals: [23, 43, '#ec986f'], birds: [59, 62, 132, 46] },
+    night: { lights: [[105, 106, 4], [162, 102, 4], [77, 117, 2]], mist: [29, 138, 38] },
+  },
+  sleepy: {
+    day: { motes: [48, 93], lights: [[70, 115, 3]], beam: [54, 53, 19, 52] },
+    night: { lights: [[115, 95, 4], [69, 114, 2.5]], moth: [113, 88], stars: [34, 57] },
+  },
+  focused: {
+    day: { motes: [89, 98], lights: [[144, 83, 7]], beam: [64, 43, 22, 63] },
+    night: { lights: [[144, 83, 8], [96, 100, 2]], motes: [98, 100], moth: [141, 79] },
+  },
+  love: {
+    day: { petals: [19, 39, '#e58b90'], butterfly: [41, 109], motes: [131, 92] },
+    night: { lights: [[30, 59, 7], [171, 102, 3]], petals: [16, 43, '#dd8d9d'], fireflies: [132, 117] },
+  },
+  sick: {
+    steam: [52, 108],
+    day: { motes: [68, 81], lights: [[160, 95, 7]] },
+    night: { lights: [[160, 97, 8]], moth: [149, 83] },
+  },
+  party: {
+    day: { petals: [29, 45, '#eea486'], butterfly: [121, 107], motes: [54, 85] },
+    night: { lights: [[164, 103, 3]], fireflies: [112, 111], petals: [27, 48, '#f3ba97'] },
+  },
+  starstruck: {
+    stars: [51, 26],
+    day: { meteor: [101, 40], birds: [22, 95, 73, 82] },
+    night: { lights: [[131, 94, 3], [150, 91, 2]], meteor: [91, 45] },
+  },
+  champion: {
+    day: { birds: [37, 76, 128, 53], waves: [77, 121, 61], motes: [49, 83] },
+    night: { lights: [[42, 45, 4], [26, 63, 3], [115, 157, 3]], waves: [76, 119, 64], stars: [98, 50] },
+  },
+  ghost: {
+    mist: [39, 126, 48],
+    day: { motes: [99, 103], butterfly: [126, 100] },
+    night: { fireflies: [73, 118], moth: [127, 85] },
+  },
+  glitch: {
+    mist: [37, 134, 41],
+    day: { motes: [113, 105], beam: [133, 52, -18, 67] },
+    night: { lights: [[68, 123, 2], [34, 92, 3, '#b7b0ff']], fireflies: [119, 103] },
+  },
+  porcelain: {
+    day: { birds: [41, 62, 111, 37], motes: [43, 92], butterfly: [121, 110] },
+    night: { lights: [[108, 101, 2.5], [138, 91, 3]], moth: [136, 83], stars: [85, 47] },
+  },
+  jade: {
+    waves: [67, 158, 98],
+    day: { butterfly: [116, 117], mist: [29, 104, 48] },
+    night: { lights: [[105, 97, 3], [138, 92, 4], [63, 132, 2]], fireflies: [43, 128] },
+  },
+  kintsugi: {
+    day: { motes: [66, 87], beam: [38, 45, 31, 78], petals: [133, 78, '#f1d3ad'] },
+    night: { lights: [[101, 42, 7]], moth: [104, 44], motes: [59, 108] },
+  },
+  gold: {
+    waves: [67, 154, 94],
+    day: { beam: [75, 49, -22, 68], bubbles: [150, 138] },
+    night: { lights: [[150, 48, 4], [142, 102, 4]], stars: [70, 46] },
+  },
+  'early-supporter': {
+    day: { motes: [71, 90], beam: [69, 42, -22, 71], butterfly: [117, 108] },
+    night: { lights: [[146, 100, 4], [58, 122, 3]], moth: [146, 94], fireflies: [57, 113] },
+  },
+  anubis: {
+    day: { birds: [8, 84, 99, 60], motes: [57, 116], beam: [88, 54, -26, 71] },
+    night: { lights: [[158, 129, 4], [93, 126, 4]], embers: [158, 125], stars: [82, 60] },
+  },
+  horus: {
+    day: { birds: [67, 63, 164, 41], waves: [120, 109, 47], motes: [64, 128] },
+    night: { lights: [[164, 90, 4], [22, 122, 4]], embers: [164, 87], stars: [92, 50] },
+  },
+  athena: {
+    day: { birds: [38, 83, 111, 56], butterfly: [40, 111], motes: [134, 115] },
+    night: { lights: [[105, 92, 3], [147, 99, 3]], moth: [147, 95], stars: [76, 47] },
+  },
+  poseidon: {
+    bubbles: [129, 139], waves: [83, 156, 125],
+    day: { fish: [145, 121, -67] },
+    night: { fish: [143, 127, -65] },
+  },
+  artemis: {
+    waves: [86, 154, 81],
+    day: { birds: [34, 87, 117, 69], mist: [35, 123, 48] },
+    night: { stars: [66, 63], mist: [39, 123, 48] },
+  },
+  apollo: {
+    day: { birds: [23, 86, 97, 62], petals: [26, 40, '#efd9ae'], butterfly: [59, 112] },
+    night: { lights: [[150, 88, 4], [54, 141, 2]], moth: [145, 84], stars: [84, 43] },
+  },
+  zeus: {
+    day: { birds: [36, 96, 158, 70], motes: [52, 120], beam: [78, 64, 24, 56] },
+    night: { lights: [[42, 106, 5], [118, 124, 4]], embers: [42, 104], stars: [106, 44] },
+  },
+  medusa: {
+    day: { motes: [73, 104], butterfly: [56, 117], mist: [119, 125, 41] },
+    night: { lights: [[158, 123, 4], [47, 125, 3]], fireflies: [61, 109], mist: [91, 134, 48] },
+  },
+  hades: {
+    waves: [91, 153, 112], mist: [61, 129, 55],
+    day: { lights: [[129, 94, 3]] },
+    night: { lights: [[130, 94, 4], [174, 89, 4]] },
+  },
+  'plum-blossom': {
+    day: { petals: [36, 44, '#d9819a'], snow: [106, 77], birds: [64, 64, 143, 43] },
+    night: { lights: [[29, 57, 7], [119, 99, 3]], snow: [101, 73], petals: [48, 58, '#dc91a8'] },
+  },
+  jasmine: {
+    day: { petals: [28, 41, '#fff0bd'], butterfly: [125, 78], beam: [76, 53, -19, 60] },
+    night: { lights: [[144, 21, 4], [87, 96, 3]], moth: [86, 87], petals: [26, 39, '#eee5cb'] },
+  },
+  camellia: {
+    day: { petals: [150, 54, '#db7271'], butterfly: [126, 98], motes: [47, 93] },
+    night: { lights: [[18, 73, 4]], moth: [22, 64], petals: [148, 50, '#dc8388'] },
+  },
+  magnolia: {
+    day: { petals: [29, 43, '#f8dfdf'], birds: [64, 70, 147, 49], butterfly: [38, 115] },
+    night: { lights: [[28, 136, 4]], petals: [30, 47, '#ecdce9'], fireflies: [117, 117] },
+  },
+  orchid: {
+    waves: [76, 154, 84],
+    day: { butterfly: [125, 92], mist: [36, 129, 48] },
+    night: { lights: [[141, 45, 6]], mist: [44, 128, 46] },
+  },
+  osmanthus: {
+    day: { petals: [42, 37, '#eec166'], butterfly: [49, 99], birds: [72, 65, 135, 53] },
+    night: { lights: [[126, 114, 3]], fireflies: [81, 116], petals: [36, 43, '#efbe69'] },
+  },
+  crabapple: {
+    day: { petals: [47, 40, '#ebaaa0'], butterfly: [50, 111], birds: [62, 68, 140, 52] },
+    night: { lights: [[29, 74, 5], [79, 31, 3]], petals: [42, 43, '#e8acaf'], moth: [30, 71] },
+  },
+  peony: {
+    day: { petals: [22, 90, '#e99199'], butterfly: [55, 109], motes: [122, 107] },
+    night: { lights: [[34, 43, 6], [63, 62, 3]], petals: [18, 89, '#d79aa8'], fireflies: [124, 112] },
+  },
+  'white-lotus': {
+    waves: [76, 150, 103],
+    day: { mist: [26, 124, 48], butterfly: [129, 117] },
+    night: { lights: [[130, 153, 6], [35, 134, 3]], fireflies: [124, 111] },
+  },
+  'tree-peony': {
+    day: { petals: [146, 58, '#de9385'], butterfly: [126, 101], motes: [41, 108] },
+    night: { lights: [[141, 84, 6]], petals: [147, 60, '#e3aa96'], moth: [137, 79] },
+  },
+  'spider-lily': {
+    waves: [81, 152, 97], mist: [39, 127, 60],
+    day: { butterfly: [126, 105] },
+    night: { fireflies: [135, 109] },
+  },
 };
 
 const svgNS = 'http://www.w3.org/2000/svg';
@@ -53,8 +192,9 @@ function element(parent, tag, attributes) {
 }
 
 export function mountPaintedMotion(host, look, { night = false, before = null, paused = false, cropY = '50%' } = {}) {
-  const scene = scenes[look];
-  if (!scene) return;
+  const recipe = scenes[look];
+  if (!recipe) return;
+  const scene = { ...recipe, ...(night ? recipe.night : recipe.day) };
   const layer = document.createElement('div');
   layer.dataset.paintedMotion = look;
   layer.setAttribute('aria-hidden', 'true');
@@ -77,7 +217,7 @@ export function mountPaintedMotion(host, look, { night = false, before = null, p
   }
   // Only the light changes intensity. The soft dark center lets a painted
   // lamp dim as the halo fades, while its housing and surroundings stay sharp.
-  for (const [i, [x, y, radius, hue = '#ffc875']] of (night ? scene.lights || [] : scene.dayLights || []).entries()) {
+  for (const [i, [x, y, radius, hue = '#ffc875']] of (scene.lights || []).entries()) {
     const lamp = placed(x, y, radius);
     for (const [bright, color] of [[false, '#46354a'], [true, hue]]) {
       const id = `${prefix}-${i}-${Number(bright)}`;
@@ -92,7 +232,7 @@ export function mountPaintedMotion(host, look, { night = false, before = null, p
     }
   }
 
-  if (scene.birds && !night) {
+  if (scene.birds) {
     const [x, y, endX, endY] = scene.birds;
     for (const [i, size] of [1, .72, .54].entries()) {
       const bird = element(placed(x - i * 4, y + i * 2.4), 'g', {});
@@ -142,15 +282,115 @@ export function mountPaintedMotion(host, look, { night = false, before = null, p
       loop(star, 'starlight', [{ opacity:.05 },{ opacity:.9 },{ opacity:.05 }], 4500+i*870, .2+i*.22);
     }
   }
+  function softGlow(name, color) {
+    const id = `${prefix}-${name}`;
+    const gradient = element(defs, 'radialGradient', { id });
+    for (const [offset, opacity] of [[0, .88], [.45, .48], [1, 0]]) {
+      element(gradient, 'stop', { offset, 'stop-color': color, 'stop-opacity': opacity });
+    }
+    return `url(#${id})`;
+  }
+
+  if (scene.fish) {
+    const [x, y, distance] = scene.fish;
+    for (const [i, size] of [1, .65, .82].entries()) {
+      const swimmer = element(placed(x + i * 6, y + [0, -3, 2][i]), 'g', {});
+      const fish = element(swimmer, 'g', { transform: `scale(${distance < 0 ? -size : size} ${size})`, fill: night ? '#74b7cb' : '#307f98' });
+      element(fish, 'path', { d: 'M-2.8 0Q-.7 -2.35 2.1 -1.2Q3.45 -.73 3.85 -.13Q2.7 1.25 .15 1.29Q-1.4 1.2 -2.8 0Z' });
+      const tail = element(fish, 'path', { d: 'M-2.3 0Q-3.6 -.95 -4.7 -1.45L-4.25 0L-4.7 1.34Q-3.3 .85 -2.3 0Z' });
+      tail.style.transformBox = 'fill-box';
+      tail.style.transformOrigin = 'right center';
+      loop(tail, 'fish', [{ transform: 'scaleX(1)' }, { transform: 'scaleX(.53)' }, { transform: 'scaleX(1)' }], 490 + i * 83, i * .19);
+      loop(swimmer, 'fish', [
+        { transform: 'translate(0,0)', opacity: 0 },
+        { transform: `translate(${distance * .2}px,-2px)`, opacity: .78, offset: .18 },
+        { transform: `translate(${distance * .63}px,1px)`, opacity: .78, offset: .56 },
+        { transform: `translate(${distance}px,-1px)`, opacity: 0, offset: .9 },
+        { transform: `translate(${distance}px,-1px)`, opacity: 0 },
+      ], 10300 + i * 237, .2, 'linear');
+    }
+  }
+
+  if (scene.butterfly || scene.moth) {
+    const isMoth = Boolean(scene.moth);
+    const kind = isMoth ? 'moth' : 'butterfly';
+    const [x, y] = scene[kind];
+    const insect = element(placed(x, y), 'g', {});
+    const wings = element(insect, 'g', { fill: isMoth ? '#f7dbad' : '#eab36c', stroke: isMoth ? '#917a6b' : '#9b624e', 'stroke-width': .24 });
+    for (const sign of [-1, 1]) {
+      element(wings, 'path', { transform: `scale(${sign} 1)`, d: 'M0 0Q.7 -2.4 2.45 -2.6Q3.6 -1.4 1.6 -.03Q2.3 1.12 1.3 1.6Q.45 1.65 0 0Z' });
+    }
+    element(insect, 'path', { d: 'M0 -1.25L.12 1.2', stroke: '#6a5548', 'stroke-width': .35, 'stroke-linecap': 'round' });
+    loop(wings, kind, [{ transform: 'scaleX(.32)' }, { transform: 'scaleX(1)' }, { transform: 'scaleX(.32)' }], isMoth ? 290 : 510, .12);
+    const reach = x > 90 ? -1 : 1;
+    const poses = isMoth ? [[0,0,14],[4,-5,28],[7,-1,8],[2,3,-22],[0,0,14]]
+      : [[0,0,-15],[5,-6,10],[13,-4,20],[8,2,-8],[0,0,-15]];
+    loop(insect, kind, poses.map(([dx, dy, turn]) => ({
+      transform: `translate(${dx * reach}px,${dy}px) rotate(${turn * reach}deg)`, opacity: .86,
+    })), isMoth ? 3700 : 5400, .24);
+  }
+
+  if (scene.mist) {
+    const [x, y, width] = scene.mist;
+    const fill = softGlow('mist', night ? '#c0cafa' : '#fff9e6');
+    for (const [i, scale] of [1, .64].entries()) {
+      const wisp = element(placed(x + i * 14, y - i * 3), 'ellipse', { rx: width / 2 * scale, ry: 3.5 * scale, fill });
+      loop(wisp, 'mist', [
+        { transform: 'translate(-8px,1px) scaleX(.85)', opacity: 0 },
+        { transform: 'translate(0,0) scaleX(1)', opacity: .6 },
+        { transform: 'translate(10px,-1px) scaleX(1.1)', opacity: 0 },
+      ], 8200 + i * 960, .28 + i * .43);
+    }
+  }
+  if (scene.beam) {
+    const [x, y, dx, dy] = scene.beam;
+    const shaft = element(svg, 'g', { transform: `translate(${x + dx / 2} ${y + dy / 2}) rotate(${-Math.atan2(dx, dy) * 180 / Math.PI})` });
+    const ray = element(shaft, 'ellipse', { rx: 5.2, ry: Math.hypot(dx, dy) / 2, fill: softGlow('sunbeam', '#fff5c7') });
+    loop(ray, 'sunbeam', [{ opacity: .14 }, { opacity: .7 }, { opacity: .14 }], 7200, .24);
+  }
+  if (scene.steam || scene.smoke) {
+    const kind = scene.steam ? 'steam' : 'smoke';
+    const [x, y] = scene[kind];
+    for (const [i, dx] of [-1, 1.7].entries()) {
+      const curl = element(placed(x + dx, y), 'path', {
+        d: 'M0 0C-3 -3.2 2.7 -4.4 .9 -7.3S-1.6 -11 .7 -13.4C-.4 -10.4 1.8 -9 1.9 -7.2S-1.3 -2.9 0 0Z',
+        fill: kind === 'steam' ? '#fffae7' : night ? '#d8c9d1' : '#a29a95',
+      });
+      loop(curl, kind, [
+        { transform: 'translateY(2px) scale(.5,.5)', opacity: 0 },
+        { transform: 'translateY(-1px) scale(.85,1)', opacity: .8, offset: .4 },
+        { transform: 'translate(3px,-5px) scale(1.4,1.35)', opacity: 0 },
+      ], 3200 + i * 620, .31 + i * .48);
+    }
+  }
+  if (scene.drizzle) {
+    const [x, y] = scene.drizzle;
+    for (const [i, dx] of [-29,-13,8,23,47,66,89,111].entries()) {
+      const drop = element(placed(x + dx, y + (i % 3) * 12), 'path', { d: 'M0 0l-1.15 4.3', stroke: '#d8edeb', 'stroke-width': .55, 'stroke-linecap': 'round' });
+      loop(drop, 'drizzle', [
+        { transform: 'translate(0,0)', opacity: 0 }, { transform: 'translate(-2px,7px)', opacity: .82, offset: .25 },
+        { transform: 'translate(-6px,22px)', opacity: 0 },
+      ], 1000 + i * 47, (i * .37) % 1, 'linear');
+    }
+  }
+  if (scene.meteor) {
+    const [x, y] = scene.meteor;
+    const streak = element(placed(x, y), 'path', { d: 'M0 0Q-4 -1.4 -10 -6Q-4 -2.9 .6 -.65Q1.6 .3 0 0Z', fill: '#fff4cf' });
+    loop(streak, 'meteor', [
+      { transform: 'translate(0,0)', opacity: 0 }, { transform: 'translate(5px,3px)', opacity: .88, offset: .07 },
+      { transform: 'translate(32px,19px)', opacity: 0, offset: .24 }, { transform: 'translate(32px,19px)', opacity: 0 },
+    ], 9600, .02, 'linear');
+  }
+
   // Small airborne details start at the flower, fire, or pocket of water
   // that produces them. Their travel is in the painting's own coordinates.
   const air = [
-    ['petals', !night && scene.petals, 4, 26, 20, 6200],
+    ['petals', scene.petals, 4, 26, 20, 6200],
     ['snow', scene.snow, 8, -16, 27, 5400],
     ['embers', scene.embers, 4, 4, -14, 3300],
     ['bubbles', scene.bubbles, 5, 2, -24, 4900],
-    ['motes', !night && scene.motes, 4, 7, -5, 6100],
-    ['fireflies', night && scene.fireflies, 4, 6, -3, 4900],
+    ['motes', scene.motes, 4, 7, -5, 6100],
+    ['fireflies', scene.fireflies, 4, 6, -3, 4900],
   ];
   for (const [kind, origin, count, dx, dy, duration] of air) {
     if (!origin) continue;
