@@ -1,4 +1,4 @@
-import { mountPaintedMotion } from './painted-motion.js?v=20261118-painted-motion';
+import { mountPaintedMotion } from './painted-motion.js?v=20261122-living-paintings';
 import { accentPose } from './edition-motion.js?v=1';
 import { myths, powers, worlds, zh, price } from './mythic-catalog.js?v=20261118-sun-owl';
 const section = document.querySelector('#mythic-edition');
@@ -64,7 +64,8 @@ if (section) {
     painting.src = `assets/${night ? 'painted-midnight-homes' : 'painted-homes'}/${selected.id}.webp`;
     motion?.destroy();
     scenery.replaceChildren(painting);
-    motion = mountPaintedMotion(scenery, selected.id, { night, paused });
+    painting.style.objectPosition = 'center 14%';
+    motion = mountPaintedMotion(scenery, selected.id, { night, paused, artwork: painting.src, cropY: '14%' });
   }
   function select(id, announce = false) {
     selected = myths.find(m => m.id === id); elapsed = 0; powerStart = 0; paused = false;

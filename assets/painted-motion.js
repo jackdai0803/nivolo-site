@@ -66,45 +66,119 @@ const shapes = {
   flower: { clipPath: 'polygon(50% 20%,72% 0,92% 17%,82% 45%,100% 72%,75% 92%,52% 76%,27% 100%,4% 80%,17% 51%,0 23%,24% 4%)' },
 };
 
-export function mountPaintedMotion(host, look, { night = false, before = null, paused = false } = {}) {
+// Each rectangle follows a feature in the original portrait painting (x, y, width,
+// height in percent). The crop can change from a tall Home to a wide Profile cover.
+const paintedDetails = {
+  anubis: ['leaves', 0, 0, 46, 19], apollo: ['leaves', 0, 0, 45, 25],
+  artemis: ['water', 9, 30, 83, 30], athena: ['leaves', 0, 0, 60, 23],
+  blaze: ['fire', 62, 24, 38, 18], camellia: ['leaves', 65, 0, 35, 29],
+  champion: ['leaves', 0, 0, 47, 20], classic: ['cloud', 6, 2, 72, 18],
+  crabapple: ['leaves', 0, 0, 66, 22], deepsea: ['water', 3, 28, 94, 36],
+  'early-supporter': ['leaves', 0, 0, 41, 32], focused: ['light', 70, 24, 30, 20],
+  ghost: ['mist', 17, 26, 71, 25], glitch: ['water', 2, 31, 94, 30],
+  gold: ['light', 51, 12, 47, 28], hades: ['water', 12, 28, 76, 33],
+  horus: ['leaves', 0, 0, 54, 18], jade: ['leaves', 0, 0, 52, 27],
+  jasmine: ['leaves', 0, 0, 51, 20], kintsugi: ['light', 39, 17, 59, 27],
+  love: ['leaves', 0, 0, 61, 20], magnolia: ['leaves', 0, 0, 62, 23],
+  medusa: ['leaves', 0, 0, 54, 23], melting: ['water', 12, 31, 81, 30],
+  orchid: ['water', 8, 31, 83, 30], osmanthus: ['leaves', 0, 0, 61, 24],
+  party: ['leaves', 0, 0, 54, 24], peony: ['leaves', 0, 11, 37, 28],
+  'plum-blossom': ['leaves', 0, 0, 74, 29], porcelain: ['leaves', 54, 0, 46, 17],
+  poseidon: ['water', 4, 31, 90, 35], rainy: ['water', 8, 30, 83, 30],
+  sick: ['light', 63, 19, 37, 27], sleepy: ['light', 63, 20, 34, 22],
+  snowy: ['cloud', 4, 2, 78, 18], 'spider-lily': ['water', 10, 30, 80, 28],
+  starstruck: ['cloud', 1, 7, 76, 20], 'tree-peony': ['leaves', 53, 0, 47, 27],
+  'white-lotus': ['water', 4, 31, 92, 32], zeus: ['cloud', 33, 5, 66, 23],
+};
+
+function animatePainting(layer, [kind, x, y, width, height], artwork, cropY, night) {
+  const frame = document.createElement('div');
+  // Reproduce object-fit: cover in source coordinates. Keeping the mask on
+  // the small detail avoids allocating a second full-screen painted texture.
+  Object.assign(frame.style, {
+    position: 'absolute', left: '50%', top: cropY, translate: `-50% calc(-1 * ${cropY})`,
+    width: 'max(100cqw, 46.1538cqh)', aspectRatio: '852 / 1846',
+  });
+  layer.prepend(frame);
+  const detail = document.createElement('div');
+  detail.dataset.paintedDetail = kind;
+  Object.assign(detail.style, {
+    position: 'absolute', left: `${x}%`, top: `${y}%`, width: `${width}%`, height: `${height}%`,
+    backgroundImage: `url("${artwork}")`,
+    backgroundSize: `${10000 / width}% ${10000 / height}%`,
+    backgroundPosition: `${100 * x / (100 - width)}% ${100 * y / (100 - height)}%`,
+    maskImage: 'radial-gradient(ellipse closest-side, black 46%, transparent 100%)',
+  });
+  frame.append(detail);
+  // Move foliage about its stem, stretch ripples across the water, and vary
+  // the luminosity of a lamp or fire without shifting the painted fixture.
+  const light = kind === 'light' || kind === 'fire';
+  const poses = {
+    leaves: ['rotate(-1.6deg) skewX(-1.2deg)', 'rotate(2deg) skewX(1.5deg)'],
+    water: ['scaleX(.96) skewY(-.8deg) translateY(-1%)', 'scaleX(1.04) skewY(.9deg) translateY(1%)'],
+    cloud: ['translateX(-3.4%)', 'translateX(3.4%)'],
+    mist: ['translate(-3%, 1%) scale(.97)', 'translate(3%, -1%) scale(1.04)'],
+  };
+  detail.style.transformOrigin = kind === 'leaves' ? (x === 0 ? '8% 18%' : '93% 18%') : 'center';
+  if (light) {
+    detail.style.backgroundImage = `radial-gradient(ellipse, ${night ? '#ffce79aa' : '#ffdf95b0'}, transparent 70%)`;
+    detail.style.backgroundSize = '100% 100%';
+  }
+  const frames = light ? [{ opacity: .12 }, { opacity: .85 }, { opacity: .44 }, { opacity: 1 }]
+    : poses[kind].map(transform => ({ transform }));
+  const duration = { fire: 1700, water: 3400, leaves: 3000, mist: 5800, cloud: 6800, light: 3300 }[kind];
+  return detail.animate(frames, { duration, direction: 'alternate', iterations: Infinity, easing: 'ease-in-out' });
+}
+
+export function mountPaintedMotion(host, look, { night = false, before = null, paused = false, artwork, cropY = '50%' } = {}) {
   const scene = scenes[look];
   if (!scene) return;
   const [shape, dayInk, nightInk, dx, dy, x, y, size, seconds] = scene;
   const layer = document.createElement('div');
   layer.dataset.paintedMotion = look;
   layer.setAttribute('aria-hidden', 'true');
-  Object.assign(layer.style, { position: 'absolute', inset: '0', overflow: 'hidden', pointerEvents: 'none', color: night ? nightInk : dayInk });
+  Object.assign(layer.style, { position: 'absolute', inset: '0', containerType: 'size', overflow: 'hidden', pointerEvents: 'none', color: night ? nightInk : dayInk });
   host.insertBefore(layer, before);
 
   const motion = matchMedia('(prefers-reduced-motion: reduce)');
   const shimmer = ['star', 'pixel', 'seam', 'ray', 'bolt'].includes(shape);
   const turn = ['snow', 'petal', 'leaf', 'feather', 'ribbon', 'page', 'heart', 'flower'].includes(shape);
-  const count = shape === 'bolt' || look === 'early-supporter' ? 1 : shape === 'ripple' || shimmer ? 2 : 3;
+  const count = shape === 'bolt' || look === 'early-supporter' ? 1 : shimmer ? 3 : 5;
   const animations = Array.from({ length: count }, (_, index) => {
     const mark = document.createElement('span');
     Object.assign(mark.style, {
-      position: 'absolute', left: `${index === 1 ? 100 - x : x + index * 5}%`, top: `${y + index * 9}%`,
-      width: `${size * [1, .76, .58][index]}px`, aspectRatio: '1', background: 'currentColor', opacity: '0',
+      position: 'absolute', left: `${[x, 100 - x, x + (x < 50 ? 10 : -10), 38, 64][index]}%`,
+      top: `${[y, 16 + y * .47, 52 + y * .25, 7 + y * .3, 39 + y * .3][index]}%`,
+      width: `${size * [1, .76, .58, .65, .51][index]}px`, aspectRatio: '1', background: 'currentColor', opacity: '0',
       ...shapes[shape],
     });
     layer.append(mark);
     const angle = turn ? (index % 2 ? -1 : 1) * 38 : 0;
     const peak = shape === 'bolt' ? .37 : night ? .72 : .61;
-    const pose = (distance, scale) => `translate(${dx * distance}px, ${dy * distance}px) rotate(${angle * distance}deg) scale(${scale})`;
-    const duration = (seconds + index * .7) * 1000;
+    const pose = (distance, scale) => `translate(${dx * distance * 1.35}px, ${dy * distance * 1.35}px) rotate(${angle * distance}deg) scale(${scale})`;
+    const duration = (seconds * .65 + index * .43) * 1000;
     const animation = mark.animate([
       { opacity: 0, transform: pose(0, .6) },
       { opacity: peak, transform: pose(.4, 1), offset: shimmer ? .41 : .38 },
       { opacity: shimmer ? .12 : peak * .62, transform: pose(.73, shape === 'ripple' ? 1.45 : .9), offset: .68 },
       { opacity: 0, transform: pose(1, shape === 'ripple' ? 1.9 : .7) },
-    ], { duration, delay: -duration * [.25, .54, .81][index], iterations: Infinity, easing: 'ease-in-out' });
+    ], { duration, delay: -duration * [.25, .54, .81, .12, .66][index], iterations: Infinity, easing: 'ease-in-out' });
     animation.pause();
     return animation;
   });
+  if (artwork) {
+    const details = [paintedDetails[look]];
+    if (look === 'classic') details.push(['water', 4, 32, 92, 19]);
+    for (const region of details) {
+      const animation = animatePainting(layer, region, artwork, cropY, night);
+      animation.pause();
+      animations.push(animation);
+    }
+  }
   let visible = false;
   const update = () => {
     const playing = visible && !paused && !document.hidden && !motion.matches;
-    layer.hidden = motion.matches;
+    layer.style.display = motion.matches ? 'none' : '';
     for (const animation of animations) {
       if (playing && animation.playState === 'paused') animation.play();
       if (!playing && animation.playState !== 'paused') animation.pause();
