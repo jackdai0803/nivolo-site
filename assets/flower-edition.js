@@ -1,4 +1,4 @@
-import { mountPaintedMotion } from './painted-motion.js?v=20261122-scene-trios';
+import { mountPaintedMotion } from './painted-motion.js?v=20261122-lamp-bloom';
 import { accentPose } from './edition-motion.js?v=1';
 const section=document.querySelector('#flower-edition');
 if(section){
@@ -63,7 +63,7 @@ if(section){
   motion?.destroy();
   scenery.replaceChildren(painting);
   painting.style.objectPosition='center 14%';
-  motion=mountPaintedMotion(scenery,selected,{night,paused,cropY:'14%'});
+  motion=mountPaintedMotion(scenery,selected,{night,paused,artwork:painting.src,cropY:'14%'});
   nivo.replaceChildren();rig=api.makeFlower(nivo,f,'website-flower-nivo');
   section.querySelector('.flower-matching img').src=`assets/flowers/${selected}-icon.webp?v=20261120-icon-contrast`;
   for(const b of themes)b.setAttribute('aria-pressed',String((b.dataset.flowerTheme==='midnight')===night));

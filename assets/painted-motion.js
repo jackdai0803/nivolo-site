@@ -191,7 +191,7 @@ function element(parent, tag, attributes) {
   return node;
 }
 
-export function mountPaintedMotion(host, look, { night = false, before = null, paused = false, cropY = '50%' } = {}) {
+export function mountPaintedMotion(host, look, { night = false, before = null, paused = false, artwork, cropY = '50%' } = {}) {
   const recipe = scenes[look];
   if (!recipe) return;
   const scene = { ...recipe, ...(night ? recipe.night : recipe.day) };
@@ -215,20 +215,38 @@ export function mountPaintedMotion(host, look, { night = false, before = null, p
   function placed(x, y, scale = 1) {
     return element(svg, 'g', { transform: `translate(${x} ${y}) scale(${scale})` });
   }
-  // Only the light changes intensity. The soft dark center lets a painted
-  // lamp dim as the halo fades, while its housing and surroundings stay sharp.
-  for (const [i, [x, y, radius, hue = '#ffc875']] of (scene.lights || []).entries()) {
-    const lamp = placed(x, y, radius);
-    for (const [bright, color] of [[false, '#46354a'], [true, hue]]) {
-      const id = `${prefix}-${i}-${Number(bright)}`;
-      const gradient = element(defs, 'radialGradient', { id });
-      for (const [offset, alpha] of [[0, bright ? .95 : .85], [.22, .68], [.5, bright ? .25 : .36], [1, 0]]) {
-        element(gradient, 'stop', { offset, 'stop-color': color, 'stop-opacity': alpha });
-      }
-      const glow = element(lamp, 'ellipse', { rx: bright ? 2.8 : 1.35, ry: bright ? 2.5 : 1.45, fill: `url(#${id})` });
-      const levels = bright ? [.82, 1, .77, .04, .03, .68, .82] : [.04, 0, .08, .82, .84, .12, .04];
-      loop(glow, 'lamplight', levels.map((opacity, n) => ({ opacity, offset: [0, .14, .31, .52, .65, .85, 1][n] })),
-        6200 + i * 1130, .12 + i * .27);
+  if (scene.lights && artwork) {
+    // Extract the lit glass or flame from the same registered portrait. Only
+    // the opacity of its fixed highlight changes. The painting is the dim frame.
+    const paintId = `${prefix}-lamp-source`;
+    element(defs, 'image', { id: paintId, href: artwork, width: 180, height: 390, preserveAspectRatio: 'none' });
+    const featherId = `${prefix}-lamp-edge`;
+    const feather = element(defs, 'radialGradient', { id: featherId });
+    for (const [offset, alpha] of [[0, 1], [.46, .95], [.74, .45], [1, 0]]) {
+      element(feather, 'stop', { offset, 'stop-color': 'white', 'stop-opacity': alpha });
+    }
+    for (const [i, [x, y, radius, cool]] of scene.lights.entries()) {
+      const reach = radius * 3;
+      const bounds = { x: x - reach, y: y - reach, width: reach * 2, height: reach * 2 };
+      const filterId = `${prefix}-lamp-bloom-${i}`;
+      const filter = element(defs, 'filter', { id: filterId, filterUnits: 'userSpaceOnUse', 'color-interpolation-filters': 'sRGB', ...bounds });
+      // Bright paint supplies the alpha. White light can only lift the
+      // underlying pixels, even over a pale Day theme or a softened banner.
+      const intensity = cool ? '.35 .9 .5 0 -.75' : '1.1 .65 -.1 0 -.71';
+      element(filter, 'feColorMatrix', { type: 'matrix', values: `0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  ${intensity}`, result: 'litPaint' });
+      element(filter, 'feGaussianBlur', { in: 'litPaint', stdDeviation: radius * .34, result: 'spill' });
+      const merge = element(filter, 'feMerge', {});
+      element(merge, 'feMergeNode', { in: 'spill' });
+      element(merge, 'feMergeNode', { in: 'litPaint' });
+      const maskId = `${prefix}-lamp-mask-${i}`;
+      const mask = element(defs, 'mask', { id: maskId, maskUnits: 'userSpaceOnUse', ...bounds });
+      element(mask, 'circle', { cx: x, cy: y, r: reach, fill: `url(#${featherId})` });
+      const light = element(svg, 'g', { mask: `url(#${maskId})` });
+      element(light, 'use', { href: `#${paintId}`, filter: `url(#${filterId})` });
+      const peak = night ? .47 : .35;
+      loop(light, 'lamplight', [
+        { opacity: 0 }, { opacity: peak, offset: .42 }, { opacity: peak * .72, offset: .65 }, { opacity: 0 },
+      ], 6200 + i * 1130, .12 + i * .27);
     }
   }
 

@@ -1,4 +1,4 @@
-import { mountPaintedMotion } from './painted-motion.js?v=20261122-scene-trios';
+import { mountPaintedMotion } from './painted-motion.js?v=20261122-lamp-bloom';
 import { accentPose } from './edition-motion.js?v=1';
 import {collections} from './nivo-collections.js?v=20261111-mythic';
 import {chapters,looks,destinations} from './collection-chapters-data.js?v=20261111-chapters';
@@ -45,7 +45,7 @@ for(const section of document.querySelectorAll('[data-chapter]')){
   background.src=`assets/${night?'painted-midnight-homes':'painted-homes'}/${selected}.webp`;
   motion?.destroy();
   background.style.objectPosition='center 14%';
-  motion=mountPaintedMotion(stage,selected,{night,before:host,paused,cropY:'14%'});
+  motion=mountPaintedMotion(stage,selected,{night,before:host,paused,artwork:background.src,cropY:'14%'});
   const colors=world?.[night?'night':'day'] || (selected==='deepsea'?(night?['#10223e','#194367']:['#c9e9ed','#6d9eaf']):selected==='early-supporter'?(night?['#342c31','#66513f']:['#f4e8c8','#dcc996']):(night?['#1c3045','#46627b']:['#e4eff5','#c7dde5']));
   stage.style.setProperty('--scene-top',colors[0]);
   stage.style.setProperty('--scene-bottom',colors[1]);
