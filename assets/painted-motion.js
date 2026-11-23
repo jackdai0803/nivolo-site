@@ -280,7 +280,7 @@ export function mountPaintedMotion(host, look, { night = false, before = null, p
       });
       loop(crest, 'wave', [
         { opacity: 0, transform: 'translate(-2px,-.8px) scale(.45,.55)' },
-        { opacity: night ? .65 : .85, transform: 'translate(0,0) scale(1,1)', offset: .45 },
+        { opacity: night ? .65 : .85, transform: 'translate(0,0) scale(1.03,1.16)', offset: .45 },
         { opacity: 0, transform: 'translate(2.5px,1.4px) scale(1.28,.55)' },
       ], 3400 + i * 347, [.12,.63,.37,.82,.49][i]);
     }
@@ -288,7 +288,7 @@ export function mountPaintedMotion(host, look, { night = false, before = null, p
   if (scene.rain) {
     const [x, y] = scene.rain;
     for (const [i, dx] of [-39, 6, 43, -10].entries()) {
-      const ring = element(placed(x + dx, y + i * 4), 'ellipse', { rx: 4.7, ry: 1.05, fill: 'none', stroke: night ? '#c0dbf8' : '#e3f4ef', 'stroke-width': .38 });
+      const ring = element(placed(x + dx, y + i * 4), 'ellipse', { rx: 5, ry: 1.13, fill: 'none', stroke: night ? '#c0dbf8' : '#e3f4ef', 'stroke-width': .46 });
       loop(ring, 'raindrop', [{ transform: 'scale(.1)', opacity: 0 }, { transform: 'scale(.4)', opacity: .85, offset: .12 },
         { transform: 'scale(1.6)', opacity: 0, offset: .77 }, { opacity: 0 }], 2400 + i * 280, [.32,.81,.1,.62][i]);
     }
@@ -352,10 +352,10 @@ export function mountPaintedMotion(host, look, { night = false, before = null, p
     const [x, y, width] = scene.mist;
     const fill = softGlow('mist', night ? '#c0cafa' : '#fff9e6');
     for (const [i, scale] of [1, .64].entries()) {
-      const wisp = element(placed(x + i * 14, y - i * 3), 'ellipse', { rx: width / 2 * scale, ry: 3.5 * scale, fill });
+      const wisp = element(placed(x + i * 14, y - i * 3), 'ellipse', { rx: width / 2 * scale, ry: 3.8 * scale, fill });
       loop(wisp, 'mist', [
         { transform: 'translate(-8px,1px) scaleX(.85)', opacity: 0 },
-        { transform: 'translate(0,0) scaleX(1)', opacity: .6 },
+        { transform: 'translate(0,0) scaleX(1)', opacity: .65 },
         { transform: 'translate(10px,-1px) scaleX(1.1)', opacity: 0 },
       ], 8200 + i * 960, .28 + i * .43);
     }
@@ -363,7 +363,7 @@ export function mountPaintedMotion(host, look, { night = false, before = null, p
   if (scene.beam) {
     const [x, y, dx, dy] = scene.beam;
     const shaft = element(svg, 'g', { transform: `translate(${x + dx / 2} ${y + dy / 2}) rotate(${-Math.atan2(dx, dy) * 180 / Math.PI})` });
-    const ray = element(shaft, 'ellipse', { rx: 5.2, ry: Math.hypot(dx, dy) / 2, fill: softGlow('sunbeam', '#fff5c7') });
+    const ray = element(shaft, 'ellipse', { rx: 5.6, ry: Math.hypot(dx, dy) / 2, fill: softGlow('sunbeam', '#fff5c7') });
     loop(ray, 'sunbeam', [{ opacity: .14 }, { opacity: .7 }, { opacity: .14 }], 7200, .24);
   }
   if (scene.steam || scene.smoke) {
@@ -376,7 +376,7 @@ export function mountPaintedMotion(host, look, { night = false, before = null, p
       });
       loop(curl, kind, [
         { transform: 'translateY(2px) scale(.5,.5)', opacity: 0 },
-        { transform: 'translateY(-1px) scale(.85,1)', opacity: .8, offset: .4 },
+        { transform: 'translateY(-1px) scale(.98,1.07)', opacity: .84, offset: .4 },
         { transform: 'translate(3px,-5px) scale(1.4,1.35)', opacity: 0 },
       ], 3200 + i * 620, .31 + i * .48);
     }
@@ -384,7 +384,7 @@ export function mountPaintedMotion(host, look, { night = false, before = null, p
   if (scene.drizzle) {
     const [x, y] = scene.drizzle;
     for (const [i, dx] of [-29,-13,8,23,47,66,89,111].entries()) {
-      const drop = element(placed(x + dx, y + (i % 3) * 12), 'path', { d: 'M0 0l-1.15 4.3', stroke: '#d8edeb', 'stroke-width': .55, 'stroke-linecap': 'round' });
+      const drop = element(placed(x + dx, y + (i % 3) * 12), 'path', { d: 'M0 0l-1.25 4.7', stroke: '#d8edeb', 'stroke-width': .65, 'stroke-linecap': 'round' });
       loop(drop, 'drizzle', [
         { transform: 'translate(0,0)', opacity: 0 }, { transform: 'translate(-2px,7px)', opacity: .82, offset: .25 },
         { transform: 'translate(-6px,22px)', opacity: 0 },
@@ -415,11 +415,13 @@ export function mountPaintedMotion(host, look, { night = false, before = null, p
     const [x,y,tint] = origin;
     for (let i=0; i<count; i++) {
       const spread = kind === 'snow' ? 22 : kind === 'embers' ? 1.7 : 6;
-      const parent = placed(x + (i - (count-1)/2) * spread, y + i%3*2, .75 + i%3*.18);
+      // A small increase in silhouette keeps the finest marks legible at phone size.
+      const size = (.75 + i % 3 * .18) * (kind === 'embers' ? 1 : 1.12);
+      const parent = placed(x + (i - (count-1)/2) * spread, y + i%3*2, size);
       const mark = kind === 'petals'
         ? element(parent, 'path', { d:'M-1.6 -.7Q-.5 -1.5 .2 -.65Q1.5 -1.25 1.35 -.22Q1.1 1.15 -.5 1Q-1.5 .6 -1.6 -.7Z', fill:tint })
         : element(parent, 'circle', { r: kind === 'bubbles' ? 1.15 : .66, fill: kind === 'bubbles' ? '#c1ffff22' : kind === 'embers' ? '#ffac58' : kind === 'fireflies' ? '#ffe78a' : '#fff9de',
-          stroke: kind === 'bubbles' ? '#b4efff' : 'none', 'stroke-width': .31 });
+          stroke: kind === 'bubbles' ? '#b4efff' : 'none', 'stroke-width': .36 });
       loop(mark, kind, [
         { transform:'translate(0,0) rotate(0deg)', opacity:0 },
         { transform:`translate(${dx*.35+1.5}px,${dy*.35}px) rotate(18deg)`, opacity:.87, offset:.35 },

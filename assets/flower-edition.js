@@ -1,4 +1,4 @@
-import { mountPaintedMotion } from './painted-motion.js?v=20261122-lamp-bloom';
+import { mountPaintedMotion } from './painted-motion.js?v=20261123-scene-visibility';
 import { accentPose } from './edition-motion.js?v=1';
 const section=document.querySelector('#flower-edition');
 if(section){
