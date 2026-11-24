@@ -3,8 +3,8 @@ import { accentPose } from './edition-motion.js?v=1';
 import {collections} from './nivo-collections.js?v=20261111-mythic';
 import {chapters,looks,destinations} from './collection-chapters-data.js?v=20261111-chapters';
 import {unlocks,worlds} from './collection-unlocks.js?v=20261111-chapters';
-import {idleAt,neutralPose} from './nivo-rig.js?v=20261120-flippers';
-import {withLightweightIdle} from './nivo-idle.js?v=20261120-flippers';
+import {idleAt,neutralPose} from './nivo-rig.js?v=20261123-eye-motion';
+import {withLightweightIdle} from './nivo-idle.js?v=20261123-eye-motion';
 const cn=()=>document.documentElement.lang.startsWith('zh');
 const copy={
  en:{matching:'Nivo + matching app icon',day:'Day',night:'Midnight',pause:'Pause Nivo',play:'Play Nivo',inspect:'Explore icon ↗',retry:'Reload preview',error:'The preview could not load. Try again.',terms:'Any paid membership counts. Free trials and launch-list signups do not reserve a place.',choose:'Choose a Nivo',selected:' selected',free:'Yours from the start',plus:'Included with Nivolo Plus',krill:'{n} Krill',streak:'{n}-day streak',goal:'Complete a goal',freeze:'Use a streak freeze',comeback:'Return after a break',early:'Log before 8 AM',nightUnlock:'Log after midnight',bigday:'5 actions in one day',count:'{n} actions total',supporter:'For the first 20 paying members'},
@@ -14,7 +14,7 @@ const t=(key,n)=>copy[cn()?'zh':'en'][key]?.replace('{n}',n) || key;
 const icon=id=>id==='gold'?'assets/icons/gold.png?v=20261120-icon-contrast':['rainy','sleepy','sick'].includes(id)?`assets/icons/${id}.png?v=20261113-smooth-beak`:id==='love'?'assets/icons/love.png?v=20261113-clean-beak':`assets/icons/${id}.png?v=${["jade","porcelain","champion","relieved"].includes(id)?'20261113-retina':'20261110-classic-eyes'}`;
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 let rendererPromise;
-function renderer(){return rendererPromise ||= import('./nivo-skins.js?v=20261120-flippers').catch(error=>{rendererPromise=null;throw error})}
+function renderer(){return rendererPromise ||= import('./nivo-skins.js?v=20261123-eye-motion').catch(error=>{rendererPromise=null;throw error})}
 const controllers=new Map();let serial=0;
 for(const section of document.querySelectorAll('[data-chapter]')){
  const group=collections.find(c=>c.id===section.dataset.chapter),data=chapters[group.id];

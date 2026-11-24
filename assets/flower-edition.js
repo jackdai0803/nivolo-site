@@ -73,7 +73,7 @@ if(section){
  async function load(){
   if(api||loading)return;loading=true;section.querySelector('.flower-retry').hidden=true;
   try{
-   api=await import('./flower-art.js?v=20261120-flippers');
+   api=await import('./flower-art.js?v=20261123-eye-motion');
    const image=new Image();image.src=new URL('./nivo-body.png',import.meta.url).href;await image.decode();
    render();choices.forEach(b=>b.disabled=false);section.querySelector('.flower-controls').hidden=false;
   }catch{api=null;section.querySelector('.flower-retry').hidden=false;}finally{loading=false;}

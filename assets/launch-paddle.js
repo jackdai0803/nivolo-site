@@ -1,11 +1,11 @@
 import { accentPose } from './edition-motion.js?v=1';
 import { myths } from './mythic-catalog.js?v=20261118-sun-owl';
-import { makeMyth } from './mythic-art.js?v=20261120-flippers';
-import { idleAt, neutralPose } from './nivo-rig.js?v=20261120-flippers';
+import { makeMyth } from './mythic-art.js?v=20261123-eye-motion';
+import { idleAt, neutralPose } from './nivo-rig.js?v=20261123-eye-motion';
 
-import { makeClassicSkin, heroLooks } from './nivo-skins.js?v=20261120-flippers';
-import { withLightweightIdle } from './nivo-idle.js?v=20261120-flippers';
-import { makeFlower, flowers } from './flower-art.js?v=20261120-flippers';
+import { makeClassicSkin, heroLooks } from './nivo-skins.js?v=20261123-eye-motion';
+import { withLightweightIdle } from './nivo-idle.js?v=20261123-eye-motion';
+import { makeFlower, flowers } from './flower-art.js?v=20261123-eye-motion';
 
 // The launch page owns this rig so the flipper and its paddle share one motion.
 const container = document.querySelector('[data-launch-nivo]');

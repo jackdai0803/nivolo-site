@@ -1,4 +1,4 @@
-import { deepseaIdle } from './deepsea-idle-data.js?v=20261120-flippers';
+import { deepseaIdle } from './deepsea-idle-data.js?v=20261123-eye-motion';
 
 // The stills are captured from the approved rig, including its full glow.
 // Keep event reactions live; idle motion and blinking reuse the captured art.

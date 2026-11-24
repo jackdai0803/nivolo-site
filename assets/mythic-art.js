@@ -392,6 +392,8 @@ var NIVO_FRAME = {
 	y: 40,
 	size: 1120
 };
+var splashWinkCrease = "M-21.6 2 Q-3.6 -12 21 1 M17.4 1 l6 -4";
+var splashWinkCheek = "M12 12 q5.4 3 9 -1";
 function createRig(container, source, id, label, appearance = "classic") {
 	const deepsea = appearance === "deepsea";
 	const artwork = source;
@@ -456,6 +458,9 @@ function createRig(container, source, id, label, appearance = "classic") {
         ${ellipse(e, `fill="#ffffff"`)}
         <g data-part="${e.name}-eye">${image(`clip-path="url(#${id}-${e.name}-eye)"`)}</g>
         <path data-part="${e.name}-lid" fill="none" stroke="#111111" stroke-width="16" stroke-linecap="round" opacity="0" transform="translate(${e.cx} ${e.cy}) rotate(-17)" d="M-59 8 Q0 38 59 8"/>
+        ${e.name === "right" ? `<g data-part="wink-crease" transform="translate(${e.cx} ${e.cy}) rotate(-17) scale(${e.rx / 30})" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0">
+          <path d="${splashWinkCrease}" stroke-width="4.2"/><path d="${splashWinkCheek}" stroke-width="1.8" opacity=".32"/>
+        </g>` : ""}
       </g>`).join("")}
       <!-- Every appearance keeps Classic’s original beak and highlights. -->
       <g data-part="beak">${image(`clip-path="url(#${id}-beak-window)"`)}</g>
@@ -493,13 +498,28 @@ function createRig(container, source, id, label, appearance = "classic") {
 				785
 			]]) nodes[part].setAttribute("transform", `${nodes[part].getAttribute("transform")} translate(${x} ${y}) scale(1.35) translate(${-x} ${-y})`);
 			for (const eye of eyes) {
-				const openness = Math.max(.025, 1 - pose.blink);
+				const closure = pose.wink === void 0 ? pose.blink : eye.name === "right" ? pose.wink : 0;
+				const winking = pose.wink !== void 0 && eye.name === "right";
+				const eyeY = eye.cy + eye.ry * .24 * closure;
+				const axis = `translate(${eye.cx} ${eyeY}) rotate(-17)`;
+				const openness = Math.max(.01, 1 - closure);
+				const creaseAmount = ease((closure - .54) / .43);
 				const node = nodes[`${eye.name}-eye`];
-				node.setAttribute("transform", `translate(${eye.cx} ${eye.cy}) rotate(-17) scale(1 ${openness}) rotate(17) translate(${-eye.cx} ${-eye.cy})`);
-				node.setAttribute("opacity", String(clamp(openness / .22)));
+				node.setAttribute("transform", `${axis} scale(1 ${openness}) rotate(17) translate(${-eye.cx} ${-eye.cy})`);
+				node.setAttribute("opacity", String(1 - ease((closure - .72) / .26)));
 				const lid = nodes[`${eye.name}-lid`];
-				lid.setAttribute("opacity", String(clamp((pose.blink - .62) / .3)));
-				lid.setAttribute("d", pose.happy > .2 ? "M-59 10 Q0 -43 59 10" : "M-59 8 Q0 38 59 8");
+				lid.setAttribute("opacity", String(winking ? 0 : creaseAmount));
+				lid.setAttribute("transform", axis);
+				const bend = (22 - 57 * pose.happy) * creaseAmount;
+				lid.setAttribute("d", `M-59 0 Q0 ${bend} 59 0`);
+				if (eye.name === "right") {
+					const crease = nodes["wink-crease"];
+					crease.setAttribute("opacity", String(winking ? creaseAmount : 0));
+					if (winking) {
+						crease.setAttribute("stroke", lid.getAttribute("stroke"));
+						crease.setAttribute("transform", `${axis} scale(${eye.rx / 30} ${eye.rx / 30 * (.35 + .65 * creaseAmount)})`);
+					}
+				}
 			}
 			nodes.SparkleBurst.setAttribute("transform", nodes.motion.getAttribute("transform"));
 			nodes.SparkleBurst.setAttribute("opacity", String(pose.sparkle));
