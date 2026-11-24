@@ -1,8 +1,8 @@
 // Artwork is captured from the app's real GemArtwork layers after ios:sync.
 // Keep the existing hosts so the demo, spin interaction and collector share it.
 (() => {
-  const GEM_ART_VERSION = "fa93d27a93e2";
-  const GEM_VARIANTS = {"version":"130670968f3c","shapes":["pebble","kite","crystal","cushion","triangle","teardrop","round","nugget","baguette","marquise","shield"],"stones":["soft","moonstone","lagoon","aurora"]};
+  const GEM_ART_VERSION = "9f50c1fe6f8f";
+  const GEM_VARIANTS = {"version":"993d5518aae8","shapes":["pebble","kite","crystal","cushion","triangle","teardrop","round","nugget","baguette","marquise","shield"],"stones":["soft","moonstone","lagoon","aurora"]};
   const artwork = new URL(`screens/current-gem-art.webp?v=${GEM_ART_VERSION}`, document.currentScript.src).href;
   const variants = new Image();
   variants.src = new URL(`screens/current-gem-variants.webp?v=${GEM_VARIANTS.version}`, document.currentScript.src).href;
