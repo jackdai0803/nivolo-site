@@ -246,7 +246,7 @@ function applyJade(svg, uid) {
 }
 //#endregion
 //#region \0nivo-body
-var _nivo_body_default = new URL("./nivo-body.png", "" + import.meta.url).href;
+var _nivo_body_default = new URL("./nivo-body.webp", "" + import.meta.url).href;
 //#endregion
 //#region src/series/detective-details.js
 function detectiveCap(uid) {

@@ -806,7 +806,7 @@ function applyClassicCoat(svg, uid, colors, markings = "") {
 }
 //#endregion
 //#region \0flower-body
-var _flower_body_default = new URL("./nivo-body.png", "" + import.meta.url).href;
+var _flower_body_default = new URL("./nivo-body.webp", "" + import.meta.url).href;
 //#endregion
 //#region src/flowers/art.js
 var softFaceIds = [
