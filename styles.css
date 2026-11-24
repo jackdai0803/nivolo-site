@@ -100,6 +100,7 @@ body {
   background: var(--paper);
   color: var(--ink);
   font-family: var(--font-body);
+  font-weight: 500;
   -webkit-font-smoothing: antialiased;
   line-height: 1.625; /* 16/26 */
   /* clip, not hidden: a tossed icon that leaves the stage used to widen
@@ -144,7 +145,7 @@ button { font: inherit; }
   background: var(--button-fill);
   color: var(--button-ink);
   box-shadow: var(--button-shadow);
-  font-weight: 650;
+  font-weight: 800;
   letter-spacing: 0;
   cursor: pointer;
   touch-action: manipulation;
@@ -221,7 +222,7 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
   object-fit: contain;
 }
 .logo:hover { text-decoration: none; }
-.nav-links { display: flex; align-items: center; gap: 22px; font-size: 14px; font-weight: 600; }
+.nav-links { display: flex; align-items: center; gap: 22px; font-size: 14px; font-weight: 700; }
 .nav-links .nav-plain { color: var(--ink-2); }
 .nav-links .nav-plain {
   display: inline-flex;
@@ -359,7 +360,7 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
 .section-kicker { margin-bottom: 14px; }
 .section-title {
   font-family: var(--font-serif);
-  font-size: clamp(32px, 4.4vw, 48px); font-weight: 500;
+  font-size: clamp(32px, 4.4vw, 48px); font-weight: 600;
   letter-spacing: -0.015em; line-height: 1.083;
   margin-bottom: 14px;
 }
@@ -627,7 +628,7 @@ nav { position: sticky; top: 12px; z-index: 50; padding: 0 16px; }
 }
 .closing h2 {
   font-family: var(--font-serif);
-  font-size: clamp(32px, 4.4vw, 48px); font-weight: 500;
+  font-size: clamp(32px, 4.4vw, 48px); font-weight: 600;
   letter-spacing: -0.02em; line-height: 1.083;
   max-width: 15ch;
 }
@@ -746,16 +747,16 @@ footer {
 .page { max-width: var(--w-narrow); margin: 0 auto; padding: 70px 24px 90px; }
 .page h1 {
   font-family: var(--font-serif);
-  font-size: clamp(32px, 5vw, 48px); font-weight: 500; letter-spacing: -0.018em; line-height: 1.083;
+  font-size: clamp(32px, 5vw, 48px); font-weight: 600; letter-spacing: -0.018em; line-height: 1.083;
   margin-bottom: 10px;
 }
 .page .updated { color: var(--ink-3); font-size: 14px; line-height: 20px; margin-bottom: 34px; }
 .page h2 {
   font-family: var(--font-serif);
-  font-size: 24px; font-weight: 500; letter-spacing: -0.012em; line-height: 30px;
+  font-size: 24px; font-weight: 600; letter-spacing: -0.012em; line-height: 30px;
   margin: 38px 0 10px;
 }
-.page h3 { font-size: 18px; font-weight: 700; margin: 26px 0 8px; }
+.page h3 { font-size: 18px; font-weight: 850; margin: 26px 0 8px; }
 .page p, .page li { color: var(--ink-2); font-size: 16px; margin-bottom: 12px; }
 .page ul { padding-left: 22px; margin-bottom: 14px; }
 .page .card {
@@ -899,7 +900,7 @@ footer {
   margin-bottom: 18px;
   font-family: var(--font-serif);
   font-size: clamp(40px, 5vw, 56px);
-  font-weight: 500;
+  font-weight: 600;
   line-height: 0.98;
   letter-spacing: -0.025em;
 }
@@ -921,7 +922,7 @@ footer {
   border-radius: var(--radius-sm);
   background: var(--paper);
   color: var(--ink);
-  font: 400 16px/1 var(--font-display);
+  font: 500 16px/1 var(--font-display);
   outline: none;
   transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
 }
@@ -972,7 +973,7 @@ footer {
   color: #fff;
   font-weight: 800;
 }
-.launch-success h2 { margin: 1px 0 4px; font: 700 18px/24px var(--font-rounded); }
+.launch-success h2 { margin: 1px 0 4px; font: 850 18px/24px var(--font-rounded); }
 .launch-success p { color: var(--ink-2); font-size: 14px; line-height: 20px; }
 .launch-help { margin-top: 12px; color: var(--ink-2); font-size: 14px; line-height: 20px; }
 .launch-help a, .launch-success a:not(.btn-moonlit) { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
@@ -1137,7 +1138,7 @@ footer {
   backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
 }
 .ios-widget .widget-flame { background: rgba(255, 255, 255, 0.13); }
-.ios-widget b { display: block; font: 700 16px/20px var(--font-rounded); }
+.ios-widget b { display: block; font: 850 16px/20px var(--font-rounded); }
 .ios-widget small { display: block; margin-top: 3px; color: rgba(255, 255, 255, 0.76); font-size: 11px; line-height: 15px; }
 .ios-apps {
   display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px 10px;
@@ -1186,7 +1187,7 @@ footer {
 }
 .step h3 {
   font-family: var(--font-rounded);
-  font-size: 24px; font-weight: 700; letter-spacing: -0.016em; line-height: 30px; margin-bottom: 8px;
+  font-size: 24px; font-weight: 850; letter-spacing: -0.016em; line-height: 30px; margin-bottom: 8px;
 }
 .step p { color: var(--ink-2); font-size: 16px; }
 
@@ -1232,10 +1233,10 @@ footer {
   color: #0B4A6B; background: rgba(255, 255, 255, 0.62);
   border-radius: var(--radius-pill); padding: 5px 11px;
 }
-.plan h3 { font-family: var(--font-rounded); font-size: 24px; line-height: 30px; font-weight: 700; margin-bottom: 10px; }
+.plan h3 { font-family: var(--font-rounded); font-size: 24px; line-height: 30px; font-weight: 850; margin-bottom: 10px; }
 .plan-price {
   font-family: var(--font-rounded);
-  font-size: 48px; font-weight: 700; letter-spacing: -0.025em; line-height: 1;
+  font-size: 48px; font-weight: 850; letter-spacing: -0.025em; line-height: 1;
   margin-bottom: 10px;
 }
 /* "/month" and "forever" are labels, not part of the figure: body font.
@@ -1276,7 +1277,7 @@ footer {
   display: flex; align-items: center;
   min-height: 56px; padding: 14px 40px 14px 0; position: relative;
   font-family: var(--font-display);
-  font-size: 18px; font-weight: 600; line-height: 26px; letter-spacing: -0.012em; color: var(--ink);
+  font-size: 18px; font-weight: 800; line-height: 26px; letter-spacing: -0.012em; color: var(--ink);
 }
 .faq summary::-webkit-details-marker { display: none; }
 /* A 16px chevron that turns over when the answer is open. Drawn as a mask
@@ -1433,7 +1434,7 @@ footer {
 .lore-card:hover .lore-ic { transform: rotate(-4deg) scale(1.06); }
 .lore-card h3 {
   font-family: var(--font-rounded);
-  font-size: 18px; font-weight: 700; letter-spacing: -0.012em;
+  font-size: 18px; font-weight: 850; letter-spacing: -0.012em;
   margin-bottom: 5px;
 }
 .lore-card p {
@@ -1462,7 +1463,7 @@ footer {
   box-shadow: var(--shadow-sm);
 }
 .lore-more > summary::-webkit-details-marker { display: none; }
-.lore-more > summary b { display: block; font: 700 18px/24px var(--font-rounded); }
+.lore-more > summary b { display: block; font: 850 18px/24px var(--font-rounded); }
 .lore-more > summary small { display: block; margin-top: 3px; color: var(--ink-3); font-size: 14px; line-height: 20px; }
 .lore-more > summary:focus-visible { outline: 2px solid var(--cyan); outline-offset: 4px; }
 .lore-more-toggle {
@@ -2055,7 +2056,7 @@ footer {
 }
 .ipop-back h3 {
   font-family: var(--font-display);
-  font-size: 18px; font-weight: 700; margin-bottom: 8px;
+  font-size: 18px; font-weight: 850; margin-bottom: 8px;
   color: var(--tint-lite, #EAF2FA);
 }
 .ipop-back p { font-size: 14px; line-height: 1.5; color: rgba(234, 242, 250, 0.82); }

@@ -26,7 +26,7 @@
 /* Deep-Sea belongs with the featured icons, with membership stated explicitly. */
 .keepsake-membership { color: #145e85; }
 .ipop-info { max-width: 330px; margin: 14px auto 0; color: #edf7ff; text-align: center; }
-.ipop-info h2 { margin: 0 0 8px; font: 600 28px/1.1 var(--font-display); letter-spacing: -.02em; }
+.ipop-info h2 { margin: 0 0 8px; font: 850 28px/1.1 var(--font-display); letter-spacing: -.02em; }
 .ipop-membership { margin: 0; color: #c2edff; font-size: 14px; font-weight: 600; line-height: 1.5; }
 .ipop-access-note { margin: 9px 0 0; color: #cad7e8; font-size: 12px; line-height: 1.5; }
 .ipop-overlay[data-scene="deepsea"] .ipop-dialog {

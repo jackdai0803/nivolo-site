@@ -11,7 +11,7 @@
 .contact-card .section-kicker { margin-bottom: 12px; }
 .contact-card h2 {
   margin: 0 0 14px;
-  font: 500 clamp(30px, 4vw, 40px)/1.12 var(--font-serif);
+  font: 600 clamp(30px, 4vw, 40px)/1.12 var(--font-serif);
   letter-spacing: -.015em;
   text-wrap: balance;
 }
@@ -37,7 +37,7 @@
 }
 .contact-dialog[open] { animation: contact-open 180ms ease-out; }
 .contact-dialog::backdrop { background: rgba(22, 23, 26, .42); }
-.contact-dialog h2 { padding-right: 16px; font: 500 30px/1.15 var(--font-serif); text-wrap: balance; }
+.contact-dialog h2 { padding-right: 16px; font: 600 30px/1.15 var(--font-serif); text-wrap: balance; }
 .contact-choice-body { margin-top: 14px; color: var(--ink-2); font-size: 15px; }
 .contact-close {
   position: absolute; top: 8px; right: 8px; display: grid; place-items: center;

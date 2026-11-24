@@ -141,7 +141,7 @@
   color: #173d52;
   font-family: var(--font-display);
   font-size: clamp(58px, 10vw, 150px);
-  font-weight: 600;
+  font-weight: 850;
   letter-spacing: -0.025em;
   line-height: 1.05;
   white-space: nowrap;
@@ -402,7 +402,7 @@
   color: #173b54;
   font-family: var(--font-display);
   font-size: clamp(44px, 7.2vw, 110px);
-  font-weight: 600;
+  font-weight: 850;
   letter-spacing: -0.025em;
   line-height: 1.05;
   transform: rotate(-3deg);
@@ -1937,7 +1937,7 @@ body.nav-on-midnight nav .motto--lockup {
 .premium-home .editorial-ribbon { opacity: .4; }
 .premium-home .editorial-feature-copy { min-width: 0; }
 .premium-home .editorial-feature-meta { margin: 0 0 22px; color: #e0eef5; font-size: 12px; font-weight: 650; letter-spacing: .1em; }
-.premium-home .editorial-sticker { position: relative; inset: auto; gap: .24em; font-size: clamp(36px, 4.7vw, 66px); font-weight: 600; letter-spacing: -.02em; line-height: 1.08; transform: rotate(-2deg); }
+.premium-home .editorial-sticker { position: relative; inset: auto; gap: .24em; font-size: clamp(36px, 4.7vw, 66px); font-weight: 850; letter-spacing: -.02em; line-height: 1.08; transform: rotate(-2deg); }
 .premium-home .editorial-sticker span { max-width: 100%; padding: .08em .14em .1em; }
 .premium-home .editorial-sticker span:nth-child(2) { margin-left: 0; }
 .premium-home .editorial-feature-intro { max-width: 360px; margin-top: 32px; color: #f1f7fa; font: 500 clamp(18px, 1.8vw, 23px)/1.5 var(--font-body); letter-spacing: -.01em; }
