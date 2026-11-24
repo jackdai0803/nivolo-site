@@ -2,7 +2,7 @@
 .collection-chapter{background:var(--chapter-paper);color:#293d45;scroll-margin-top:78px;padding-block:76px;overflow:hidden}
 .chapter-heading{scroll-margin-top:100px;display:grid;grid-template-columns:1.15fr 1fr;gap:0 70px;align-items:end;margin-bottom:36px}
 .chapter-eyebrow{grid-column:1/-1;color:#586c71;font:600 11px/1.5 var(--font-body);letter-spacing:.12em;text-transform:uppercase;margin:0 0 16px}
-.chapter-heading h2{font:400 clamp(40px,4.8vw,64px)/1.04 var(--font-serif);letter-spacing:-.03em;white-space:pre-line;margin:0}
+.chapter-heading h2{font:600 clamp(40px,4.8vw,64px)/1.04 var(--font-serif);letter-spacing:-.03em;white-space:pre-line;margin:0}
 .chapter-heading>p:last-child{font-size:16px;line-height:1.75;max-width:375px;color:#5c6b71;margin:0 0 4px}
 .chapter-feature{display:grid;grid-template-columns:1.15fr 1fr;gap:70px;align-items:center}
 .chapter-showcase,.chapter-story{min-width:0}

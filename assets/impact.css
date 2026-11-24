@@ -13,7 +13,7 @@
   overflow: hidden;
 }
 .small-impact-kicker { color: #58717b; font: 600 12px/1.5 var(--font-body); letter-spacing: .14em; }
-.small-impact h2 { max-width: 700px; margin: 16px auto 12px; color: var(--impact-ink); font: 600 clamp(32px, 4vw, 52px)/1.15 var(--font-body); letter-spacing: -.035em; text-wrap: balance; }
+.small-impact h2 { max-width: 700px; margin: 16px auto 12px; color: var(--impact-ink); font: 850 clamp(32px, 4vw, 52px)/1.15 var(--font-body); letter-spacing: -.035em; text-wrap: balance; }
 .small-impact-intro { color: #526975; font-size: 16px; line-height: 1.6; }
 .small-impact-stats { display: grid; gap: 40px; margin: 44px 0 36px; }
 .small-impact-stat { min-width: 0; }
