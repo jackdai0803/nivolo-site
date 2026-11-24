@@ -32,7 +32,8 @@
   <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon.png?v=5" />
   <link rel="apple-touch-icon" href="assets/app-icon.png" />
   <link rel="stylesheet" href="assets/fonts.css?v=5" />
-  <link rel="stylesheet" href="styles.css?v=132" />
+  <link rel="stylesheet" href="assets/fonts/nunito.css?v=1" />
+  <link rel="stylesheet" href="styles.css?v=133" />
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -52,16 +53,17 @@
 
   <main id="main" tabindex="-1" class="page">
     <h1>Privacy Policy</h1>
-    <p class="updated">Last updated: November 22, 2026 · Applies to the Nivolo iOS app and nivolo.app</p>
+    <p class="updated">Last updated: November 23, 2026 · Applies to the Nivolo iOS app and nivolo.app</p>
 
     <p class="lede">Nivolo is a habit and goal app built to be private by default. It has no cloud account system, analytics, advertising, or trackers. Almost everything you create lives only on your iPhone. This policy explains the exceptions in detail — what leaves your device, when, who processes it, how long it is kept, and what you can ask us to do about it.</p>
 
     <div class="card">
       <p><strong>The short version</strong></p>
-      <p>Your goals, actions, streaks, Krill, gems, name, birthday and any email you enter <strong>inside the app</strong> are stored on your device. With AI sharing enabled, goal text can be sent for a plan draft or reminder suggestion you request. Chat sends your messages and recent replies when you tap Send, with optional goal context. Your profile name, birthday and in-app email are not attached; personal details you type into a message are included in that message.</p>
+      <p>Your goals, actions, streaks, Krill, gems, name, birthday and profile email are stored on your device. With AI sharing enabled, goal text can be sent for a plan draft or reminder suggestion you request. Chat sends your messages and recent replies when you tap Send, with optional goal context. Your profile name, birthday and email are not attached; personal details you type into a chat or support message are included in that message.</p>
       <p>The <strong>AI goal plan</strong> sends what you enter when you request a draft. After you allow AI sharing, the <strong>AI weekly insight</strong> for eligible Plus members can send summary counts automatically when the app opens or the language changes, if it has no saved result for that week and language. Requests use a random app ID rather than your name or email. Section 3 explains exactly how this works.</p>
       <p>If you voluntarily join the website launch list, we keep the email address you submit only long enough to send the one launch message. We do not run analytics, ads, or trackers, and we do not sell personal information.</p>
       <p>The limited Early Supporter icon is for our first 20 verified paying supporters. Our server verifies Apple-signed purchase records and keeps a hash of each winning subscription identifier; the public count contains no personal information.</p>
+      <p>When the app syncs eligible icon unlocks, our server keeps a hash of the random installation ID and the unlocked icon IDs. The icon gallery shows totals across installations.</p>
     </div>
 
     <div class="toc" role="navigation" aria-label="Contents">
@@ -150,6 +152,9 @@
     <h3>Early Supporter icon</h3>
     <p>The Early Supporter icon is awarded to the first 20 qualifying payments verified by our Cloudflare server, in the order they are received. Any paid membership tier qualifies; free trials, test purchases, Family Sharing access and launch-list signups do not reserve a place. The app sends an Apple-signed purchase record, authenticated with its random installation ID. Apple App Store Server Notifications can also report a payment directly, including when a free trial becomes paid while the app is closed. We verify Apple's signature, the app and product, production environment, purchaser ownership, positive payment amount and absence of a revocation. We keep only a SHA-256 hash of the winning subscription's original transaction identifier and its number from 1 to 20. We do not store your Apple ID, name, email, goals or signed receipt in the award record. Renewals and repeat requests return the same award. The app saves a local copy for offline access; restoring an active winning subscription on another device recovers its number and icon. The keepsake remains after membership expires, and places are never reissued.</p>
 
+    <h3>Icon ownership counts</h3>
+    <p>After setup, the app syncs eligible icon unlocks with our Cloudflare server when it is online. It sends the icon IDs and authenticates with its random installation ID. To count Deep-Sea ownership, the app can include an Apple-signed membership transaction, which the server verifies and discards. The server stores a hash of the random installation ID and the reported icon IDs so repeated syncs from that installation count once. The public gallery receives aggregate counts only. A reinstall or another device can count separately.</p>
+
     <p class="note">If a future version of the app adds a feature that transmits anything else, this policy will be updated before that version ships.</p>
 
     <h2 id="processors" class="anchor">4. Third parties we rely on</h2>
@@ -168,7 +173,7 @@
           </tr>
           <tr>
             <td><strong>Cloudflare</strong></td>
-            <td>Runs the Gemma goal-drafting model through Workers AI and hosts nivolo.app, our AI server, the Early Supporter record, and the launch list (Workers, Durable Objects, and KV); provides DNS and email routing</td>
+            <td>Runs the Gemma goal-drafting model through Workers AI and hosts nivolo.app, our AI server, Early Supporter records, icon ownership counts, and the launch list (Workers, Durable Objects, and KV); provides DNS and email routing</td>
             <td>The AI request contents in transit, your IP address as an ordinary part of making a network connection (and as the key of short-lived rate limits), the fair-use counters described above, Apple-signed purchase records used to verify Early Supporter eligibility and the stored hashes of winning subscription identifiers, and the email address you voluntarily submit to the launch list.</td>
           </tr>
           <tr>
@@ -229,6 +234,7 @@
           <tr><td>Plus daily plan/chat counts and weekly insight count (keyed by the subscription's transaction identifier)</td><td>Expire automatically after 2 and 14 days.</td></tr>
           <tr><td>Free-draft record against your random app ID</td><td>Kept while it is needed to apply the free limit. It holds a count and the last couple of session identifiers, nothing else.</td></tr>
           <tr><td>Early Supporter award</td><td>The hash of each of the 20 winning subscription identifiers and its award number is retained for the lifetime of the reward, so places are never reissued. No personal profile or email is included.</td></tr>
+          <tr><td>Icon ownership records</td><td>Kept while the icon-count feature is in use so repeated unlock reports count once per installation. Each record stores the hashed installation ID and the reported icon IDs.</td></tr>
           <tr><td>Your signed subscription record</td><td>Checked in memory on each request and then discarded; only the transaction identifier is used as a counter key, as above.</td></tr>
           <tr><td>Launch-list email address</td><td>Kept until the launch message is sent, then deleted after any necessary delivery follow-up. You can ask us to remove it at any time.</td></tr>
           <tr><td>Emails you send us for support</td><td>Kept in the developer's mailbox for as long as needed to help you and to keep a record of the conversation; you can ask us to delete the thread.</td></tr>
@@ -283,7 +289,7 @@
     <p>No method of transmission or storage is completely secure, and we cannot guarantee absolute security. If a breach ever affected data covered by this policy, we would post a notice on this page.</p>
 
     <h2 id="labels" class="anchor">15. App Store privacy labels</h2>
-    <p>Nivolo's App Store privacy label reports that data is <strong>not collected</strong>, or in the case of the optional AI features, that user content, identifiers and purchase information are <strong>not linked to your identity</strong> and are <strong>not used for tracking</strong>. This policy describes the same practices in full; if you ever spot a discrepancy between the two, please tell us and we will correct it.</p>
+    <p>This policy describes the data Nivolo handles for AI, purchases, support, and icon ownership counts. Nivolo does not use this data for tracking. If you spot a discrepancy with the App Store privacy label, please contact us.</p>
 
     <h2 id="website" class="anchor">16. This website</h2>
     <p>nivolo.app is hosted on Cloudflare. It sets <strong>no cookies</strong> and runs <strong>no analytics</strong>. The only form that stores personal information is the optional launch list: when you submit it, we keep the email address, submission time and the fact that it came from nivolo.app so we can send the one launch message.</p>
