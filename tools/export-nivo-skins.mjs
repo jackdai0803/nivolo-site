@@ -19,7 +19,7 @@ await build({ configFile: false, root: site, logLevel: 'warn', plugins: [{
     if (id.endsWith('/nivo_body.png')) return '\0nivo-body';
   },
   load(id) {
-    if (id === '\0nivo-body') return 'export default new URL("./nivo-body.png", import.meta.url).href;';
+    if (id === '\0nivo-body') return 'export default new URL("./nivo-body.webp", import.meta.url).href;';
     if (id === '\0website-nivo-skins') return `
       import { createRig } from ${modulePath('nivoRig.js')};
       import { makeSeriesSkin } from ${modulePath('series/renderer.js')};

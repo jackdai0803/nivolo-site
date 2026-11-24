@@ -11,7 +11,7 @@ import { makeFlower, flowers } from './flower-art.js?v=20261123-eye-motion';
 const container = document.querySelector('[data-launch-nivo]');
 const card = document.getElementById('launchCard');
 if (container && card) {
-  const artwork = new URL('./nivo-body.png', import.meta.url).href;
+  const artwork = new URL('./nivo-body.webp', import.meta.url).href;
   let appearance = 'classic';
   const strings = { en: { transform: 'Transform Nivo' }, zh: { transform: '变换 Nivo 的外观' } };
   const t = key => strings[document.documentElement.lang.startsWith('zh') ? 'zh' : 'en'][key];

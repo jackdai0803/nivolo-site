@@ -4,9 +4,19 @@
   const GEM_ART_VERSION = "9f50c1fe6f8f";
   const GEM_VARIANTS = {"version":"993d5518aae8","shapes":["pebble","kite","crystal","cushion","triangle","teardrop","round","nugget","baguette","marquise","shield"],"stones":["soft","moonstone","lagoon","aurora"]};
   const artwork = new URL(`screens/current-gem-art.webp?v=${GEM_ART_VERSION}`, document.currentScript.src).href;
-  const variants = new Image();
-  variants.src = new URL(`screens/current-gem-variants.webp?v=${GEM_VARIANTS.version}`, document.currentScript.src).href;
-  const ready = variants.decode().then(() => true, () => false);
+  const variantArtwork = new URL(`screens/current-gem-variants.webp?v=${GEM_VARIANTS.version}`, document.currentScript.src).href;
+  let variantsReady;
+  function loadVariants() {
+    if (!variantsReady) {
+      const variants = new Image();
+      variants.src = variantArtwork;
+      variantsReady = variants.decode().then(() => true, () => {
+        variantsReady = undefined;
+        return false;
+      });
+    }
+    return variantsReady;
+  }
   document.querySelectorAll('[data-app-opal], .collector-gem--current').forEach(host => {
     const collector = host.classList.contains('collector-gem--current');
     const size = Number(host.dataset.opalSize) || (collector ? 92 : 118);
@@ -25,13 +35,14 @@
     let surface;
     host.addEventListener('gem-variation', async event => {
       const version = requestedVersion = event.detail;
-      if (!await ready || version !== requestedVersion) return;
+      const ready = await loadVariants();
+      if (!ready || version !== requestedVersion) return;
       const column = version % GEM_VARIANTS.shapes.length;
       const row = version % GEM_VARIANTS.stones.length;
       if (!surface) {
         surface = document.createElement('span');
         surface.className = image.className;
-        surface.style.backgroundImage = `url("${variants.src}")`;
+        surface.style.backgroundImage = `url("${variantArtwork}")`;
         surface.style.backgroundSize = `${GEM_VARIANTS.shapes.length * 100}% ${GEM_VARIANTS.stones.length * 100}%`;
         wrap.replaceChildren(surface);
       }
