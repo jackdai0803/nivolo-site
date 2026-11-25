@@ -4,7 +4,7 @@ import {collections} from './nivo-collections.js?v=20261111-mythic';
 import {chapters,looks,destinations} from './collection-chapters-data.js?v=20261111-chapters';
 import {unlocks,worlds} from './collection-unlocks.js?v=20261111-chapters';
 import {idleAt,neutralPose} from './nivo-rig.js?v=20261120-flippers';
-import {withLightweightIdle} from './nivo-idle.js?v=20261120-flippers';
+import {withLightweightIdle} from './nivo-idle.js?v=porcelain-motion-20261124';
 const cn=()=>document.documentElement.lang.startsWith('zh');
 const copy={
  en:{matching:'Nivo + matching app icon',day:'Day',night:'Midnight',pause:'Pause Nivo',play:'Play Nivo',inspect:'Explore icon ↗',retry:'Reload preview',error:'The preview could not load. Try again.',terms:'Any paid membership counts. Free trials and launch-list signups do not reserve a place.',choose:'Choose a Nivo',selected:' selected',free:'Yours from the start',plus:'Included with Nivolo Plus',krill:'{n} Krill',streak:'{n}-day streak',goal:'Complete a goal',freeze:'Use a streak freeze',comeback:'Return after a break',early:'Log before 8 AM',nightUnlock:'Log after midnight',bigday:'5 actions in one day',count:'{n} actions total',supporter:'For the first 20 paying members'},
