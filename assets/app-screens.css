@@ -17,6 +17,12 @@
   -webkit-mask-image: url("device-iphone18-pro-max-screen-mask.svg");
   mask-image: url("device-iphone18-pro-max-screen-mask.svg");
 }
+/* The unframed goal illustration crops out the space reserved for the island. */
+.steps .step-art--goal .step-app-screen {
+  aspect-ratio: 1;
+  object-fit: cover;
+  object-position: center 12%;
+}
 .app-screen-preview {
   gap: 28px;
   margin-block: 36px 20px;
@@ -79,6 +85,7 @@
   position: absolute;
   inset: 0;
   overflow: hidden;
+  background: #efeee9;
   -webkit-mask: url("phone-studio-display-mask.svg?v=1") center / 100% 100% no-repeat;
   mask: url("phone-studio-display-mask.svg?v=1") center / 100% 100% no-repeat;
 }
@@ -92,15 +99,6 @@
   max-width: none;
   border-radius: 0;
   object-fit: cover;
-  transform-origin: 0 0;
-  transform: var(--phone-screen-transform) translateY(38px);
-}
-.phone-studio-display::before {
-  content: "";
-  position: absolute;
-  width: 393px;
-  height: 852px;
-  background: var(--phone-screen-background, #efeee9);
   transform-origin: 0 0;
   transform: var(--phone-screen-transform);
 }

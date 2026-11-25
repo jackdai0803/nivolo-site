@@ -33,20 +33,6 @@
     hardware.className = 'phone-studio-hardware';
     hardware.setAttribute('aria-hidden', 'true');
     phone.append(hardware);
-    // Extend the screenshot's own background into the reserved island area.
-    const matchBackground = () => {
-      if (!image.naturalWidth) return;
-      try {
-        const canvas = document.createElement('canvas');
-        canvas.width = canvas.height = 1;
-        const context = canvas.getContext('2d');
-        context.drawImage(image, 0, 0, 1, 1, 0, 0, 1, 1);
-        const [r, g, b] = context.getImageData(0, 0, 1, 1).data;
-        phone.style.setProperty('--phone-screen-background', `rgb(${r} ${g} ${b})`);
-      } catch { /* The neutral fallback also works when pixel access is unavailable. */ }
-    };
-    image.addEventListener('load', matchBackground, { once: true });
-    if (image.complete) matchBackground();
     phone.classList.add('is-studio');
     position(phone, phone.getBoundingClientRect().width);
     observer.observe(phone);
