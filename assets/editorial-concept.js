@@ -170,11 +170,6 @@
         gem.style.setProperty('--gem-hue', `${hue}deg`);
         gem.style.setProperty('--gem-saturation', String([.78, 1.08, .9][version % 3]));
         gem.dataset.gemVersion = String(version);
-        react(gem, [
-          { rotate: '0deg', scale: '1' },
-          { rotate: '-8deg', scale: '.94', offset: .25 },
-          { rotate: '0deg', scale: '1' },
-        ], { duration: 320 });
         button.querySelectorAll('.step-spark').forEach((spark) => react(spark, [
           { scale: '1', opacity: .65 }, { scale: '1.7', opacity: 1, offset: .5 }, { scale: '1', opacity: .65 },
         ], { duration: 700 }));

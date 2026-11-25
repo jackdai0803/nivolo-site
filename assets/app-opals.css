@@ -17,3 +17,37 @@
 .step-gem-label small.step-gem-hint { letter-spacing: 0; text-transform: none; }
 
 .step-art--gem > [data-app-opal] { transform: translateY(-34px); }
+
+/* Shared gem motion */
+.gem-glint-mask {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  -webkit-mask: var(--gem-glint-source) var(--gem-glint-position, center) / var(--gem-glint-size, contain) no-repeat;
+  mask: var(--gem-glint-source) var(--gem-glint-position, center) / var(--gem-glint-size, contain) no-repeat;
+}
+.gem-glint-beam {
+  position: absolute;
+  inset: -20% 20%;
+  background: linear-gradient(105deg, transparent 28%, #d8f5ff55 44%, #ffffffb0 50%, #d8f5ff55 58%, transparent 75%);
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-gem-glint] { animation: nivoloGemRock 720ms cubic-bezier(.22,.7,.3,1) both; }
+  [data-gem-glint] .gem-glint-beam { animation: nivoloGemGlint 720ms ease-in-out both; }
+}
+
+@keyframes nivoloGemRock {
+  0%, 100% { transform: none; }
+  21% { transform: perspective(450px) translateY(-2px) rotateY(-12deg) rotate(-5deg) scale(1.035); }
+  52% { transform: perspective(450px) translateY(-3px) rotateY(10deg) rotate(4deg) scale(1.025); }
+  76% { transform: rotate(-1deg); }
+}
+@keyframes nivoloGemGlint {
+  0% { transform: translateX(-110%); opacity: 0; }
+  18% { opacity: 0; }
+  40% { opacity: .88; }
+  61% { opacity: .52; }
+  82%, 100% { transform: translateX(110%); opacity: 0; }
+}

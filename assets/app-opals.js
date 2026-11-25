@@ -19,22 +19,38 @@
   }
   document.querySelectorAll('[data-app-opal], .collector-gem--current').forEach(host => {
     const collector = host.classList.contains('collector-gem--current');
+    const interactive = host.closest('.step-art--gem');
     const size = Number(host.dataset.opalSize) || (collector ? 92 : 118);
     const wrap = document.createElement('span');
     wrap.className = 'opal-wrap';
     wrap.style.width = wrap.style.height = `${size}px`;
     const image = document.createElement('img');
-    image.className = (collector || host.hasAttribute('data-opal-static')) ? 'opal-artwork' : 'opal-artwork opal-bob';
+    image.className = (interactive || collector || host.hasAttribute('data-opal-static')) ? 'opal-artwork' : 'opal-artwork opal-bob';
     image.src = artwork;
     image.alt = '';
     image.width = image.height = 512;
     image.draggable = false;
     wrap.append(image);
     host.replaceChildren(wrap);
+    if (!interactive) return;
+
+    const glint = document.createElement('span');
+    glint.className = 'gem-glint-mask';
+    glint.style.setProperty('--gem-glint-source', `url("${artwork}")`);
+    const beam = document.createElement('span');
+    beam.className = 'gem-glint-beam';
+    glint.append(beam);
+    wrap.append(glint);
+
     let requestedVersion = 0;
     let surface;
     host.addEventListener('gem-variation', async event => {
       const version = requestedVersion = event.detail;
+      if (wrap.hasAttribute('data-gem-glint')) {
+        for (const animation of wrap.getAnimations({ subtree: true })) animation.play();
+      } else {
+        wrap.setAttribute('data-gem-glint', '');
+      }
       const ready = await loadVariants();
       if (!ready || version !== requestedVersion) return;
       const column = version % GEM_VARIANTS.shapes.length;
@@ -44,9 +60,12 @@
         surface.className = image.className;
         surface.style.backgroundImage = `url("${variantArtwork}")`;
         surface.style.backgroundSize = `${GEM_VARIANTS.shapes.length * 100}% ${GEM_VARIANTS.stones.length * 100}%`;
-        wrap.replaceChildren(surface);
+        glint.style.setProperty('--gem-glint-source', surface.style.backgroundImage);
+        glint.style.setProperty('--gem-glint-size', surface.style.backgroundSize);
+        image.replaceWith(surface);
       }
       surface.style.backgroundPosition = `${column * 100 / (GEM_VARIANTS.shapes.length - 1)}% ${row * 100 / (GEM_VARIANTS.stones.length - 1)}%`;
+      glint.style.setProperty('--gem-glint-position', surface.style.backgroundPosition);
       host.dataset.gemShape = GEM_VARIANTS.shapes[column];
       host.dataset.gemTexture = GEM_VARIANTS.stones[row];
     });
