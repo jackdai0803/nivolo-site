@@ -66,7 +66,7 @@
   <link rel="stylesheet" href="assets/krill.css?v=4" />
   <link rel="stylesheet" href="assets/early-supporter.css?v=20261110-icon-only" />
   <link rel="stylesheet" href="assets/impact.css?v=20261123-bolder-type" />
-  <link rel="stylesheet" href="assets/first-step-demo.css?v=20261124-goal-emoji" />
+  <link rel="stylesheet" href="assets/home-film/player.css?v=1" />
 
   <script type="application/ld+json">
 {
@@ -149,7 +149,7 @@
   ]
 }
   </script>
-<!-- Nivolo release: larger-hero-nivo-main-20261124 -->
+<!-- Nivolo release: homepage-film-20261125 -->
   <link rel="stylesheet" href="assets/mythic-edition.css?v=20261123-bolder-type" />
 </head>
 <body class="short-home premium-home">
@@ -194,7 +194,7 @@
 
     <div class="editorial-actions">
       <a class="nav-cta btn-moonlit" data-store href="/launch"><span data-live="Get the app" data-soon="Join the launch list" data-site-store-label>Join the launch list</span></a>
-      <a class="editorial-how" href="#try-nivolo" data-site-copy="heroHow">Try a small step ↓</a>
+      <a class="editorial-how" href="#try-nivolo" data-film-link>Watch the film ↓</a>
     </div>
 
     <p class="hero-reassurance" data-site-copy="heroReassurance">Free core tools · No account required</p>
@@ -203,49 +203,14 @@
       <button type="button" class="nivo-sound" data-nivo-sound aria-pressed="false"><span aria-hidden="true">♪</span> <span data-nivo-sound-label></span></button>
     </div>
 
-    <article class="editorial-feature editorial-feature--demo" id="try-nivolo" aria-labelledby="editorial-feature-title">
-      <div class="editorial-orb editorial-orb--one" aria-hidden="true"></div>
-      <div class="editorial-orb editorial-orb--two" aria-hidden="true"></div>
-      <div class="editorial-orb editorial-orb--three" aria-hidden="true"></div>
-      <div class="editorial-ribbon editorial-ribbon--one" aria-hidden="true"></div>
-      <div class="editorial-ribbon editorial-ribbon--two" aria-hidden="true"></div>
-
-      <div class="editorial-feature-copy">
-        <p class="editorial-feature-meta" data-site-copy="previewEyebrow">ONE SMALL STEP, TODAY</p>
-        <h2 class="editorial-sticker" id="editorial-feature-title">
-          <span data-site-copy="previewTitleFirst">Starting is</span>
-          <span data-site-copy="previewTitleSecond">the hard part.</span>
-        </h2>
-        <p class="editorial-feature-intro" data-site-copy="previewBody">Give Nivo one small action. See what happens next.</p>
-        <div class="editorial-feature-tags" aria-label="Nivolo highlights">
-          <span data-site-copy="previewStep">One clear step</span>
-          <span data-site-copy="previewStreak">Kinder streaks</span>
-          <span data-site-copy="previewRest">Rest without guilt</span>
-        </div>
-      </div>
-
-      <div class="first-step-demo" data-first-step-demo role="region" aria-labelledby="demo-title">
-        <div class="demo-topline"><span data-demo-copy="eyebrow">A LITTLE PREVIEW</span><span aria-hidden="true">01 — 03</span></div>
-        <div class="demo-scene">
-          <span class="site-nivo demo-nivo" data-nivo data-nivo-cycle data-demo-nivo aria-hidden="true"><svg viewBox="90 40 1120 1120"><image href="assets/nivo-body.webp" width="1254" height="1254" /></svg></span>
-          <p class="demo-message" data-demo-message>Big plans. Tiny first step.</p>
-        </div>
-        <div class="demo-goal-heading"><span class="demo-goal-icon" aria-hidden="true">♫</span><div><p data-demo-copy="example">EXAMPLE GOAL</p><h2 id="demo-title" data-demo-copy="goal">Play my first guitar chord</h2></div></div>
-        <div class="demo-progress-heading"><span data-demo-copy="progress">Your progress</span><span data-demo-count>0 of 3 small steps</span></div>
-        <div class="demo-progress" role="progressbar" aria-label="Your progress" aria-valuemin="0" aria-valuemax="3" aria-valuenow="0"><span></span></div>
-        <div class="demo-next"><span class="demo-step-check" aria-hidden="true">1</span><div><p data-demo-action-label>YOUR NEXT SMALL STEP</p><h3 data-demo-action>Practise finger placement</h3></div></div>
-        <button class="demo-log btn-moonlit" type="button" data-demo-log disabled>Log my first small step <span aria-hidden="true">→</span></button>
-        <div class="demo-keepsake">
-          <div><p data-demo-shelf-title>A little keepsake, ahead.</p><span data-demo-shelf-note>Finish the goal. Keep its gem.</span></div>
-          <div class="demo-shelf" aria-hidden="true"><span class="demo-shelf-outline"></span><span class="demo-earned-gem" data-app-opal data-opal-goal="first-guitar-chord" data-opal-texture="rings" data-opal-size="64" data-opal-static></span></div>
-        </div>
-        <p class="demo-status" role="status" aria-live="polite" aria-atomic="true"></p>
-        <div class="demo-outcome-link">
-        <a class="demo-own-goal" data-demo-own data-store href="/launch" hidden><span data-demo-copy="ownGoal">Make room for your own goal</span><span aria-hidden="true">↗</span></a>
-        <p class="demo-note" data-demo-copy="note">Just a preview. Your own journey starts in the app.</p>
-        </div>
-      </div>
-    </article>
+    <section class="home-film" id="try-nivolo" aria-label="Nivolo in nine seconds">
+      <video controls playsinline preload="none" width="1280" height="720"
+        poster="assets/home-film/wide-en.webp" src="assets/home-film/wide-en.mp4"
+        aria-label="Nivo shows how to choose a goal, log progress, and collect an opal."></video>
+      <button class="film-cover" type="button" hidden>
+        <span class="film-pill"><span class="film-triangle" aria-hidden="true"></span><span data-film-action>Play film</span><span class="film-duration">0:09</span></span>
+      </button>
+    </section>
 
     <div class="editorial-proof" aria-label="Nivolo product facts">
       <span data-site-copy="proofPrivate">Private by default</span>
@@ -297,7 +262,7 @@
       <ol class="steps reveal" data-stagger="50">
         <li class="step">
           <div class="step-art step-art--screen step-art--goal" aria-hidden="true">
-            <img class="step-app-screen" src="assets/screens/current-new-goal.webp?v=4d589077e953" width="393" height="852" loading="lazy" alt="" />
+            <img class="step-app-screen" src="assets/screens/current-new-goal.webp?v=2b8d194d33d0" width="393" height="852" loading="lazy" alt="" />
           </div>
           <span class="step-num">1</span>
           <h3>Name the goal</h3>
@@ -330,15 +295,15 @@
       <div class="app-screen-preview" aria-label="Inside Nivolo">
         <div class="app-screen-card">
           <span class="app-screen-label"><b>Your day</b><span>01</span></span>
-          <span class="app-screen-stage"><span class="phone"><img src="assets/screens/current-home.webp?v=eab30a89654d" width="393" height="852" loading="lazy" alt="Nivo above the Learn guitar goal and its current step, Play a full song slowly." /></span></span>
+          <span class="app-screen-stage"><span class="phone"><img src="assets/screens/current-home.webp?v=5f4e8a7992c5" width="393" height="852" loading="lazy" alt="Nivo above the Learn guitar goal and its current step, Play a full song slowly." /></span></span>
         </div>
         <div class="app-screen-card">
           <span class="app-screen-label"><b>A new goal</b><span>02</span></span>
-          <span class="app-screen-stage"><span class="phone"><img src="assets/screens/current-new-goal.webp?v=4d589077e953" width="393" height="852" loading="lazy" alt="New goal: Run my first 5K with a running emoji selected." /></span></span>
+          <span class="app-screen-stage"><span class="phone"><img src="assets/screens/current-new-goal.webp?v=2b8d194d33d0" width="393" height="852" loading="lazy" alt="New goal: Run my first 5K with a running emoji selected." /></span></span>
         </div>
         <div class="app-screen-card">
           <span class="app-screen-label"><b>One small action</b><span>03</span></span>
-          <span class="app-screen-stage"><span class="phone"><img src="assets/screens/current-log-action.webp?v=a176878bec54" width="393" height="852" loading="lazy" alt="Log Action: practiced guitar for 15 minutes, today, with three stars of effort." /></span></span>
+          <span class="app-screen-stage"><span class="phone"><img src="assets/screens/current-log-action.webp?v=16eb34983f88" width="393" height="852" loading="lazy" alt="Log Action: practiced guitar for 15 minutes, today, with three stars of effort." /></span></span>
         </div>
       </div>
       <details class="compact-disclosure app-gallery-section" id="inside-app">
@@ -347,7 +312,7 @@
       <div class="app-screen-rail" tabindex="0" role="region" aria-label="More app screenshots. Scroll horizontally to explore five screens.">
         <div class="app-screen-card">
           <span class="app-screen-label"><b>Room to rest</b><span>04</span></span>
-          <span class="app-screen-stage"><span class="phone"><img src="assets/screens/current-rest.webp?v=9616e3274bb9" width="393" height="852" loading="lazy" alt="Rest day logged, with the streak still intact." /></span></span>
+          <span class="app-screen-stage"><span class="phone"><img src="assets/screens/current-rest.webp?v=89e1c66e5066" width="393" height="852" loading="lazy" alt="Rest day logged, with the streak still intact." /></span></span>
         </div>
         <div class="app-screen-card">
           <span class="app-screen-label"><b>Something for you</b><span>05</span></span>
@@ -355,15 +320,15 @@
         </div>
         <div class="app-screen-card">
           <span class="app-screen-label"><b>Your Trophy Shelf</b><span>06</span></span>
-          <span class="app-screen-stage"><span class="phone"><img src="assets/screens/current-achievements.webp?v=7e3b39cdfb2c" width="393" height="852" loading="lazy" alt="Achievements: four finished goals represented by their unique opals." /></span></span>
+          <span class="app-screen-stage"><span class="phone"><img src="assets/screens/current-achievements.webp?v=7501ab5b591f" width="393" height="852" loading="lazy" alt="Achievements: four finished goals represented by their unique opals." /></span></span>
         </div>
         <div class="app-screen-card">
           <span class="app-screen-label"><b>A goal, kept forever</b><span>07</span></span>
-          <span class="app-screen-stage"><span class="phone"><img src="assets/screens/current-gem-detail.webp?v=51934b883895" width="393" height="852" loading="lazy" alt="Cook 20 meals: its collected opal, completion date, and earned Krill." /></span></span>
+          <span class="app-screen-stage"><span class="phone"><img src="assets/screens/current-gem-detail.webp?v=c5520e7050be" width="393" height="852" loading="lazy" alt="Cook 20 meals: its collected opal, completion date, and earned Krill." /></span></span>
         </div>
         <div class="app-screen-card">
           <span class="app-screen-label"><b>The bigger picture</b><span>08</span></span>
-          <span class="app-screen-stage"><span class="phone"><img src="assets/screens/current-profile.webp?v=3900693bde05" width="393" height="852" loading="lazy" alt="Profile: Nivo, level progress, and a weekly activity chart." /></span></span>
+          <span class="app-screen-stage"><span class="phone"><img src="assets/screens/current-profile.webp?v=16aeeeb2c18f" width="393" height="852" loading="lazy" alt="Profile: Nivo, level progress, and a weekly activity chart." /></span></span>
         </div>
       </div>
       <p class="app-gallery-note">Actual app screens · Sample goals shown <span aria-hidden="true">↔</span></p>
@@ -900,8 +865,8 @@ For our first twenty.</h2><p data-chapter-copy="intro">A little reminder you wer
   <script src="assets/phone-studio.js?v=3" defer></script>
   <script src="assets/impact.js?v=4" defer></script>
   <script type="module" src="assets/nivo.js?v=porcelain-motion-20261124"></script>
-  <script type="module" src="assets/first-step-demo.js?v=3"></script>
-  <script type="module" src="assets/mythic-edition.js?v=website-audit-main-20261124"></script>
-  <script type="module" src="assets/flower-edition.js?v=website-audit-main-20261124"></script>
+  <script defer src="assets/home-film/player.js?v=1"></script>
+  <script type="module" src="assets/mythic-edition.js?v=website-audit-20261124"></script>
+  <script type="module" src="assets/flower-edition.js?v=website-audit-20261124"></script>
 </body>
 </html>
