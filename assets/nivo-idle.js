@@ -1,8 +1,10 @@
+import { applyPreparedNivoCoat } from './prepared-nivo-coat.js?v=porcelain-motion-20261124';
 import { deepseaIdle } from './deepsea-idle-data.js?v=20261123-eye-motion';
 
 // The stills are captured from the approved rig, including its full glow.
 // Keep event reactions live; idle motion and blinking reuse the captured art.
 const artwork = new URL(`./deepsea-idle.webp?v=${deepseaIdle.version}`, import.meta.url).href;
+const porcelainCoat = new URL('./porcelain-coat.webp?v=porcelain-motion-20261124', import.meta.url).href;
 let decoded;
 let serial = 0;
 function ready() {
@@ -12,6 +14,7 @@ function ready() {
   })();
 }
 export function withLightweightIdle(rig, host, appearance) {
+  if (appearance === 'porcelain') applyPreparedNivoCoat(host.querySelector('svg'), porcelainCoat);
   if (appearance !== 'deepsea') return rig;
   const svg = host.querySelector('svg');
   const { x, y, width, height } = svg.viewBox.baseVal;

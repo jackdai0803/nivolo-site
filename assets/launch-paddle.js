@@ -4,7 +4,7 @@ import { makeMyth } from './mythic-art.js?v=20261123-eye-motion';
 import { idleAt, neutralPose } from './nivo-rig.js?v=20261123-eye-motion';
 
 import { makeClassicSkin, heroLooks } from './nivo-skins.js?v=20261123-eye-motion';
-import { withLightweightIdle } from './nivo-idle.js?v=20261123-eye-motion';
+import { withLightweightIdle } from './nivo-idle.js?v=porcelain-motion-20261124';
 import { makeFlower, flowers } from './flower-art.js?v=20261123-eye-motion';
 
 // The launch page owns this rig so the flipper and its paddle share one motion.
