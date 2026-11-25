@@ -5,6 +5,9 @@
   const action = cover.querySelector('[data-film-action]');
   const link = document.querySelector('[data-film-link]');
   const phone = matchMedia('(max-width: 600px)');
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  let inView = false;
+  let autoPlayPending = true;
   const lang = document.documentElement.lang.startsWith('zh') ? 'zh' : 'en';
   const copy = {
     en: { link: 'Watch the film ↓', play: 'Play film', replay: 'Replay film', title: 'Nivolo in nine seconds', description: 'Nivo shows how to choose a goal, log progress, and collect an opal.' },
@@ -29,11 +32,12 @@
   }
 
   function playFilm() {
+    autoPlayPending = false;
     cover.hidden = true;
     video.controls = true;
     if (video.ended) video.currentTime = 0;
     video.play().catch(() => {
-      if (video.paused && !video.error) showCover(false);
+      if (video.paused && !video.error && !autoPlayPending) showCover(false);
     });
   }
 
@@ -49,11 +53,25 @@
   phone.addEventListener('change', () => {
     if (!cover.hidden) selectFilm();
   });
-  document.addEventListener('visibilitychange', () => {
-    if (document.hidden) video.pause();
+  function updatePlayback() {
+    if (!inView || document.hidden) {
+      if (!video.paused) {
+        autoPlayPending = true;
+        video.pause();
+      }
+    } else if (autoPlayPending && !reducedMotion.matches) {
+      playFilm();
+    }
+  }
+
+  showCover(false);
+  document.addEventListener('visibilitychange', updatePlayback);
+  reducedMotion.addEventListener('change', () => {
+    if (reducedMotion.matches) video.pause();
+    else updatePlayback();
   });
   new IntersectionObserver(([entry]) => {
-    if (!entry.isIntersecting) video.pause();
+    inView = entry.isIntersecting;
+    updatePlayback();
   }).observe(film);
-  showCover(false);
 })();
