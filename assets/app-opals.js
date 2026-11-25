@@ -39,15 +39,29 @@
     glint.style.setProperty('--gem-glint-source', `url("${artwork}")`);
     const beam = document.createElement('span');
     beam.className = 'gem-glint-beam';
-    glint.append(beam);
+    const shine = document.createElement('span');
+    shine.className = 'gem-shine-beam';
+    glint.append(beam, shine);
     wrap.append(glint);
+
+    let inView = false;
+    const update = () => wrap.toggleAttribute('data-gem-shine-active', inView && !document.hidden);
+    const observer = new IntersectionObserver(([entry]) => {
+      inView = entry.intersectionRatio >= .15;
+      update();
+    }, { threshold: .15 });
+    observer.observe(wrap);
+    document.addEventListener('visibilitychange', update);
 
     let requestedVersion = 0;
     let surface;
     host.addEventListener('gem-variation', async event => {
       const version = requestedVersion = event.detail;
       if (wrap.hasAttribute('data-gem-glint')) {
-        for (const animation of wrap.getAnimations({ subtree: true })) animation.play();
+        for (const animation of wrap.getAnimations({ subtree: true })) {
+          if (animation.animationName === 'nivoloGemShine') animation.currentTime = 0;
+          else animation.play();
+        }
       } else {
         wrap.setAttribute('data-gem-glint', '');
       }
