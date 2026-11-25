@@ -66,7 +66,7 @@
   <link rel="stylesheet" href="assets/krill.css?v=4" />
   <link rel="stylesheet" href="assets/early-supporter.css?v=20261110-icon-only" />
   <link rel="stylesheet" href="assets/impact.css?v=20261123-bolder-type" />
-  <link rel="stylesheet" href="assets/home-film/player.css?v=1" />
+  <link rel="stylesheet" href="assets/home-story.css?v=1" />
 
   <script type="application/ld+json">
 {
@@ -149,7 +149,7 @@
   ]
 }
   </script>
-<!-- Nivolo release: homepage-film-autoplay-20261125 -->
+<!-- Nivolo release: homepage-inline-story-20261125 -->
   <link rel="stylesheet" href="assets/mythic-edition.css?v=20261123-bolder-type" />
 </head>
 <body class="short-home premium-home">
@@ -194,7 +194,7 @@
 
     <div class="editorial-actions">
       <a class="nav-cta btn-moonlit" data-store href="/launch"><span data-live="Get the app" data-soon="Join the launch list" data-site-store-label>Join the launch list</span></a>
-      <a class="editorial-how" href="#try-nivolo" data-film-link>Watch the film ↓</a>
+      <a class="editorial-how" href="#try-nivolo" data-story-copy="link">See how it works ↓</a>
     </div>
 
     <p class="hero-reassurance" data-site-copy="heroReassurance">Free core tools · No account required</p>
@@ -203,13 +203,34 @@
       <button type="button" class="nivo-sound" data-nivo-sound aria-pressed="false"><span aria-hidden="true">♪</span> <span data-nivo-sound-label></span></button>
     </div>
 
-    <section class="home-film" id="try-nivolo" aria-label="Nivolo in nine seconds">
-      <video controls muted playsinline preload="none" width="1280" height="720"
-        poster="assets/home-film/wide-en.webp" src="assets/home-film/wide-en.mp4"
-        aria-label="Nivo shows how to choose a goal, log progress, and collect an opal."></video>
-      <button class="film-cover" type="button" hidden>
-        <span class="film-pill"><span class="film-triangle" aria-hidden="true"></span><span data-film-action>Play film</span><span class="film-duration">0:09</span></span>
-      </button>
+    <section class="home-story" id="try-nivolo" aria-labelledby="how">
+      <h2 id="how" data-story-copy="title">Small steps add up.</h2>
+      <ol class="home-story-steps">
+        <li>
+          <div class="story-illustration story-landscape" aria-hidden="true">
+            <img class="story-nivo" src="assets/nivo-body.webp" width="840" height="840" alt="">
+          </div>
+          <h3 data-story-copy="goal">Choose a goal</h3>
+          <p data-story-copy="goalBody">Pick something you’d love to do, like playing your first song on guitar.</p>
+        </li>
+        <li>
+          <div class="story-illustration story-practice" aria-hidden="true">
+            <div class="story-entry"><img src="assets/screens/current-action-card.webp?v=c9406ac47cef" width="786" height="1534" alt=""><span class="story-time" data-story-copy="minutes">15 min</span></div>
+          </div>
+          <h3 data-story-copy="log">Log a little practice</h3>
+          <p data-story-copy="logBody">Practiced chord changes for 15 minutes? That counts.</p>
+        </li>
+        <li>
+          <div class="story-illustration story-keepsake">
+            <button class="story-gem-button step-art--gem" type="button">
+              <span data-app-opal data-opal-size="124" aria-hidden="true"><img src="assets/screens/current-gem-art.webp" width="124" height="124" alt=""></span>
+              <span data-story-copy="another">Try another opal</span>
+            </button>
+          </div>
+          <h3 data-story-copy="keep">Keep the opal</h3>
+          <p data-story-copy="keepBody">When you can play the song, finish the goal. Its opal is yours to keep.</p>
+        </li>
+      </ol>
     </section>
 
     <div class="editorial-proof" aria-label="Nivolo product facts">
@@ -253,41 +274,8 @@
     </div>
   </section>
 
-  <section class="section steps-section" id="how">
+  <section class="section steps-section">
     <div class="wrap">
-      <div class="section-head reveal" data-stagger="60">
-        <h2 class="section-title section-title--with-nivo">Three tiny moves.<br />Then <span class="section-nivo-mark section-nivo-mark--approved"><span class="site-nivo" data-nivo aria-label="Nivo" role="img"><svg viewBox="90 40 1120 1120" aria-hidden="true"><image href="assets/nivo-body.webp" width="1254" height="1254" /></svg></span></span> keeps the rhythm.</h2>
-        <p class="section-sub">No setup weekend, no spreadsheet. Give Nivolo one useful action and let the habit grow from there.</p>
-      </div>
-      <ol class="steps reveal" data-stagger="50">
-        <li class="step">
-          <div class="step-art step-art--screen step-art--goal" aria-hidden="true">
-            <img class="step-app-screen" src="assets/screens/current-new-goal.webp?v=2b8d194d33d0" width="393" height="852" loading="lazy" alt="" />
-          </div>
-          <span class="step-num">1</span>
-          <h3>Name the goal</h3>
-          <p data-site-copy="goalPlanning">Name what matters and choose your next small steps. With Plus, Nivo can draft a plan to help you begin.</p>
-        </li>
-        <li class="step">
-          <div class="step-art step-art--screen step-art--action" aria-hidden="true">
-            <img class="step-app-screen" src="assets/screens/current-action-card.webp?v=c9406ac47cef" width="393" height="852" loading="lazy" alt="" />
-          </div>
-          <span class="step-num">2</span>
-          <h3>Log one action a day</h3>
-          <p>Fifteen minutes of guitar. One short run. Tap it in, earn your Krill, watch the streak grow.</p>
-        </li>
-        <li class="step">
-          <div class="step-art step-art--gem" aria-hidden="true">
-            <span data-app-opal data-opal-goal="gx4" data-opal-texture="rings" data-opal-size="148"></span>
-            <span class="step-spark step-spark--one">✦</span>
-            <span class="step-spark step-spark--two">✦</span>
-            <span class="step-gem-label"><small>Yours to keep</small><b>Goal gem earned</b></span>
-          </div>
-          <span class="step-num">3</span>
-          <h3>Collect the gem</h3>
-          <p>Finish the goal and it becomes a one-of-a-kind gem on your shelf — proof you saw it through.</p>
-        </li>
-      </ol>
       <div class="compact-benefits" id="features">
         <a class="benefit-icon-preview" href="#weather-edition" aria-label="Meet Snowy Nivo"><img src="assets/icons/snowy.png?v=20261109" alt="" width="48" height="48" /></a>
         <div><h3 data-site-copy="kindTitle">Room for real life.</h3><p data-site-copy="kindBody">Take a rest day when you need one. You also get a free weekly freeze to protect your streak.</p></div>
@@ -865,7 +853,7 @@ For our first twenty.</h2><p data-chapter-copy="intro">A little reminder you wer
   <script src="assets/phone-studio.js?v=3" defer></script>
   <script src="assets/impact.js?v=4" defer></script>
   <script type="module" src="assets/nivo.js?v=porcelain-motion-20261124"></script>
-  <script defer src="assets/home-film/player.js?v=2"></script>
+  <script defer src="assets/home-story.js?v=1"></script>
   <script type="module" src="assets/mythic-edition.js?v=website-audit-20261124"></script>
   <script type="module" src="assets/flower-edition.js?v=website-audit-20261124"></script>
 </body>
