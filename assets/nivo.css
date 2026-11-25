@@ -4,11 +4,11 @@
 /* Scale the companion with the wordmark rather than a fixed icon-sized cap. */
 .editorial-lockup:has(.site-nivo) { gap: .18em; }
 .editorial-lockup-mark:has(.site-nivo) {
-  width: .78em;
+  width: 1.1em;
   background: none;
   box-shadow: none;
   border-radius: 0;
-  transform: translateY(.01em);
+  transform: translateY(-.035em);
 }
 .nivo-play-controls {
   display: flex;
