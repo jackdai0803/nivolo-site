@@ -26,7 +26,7 @@
   -webkit-mask: var(--gem-glint-source) var(--gem-glint-position, center) / var(--gem-glint-size, contain) no-repeat;
   mask: var(--gem-glint-source) var(--gem-glint-position, center) / var(--gem-glint-size, contain) no-repeat;
 }
-.gem-glint-beam {
+.gem-glint-beam, .gem-shine-beam {
   position: absolute;
   inset: -20% 20%;
   background: linear-gradient(105deg, transparent 28%, #d8f5ff55 44%, #ffffffb0 50%, #d8f5ff55 58%, transparent 75%);
@@ -34,8 +34,15 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  [data-gem-glint] { animation: nivoloGemRock 720ms cubic-bezier(.22,.7,.3,1) both; }
-  [data-gem-glint] .gem-glint-beam { animation: nivoloGemGlint 720ms ease-in-out both; }
+  [data-gem-glint] {
+    --gem-wobble-duration: 720ms;
+    animation: nivoloGemRock var(--gem-wobble-duration) cubic-bezier(.22,.7,.3,1) both;
+  }
+  [data-gem-glint] .gem-glint-beam { animation: nivoloGemGlint var(--gem-wobble-duration) ease-in-out both; }
+  [data-gem-glint] .gem-shine-beam {
+    animation: nivoloGemShine 3200ms linear var(--gem-wobble-duration) infinite paused;
+  }
+  [data-gem-glint][data-gem-shine-active] .gem-shine-beam { animation-play-state: running; }
 }
 
 @keyframes nivoloGemRock {
@@ -50,4 +57,11 @@
   40% { opacity: .88; }
   61% { opacity: .52; }
   82%, 100% { transform: translateX(110%); opacity: 0; }
+}
+@keyframes nivoloGemShine {
+  from { transform: translateX(-110%); opacity: 0; }
+  26% { opacity: .46; }
+  50% { opacity: .6; }
+  76% { opacity: .42; }
+  to { transform: translateX(110%); opacity: 0; }
 }
