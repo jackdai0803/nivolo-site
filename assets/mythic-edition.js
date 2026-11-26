@@ -82,8 +82,8 @@ if (section) {
     if (api || loading) return loading;
     loading = (async () => {
       try {
-        api = await import('./mythic-art.js?v=website-audit-main-20261124');
-        const image = new Image(); image.src = new URL('./nivo-body.webp', import.meta.url); await image.decode();
+        api = await import('./mythic-art.js?v=pointed-tail-20261125');
+        const image = new Image(); image.src = new URL('./nivo-body.webp?v=pointed-tail-20261125', import.meta.url); await image.decode();
         failed = false; select(selected.id);
         section.querySelectorAll('button').forEach(button => button.disabled = false);
       } catch { api = null; failed = true; replay.disabled = false; text(); }

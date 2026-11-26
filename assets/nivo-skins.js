@@ -86,6 +86,8 @@ function createRig(container, source, id, label, appearance = "classic") {
       <clipPath id="${id}-beak-window"><path d="${beakWindow}"/></clipPath>
       <clipPath id="${id}-left-wing"><path d="${leftWindow}"/></clipPath>
       <clipPath id="${id}-right-wing"><path d="${rightWindow}"/></clipPath>
+      <clipPath id="${id}-tail-tip"><path d="M0 902H332L548 1190H0Z"/></clipPath>
+      <clipPath id="${id}-torso"><path d="M0 0H1254V1254H0V1190H546L330 902H0Z"/></clipPath>
       ${eyes.map((e) => `<clipPath id="${id}-${e.name}-eye">${ellipse(e)}</clipPath>`).join("")}
       ${mask("body-mask", `<path d="${leftCut}" fill="black" stroke="white" stroke-width="0"/><path d="${rightCut}" fill="black" stroke="white" stroke-width="0"/>`)}
     </defs>
@@ -93,7 +95,8 @@ function createRig(container, source, id, label, appearance = "classic") {
       <g data-part="left-flipper">${image(`clip-path="url(#${id}-left-wing)"`)}</g>
       <g data-part="right-flipper">${image(`clip-path="url(#${id}-right-wing)"`)}</g>
       <!-- The torso covers rotating roots; the original white face lives here. -->
-      <g data-part="body">${image(`mask="url(#${id}-body-mask)"`)}</g>
+      <g data-part="body"><g data-part="tail">${image(`clip-path="url(#${id}-tail-tip)"`)}</g>
+        <g clip-path="url(#${id}-torso)">${image(`mask="url(#${id}-body-mask)"`)}</g></g>
       ${eyes.map((e) => `<g data-part="${e.name}-eye-assembly">
         ${ellipse(e, `fill="#ffffff"`)}
         <g data-part="${e.name}-eye">${image(`clip-path="url(#${id}-${e.name}-eye)"`)}</g>
@@ -128,6 +131,8 @@ function createRig(container, source, id, label, appearance = "classic") {
 			nodes["left-flipper"].setAttribute("transform", `translate(0 ${pose.leftY || 0}) rotate(${pose.left} 320 815)`);
 			nodes["right-flipper"].setAttribute("transform", `translate(0 ${pose.rightY || 0}) rotate(${pose.right} 965 785)`);
 			nodes.body.setAttribute("clip-path", pose.peek ? `url(#${id}-perch-edge)` : "none");
+			const tailBend = Math.max(-.2, Math.min(.24, -pose.y*.0018+(pose.left-pose.right)*.0012));
+			nodes.tail.setAttribute("transform", `matrix(1 ${tailBend} 0 ${1-.75*tailBend} 0 ${344.5*tailBend})`);
 			if (pose.peek) for (const [part, x, y] of [[
 				"left-flipper",
 				320,
@@ -270,7 +275,7 @@ function applyJade(svg, uid) {
 }
 //#endregion
 //#region \0nivo-body
-var _nivo_body_default = new URL("./nivo-body.webp", "" + import.meta.url).href;
+var _nivo_body_default = new URL("./nivo-body.webp?v=pointed-tail-20261125", "" + import.meta.url).href;
 //#endregion
 //#region src/series/detective-details.js
 function detectiveCap(uid) {
