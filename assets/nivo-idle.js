@@ -1,10 +1,10 @@
 import { applyPreparedNivoCoat } from './prepared-nivo-coat.js?v=porcelain-motion-20261124';
-import { deepseaIdle } from './deepsea-idle-data.js?v=pointed-tail-20261125';
+import { deepseaIdle } from './deepsea-idle-data.js?v=nivo-collection-light-20261125';
 
 // The stills are captured from the approved rig, including its full glow.
 // Keep event reactions live; idle motion and blinking reuse the captured art.
 const artwork = new URL(`./deepsea-idle.webp?v=${deepseaIdle.version}`, import.meta.url).href;
-const porcelainCoat = new URL('./porcelain-coat.webp?v=pointed-tail-20261125', import.meta.url).href;
+const porcelainCoat = new URL('./porcelain-coat.webp?v=nivo-collection-light-20261125', import.meta.url).href;
 let decoded;
 let serial = 0;
 function ready() {

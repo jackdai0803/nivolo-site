@@ -1,2 +1,2 @@
 // Generated from the app's approved Deep-Sea rig.
-export const deepseaIdle = {"version":"321000c04b88","frames":9};
+export const deepseaIdle = {"version":"df03299377f1","frames":9};

@@ -1,17 +1,17 @@
 import { accentPose } from './edition-motion.js?v=1';
 import { myths } from './mythic-catalog.js?v=20261118-sun-owl';
-import { makeMyth } from './mythic-art.js?v=pointed-tail-20261125';
-import { idleAt, neutralPose } from './nivo-rig.js?v=pointed-tail-20261125';
+import { makeMyth } from './mythic-art.js?v=nivo-collection-light-20261125';
+import { idleAt, neutralPose } from './nivo-rig.js?v=nivo-collection-light-20261125';
 
-import { makeClassicSkin, heroLooks } from './nivo-skins.js?v=pointed-tail-20261125';
-import { withLightweightIdle } from './nivo-idle.js?v=pointed-tail-20261125';
-import { makeFlower, flowers } from './flower-art.js?v=pointed-tail-20261125';
+import { makeClassicSkin, heroLooks } from './nivo-skins.js?v=nivo-collection-light-20261125';
+import { withLightweightIdle } from './nivo-idle.js?v=nivo-collection-light-20261125';
+import { makeFlower, flowers } from './flower-art.js?v=nivo-collection-light-20261125';
 
 // The launch page owns this rig so the flipper and its paddle share one motion.
 const container = document.querySelector('[data-launch-nivo]');
 const card = document.getElementById('launchCard');
 if (container && card) {
-  const artwork = new URL('./nivo-body.webp?v=pointed-tail-20261125', import.meta.url).href;
+  const artwork = new URL('./nivo-body.webp?v=nivo-collection-light-20261125', import.meta.url).href;
   let appearance = 'classic';
   const strings = { en: { transform: 'Transform Nivo' }, zh: { transform: '变换 Nivo 的外观' } };
   const t = key => strings[document.documentElement.lang.startsWith('zh') ? 'zh' : 'en'][key];

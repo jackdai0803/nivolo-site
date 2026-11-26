@@ -1,7 +1,7 @@
 import { accentPose } from './edition-motion.js?v=1';
-import { createRig, idleAt, neutralPose, smallWinAt, celebrationAt, SMALL_WIN_MS, CELEBRATION_MS } from './nivo-rig.js?v=pointed-tail-20261125';
-import { makeClassicSkin, heroLooks } from './nivo-skins.js?v=pointed-tail-20261125';
-import { withLightweightIdle } from './nivo-idle.js?v=pointed-tail-20261125';
+import { createRig, idleAt, neutralPose, smallWinAt, celebrationAt, SMALL_WIN_MS, CELEBRATION_MS } from './nivo-rig.js?v=nivo-collection-light-20261125';
+import { makeClassicSkin, heroLooks } from './nivo-skins.js?v=nivo-collection-light-20261125';
+import { withLightweightIdle } from './nivo-idle.js?v=nivo-collection-light-20261125';
 
 const strings = {
   en: { pause: 'Pause animation', resume: 'Resume animation', off: 'Sound: off', on: 'Sound: on' },
@@ -61,7 +61,7 @@ if (controls) {
 
 // Snapshot of the shared app rig. Refresh both files when its artwork changes.
 const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
-const artwork = new URL('./nivo-body.webp?v=pointed-tail-20261125', import.meta.url).href;
+const artwork = new URL('./nivo-body.webp?v=nivo-collection-light-20261125', import.meta.url).href;
 // A calm swimming loop with a short hello, only for the Plus card.
 const plusIdleAt = (ms) => {
   const pose = idleAt(ms);
